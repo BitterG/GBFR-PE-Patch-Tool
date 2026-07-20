@@ -8,6 +8,7 @@ import SigilLoadoutRestore from './SigilLoadoutRestore.vue'
 import WrightstoneGenerator from './WrightstoneGenerator.vue'
 import WrightstoneMemoryGenerator from './WrightstoneMemoryGenerator.vue'
 import SaveEditor from './SaveEditor.vue'
+import BadgeUnlock from './BadgeUnlock.vue'
 import CharaStats from './CharaStats.vue'
 import MiscTools from './MiscTools.vue'
 import MonsterEnhance from './MonsterEnhance.vue'
@@ -178,6 +179,9 @@ function showStatus(msg, type) {
       <button class="tab-btn" :class="{ active: activeTab === 'save' }" @click="activeTab = 'save'">
         副本次数
       </button>
+      <button class="tab-btn" :class="{ active: activeTab === 'badge' }" @click="activeTab = 'badge'">
+        解锁称号
+      </button>
       <button class="tab-btn" :class="{ active: activeTab === 'misc' }" @click="activeTab = 'misc'">
         杂项
       </button>
@@ -285,6 +289,10 @@ function showStatus(msg, type) {
 
     <main v-else-if="activeTab === 'save'" class="container" style="--wails-draggable:no-drag">
       <SaveEditor />
+    </main>
+
+    <main v-else-if="activeTab === 'badge'" class="container" style="--wails-draggable:no-drag">
+      <BadgeUnlock @status="showStatus" />
     </main>
 
     <main v-else-if="activeTab === 'misc'" class="container" style="--wails-draggable:no-drag">
