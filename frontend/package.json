@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "opencc-js": "^1.4.1",
     "pinyin-pro": "^3.27.0",
     "vue": "^3.2.37"
   },

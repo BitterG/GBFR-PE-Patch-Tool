@@ -1,7 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue'
+import OpenCC from 'opencc-js'
+import { pinyin } from 'pinyin-pro'
 import { FindSaveFiles, GetBadgeList, UnlockAllBadges, SetBadge } from '../../wailsjs/go/main/App'
 import { language } from '../i18n'
+
+const toSimplified = OpenCC.Converter({ from: 'tw', to: 'cn' })
 
 const emit = defineEmits(['status'])
 
@@ -21,9 +25,25 @@ const VIEW_H = 420
 const BUFFER = 6
 const scrollTop = ref(0)
 
+function prepareBadges(items) {
+  return items.map((b) => {
+    const nameZhSimplified = toSimplified(b.nameZh || '')
+    const spelling = pinyin(nameZhSimplified, { toneType: 'none', v: true })
+    const initials = pinyin(nameZhSimplified, { pattern: 'first' })
+    return {
+      ...b,
+      nameZhSimplified,
+      searchText: [b.nameZh, nameZhSimplified, b.nameEn, spelling, spelling.replaceAll(' ', ''), initials.replaceAll(' ', '')]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase(),
+    }
+  })
+}
+
 function badgeName(b) {
-  const zh = b.nameZh || b.nameEn || ('#' + b.id)
-  const en = b.nameEn || b.nameZh || ('#' + b.id)
+  const zh = b.nameZhSimplified || b.nameZh || b.nameEn || ('#' + b.id)
+  const en = b.nameEn || zh || ('#' + b.id)
   return language.value === 'zh' ? zh : en
 }
 
@@ -39,9 +59,7 @@ const filtered = computed(() => {
     if (tab.value === 'unlocked' && !b.unlocked) return false
     if (tab.value === 'locked' && b.unlocked) return false
     if (!kw) return true
-    return (b.nameZh || '').toLowerCase().includes(kw)
-      || (b.nameEn || '').toLowerCase().includes(kw)
-      || String(b.id).includes(kw)
+    return (b.searchText || '').includes(kw) || String(b.id).includes(kw)
   })
 })
 
@@ -62,7 +80,7 @@ async function load(path) {
   savePath.value = path
   scrollTop.value = 0
   try {
-    badges.value = await GetBadgeList(path) || []
+    badges.value = prepareBadges(await GetBadgeList(path) || [])
   } catch (err) {
     badges.value = []
     emit('status', String(err || '读取存档失败'), 'error')
