@@ -45,7 +45,7 @@ const otherSkinPurpleRuneStatus = reactive({ rva: 0, enabled: false, jumpOpcode:
 const otherSkinPurpleRuneLoading = ref(false)
 const updateInfo = reactive({ currentVersion: 'v1.5.0', latestVersion: '', hasUpdate: false, releaseUrl: '', body: '', assets: [] })
 const updateLoading = ref(false)
-const damageMeterStatus = reactive({ connected: false, totalDamage: 0, monsterDamage: 0, crocodileDamage: 0 })
+const damageMeterStatus = reactive({ connected: false, totalDamage: 0, monsterDamage: 0 })
 const damageMeterLoading = ref(false)
 const currencies = ref([])
 const currencyInputs = reactive({})
@@ -105,7 +105,7 @@ function disconnect() {
       Object.assign(terminusDropStatus, { found: false, address: 0, rva: 0, enabled: false, currentBytes: '' })
       Object.assign(unlockAllTrophyStatus, { found: false, address: 0, rva: 0, enabled: false, currentBytes: '' })
       Object.assign(otherSkinPurpleRuneStatus, { rva: 0, enabled: false, jumpOpcode: '', currentBytes: '' })
-      Object.assign(damageMeterStatus, { connected: false, totalDamage: 0, monsterDamage: 0, crocodileDamage: 0 })
+      Object.assign(damageMeterStatus, { connected: false, totalDamage: 0, monsterDamage: 0 })
       currencies.value = []
       Object.keys(currencyInputs).forEach((key) => delete currencyInputs[key])
       potions.value = []
@@ -455,13 +455,12 @@ function applyDamageMeterStatus(status) {
     connected: !!(status && status.connected),
     totalDamage: Number((status && status.totalDamage) || 0),
     monsterDamage: Number((status && status.monsterDamage) || 0),
-    crocodileDamage: Number((status && status.crocodileDamage) || 0),
   })
   if (damageOverlayEnabled.value) DamageOverlaySetValue(displayDamage()).catch(() => {})
 }
 
 function displayDamage() {
-  return Math.round(damageMeterStatus.monsterDamage * getMonsterEnhanceMultiplier('monster_hp') + damageMeterStatus.crocodileDamage * getMonsterEnhanceMultiplier('crocodile_damage'))
+  return Math.round(damageMeterStatus.monsterDamage * getMonsterEnhanceMultiplier('monster_hp'))
 }
 
 function startDamageMeterTimer() {
@@ -489,11 +488,10 @@ function enableDamageMeter() {
   if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
   damageMeterLoading.value = true
   MonsterEnhanceSetPatchValueEnabled('monster_hp', true, getMonsterEnhanceMultiplier('monster_hp'))
-    .then(() => MonsterEnhanceSetPatchValueEnabled('crocodile_damage', true, getMonsterEnhanceMultiplier('crocodile_damage')))
     .then(() => DamageMeterGetStatus())
     .then((status) => {
       applyDamageMeterStatus(status)
-      emit('status', '伤害记录已开启，已自动开启怪物多倍血和鳄鱼多倍血', 'success')
+      emit('status', '伤害记录已开启，已自动开启怪物多倍血', 'success')
     })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { damageMeterLoading.value = false })
@@ -636,10 +634,10 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <div v-if="showOutdatedFeatures" class="memory-card" :class="{ active: damageMeterStatus.connected && damageMeterStatus.totalDamage > 0 }">
+        <div class="memory-card" :class="{ active: damageMeterStatus.connected && damageMeterStatus.totalDamage > 0 }">
           <div class="memory-header">
             <span class="memory-title">团队伤害记录</span>
-            <span class="memory-hint">依赖怪物增强中倍率血量，本功能自动开启默认1倍</span>
+            <span class="memory-hint">依赖怪物多倍血，本功能自动开启当前倍率</span>
           </div>
           <div class="memory-info damage-meter-info">
             <span>状态: {{ damageMeterStatus.connected ? '记录中' : '等待共享内存' }}</span>

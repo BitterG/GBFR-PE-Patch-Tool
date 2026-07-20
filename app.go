@@ -2169,13 +2169,6 @@ var monsterPatchPoints = []monsterPatchPoint{
 		Hook:     true,
 	},
 	{
-		ID:       "crocodile_damage",
-		Name:     "鳄鱼多倍血(鳄鱼需单独设置)",
-		RVA:      0x23FD449,
-		Original: []byte{0x01, 0xBE, 0xB8, 0x15, 0x00, 0x00, 0x48, 0x8D, 0x8E, 0xB0, 0xFE, 0xFF, 0xFF, 0x8B, 0x46, 0x10},
-		Hook:     true,
-	},
-	{
 		ID:       "monster_stun",
 		Name:     "怪物多倍昏厥条",
 		RVA:      0xA09ADF,
@@ -2225,14 +2218,13 @@ var monsterPatchPoints = []monsterPatchPoint{
 	},
 }
 
-const damageMeterMappingName = "Local\\GBFRPlayerInfoEditDamageMeterV3"
-const damageMeterSize = 16
+const damageMeterMappingName = "Local\\GBFRPlayerInfoEditDamageMeterV4"
+const damageMeterSize = 8
 
 type DamageMeterStatus struct {
-	Connected       bool   `json:"connected"`
-	TotalDamage     uint64 `json:"totalDamage"`
-	MonsterDamage   uint64 `json:"monsterDamage"`
-	CrocodileDamage uint64 `json:"crocodileDamage"`
+	Connected     bool   `json:"connected"`
+	TotalDamage   uint64 `json:"totalDamage"`
+	MonsterDamage uint64 `json:"monsterDamage"`
 }
 
 func (a *App) DamageMeterGetStatus() (DamageMeterStatus, error) {
@@ -2240,8 +2232,7 @@ func (a *App) DamageMeterGetStatus() (DamageMeterStatus, error) {
 		return DamageMeterStatus{}, err
 	}
 	monsterDamage := uint64(*(*int64)(unsafe.Pointer(a.damageMeterView)))
-	crocodileDamage := uint64(*(*int64)(unsafe.Pointer(a.damageMeterView + 8)))
-	return DamageMeterStatus{Connected: true, TotalDamage: monsterDamage + crocodileDamage, MonsterDamage: monsterDamage, CrocodileDamage: crocodileDamage}, nil
+	return DamageMeterStatus{Connected: true, TotalDamage: monsterDamage, MonsterDamage: monsterDamage}, nil
 }
 
 func (a *App) DamageMeterReset() (DamageMeterStatus, error) {
@@ -2345,7 +2336,7 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 			command = fmt.Sprintf("%s %d", pointID, int(hpMultiplier))
 		} else if point != nil && needsMonsterValue(point.ID) {
 			commandValue := hpMultiplier
-			if point.ID == "monster_hp" || point.ID == "monster_stun" || point.ID == "crocodile_damage" {
+			if point.ID == "monster_hp" || point.ID == "monster_stun" {
 				commandValue = 1 / hpMultiplier
 			}
 			command = fmt.Sprintf("%s %.8g", command, commandValue)
@@ -2491,13 +2482,6 @@ func (a *App) restoreMonsterEnhance(id string) error {
 		if err := writeCodeMemory(a.hProcess, addr, point.Original); err != nil {
 			return fmt.Errorf("恢复%s失败: %w", point.Name, err)
 		}
-		if point.ID == "crocodile_damage" {
-			no1hpAddr := a.moduleBase + 0x23FD463
-			no1hpOrig := []byte{0x83, 0xF8, 0x02, 0xBA, 0x01, 0x00, 0x00, 0x00, 0x0F, 0x4D, 0xD0}
-			if err := writeCodeMemory(a.hProcess, no1hpAddr, no1hpOrig); err != nil {
-				return fmt.Errorf("恢复鳄鱼多倍血1HP保底失败: %w", err)
-			}
-		}
 	}
 	return nil
 }
@@ -2540,7 +2524,7 @@ func isMonsterPatchBytesAtRVA(rva uintptr, data []byte) bool {
 }
 
 func needsMonsterValue(id string) bool {
-	return id == "monster_hp" || id == "monster_stun" || id == "monster_damage" || id == "crocodile_damage" || id == "overdrive_state"
+	return id == "monster_hp" || id == "monster_stun" || id == "monster_damage" || id == "overdrive_state"
 }
 
 func findMonsterPatchPoint(id string) *monsterPatchPoint {

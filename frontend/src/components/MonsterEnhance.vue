@@ -4,7 +4,7 @@ import { MonsterEnhanceGetStatus, MonsterEnhanceSetPatchValueEnabled, DamageMete
 
 const emit = defineEmits(['status'])
 
-const defaultMultipliers = { monster_hp: '1', monster_stun: '1', monster_damage: '1', crocodile_damage: '1', sba_chain_timer: '3' }
+const defaultMultipliers = { monster_hp: '1', monster_stun: '1', monster_damage: '1', sba_chain_timer: '3' }
 const sessionMultipliers = window.gbfrMonsterEnhanceMultipliers || (window.gbfrMonsterEnhanceMultipliers = { ...defaultMultipliers })
 
 const loading = ref(false)
@@ -32,7 +32,7 @@ function refreshStatus() {
 }
 
 function needsMultiplier(item) {
-  return item.id === 'monster_hp' || item.id === 'monster_stun' || item.id === 'monster_damage' || item.id === 'crocodile_damage' || item.id === 'sba_chain_timer'
+  return item.id === 'monster_hp' || item.id === 'monster_stun' || item.id === 'monster_damage' || item.id === 'sba_chain_timer'
 }
 
 function needsOverdriveState(item) {
@@ -47,7 +47,6 @@ function multiplierHint(item) {
   if (item.id === 'monster_hp') return '输入 10 = 怪物10倍血'
   if (item.id === 'monster_stun') return '输入 10 = 怪物10倍昏厥条'
   if (item.id === 'monster_damage') return '输入 32 = 怪物伤害32倍'
-  if (item.id === 'crocodile_damage') return '输入 10 = 鳄鱼10倍血'
   if (item.id === 'sba_chain_timer') return '游戏默认 3 秒'
   return ''
 }
@@ -61,7 +60,7 @@ function patchValue(item) {
 }
 
 function startsDamageMeter(item) {
-  return item.id === 'monster_hp' || item.id === 'crocodile_damage'
+  return item.id === 'monster_hp'
 }
 
 function ensureDamageMeter() {
