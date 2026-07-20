@@ -24,7 +24,7 @@ const (
 	steamAppID  = "881020"
 	gameExeName = "granblue_fantasy_relink.exe"
 	gameFolder  = "Granblue Fantasy Relink"
-	appVersion  = "v1.8.4"
+	appVersion  = "v1.8.5"
 	repoOwner   = "BitterG"
 	repoName    = "GBFR-PE-Patch-Tool"
 )
@@ -115,6 +115,7 @@ type App struct {
 	charaPID                  uint32
 	countdownAddr             uintptr
 	faceAccessoryAddr         uintptr
+	infiniteChallengeAddr     uintptr
 	overLimitHookAddr         uintptr
 	overLimitCaveAddr         uintptr
 	overLimitCommitAddr       uintptr
@@ -1208,6 +1209,7 @@ func (a *App) CharaDetach() {
 	a.charaPID = 0
 	a.countdownAddr = 0
 	a.faceAccessoryAddr = 0
+	a.infiniteChallengeAddr = 0
 	a.overLimitHookAddr = 0
 	a.overLimitCaveAddr = 0
 	a.overLimitCommitAddr = 0
@@ -1570,37 +1572,55 @@ type InfiniteChallengeStatus struct {
 	CurrentBytes string `json:"currentBytes"`
 }
 
-const infiniteChallengeRVA = uintptr(0x278A6DE)
-
 var (
-	infiniteChallengeOrig  = []byte{0xFF, 0xC2}
-	infiniteChallengePatch = []byte{0x90, 0x90}
+	infiniteChallengePattern = []byte{0x41, 0xFF, 0, 0xB2, 0, 0xE9}
+	infiniteChallengeMask    = []bool{true, true, false, true, false, true}
+	infiniteChallengeOrig    = []byte{0x41, 0xFF, 0xC0}
+	infiniteChallengePatch   = []byte{0x90, 0x90, 0x90}
 )
 
 func (a *App) InfiniteChallengeGetStatus() (InfiniteChallengeStatus, error) {
 	if err := a.ensureGameProcess(); err != nil {
 		return InfiniteChallengeStatus{}, err
 	}
-	return a.readInfiniteChallengeStatus()
+	addr, err := a.infiniteChallengeAddress()
+	if err != nil {
+		return InfiniteChallengeStatus{}, err
+	}
+	return a.readInfiniteChallengeStatus(addr)
 }
 
 func (a *App) InfiniteChallengeSetEnabled(enabled bool) (InfiniteChallengeStatus, error) {
 	if err := a.ensureGameProcess(); err != nil {
 		return InfiniteChallengeStatus{}, err
 	}
+	addr, err := a.infiniteChallengeAddress()
+	if err != nil {
+		return InfiniteChallengeStatus{}, err
+	}
 	patch := infiniteChallengeOrig
 	if enabled {
 		patch = infiniteChallengePatch
 	}
-	addr := a.moduleBase + infiniteChallengeRVA
 	if err := writeCodeMemory(a.hProcess, addr, patch); err != nil {
 		return InfiniteChallengeStatus{}, fmt.Errorf("写入无限挑战失败: %w", err)
 	}
-	return a.readInfiniteChallengeStatus()
+	return a.readInfiniteChallengeStatus(addr)
 }
 
-func (a *App) readInfiniteChallengeStatus() (InfiniteChallengeStatus, error) {
-	addr := a.moduleBase + infiniteChallengeRVA
+func (a *App) infiniteChallengeAddress() (uintptr, error) {
+	if a.infiniteChallengeAddr != 0 {
+		return a.infiniteChallengeAddr, nil
+	}
+	addr, err := a.scanPatternUnique(infiniteChallengePattern, infiniteChallengeMask, "无限挑战特征")
+	if err != nil {
+		return 0, err
+	}
+	a.infiniteChallengeAddr = addr
+	return addr, nil
+}
+
+func (a *App) readInfiniteChallengeStatus(addr uintptr) (InfiniteChallengeStatus, error) {
 	buf := make([]byte, len(infiniteChallengeOrig))
 	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&buf[0]), uintptr(len(buf))); err != nil {
 		return InfiniteChallengeStatus{}, fmt.Errorf("读取无限挑战指令失败: %w", err)
@@ -1609,7 +1629,7 @@ func (a *App) readInfiniteChallengeStatus() (InfiniteChallengeStatus, error) {
 		return InfiniteChallengeStatus{}, fmt.Errorf("无限挑战指令字节异常: %s", bytesToHex(buf))
 	}
 	return InfiniteChallengeStatus{
-		RVA:          uint64(infiniteChallengeRVA),
+		RVA:          uint64(addr - a.moduleBase),
 		Enabled:      bytesEqual(buf, infiniteChallengePatch),
 		CurrentBytes: bytesToHex(buf),
 	}, nil

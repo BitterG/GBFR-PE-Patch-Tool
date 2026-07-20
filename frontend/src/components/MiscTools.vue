@@ -77,7 +77,7 @@ function connect() {
         loadCountdownStatus()
         loadFaceAccessoryStatus()
       }
-      if (showOutdatedFeatures) loadInfiniteChallengeStatus()
+      loadInfiniteChallengeStatus()
       loadMaterialConsumeStatus()
       if (showOutdatedFeatures) {
         loadTerminusDropStatus()
@@ -696,9 +696,9 @@ onBeforeUnmount(() => {
           <div class="memory-bytes">{{ faceAccessoryStatus.currentBytes || '未定位' }}</div>
         </div>
 
-        <div v-if="showOutdatedFeatures" class="memory-card" :class="{ active: infiniteChallengeStatus.enabled }">
+        <div class="memory-card" :class="{ active: infiniteChallengeStatus.enabled }">
           <div class="memory-header">
-            <span class="memory-title">无限挑战</span>
+            <span class="memory-title">可连续挑战(>10次)</span>
             <span class="memory-hint">NOP 挑战次数递增</span>
           </div>
           <div class="memory-info">
@@ -706,7 +706,7 @@ onBeforeUnmount(() => {
             <span>状态: {{ infiniteChallengeStatus.enabled ? '开启' : '默认' }}</span>
           </div>
           <div class="memory-row">
-            <button class="btn-batch" @click="setInfiniteChallengeEnabled(true)" :disabled="infiniteChallengeLoading || infiniteChallengeStatus.enabled">开启无限挑战</button>
+            <button class="btn-batch" @click="setInfiniteChallengeEnabled(true)" :disabled="infiniteChallengeLoading || infiniteChallengeStatus.enabled">开启连续挑战</button>
             <button class="btn-refresh" @click="setInfiniteChallengeEnabled(false)" :disabled="infiniteChallengeLoading || !infiniteChallengeStatus.enabled">恢复默认</button>
             <button class="btn-refresh" @click="loadInfiniteChallengeStatus" :disabled="infiniteChallengeLoading">刷新</button>
           </div>
