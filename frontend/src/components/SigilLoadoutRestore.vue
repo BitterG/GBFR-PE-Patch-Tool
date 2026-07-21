@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import { SigilMemoryEnable, SigilMemoryGetOptions, SigilMemoryGetStatus, SigilMemoryUpdate } from '../../wailsjs/go/main/App'
+import { SigilMemoryEnable, SigilMemoryGetOptions, SigilMemoryGetStatus, SigilMemoryUpdate, SelectLogsSigilLoadouts } from '../../wailsjs/go/main/App'
 
 const emit = defineEmits(['status'])
 const MAX_ENTRIES = 12
@@ -17,6 +17,11 @@ const exportVersion = ref('')
 const exportComment = ref('')
 const importedVersion = ref('')
 const importedComment = ref('')
+const logsLoadouts = ref([])
+const logsRecords = ref([])
+const selectedLogsLoadout = ref('')
+const selectedLogsRecord = ref('')
+const logsDialogOpen = ref(false)
 let timer = 0
 let lastSeen = ''
 
@@ -138,6 +143,41 @@ function clearEntries() {
   writeIndex.value = 0
 }
 
+function selectLogsRecord() {
+  const record = logsRecords.value[Number(selectedLogsRecord.value)]
+  logsLoadouts.value = record?.loadouts || []
+  selectedLogsLoadout.value = '0'
+  if (logsLoadouts.value.length) selectLogsLoadout()
+}
+
+function selectLogsLoadout() {
+  const loadout = logsLoadouts.value[Number(selectedLogsLoadout.value)]
+  if (!loadout) return
+  entries.value = loadout.entries.map(snapshot)
+  importedVersion.value = 'GBFR Logs'
+  importedComment.value = [loadout.playerName, loadout.characterName].filter(Boolean).join(' / ')
+  writeIndex.value = 0
+  show(`已选择 ${importedComment.value || '玩家'} 的 ${entries.value.length} 条配装`, 'success')
+}
+
+async function importLogs() {
+  if (mode.value !== 'idle') return
+  try {
+    logsRecords.value = await SelectLogsSigilLoadouts() || []
+    if (!logsRecords.value.length) throw new Error('日志未包含可用玩家配装')
+    selectedLogsRecord.value = '0'
+    logsDialogOpen.value = true
+  } catch (error) { show(`GBFR Logs 导入失败: ${String(error)}`, 'error') }
+}
+
+function confirmLogsRecord() {
+  selectLogsRecord()
+  logsDialogOpen.value = false
+  show(`已读取第 ${Number(selectedLogsRecord.value) + 1} 条记录，含 ${logsLoadouts.value.length} 名玩家；可切换团队玩家`, 'success')
+}
+
+function closeLogsDialog() { logsDialogOpen.value = false }
+
 function exportJSON() {
   if (!entries.value.length) { show('没有可导出的配装', 'error'); return }
   const data = JSON.stringify({
@@ -190,6 +230,22 @@ onBeforeUnmount(stop)
 
 <template>
   <div class="loadout">
+    <div v-if="logsDialogOpen" class="logs-dialog-mask" @click.self="closeLogsDialog">
+      <section class="logs-dialog" role="dialog" aria-modal="true" aria-labelledby="logs-dialog-title">
+        <div id="logs-dialog-title" class="section-title">选择 GBFR Logs 记录 <span>{{ logsRecords.length }} 条可用</span></div>
+        <div class="logs-records">
+          <label v-for="(record, index) in logsRecords" :key="index" class="logs-record" :class="{ selected: selectedLogsRecord === String(index) }">
+            <input v-model="selectedLogsRecord" type="radio" name="logs-record" :value="String(index)" />
+            <span>{{ new Date(record.logTime).toLocaleString() }}</span>
+            <small>{{ record.loadouts.length }} 名玩家</small>
+          </label>
+        </div>
+        <div class="actions">
+          <button class="btn" @click="closeLogsDialog">取消</button>
+          <button class="btn btn-logs" @click="confirmLogsRecord">确认导入</button>
+        </div>
+      </section>
+    </div>
     <section class="section">
       <div class="section-title">因子配装复出 <span>{{ modeText }}</span></div>
       <div class="actions">
@@ -198,8 +254,19 @@ onBeforeUnmount(stop)
         <button class="btn" :disabled="mode === 'idle'" @click="stop">停止</button>
         <button class="btn" :disabled="mode !== 'idle' || !entries.length" @click="exportJSON">导出 JSON</button>
         <button class="btn" :disabled="mode !== 'idle'" @click="chooseImport">导入 JSON</button>
+        <button class="btn btn-logs" :disabled="mode !== 'idle'" @click="importLogs">导入 GBFR Logs</button>
         <button class="btn btn-danger" :disabled="mode !== 'idle' || !entries.length" @click="clearEntries">清空</button>
         <input ref="fileInput" class="file-input" type="file" accept="application/json,.json" @change="importJSON" />
+      </div>
+      <div v-if="logsLoadouts.length" class="logs-picker">
+        <label>
+          <span>GBFR Logs 团队玩家</span>
+          <select v-model="selectedLogsLoadout" :disabled="mode !== 'idle'" @change="selectLogsLoadout">
+            <option v-for="(loadout, index) in logsLoadouts" :key="index" :value="String(index)">
+              {{ loadout.playerName || '未命名玩家' }}<template v-if="loadout.characterName"> / {{ loadout.characterName }}</template>（{{ loadout.entries.length }} 条）
+            </option>
+          </select>
+        </label>
       </div>
       <div class="export-fields">
         <label>
@@ -236,6 +303,12 @@ onBeforeUnmount(stop)
 
 <style scoped>
 .loadout { width:100%; display:flex; flex-direction:column; gap:14px; }
+.logs-dialog-mask { position:fixed; z-index:1000; inset:0; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,.62); }
+.logs-dialog { box-sizing:border-box; width:min(560px, 100%); max-height:min(680px, 100%); overflow:auto; padding:16px; border:1px solid rgba(255,255,255,.14); border-radius:9px; background:#252525; box-shadow:0 18px 60px rgba(0,0,0,.55); }
+.logs-records { display:flex; flex-direction:column; gap:6px; margin-top:12px; }
+.logs-record { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:9px; padding:10px; border:1px solid rgba(255,255,255,.1); border-radius:6px; color:rgba(255,255,255,.76); cursor:pointer; font-size:.78rem; }
+.logs-record.selected { border-color:rgba(251,191,36,.55); background:rgba(251,191,36,.08); }
+.logs-record small { color:rgba(255,255,255,.42); }
 .section { padding:14px 16px; border:1px solid rgba(255,255,255,.08); border-radius:8px; background:rgba(255,255,255,.04); }
 .section-title { display:flex; justify-content:space-between; gap:12px; color:rgba(255,255,255,.7); font-size:.78rem; font-weight:600; }
 .section-title span { color:rgba(255,255,255,.35); font-weight:400; }
@@ -244,8 +317,13 @@ onBeforeUnmount(stop)
 .btn:disabled { opacity:.35; cursor:not-allowed; }
 .btn-record { border-color:rgba(103,232,249,.35); color:#67e8f9; background:rgba(103,232,249,.1); }
 .btn-write { border-color:rgba(74,222,128,.35); color:#4ade80; background:rgba(74,222,128,.1); }
+.btn-logs { border-color:rgba(251,191,36,.35); color:#fbbf24; background:rgba(251,191,36,.08); }
 .btn-danger { border-color:rgba(248,113,113,.35); color:#f87171; background:rgba(248,113,113,.08); }
 .file-input { display:none; }
+.logs-picker { margin-top:12px; }
+.logs-picker label { display:flex; flex-direction:column; gap:5px; color:rgba(255,255,255,.48); font-size:.7rem; }
+.logs-picker select { box-sizing:border-box; width:100%; padding:7px 9px; border:1px solid rgba(255,255,255,.13); border-radius:6px; background:#2a2a2a; color:rgba(255,255,255,.85); font:inherit; font-size:.75rem; outline:none; }
+.logs-picker select:disabled { opacity:.45; }
 .export-fields { display:grid; grid-template-columns:minmax(140px, .45fr) 1fr; gap:10px; margin-top:12px; }
 .export-fields label { display:flex; flex-direction:column; gap:5px; color:rgba(255,255,255,.48); font-size:.7rem; }
 .export-fields input, .export-fields textarea { box-sizing:border-box; width:100%; padding:7px 9px; border:1px solid rgba(255,255,255,.13); border-radius:6px; background:rgba(255,255,255,.05); color:rgba(255,255,255,.85); font:inherit; font-size:.75rem; outline:none; resize:vertical; }
