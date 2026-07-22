@@ -106,34 +106,38 @@ type AppConfig struct {
 // ── App ──
 
 type App struct {
-	ctx                       context.Context
-	exePath                   string
-	hProcess                  windows.Handle
-	moduleBase                uintptr
-	managerPtr                uintptr
-	charaListBase             uintptr
-	charaPID                  uint32
-	countdownAddr             uintptr
-	faceAccessoryAddr         uintptr
-	infiniteChallengeAddr     uintptr
-	overLimitHookAddr         uintptr
-	overLimitCaveAddr         uintptr
-	overLimitCommitAddr       uintptr
-	unlockAllTrophyAddr       uintptr
-	terminusDropAddr          uintptr
-	terminusDropOrig          []byte
-	collectibleTaskBase       uintptr
-	sigilMemoryHookAddr       uintptr
-	sigilMemoryCaveAddr       uintptr
-	sigilMemoryOriginal       []byte
-	wrightstoneMemoryHookAddr uintptr
-	wrightstoneMemoryCaveAddr uintptr
-	wrightstoneMemoryOriginal []byte
-	damageMeterMapping        windows.Handle
-	damageMeterView           uintptr
-	damageOverlay             *damageOverlayWindow
-	config                    AppConfig
-	configLoaded              bool
+	ctx                        context.Context
+	exePath                    string
+	hProcess                   windows.Handle
+	moduleBase                 uintptr
+	managerPtr                 uintptr
+	charaListBase              uintptr
+	charaPID                   uint32
+	countdownAddr              uintptr
+	faceAccessoryAddr          uintptr
+	infiniteChallengeAddr      uintptr
+	overLimitHookAddr          uintptr
+	overLimitCaveAddr          uintptr
+	overLimitCommitAddr        uintptr
+	unlockAllTrophyAddr        uintptr
+	terminusDropAddr           uintptr
+	terminusDropOrig           []byte
+	collectibleTaskBase        uintptr
+	sigilMemoryHookAddr        uintptr
+	sigilMemoryCaveAddr        uintptr
+	sigilMemoryOriginal        []byte
+	wrightstoneMemoryHookAddr  uintptr
+	wrightstoneMemoryCaveAddr  uintptr
+	wrightstoneMemoryOriginal  []byte
+	damageMeterMapping         windows.Handle
+	damageMeterView            uintptr
+	damageOverlay              *damageOverlayWindow
+	playerDamageMapping        windows.Handle
+	playerDamageView           uintptr
+	monsterDamageHookInstalled bool
+	monsterDamageEnabled       bool
+	config                     AppConfig
+	configLoaded               bool
 }
 
 func NewApp() *App { return &App{} }
@@ -160,6 +164,7 @@ func (a *App) shutdown(ctx context.Context) {
 		a.damageOverlay.stop()
 	}
 	a.closeDamageMeter()
+	a.closePlayerDamageState()
 	a.CharaDetach()
 }
 
@@ -1217,6 +1222,8 @@ func (a *App) CharaDetach() {
 	a.terminusDropAddr = 0
 	a.terminusDropOrig = nil
 	a.collectibleTaskBase = 0
+	a.monsterDamageHookInstalled = false
+	a.monsterDamageEnabled = false
 	a.sigilMemoryHookAddr = 0
 	a.sigilMemoryCaveAddr = 0
 	a.sigilMemoryOriginal = nil
@@ -2220,6 +2227,10 @@ var monsterPatchPoints = []monsterPatchPoint{
 
 const damageMeterMappingName = "Local\\GBFRPlayerInfoEditDamageMeterV4"
 const damageMeterSize = 8
+const playerDamageMappingName = "Local\\GBFRPlayerInfoEditPlayerPointersV1"
+const playerDamageStateSize = 80
+const playerDamageEnabledOffset = 4
+const playerDamageScaleOffset = 8
 
 type DamageMeterStatus struct {
 	Connected     bool   `json:"connected"`
@@ -2278,6 +2289,54 @@ func (a *App) closeDamageMeter() {
 	}
 }
 
+func (a *App) ensurePlayerDamageState() error {
+	if a.playerDamageView != 0 {
+		return nil
+	}
+	name, err := windows.UTF16PtrFromString(playerDamageMappingName)
+	if err != nil {
+		return err
+	}
+	mapping, err := windows.CreateFileMapping(windows.InvalidHandle, nil, windows.PAGE_READWRITE, 0, playerDamageStateSize, name)
+	if err != nil && (mapping == 0 || err != windows.ERROR_ALREADY_EXISTS) {
+		return fmt.Errorf("创建玩家伤害共享内存失败: %w", err)
+	}
+	view, err := windows.MapViewOfFile(mapping, windows.FILE_MAP_READ|windows.FILE_MAP_WRITE, 0, 0, playerDamageStateSize)
+	if err != nil {
+		windows.CloseHandle(mapping)
+		return fmt.Errorf("映射玩家伤害共享内存失败: %w", err)
+	}
+	a.playerDamageMapping = mapping
+	a.playerDamageView = view
+	return nil
+}
+
+func (a *App) setPlayerDamageEnabled(enabled bool, scale float64) error {
+	if err := a.ensurePlayerDamageState(); err != nil {
+		return err
+	}
+	if enabled {
+		*(*uint32)(unsafe.Pointer(a.playerDamageView + playerDamageScaleOffset)) = math.Float32bits(float32(scale))
+	}
+	if enabled {
+		*(*int32)(unsafe.Pointer(a.playerDamageView + playerDamageEnabledOffset)) = 1
+	} else {
+		*(*int32)(unsafe.Pointer(a.playerDamageView + playerDamageEnabledOffset)) = 0
+	}
+	return nil
+}
+
+func (a *App) closePlayerDamageState() {
+	if a.playerDamageView != 0 {
+		_ = windows.UnmapViewOfFile(a.playerDamageView)
+		a.playerDamageView = 0
+	}
+	if a.playerDamageMapping != 0 {
+		_ = windows.CloseHandle(a.playerDamageMapping)
+		a.playerDamageMapping = 0
+	}
+}
+
 func (a *App) MonsterEnhanceGetStatus() (MonsterEnhanceResult, error) {
 	if err := a.ensureGameProcess(); err != nil {
 		return MonsterEnhanceResult{}, err
@@ -2319,6 +2378,14 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 	}
 	if enabled && point != nil && point.ID == "overdrive_state" && (math.IsNaN(hpMultiplier) || math.IsInf(hpMultiplier, 0) || (hpMultiplier != 0 && hpMultiplier != 3 && hpMultiplier != 9)) {
 		return MonsterEnhanceResult{}, fmt.Errorf("Overdrive 状态请选择 空条、满黄条或自动OD")
+	}
+
+	if pointID == "monster_damage" && a.monsterDamageHookInstalled {
+		if err := a.setPlayerDamageEnabled(enabled, hpMultiplier); err != nil {
+			return MonsterEnhanceResult{}, err
+		}
+		a.monsterDamageEnabled = enabled
+		return a.readMonsterEnhanceStatus("")
 	}
 
 	if enabled {
@@ -2367,8 +2434,23 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 		if err != nil {
 			return MonsterEnhanceResult{}, err
 		}
+		if pointID == "monster_damage" {
+			if err := a.setPlayerDamageEnabled(true, hpMultiplier); err != nil {
+				return MonsterEnhanceResult{}, err
+			}
+			a.monsterDamageHookInstalled = true
+			a.monsterDamageEnabled = true
+		}
 		status.Injected = true
 		return status, nil
+	}
+
+	if id == "monster_damage" && !enabled {
+		if err := a.setPlayerDamageEnabled(false, 0); err != nil {
+			return MonsterEnhanceResult{}, err
+		}
+		a.monsterDamageEnabled = false
+		return a.readMonsterEnhanceStatus("")
 	}
 
 	if err := a.restoreMonsterEnhance(id); err != nil {
@@ -2379,6 +2461,25 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 
 func (a *App) MonsterEnhanceInject() (MonsterEnhanceResult, error) {
 	return a.MonsterEnhanceSetEnabled(true)
+}
+
+func (a *App) captureMonsterHookInstall(id string) error {
+	if id == "all" {
+		return nil
+	}
+	point := findMonsterPatchPoint(id)
+	if point == nil || !point.Hook {
+		return nil
+	}
+	current := make([]byte, len(point.Original))
+	addr := a.moduleBase + point.RVA
+	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
+		return err
+	}
+	if current[0] != 0xE9 {
+		return fmt.Errorf("%s Hook 未写入目标地址", point.Name)
+	}
+	return nil
 }
 
 func (a *App) waitMonsterEnhanceApplied(id string, dllPath string) (MonsterEnhanceResult, error) {
@@ -2425,7 +2526,9 @@ func (a *App) readMonsterEnhanceStatus(dllPath string) (MonsterEnhanceResult, er
 		currentHex := bytesToHex(current)
 		parts = append(parts, fmt.Sprintf("%s:%s", point.Name, currentHex))
 		enabled := false
-		if point.ID == "sba_chain_timer" {
+		if point.ID == "monster_damage" && a.monsterDamageHookInstalled {
+			enabled = a.monsterDamageEnabled
+		} else if point.ID == "sba_chain_timer" {
 			enabled = !bytesEqual(current, point.Original)
 		} else if point.Hook {
 			enabled = len(current) > 0 && current[0] == 0xE9
@@ -2453,6 +2556,11 @@ func (a *App) readMonsterEnhanceStatus(dllPath string) (MonsterEnhanceResult, er
 }
 
 func (a *App) restoreMonsterEnhance(id string) error {
+	if err := suspendProcess(a.hProcess); err != nil {
+		return fmt.Errorf("暂停游戏进程失败: %w", err)
+	}
+	defer func() { _ = resumeProcess(a.hProcess) }()
+
 	for _, point := range monsterPatchPoints {
 		if id != "all" && point.ID != id {
 			continue
@@ -2658,6 +2766,8 @@ func findProcessByName(name string) (uint32, error) {
 var (
 	modNtdll                      = windows.NewLazySystemDLL("ntdll.dll")
 	procNtQueryInformationProcess = modNtdll.NewProc("NtQueryInformationProcess")
+	procNtSuspendProcess          = modNtdll.NewProc("NtSuspendProcess")
+	procNtResumeProcess           = modNtdll.NewProc("NtResumeProcess")
 )
 
 // getModuleBase reads the image base address from the remote process's PEB.
@@ -2715,6 +2825,22 @@ func readProcessMemory(h windows.Handle, addr uintptr, buf unsafe.Pointer, size 
 func writeProcessMemory(h windows.Handle, addr uintptr, buf unsafe.Pointer, size uintptr) error {
 	var written uintptr
 	return windows.WriteProcessMemory(h, addr, (*byte)(buf), size, &written)
+}
+
+func suspendProcess(h windows.Handle) error {
+	status, _, _ := procNtSuspendProcess.Call(uintptr(h))
+	if status != 0 {
+		return windows.Errno(status)
+	}
+	return nil
+}
+
+func resumeProcess(h windows.Handle) error {
+	status, _, _ := procNtResumeProcess.Call(uintptr(h))
+	if status != 0 {
+		return windows.Errno(status)
+	}
+	return nil
 }
 
 func writeCodeMemory(h windows.Handle, addr uintptr, data []byte) error {

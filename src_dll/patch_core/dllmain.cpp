@@ -19,6 +19,22 @@ static HANDLE g_damageMeterMapping = nullptr;
 static DamageMeterState* g_damageMeter = nullptr;
 static const wchar_t* kDamageMeterName = L"Local\\GBFRPlayerInfoEditDamageMeterV4";
 
+static constexpr size_t kPlayerPointerCount = 8;
+
+struct PlayerPointerState
+{
+    volatile LONG index;
+    volatile LONG damageEnabled;
+    float damageScale;
+    uint32_t padding;
+    uintptr_t pointers[kPlayerPointerCount];
+};
+
+static HANDLE g_playerPointerMapping = nullptr;
+static PlayerPointerState* g_playerPointerState = nullptr;
+static const wchar_t* kPlayerPointerName = L"Local\\GBFRPlayerInfoEditPlayerPointersV1";
+static bool g_playerPointerHookInstalled = false;
+
 static void InitDamageMeter()
 {
     if (g_damageMeter) return;
@@ -27,6 +43,30 @@ static void InitDamageMeter()
     if (!g_damageMeterMapping) return;
 
     g_damageMeter = reinterpret_cast<DamageMeterState*>(MapViewOfFile(g_damageMeterMapping, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(DamageMeterState)));
+}
+
+static void InitPlayerPointers()
+{
+    if (g_playerPointerState) return;
+
+    g_playerPointerMapping = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, sizeof(PlayerPointerState), kPlayerPointerName);
+    if (!g_playerPointerMapping) return;
+
+    g_playerPointerState = reinterpret_cast<PlayerPointerState*>(MapViewOfFile(g_playerPointerMapping, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(PlayerPointerState)));
+}
+
+static void ClosePlayerPointers()
+{
+    if (g_playerPointerState)
+    {
+        UnmapViewOfFile(g_playerPointerState);
+        g_playerPointerState = nullptr;
+    }
+    if (g_playerPointerMapping)
+    {
+        CloseHandle(g_playerPointerMapping);
+        g_playerPointerMapping = nullptr;
+    }
 }
 
 static void CloseDamageMeter()
@@ -172,6 +212,20 @@ static float ReadScale()
     float scale = static_cast<float>(atof(space + 1));
     if (scale <= 0.0f || scale > 1000.0f) return 1.0f;
     return scale;
+}
+
+static void ConfigurePlayerDamage()
+{
+    if (!g_playerPointerState) return;
+
+    char patchId[64]{};
+    if (!ReadPatchId(patchId, sizeof(patchId))) return;
+    if (!PatchIdEquals(patchId, "monster_damage")) return;
+
+    char* space = strchr(patchId, ' ');
+    float scale = space ? static_cast<float>(atof(space + 1)) : 0.0f;
+    g_playerPointerState->damageEnabled = scale > 0.0f && scale <= 1000.0f;
+    if (g_playerPointerState->damageEnabled) g_playerPointerState->damageScale = scale;
 }
 
 static lm_address_t AllocNear(lm_address_t target, size_t size)
@@ -334,25 +388,133 @@ static bool PatchDamageHook(lm_address_t target, wchar_t* message, size_t messag
     return true;
 }
 
-static bool PatchMonsterDamageHook(lm_address_t target, wchar_t* message, size_t messageSize)
+static bool InstallPlayerPointerHook(const lm_module_t& module, wchar_t* message, size_t messageSize)
 {
-    float scale = ReadScale();
-    lm_address_t cave = AllocNear(target, 128);
+    if (g_playerPointerHookInstalled) return true;
+
+    lm_address_t match = LM_SigScan("FF 90 ?? ?? 00 00 ?? ?? ?? ?? ?? ?? ?? ?? 8B ?? ?? ?? 00 00 48 81 C1 ?? ?? 00 00 FF ?? ?? ?? 00 00 ?? 39", module.base, module.size);
+    if (match == LM_ADDRESS_BAD)
+    {
+        swprintf_s(message, messageSize, L"player pointer signature not found");
+        return false;
+    }
+
+    lm_address_t target = match + 0x14;
+    lm_byte_t original[7]{};
+    if (LM_ReadMemory(target, original, sizeof(original)) != sizeof(original))
+    {
+        swprintf_s(message, messageSize, L"read failed: player pointer instruction");
+        return false;
+    }
+    if (original[0] == 0xE9)
+    {
+        // Earlier injected DLL owns this permanent pointer-capture hook.
+        g_playerPointerHookInstalled = true;
+        return true;
+    }
+    if (original[0] != 0x48 || original[1] != 0x81 || original[2] != 0xC1)
+    {
+        swprintf_s(message, messageSize, L"unexpected player pointer instruction");
+        return false;
+    }
+
+    lm_address_t cave = AllocNear(target, 96);
     if (cave == LM_ADDRESS_BAD)
     {
-        swprintf_s(message, messageSize, L"alloc near failed: monster damage");
+        swprintf_s(message, messageSize, L"alloc near failed: player pointers");
         return false;
     }
 
     lm_byte_t code[96]{};
     size_t i = 0;
     code[i++] = 0x50;                                                                               // push rax
+    code[i++] = 0x52;                                                                               // push rdx
+    code[i++] = 0x48; code[i++] = 0xBA; uintptr_t stateAddr = reinterpret_cast<uintptr_t>(g_playerPointerState); memcpy(code + i, &stateAddr, sizeof(stateAddr)); i += sizeof(stateAddr); // mov rdx,PlayerPointerState*
+    code[i++] = 0x48; code[i++] = 0x85; code[i++] = 0xD2;                                           // test rdx,rdx
+    code[i++] = 0x74; size_t jzSkipCapture = i++;                                                    // je skip capture
+    code[i++] = 0x8B; code[i++] = 0x02;                                                             // mov eax,[rdx]
+    code[i++] = 0xFF; code[i++] = 0x02;                                                             // inc dword ptr [rdx]
+    code[i++] = 0x83; code[i++] = 0xE0; code[i++] = 0x07;                                           // and eax,7
+    code[i++] = 0x48; code[i++] = 0x89; code[i++] = 0x4C; code[i++] = 0xC2; code[i++] = 0x10;       // mov [rdx+rax*8+10],rcx
+    size_t skipCaptureOffset = i;
+    code[jzSkipCapture] = static_cast<lm_byte_t>(skipCaptureOffset - (jzSkipCapture + 1));
+    code[i++] = 0x5A;                                                                               // pop rdx
+    code[i++] = 0x58;                                                                               // pop rax
+    memcpy(code + i, original, sizeof(original)); i += sizeof(original);
+    code[i++] = 0xE9;
+    size_t returnDisp = i; i += 4;
+
+    int64_t backDelta = static_cast<int64_t>(target + sizeof(original)) - static_cast<int64_t>(cave + returnDisp + 4);
+    if (backDelta < INT32_MIN || backDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"return jump out of range: player pointers");
+        return false;
+    }
+    int32_t relBack = static_cast<int32_t>(backDelta);
+    memcpy(code + returnDisp, &relBack, sizeof(relBack));
+
+    if (LM_WriteMemory(cave, code, i) != i)
+    {
+        swprintf_s(message, messageSize, L"cave write failed: player pointers");
+        return false;
+    }
+
+    lm_byte_t jump[7]{ 0xE9 };
+    memset(jump + 5, 0x90, sizeof(jump) - 5);
+    int64_t hookDelta = static_cast<int64_t>(cave) - static_cast<int64_t>(target + 5);
+    if (hookDelta < INT32_MIN || hookDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"hook jump out of range: player pointers");
+        return false;
+    }
+    int32_t rel = static_cast<int32_t>(hookDelta);
+    memcpy(jump + 1, &rel, sizeof(rel));
+    if (!PatchBytes(target, jump, sizeof(jump)))
+    {
+        swprintf_s(message, messageSize, L"hook write failed: player pointers");
+        return false;
+    }
+
+    g_playerPointerHookInstalled = true;
+    return true;
+}
+
+static bool PatchMonsterDamageHook(lm_address_t target, wchar_t* message, size_t messageSize)
+{
+    lm_address_t cave = AllocNear(target, 192);
+    if (cave == LM_ADDRESS_BAD)
+    {
+        swprintf_s(message, messageSize, L"alloc near failed: monster damage");
+        return false;
+    }
+
+    lm_byte_t code[256]{};
+    size_t i = 0;
+    size_t playerJumps[kPlayerPointerCount]{};
+    code[i++] = 0x50;                                                                               // push rax
+    code[i++] = 0x52;                                                                               // push rdx
+    code[i++] = 0x48; code[i++] = 0xBA; uintptr_t stateAddr = reinterpret_cast<uintptr_t>(g_playerPointerState); memcpy(code + i, &stateAddr, sizeof(stateAddr)); i += sizeof(stateAddr); // mov rdx,PlayerPointerState*
+    code[i++] = 0x48; code[i++] = 0x85; code[i++] = 0xD2;                                           // test rdx,rdx
+    code[i++] = 0x74; size_t jzSkipPlayerCheck = i++;                                                // je skip player check
+    code[i++] = 0x83; code[i++] = 0x7A; code[i++] = 0x04; code[i++] = 0x00;                         // cmp dword ptr [rdx+4],0
+    code[i++] = 0x74; size_t jzDisabled = i++;                                                       // je skip player check
+    for (size_t player = 0; player < kPlayerPointerCount; ++player)
+    {
+        code[i++] = 0x4C; code[i++] = 0x3B; code[i++] = 0x72; code[i++] = static_cast<lm_byte_t>(0x10 + player * 8); // cmp r14,[rdx+player]
+        code[i++] = 0x74; playerJumps[player] = i++;                                                // je scale player damage
+    }
+    size_t skipPlayerCheckOffset = i;
+    code[jzSkipPlayerCheck] = static_cast<lm_byte_t>(skipPlayerCheckOffset - (jzSkipPlayerCheck + 1));
+    code[jzDisabled] = static_cast<lm_byte_t>(skipPlayerCheckOffset - (jzDisabled + 1));
+    code[i++] = 0x5A;                                                                               // pop rdx
+    code[i++] = 0x58;                                                                               // pop rax
+    code[i++] = 0xEB; size_t jmpSkipScale = i++;                                                    // jmp compare
+    size_t scalePlayerDamageOffset = i;
     code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xEC; code[i++] = 0x10;                         // sub rsp,10
     code[i++] = 0x0F; code[i++] = 0x11; code[i++] = 0x04; code[i++] = 0x24;                         // movups [rsp],xmm0
     code[i++] = 0x8B; code[i++] = 0x86; code[i++] = 0xD4; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov eax,[rsi+D4]
     code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xC0;                         // cvtsi2ss xmm0,eax
-    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x05;                         // mulss xmm0,[rip+disp32]
-    size_t scaleDisp = i; i += 4;
+    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x42; code[i++] = 0x08;       // mulss xmm0,[rdx+8]
     code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xC0;                         // cvttss2si eax,xmm0
     code[i++] = 0x85; code[i++] = 0xC0;                                                             // test eax,eax
     code[i++] = 0x7F; size_t jgScaled = i++;                                                        // jg scaled
@@ -361,24 +523,21 @@ static bool PatchMonsterDamageHook(lm_address_t target, wchar_t* message, size_t
     code[i++] = 0x89; code[i++] = 0x86; code[i++] = 0xD4; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov [rsi+D4],eax
     code[i++] = 0x0F; code[i++] = 0x10; code[i++] = 0x04; code[i++] = 0x24;                         // movups xmm0,[rsp]
     code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xC4; code[i++] = 0x10;                         // add rsp,10
+    size_t restoreOffset = i;
+    code[i++] = 0x5A;                                                                               // pop rdx
     code[i++] = 0x58;                                                                               // pop rax
+    size_t compareOffset = i;
+    code[jmpSkipScale] = static_cast<lm_byte_t>(compareOffset - (jmpSkipScale + 1));
+    for (size_t player = 0; player < kPlayerPointerCount; ++player)
+    {
+        code[playerJumps[player]] = static_cast<lm_byte_t>(scalePlayerDamageOffset - (playerJumps[player] + 1));
+    }
     code[i++] = 0x81; code[i++] = 0xBE; code[i++] = 0xD4; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // cmp dword ptr [rsi+D4],05F5E100
     code[i++] = 0x00; code[i++] = 0xE1; code[i++] = 0xF5; code[i++] = 0x05;
     code[i++] = 0xE9;                                                                               // jmp return
     size_t jmpBackDisp = i; i += 4;
-    size_t scaleOffset = i;
-    memcpy(code + i, &scale, sizeof(scale)); i += sizeof(scale);
 
     code[jgScaled] = static_cast<lm_byte_t>(scaledOffset - (jgScaled + 1));
-
-    int64_t scaleDelta = static_cast<int64_t>(cave + scaleOffset) - static_cast<int64_t>(cave + scaleDisp + 4);
-    if (scaleDelta < INT32_MIN || scaleDelta > INT32_MAX)
-    {
-        swprintf_s(message, messageSize, L"scale jump out of range: monster damage");
-        return false;
-    }
-    int32_t relScale = static_cast<int32_t>(scaleDelta);
-    memcpy(code + scaleDisp, &relScale, sizeof(relScale));
 
     int64_t backDelta = static_cast<int64_t>(target + sizeof(kMonsterDamageExpected)) - static_cast<int64_t>(cave + jmpBackDisp + 4);
     if (backDelta < INT32_MIN || backDelta > INT32_MAX)
@@ -637,6 +796,11 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
         return false;
     }
 
+    if ((PatchIdEquals(patchId, "monster_damage") || strcmp(patchId, "all") == 0) && !InstallPlayerPointerHook(module, message, messageSize))
+    {
+        return false;
+    }
+
     int patched = 0;
     int already = 0;
     int selected = 0;
@@ -712,6 +876,8 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
 static DWORD WINAPI InitThread(LPVOID)
 {
     InitDamageMeter();
+    InitPlayerPointers();
+    ConfigurePlayerDamage();
 
     wchar_t message[256]{};
     ApplyMonsterPatches(message, _countof(message));
