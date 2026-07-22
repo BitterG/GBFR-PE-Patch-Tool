@@ -12,6 +12,19 @@ const result = reactive({ pid: 0, dllPath: '', injected: false, enabled: false, 
 const multipliers = reactive(sessionMultipliers)
 const overdriveState = ref('3')
 
+const hiddenUnfixedItems = new Set([
+  'link_time_no_drain',
+  'link_time_disable',
+  'sba_chain_timer',
+  'purple_drain',
+  'blue_grow',
+  'blue_drain',
+])
+
+function isVisibleItem(item) {
+  return item.id !== 'inventory_set_45' && !hiddenUnfixedItems.has(item.id)
+}
+
 function applyResult(res) {
   const previous = new Map((result.items || []).map(item => [item.id, item]))
   const incoming = (res && res.items) || []
@@ -20,7 +33,7 @@ function applyResult(res) {
   result.injected = !!(res && res.injected)
   result.enabled = !!(res && res.enabled)
   result.currentBytes = (res && res.currentBytes) || ''
-  result.items = incoming.filter(item => item.id !== 'inventory_set_45').map((item) => Object.assign(previous.get(item.id) || {}, item))
+  result.items = incoming.filter(isVisibleItem).map((item) => Object.assign(previous.get(item.id) || {}, item))
 }
 
 function refreshStatus() {

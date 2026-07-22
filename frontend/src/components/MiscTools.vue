@@ -559,7 +559,6 @@ function openReleasePage() {
 onBeforeUnmount(() => {
   stopDamageMeterTimer()
   stopInventorySet45Timer()
-  if (damageOverlayEnabled.value) disableDamageOverlay()
 })
 
 </script>

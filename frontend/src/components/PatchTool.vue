@@ -295,10 +295,6 @@ function showStatus(msg, type) {
       <BadgeUnlock @status="showStatus" />
     </main>
 
-    <main v-else-if="activeTab === 'misc'" class="container" style="--wails-draggable:no-drag">
-      <MiscTools @status="showStatus" />
-    </main>
-
     <main v-else-if="activeTab === 'summon'" class="container summon-container" style="--wails-draggable:no-drag">
       <SummonEditor @status="showStatus" />
     </main>
@@ -313,6 +309,10 @@ function showStatus(msg, type) {
 
     <main v-else-if="activeTab === 'language'" class="container" style="--wails-draggable:no-drag">
       <LanguageSettings />
+    </main>
+
+    <main v-show="activeTab === 'misc'" class="container" style="--wails-draggable:no-drag">
+      <MiscTools @status="showStatus" />
     </main>
   </div>
 </template>
