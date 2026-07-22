@@ -57,7 +57,7 @@ static const lm_byte_t kLinkTimeDisablePatch[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x84,
 static const lm_byte_t kNop10[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 
 static const lm_byte_t kMonsterHpExpected[] = { 0x48, 0x8B, 0x41, 0x10, 0x45, 0x31, 0xC9 };
-static const lm_byte_t kStunExpected[] = { 0xC4, 0xC1, 0x4A, 0x58, 0x85, 0x20, 0x07, 0x00, 0x00 };
+static const lm_byte_t kStunExpected[] = { 0xC5, 0xFA, 0x58, 0x86, 0x60, 0x08, 0x00, 0x00 };
 // v1.3.2+: damage value is finalized in [rsi+0xD4] before this cap check.
 static const lm_byte_t kMonsterDamageExpected[] = { 0x81, 0xBE, 0xD4, 0x00, 0x00, 0x00, 0x00, 0xE1, 0xF5, 0x05 };
 static const lm_byte_t kInventorySet45Expected[] = { 0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1 };
@@ -73,7 +73,7 @@ static const PatchPoint kMonsterPatches[] = {
     { "link_time_disable", L"disable link time", 0x187228, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
     { "monster_hp", L"monster hp", 0x1F7A820, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
     { "monster_damage", L"monster damage", 0x1FBDEB4, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
-    { "monster_stun", L"monster stun", 0xA09ADF, kStunExpected, sizeof(kStunExpected), nullptr, true },
+    { "monster_stun", L"monster stun", 0xB29128, kStunExpected, sizeof(kStunExpected), nullptr, true },
     { "overdrive_state", L"overdrive state", 0x1F7123F, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
     { "inventory_set_45", L"inventory set 45", 0x356621, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
     { "purple_drain", L"purple bar drain", 0xA0379A, kPurpleExpected, sizeof(kPurpleExpected), kNop9, false },
@@ -571,10 +571,10 @@ static bool PatchStunHook(lm_address_t target, wchar_t* message, size_t messageS
     lm_byte_t code[64]{};
     size_t i = 0;
     code[i++] = 0x50;                                                                               // push rax
-    code[i++] = 0x49; code[i++] = 0x8D; code[i++] = 0x85; code[i++] = 0x20; code[i++] = 0x07; code[i++] = 0x00; code[i++] = 0x00; // lea rax,[r13+720]
-    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x35;                         // mulss xmm6,[rip+disp32]
+    code[i++] = 0x48; code[i++] = 0x8D; code[i++] = 0x86; code[i++] = 0x60; code[i++] = 0x08; code[i++] = 0x00; code[i++] = 0x00; // lea rax,[rsi+860]
+    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x05;                         // mulss xmm0,[rip+disp32]
     size_t scaleDisp = i; i += 4;
-    code[i++] = 0xC5; code[i++] = 0xCA; code[i++] = 0x58; code[i++] = 0x00;                         // vaddss xmm0,xmm6,[rax]
+    code[i++] = 0xC5; code[i++] = 0xFA; code[i++] = 0x58; code[i++] = 0x00;                         // vaddss xmm0,xmm0,[rax]
     code[i++] = 0x58;                                                                               // pop rax
     code[i++] = 0xE9;                                                                               // jmp return
     size_t jmpBackDisp = i; i += 4;
@@ -590,7 +590,7 @@ static bool PatchStunHook(lm_address_t target, wchar_t* message, size_t messageS
     int32_t relScale = static_cast<int32_t>(scaleDelta);
     memcpy(code + scaleDisp, &relScale, sizeof(relScale));
 
-    int64_t backDelta = static_cast<int64_t>(target + 9) - static_cast<int64_t>(cave + jmpBackDisp + 4);
+    int64_t backDelta = static_cast<int64_t>(target + sizeof(kStunExpected)) - static_cast<int64_t>(cave + jmpBackDisp + 4);
     if (backDelta < INT32_MIN || backDelta > INT32_MAX)
     {
         swprintf_s(message, messageSize, L"return jump out of range: monster stun");
@@ -605,7 +605,8 @@ static bool PatchStunHook(lm_address_t target, wchar_t* message, size_t messageS
         return false;
     }
 
-    lm_byte_t jmp[9]{ 0xE9, 0, 0, 0, 0, 0x90, 0x90, 0x90, 0x90 };
+    lm_byte_t jmp[sizeof(kStunExpected)]{ 0xE9 };
+    memset(jmp + 5, 0x90, sizeof(jmp) - 5);
     int64_t hookDelta = static_cast<int64_t>(cave) - static_cast<int64_t>(target + 5);
     if (hookDelta < INT32_MIN || hookDelta > INT32_MAX)
     {
