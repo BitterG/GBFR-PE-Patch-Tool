@@ -188,23 +188,23 @@ static lm_address_t AllocNear(lm_address_t target, size_t size)
 
 static void AppendTeamDamageFromRcXEdxR8(lm_byte_t* code, size_t& i, uint8_t damageOffset)
 {
-    code[i++] = 0x44; code[i++] = 0x8B; code[i++] = 0x49; code[i++] = 0x10;                         // mov r9d,[rcx+10]
-    code[i++] = 0x45; code[i++] = 0x85; code[i++] = 0xC9;                                           // test r9d,r9d
+    code[i++] = 0x4C; code[i++] = 0x8B; code[i++] = 0x49; code[i++] = 0x10;                         // mov r9,[rcx+10]
+    code[i++] = 0x4D; code[i++] = 0x85; code[i++] = 0xC9;                                           // test r9,r9
     code[i++] = 0x7E; size_t jleSkipOldHp = i++;                                                     // jle skip
-    code[i++] = 0x45; code[i++] = 0x89; code[i++] = 0xCA;                                           // mov r10d,r9d
-    code[i++] = 0x41; code[i++] = 0x29; code[i++] = 0xD2;                                           // sub r10d,edx
+    code[i++] = 0x4D; code[i++] = 0x89; code[i++] = 0xCA;                                           // mov r10,r9
+    code[i++] = 0x49; code[i++] = 0x29; code[i++] = 0xD2;                                           // sub r10,rdx
     code[i++] = 0x45; code[i++] = 0x85; code[i++] = 0xC0;                                           // test r8d,r8d
     code[i++] = 0x74; size_t jzAllowZero = i++;                                                      // jz allow zero
-    code[i++] = 0x41; code[i++] = 0x83; code[i++] = 0xFA; code[i++] = 0x01;                         // cmp r10d,1
+    code[i++] = 0x49; code[i++] = 0x83; code[i++] = 0xFA; code[i++] = 0x01;                         // cmp r10,1
     code[i++] = 0x7D; size_t jgeHaveRemaining = i++;                                                 // jge have remaining
-    code[i++] = 0x41; code[i++] = 0xBA; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov r10d,1
+    code[i++] = 0x49; code[i++] = 0xBA; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov r10,1
     code[i++] = 0xEB; size_t jmpHaveRemaining = i++;                                                 // jmp have remaining
     size_t allowZeroOffset = i;
-    code[i++] = 0x45; code[i++] = 0x85; code[i++] = 0xD2;                                           // test r10d,r10d
+    code[i++] = 0x4D; code[i++] = 0x85; code[i++] = 0xD2;                                           // test r10,r10
     code[i++] = 0x7F; size_t jgHaveRemaining = i++;                                                  // jg have remaining
-    code[i++] = 0x45; code[i++] = 0x31; code[i++] = 0xD2;                                           // xor r10d,r10d
+    code[i++] = 0x4D; code[i++] = 0x31; code[i++] = 0xD2;                                           // xor r10,r10
     size_t haveRemainingOffset = i;
-    code[i++] = 0x45; code[i++] = 0x29; code[i++] = 0xD1;                                           // sub r9d,r10d
+    code[i++] = 0x4D; code[i++] = 0x29; code[i++] = 0xD1;                                           // sub r9,r10
     code[i++] = 0x7E; size_t jleSkipDelta = i++;                                                     // jle skip
     code[i++] = 0x49; code[i++] = 0xBB; uintptr_t meterAddr = reinterpret_cast<uintptr_t>(&g_damageMeter); memcpy(code + i, &meterAddr, sizeof(meterAddr)); i += sizeof(meterAddr); // mov r11,&g_damageMeter
     code[i++] = 0x4D; code[i++] = 0x8B; code[i++] = 0x1B;                                           // mov r11,[r11]
