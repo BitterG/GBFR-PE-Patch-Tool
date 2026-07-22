@@ -30,6 +30,7 @@
 /src_dll/.vs/
 /src_dll/x64/
 /src_dll/patch_core/x64/
+/src_dll/patch_core/obj/
 *.obj
 *.pdb
 *.ipdb

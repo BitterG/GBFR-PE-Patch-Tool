@@ -10,7 +10,7 @@ const sessionMultipliers = window.gbfrMonsterEnhanceMultipliers || (window.gbfrM
 const loading = ref(false)
 const result = reactive({ pid: 0, dllPath: '', injected: false, enabled: false, currentBytes: '', items: [] })
 const multipliers = reactive(sessionMultipliers)
-const overdriveState = ref('1')
+const overdriveState = ref('3')
 
 function applyResult(res) {
   const previous = new Map((result.items || []).map(item => [item.id, item]))
@@ -74,7 +74,7 @@ function setOne(item, enabled, id = item.id) {
   }
   if (enabled && needsOverdriveState(item)) {
     const v = patchValue(item)
-    if (![1, 4, 9].includes(v)) { emit('status', 'Overdrive 状态请选择 1、4 或自动OD', 'error'); return }
+    if (![0, 3, 9].includes(v)) { emit('status', 'Overdrive 状态请选择 空条、满黄条或自动OD', 'error'); return }
   }
   const previous = item.enabled
   item.enabled = enabled
@@ -126,15 +126,15 @@ refreshStatus()
         </div>
         <div v-if="needsOverdriveState(item)" class="memory-row">
           <select v-model="overdriveState" class="batch-input od-select">
-            <option value="1">1 满红条</option>
-            <option value="4">4 满黄条</option>
+            <option value="0">空条</option>
+            <option value="3">满黄条</option>
             <option value="9">自动OD</option>
           </select>
-          <span class="memory-hint">锁定=持续写入；自动OD=非红条时写一次满黄条</span>
+          <span class="memory-hint">空条/满黄条=立即写一次；自动OD=检测到退出OD后自动补满</span>
         </div>
         <div class="memory-row" v-if="needsOverdriveState(item)">
-          <button class="btn-batch" @click="setOne(item, true)" :disabled="loading || item.enabled">锁定</button>
-          <button class="btn-batch" @click="setOne(item, true, 'overdrive_state_apply')" :disabled="loading || overdriveState === '9'">应用</button>
+          <button class="btn-batch" @click="setOne(item, true, 'overdrive_state_apply')" :disabled="loading || overdriveState === '9'">应用一次</button>
+          <button class="btn-batch" @click="setOne(item, true)" :disabled="loading || item.enabled || overdriveState !== '9'">自动OD</button>
           <button class="btn-refresh" @click="setOne(item, false)" :disabled="loading || !item.enabled">关闭</button>
         </div>
         <div class="memory-row" v-else-if="needsSbaTimer(item)">

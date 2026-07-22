@@ -2178,8 +2178,8 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:       "overdrive_state",
 		Name:     "怪物 Overdrive 状态",
-		RVA:      0x1F7123F,
-		Original: []byte{0x49, 0x8B, 0x8C, 0x24, 0x38, 0x03, 0x00, 0x00, 0x48, 0x8B, 0x01},
+		RVA:      0x22CB316,
+		Original: []byte{0x8B, 0x46, 0x10, 0x83, 0xF8, 0x03, 0x0F, 0x84, 0xC7, 0x00, 0x00, 0x00},
 		Hook:     true,
 	},
 	{
@@ -2311,14 +2311,14 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 	if pointID != "all" && point == nil {
 		return MonsterEnhanceResult{}, fmt.Errorf("未知怪物增强项目: %s", id)
 	}
-	if enabled && point != nil && needsMonsterValue(point.ID) && (math.IsNaN(hpMultiplier) || math.IsInf(hpMultiplier, 0) || hpMultiplier <= 0 || hpMultiplier > 9999) {
+	if enabled && point != nil && point.ID != "overdrive_state" && needsMonsterValue(point.ID) && (math.IsNaN(hpMultiplier) || math.IsInf(hpMultiplier, 0) || hpMultiplier <= 0 || hpMultiplier > 9999) {
 		return MonsterEnhanceResult{}, fmt.Errorf("怪物倍率请输入 0 到 9999 之间的数值")
 	}
 	if enabled && point != nil && point.ID == "sba_chain_timer" && (math.IsNaN(hpMultiplier) || math.IsInf(hpMultiplier, 0) || hpMultiplier <= 0 || hpMultiplier > 9999) {
 		return MonsterEnhanceResult{}, fmt.Errorf("奥义接续计时请输入 0 到 9999 之间的数值")
 	}
-	if enabled && point != nil && point.ID == "overdrive_state" && (math.IsNaN(hpMultiplier) || math.IsInf(hpMultiplier, 0) || (hpMultiplier != 1 && hpMultiplier != 4 && hpMultiplier != 9)) {
-		return MonsterEnhanceResult{}, fmt.Errorf("Overdrive 状态请选择 1、4 或自动OD")
+	if enabled && point != nil && point.ID == "overdrive_state" && (math.IsNaN(hpMultiplier) || math.IsInf(hpMultiplier, 0) || (hpMultiplier != 0 && hpMultiplier != 3 && hpMultiplier != 9)) {
+		return MonsterEnhanceResult{}, fmt.Errorf("Overdrive 状态请选择 空条、满黄条或自动OD")
 	}
 
 	if enabled {

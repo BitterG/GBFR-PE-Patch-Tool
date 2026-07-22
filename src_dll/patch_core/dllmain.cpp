@@ -7,7 +7,9 @@
 #include <cstdio>
 #include <cstring>
 
-static LONG g_autoOverdriveApplied = 0;
+// 0 = refill needed, 1 = waiting for OD to begin, 2 = OD active.
+static LONG g_autoOverdrivePhase = 0;
+
 struct DamageMeterState
 {
     volatile LONG64 monsterDamage;
@@ -65,7 +67,7 @@ static const lm_byte_t kInventorySet45Expected[] = { 0x41, 0x01, 0x76, 0x04, 0x4
 static const lm_byte_t kPurpleExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x10, 0x0A, 0x00, 0x00 };
 static const lm_byte_t kBlueGrowExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x20, 0x07, 0x00, 0x00 };
 static const lm_byte_t kBlueDrainExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x70, 0x0A, 0x00, 0x00 };
-static const lm_byte_t kOverdriveExpected[] = { 0x49, 0x8B, 0x8C, 0x24, 0x38, 0x03, 0x00, 0x00, 0x48, 0x8B, 0x01 };
+static const lm_byte_t kOverdriveExpected[] = { 0x8B, 0x46, 0x10, 0x83, 0xF8, 0x03, 0x0F, 0x84, 0xC7, 0x00, 0x00, 0x00 };
 static const lm_byte_t kNop9[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 
 static const PatchPoint kMonsterPatches[] = {
@@ -74,7 +76,7 @@ static const PatchPoint kMonsterPatches[] = {
     { "monster_hp", L"monster hp", 0x1F7A820, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
     { "monster_damage", L"monster damage", 0x1FBDEB4, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
     { "monster_stun", L"monster stun", 0xB29128, kStunExpected, sizeof(kStunExpected), nullptr, true },
-    { "overdrive_state", L"overdrive state", 0x1F7123F, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
+    { "overdrive_state", L"overdrive state", 0x22CB316, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
     { "inventory_set_45", L"inventory set 45", 0x356621, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
     { "purple_drain", L"purple bar drain", 0xA0379A, kPurpleExpected, sizeof(kPurpleExpected), kNop9, false },
     { "blue_grow", L"blue bar grow", 0xA09AF1, kBlueGrowExpected, sizeof(kBlueGrowExpected), kNop9, false },
@@ -99,6 +101,21 @@ static bool PatchBytes(lm_address_t target, const lm_byte_t* patch, lm_size_t si
     LM_ProtMemory(target, size, oldProt, nullptr);
     FlushInstructionCache(GetCurrentProcess(), reinterpret_cast<void*>(target), size);
     return ok;
+}
+
+static void WritePatchDebugLog(const wchar_t* message)
+{
+    wchar_t tempPath[MAX_PATH]{};
+    if (!GetTempPathW(_countof(tempPath), tempPath)) return;
+
+    wchar_t path[MAX_PATH]{};
+    swprintf_s(path, L"%sgbfr-player-info-edit\\patch_core_debug.txt", tempPath);
+    HANDLE file = CreateFileW(path, GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (file == INVALID_HANDLE_VALUE) return;
+
+    DWORD written = 0;
+    WriteFile(file, message, static_cast<DWORD>(wcslen(message) * sizeof(wchar_t)), &written, nullptr);
+    CloseHandle(file);
 }
 
 static bool ReadPatchId(char* patchId, DWORD patchIdSize)
@@ -398,88 +415,65 @@ static bool PatchMonsterDamageHook(lm_address_t target, wchar_t* message, size_t
 
 static bool PatchOverdriveHook(lm_address_t target, wchar_t* message, size_t messageSize)
 {
-    int state = ReadIntValue(1);
-    bool autoMode = state == 9;
-    if (state != 1 && state != 4 && !autoMode) state = 1;
+    // sub_1422CB250 reads ModeState.state once per UI update. Overwrite it
+    // before that read so changing this option immediately updates the gauge.
+    int requested = ReadIntValue(3);
+    bool autoMode = requested == 9;
+    if (requested != 0 && requested != 3 && !autoMode) requested = 3;
 
-    lm_address_t cave = AllocNear(target, 256);
+    lm_address_t cave = AllocNear(target, 128);
     if (cave == LM_ADDRESS_BAD)
     {
         swprintf_s(message, messageSize, L"alloc near failed: overdrive state");
         return false;
     }
 
-    lm_byte_t code[192]{};
+    lm_byte_t code[96]{};
     size_t i = 0;
-    code[i++] = 0x49; code[i++] = 0x8B; code[i++] = 0x8C; code[i++] = 0x24; code[i++] = 0x38; code[i++] = 0x03; code[i++] = 0x00; code[i++] = 0x00; // mov rcx,[r12+338]
-    code[i++] = 0x48; code[i++] = 0x85; code[i++] = 0xC9;                                           // test rcx,rcx
-    code[i++] = 0x74; size_t jzNull = i++;                                                           // jz null
-    size_t autoRedPassDisp = 0;
-    size_t autoAppliedPassDisp = 0;
     if (autoMode)
     {
-        code[i++] = 0x83; code[i++] = 0xB9; code[i++] = 0xC8; code[i++] = 0x0D; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x01; // cmp dword ptr [rcx+DC8],1
-        code[i++] = 0x75; size_t jneAutoNotRed = i++;                                                  // jne auto not red
-        code[i++] = 0x48; code[i++] = 0xB8; uintptr_t appliedAddr = reinterpret_cast<uintptr_t>(&g_autoOverdriveApplied); memcpy(code + i, &appliedAddr, sizeof(appliedAddr)); i += sizeof(appliedAddr); // mov rax,&g_autoOverdriveApplied
-        code[i++] = 0xC7; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov dword ptr [rax],0
-        code[i++] = 0xE9; autoRedPassDisp = i; i += 4;                                                  // jmp pass
-        size_t autoNotRedOffset = i;
-        code[i++] = 0x48; code[i++] = 0xB8; memcpy(code + i, &appliedAddr, sizeof(appliedAddr)); i += sizeof(appliedAddr); // mov rax,&g_autoOverdriveApplied
-        code[i++] = 0x83; code[i++] = 0x38; code[i++] = 0x00;                                           // cmp dword ptr [rax],0
-        code[i++] = 0x0F; code[i++] = 0x85; autoAppliedPassDisp = i; i += 4;                            // jne pass
-        code[i++] = 0xC7; code[i++] = 0x00; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov dword ptr [rax],1
-        code[i++] = 0xB8; int32_t yellowState = 4; memcpy(code + i, &yellowState, sizeof(yellowState)); i += sizeof(yellowState); // mov eax,4
-        code[jneAutoNotRed] = static_cast<lm_byte_t>(autoNotRedOffset - (jneAutoNotRed + 1));
+        // Phase 1 blocks refills during OD startup. Only phase 2 (state 2 was
+        // observed) may refill again after state 2 ends.
+        code[i++] = 0x8B; code[i++] = 0x46; code[i++] = 0x10; // mov eax,[rsi+10]
+        code[i++] = 0x49; code[i++] = 0xBB; // mov r11,&g_autoOverdrivePhase
+        uintptr_t phaseAddr = reinterpret_cast<uintptr_t>(&g_autoOverdrivePhase);
+        memcpy(code + i, &phaseAddr, sizeof(phaseAddr)); i += sizeof(phaseAddr);
+        code[i++] = 0x83; code[i++] = 0xF8; code[i++] = 0x02; // cmp eax,2
+        code[i++] = 0x75; size_t jneNotActive = i++;          // jne not active
+        code[i++] = 0x41; code[i++] = 0xC7; code[i++] = 0x03; code[i++] = 0x02; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov dword [r11],2
+        code[i++] = 0xEB; size_t jmpReadActive = i++; // jmp read
+        size_t notActiveOffset = i;
+        code[i++] = 0x41; code[i++] = 0x83; code[i++] = 0x3B; code[i++] = 0x02; // cmp dword [r11],2
+        code[i++] = 0x74; size_t jeRefill = i++; // je refill
+        code[i++] = 0x41; code[i++] = 0x83; code[i++] = 0x3B; code[i++] = 0x00; // cmp dword [r11],0
+        code[i++] = 0x75; size_t jneReadWaiting = i++; // jne read
+        size_t refillOffset = i;
+        code[i++] = 0xC7; code[i++] = 0x46; code[i++] = 0x10; code[i++] = 0x03; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov [rsi+10],3
+        code[i++] = 0x41; code[i++] = 0xC7; code[i++] = 0x03; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov dword [r11],1
+        size_t readOffset = i;
+        code[jneNotActive] = static_cast<lm_byte_t>(notActiveOffset - (jneNotActive + 1));
+        code[jmpReadActive] = static_cast<lm_byte_t>(readOffset - (jmpReadActive + 1));
+        code[jeRefill] = static_cast<lm_byte_t>(refillOffset - (jeRefill + 1));
+        code[jneReadWaiting] = static_cast<lm_byte_t>(readOffset - (jneReadWaiting + 1));
     }
     else
     {
-        code[i++] = 0xB8; memcpy(code + i, &state, sizeof(state)); i += sizeof(state);                    // mov eax,state
+        code[i++] = 0xC7; code[i++] = 0x46; code[i++] = 0x10; // mov dword ptr [rsi+10],state
+        memcpy(code + i, &requested, sizeof(requested)); i += sizeof(requested);
     }
-    code[i++] = 0x83; code[i++] = 0xF8; code[i++] = 0x02;                                           // cmp eax,2
-    code[i++] = 0x75; size_t jneStore = i++;                                                         // jne store
-    code[i++] = 0x83; code[i++] = 0xB9; code[i++] = 0xC8; code[i++] = 0x0D; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x01; // cmp dword ptr [rcx+DC8],1
-    code[i++] = 0x75; size_t jnePass = i++;                                                          // jne pass
-    size_t storeOffset = i;
-    code[i++] = 0x83; code[i++] = 0xF8; code[i++] = 0x04;                                           // cmp eax,4
-    code[i++] = 0x75; size_t jneNotMode4 = i++;                                                      // jne not mode4
-    code[i++] = 0xC7; code[i++] = 0x81; code[i++] = 0xC8; code[i++] = 0x0D; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x03; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov [rcx+DC8],3
-    code[i++] = 0xC7; code[i++] = 0x81; code[i++] = 0xD0; code[i++] = 0x0D; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov [rcx+DD0],0
-    code[i++] = 0xEB; size_t jmpPass = i++;                                                          // jmp pass
-    size_t notMode4Offset = i;
-    code[i++] = 0x89; code[i++] = 0x81; code[i++] = 0xC8; code[i++] = 0x0D; code[i++] = 0x00; code[i++] = 0x00; // mov [rcx+DC8],eax
-    code[i++] = 0xB8; int32_t points = 0x493E0; memcpy(code + i, &points, sizeof(points)); i += sizeof(points); // mov eax,493E0
-    code[i++] = 0x89; code[i++] = 0x81; code[i++] = 0xD0; code[i++] = 0x0D; code[i++] = 0x00; code[i++] = 0x00; // mov [rcx+DD0],eax
-    size_t passOffset = i;
-    code[i++] = 0x48; code[i++] = 0x8B; code[i++] = 0x01;                                           // mov rax,[rcx]
-    code[i++] = 0xE9; size_t passBackDisp = i; i += 4;                                               // jmp return
-    size_t nullOffset = i;
-    code[i++] = 0x31; code[i++] = 0xC0;                                                             // xor eax,eax
-    code[i++] = 0xE9; size_t nullBackDisp = i; i += 4;                                               // jmp return
+    code[i++] = 0x8B; code[i++] = 0x46; code[i++] = 0x10; // mov eax,[rsi+10]
+    code[i++] = 0x83; code[i++] = 0xF8; code[i++] = 0x03; // cmp eax,3
+    code[i++] = 0xE9;
+    size_t backDisp = i; i += 4;
 
-    code[jzNull] = static_cast<lm_byte_t>(nullOffset - (jzNull + 1));
-    if (autoMode)
-    {
-        int32_t autoRedRel = static_cast<int32_t>((cave + passOffset) - (cave + autoRedPassDisp + 4));
-        int32_t autoAppliedRel = static_cast<int32_t>((cave + passOffset) - (cave + autoAppliedPassDisp + 4));
-        memcpy(code + autoRedPassDisp, &autoRedRel, sizeof(autoRedRel));
-        memcpy(code + autoAppliedPassDisp, &autoAppliedRel, sizeof(autoAppliedRel));
-    }
-    code[jneStore] = static_cast<lm_byte_t>(storeOffset - (jneStore + 1));
-    code[jnePass] = static_cast<lm_byte_t>(passOffset - (jnePass + 1));
-    code[jneNotMode4] = static_cast<lm_byte_t>(notMode4Offset - (jneNotMode4 + 1));
-    code[jmpPass] = static_cast<lm_byte_t>(passOffset - (jmpPass + 1));
-
-    int64_t passBackDelta = static_cast<int64_t>(target + 11) - static_cast<int64_t>(cave + passBackDisp + 4);
-    int64_t nullBackDelta = static_cast<int64_t>(target + 11) - static_cast<int64_t>(cave + nullBackDisp + 4);
-    if (passBackDelta < INT32_MIN || passBackDelta > INT32_MAX || nullBackDelta < INT32_MIN || nullBackDelta > INT32_MAX)
+    int64_t backDelta = static_cast<int64_t>(target + 6) - static_cast<int64_t>(cave + backDisp + 4);
+    if (backDelta < INT32_MIN || backDelta > INT32_MAX)
     {
         swprintf_s(message, messageSize, L"return jump out of range: overdrive state");
         return false;
     }
-    int32_t passRelBack = static_cast<int32_t>(passBackDelta);
-    int32_t nullRelBack = static_cast<int32_t>(nullBackDelta);
-    memcpy(code + passBackDisp, &passRelBack, sizeof(passRelBack));
-    memcpy(code + nullBackDisp, &nullRelBack, sizeof(nullRelBack));
+    int32_t backRel = static_cast<int32_t>(backDelta);
+    memcpy(code + backDisp, &backRel, sizeof(backRel));
 
     if (LM_WriteMemory(cave, code, i) != i)
     {
@@ -487,7 +481,7 @@ static bool PatchOverdriveHook(lm_address_t target, wchar_t* message, size_t mes
         return false;
     }
 
-    lm_byte_t jmp[11]{ 0xE9 };
+    lm_byte_t jmp[sizeof(kOverdriveExpected)]{ 0xE9 };
     memset(jmp + 5, 0x90, sizeof(jmp) - 5);
     int64_t hookDelta = static_cast<int64_t>(cave) - static_cast<int64_t>(target + 5);
     if (hookDelta < INT32_MIN || hookDelta > INT32_MAX)
@@ -495,8 +489,8 @@ static bool PatchOverdriveHook(lm_address_t target, wchar_t* message, size_t mes
         swprintf_s(message, messageSize, L"hook jump out of range: overdrive state");
         return false;
     }
-    int32_t rel = static_cast<int32_t>(hookDelta);
-    memcpy(jmp + 1, &rel, sizeof(rel));
+    int32_t hookRel = static_cast<int32_t>(hookDelta);
+    memcpy(jmp + 1, &hookRel, sizeof(hookRel));
     if (!PatchBytes(target, jmp, sizeof(jmp)))
     {
         swprintf_s(message, messageSize, L"hook write failed: overdrive state");
@@ -721,6 +715,7 @@ static DWORD WINAPI InitThread(LPVOID)
 
     wchar_t message[256]{};
     ApplyMonsterPatches(message, _countof(message));
+    WritePatchDebugLog(message);
 
     wchar_t debugMessage[320]{};
     swprintf_s(debugMessage, L"[patch_core] %s\n", message);
