@@ -1,0 +1,1 @@
+C:\Users\kugua\GolandProjects\gbfrPlayerInfoEdit\src_dll\patch_core\x64\Release\patch_core.dll

@@ -58,7 +58,8 @@ static const lm_byte_t kNop10[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x
 
 static const lm_byte_t kMonsterHpExpected[] = { 0x48, 0x8B, 0x41, 0x10, 0x45, 0x31, 0xC9 };
 static const lm_byte_t kStunExpected[] = { 0xC4, 0xC1, 0x4A, 0x58, 0x85, 0x20, 0x07, 0x00, 0x00 };
-static const lm_byte_t kMonsterDamageExpected[] = { 0x29, 0xF1, 0x31, 0xD2, 0x85, 0xC9 };
+// v1.3.2+: damage value is finalized in [rsi+0xD4] before this cap check.
+static const lm_byte_t kMonsterDamageExpected[] = { 0x81, 0xBE, 0xD4, 0x00, 0x00, 0x00, 0x00, 0xE1, 0xF5, 0x05 };
 static const lm_byte_t kInventorySet45Expected[] = { 0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1 };
 
 static const lm_byte_t kPurpleExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x10, 0x0A, 0x00, 0x00 };
@@ -71,7 +72,7 @@ static const PatchPoint kMonsterPatches[] = {
     { "link_time_no_drain", L"link time no drain", 0x187228, kLinkTimeExpected, sizeof(kLinkTimeExpected), kNop10, false },
     { "link_time_disable", L"disable link time", 0x187228, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
     { "monster_hp", L"monster hp", 0x1F7A820, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
-    { "monster_damage", L"monster damage", 0xAA1539, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
+    { "monster_damage", L"monster damage", 0x1FBDEB4, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
     { "monster_stun", L"monster stun", 0xA09ADF, kStunExpected, sizeof(kStunExpected), nullptr, true },
     { "overdrive_state", L"overdrive state", 0x1F7123F, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
     { "inventory_set_45", L"inventory set 45", 0x356621, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
@@ -326,23 +327,32 @@ static bool PatchMonsterDamageHook(lm_address_t target, wchar_t* message, size_t
         return false;
     }
 
-    lm_byte_t code[64]{};
+    lm_byte_t code[96]{};
     size_t i = 0;
-    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xEC; code[i++] = 0x28;                         // sub rsp,28
+    code[i++] = 0x50;                                                                               // push rax
+    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xEC; code[i++] = 0x10;                         // sub rsp,10
     code[i++] = 0x0F; code[i++] = 0x11; code[i++] = 0x04; code[i++] = 0x24;                         // movups [rsp],xmm0
-    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xC6;                         // cvtsi2ss xmm0,esi
+    code[i++] = 0x8B; code[i++] = 0x86; code[i++] = 0xD4; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov eax,[rsi+D4]
+    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xC0;                         // cvtsi2ss xmm0,eax
     code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x05;                         // mulss xmm0,[rip+disp32]
     size_t scaleDisp = i; i += 4;
-    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xF0;                         // cvttss2si esi,xmm0
+    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xC0;                         // cvttss2si eax,xmm0
+    code[i++] = 0x85; code[i++] = 0xC0;                                                             // test eax,eax
+    code[i++] = 0x7F; size_t jgScaled = i++;                                                        // jg scaled
+    code[i++] = 0xB8; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00;       // mov eax,1
+    size_t scaledOffset = i;
+    code[i++] = 0x89; code[i++] = 0x86; code[i++] = 0xD4; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov [rsi+D4],eax
     code[i++] = 0x0F; code[i++] = 0x10; code[i++] = 0x04; code[i++] = 0x24;                         // movups xmm0,[rsp]
-    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xC4; code[i++] = 0x28;                         // add rsp,28
-    code[i++] = 0x29; code[i++] = 0xF1;                                                             // sub ecx,esi
-    code[i++] = 0x31; code[i++] = 0xD2;                                                             // xor edx,edx
-    code[i++] = 0x85; code[i++] = 0xC9;                                                             // test ecx,ecx
+    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xC4; code[i++] = 0x10;                         // add rsp,10
+    code[i++] = 0x58;                                                                               // pop rax
+    code[i++] = 0x81; code[i++] = 0xBE; code[i++] = 0xD4; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // cmp dword ptr [rsi+D4],05F5E100
+    code[i++] = 0x00; code[i++] = 0xE1; code[i++] = 0xF5; code[i++] = 0x05;
     code[i++] = 0xE9;                                                                               // jmp return
     size_t jmpBackDisp = i; i += 4;
     size_t scaleOffset = i;
     memcpy(code + i, &scale, sizeof(scale)); i += sizeof(scale);
+
+    code[jgScaled] = static_cast<lm_byte_t>(scaledOffset - (jgScaled + 1));
 
     int64_t scaleDelta = static_cast<int64_t>(cave + scaleOffset) - static_cast<int64_t>(cave + scaleDisp + 4);
     if (scaleDelta < INT32_MIN || scaleDelta > INT32_MAX)
@@ -353,7 +363,7 @@ static bool PatchMonsterDamageHook(lm_address_t target, wchar_t* message, size_t
     int32_t relScale = static_cast<int32_t>(scaleDelta);
     memcpy(code + scaleDisp, &relScale, sizeof(relScale));
 
-    int64_t backDelta = static_cast<int64_t>(target + 6) - static_cast<int64_t>(cave + jmpBackDisp + 4);
+    int64_t backDelta = static_cast<int64_t>(target + sizeof(kMonsterDamageExpected)) - static_cast<int64_t>(cave + jmpBackDisp + 4);
     if (backDelta < INT32_MIN || backDelta > INT32_MAX)
     {
         swprintf_s(message, messageSize, L"return jump out of range: monster damage");
@@ -368,7 +378,8 @@ static bool PatchMonsterDamageHook(lm_address_t target, wchar_t* message, size_t
         return false;
     }
 
-    lm_byte_t jmp[6]{ 0xE9, 0, 0, 0, 0, 0x90 };
+    lm_byte_t jmp[sizeof(kMonsterDamageExpected)]{ 0xE9 };
+    memset(jmp + 5, 0x90, sizeof(jmp) - 5);
     int64_t hookDelta = static_cast<int64_t>(cave) - static_cast<int64_t>(target + 5);
     if (hookDelta < INT32_MIN || hookDelta > INT32_MAX)
     {
