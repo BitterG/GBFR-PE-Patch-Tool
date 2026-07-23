@@ -5,6 +5,7 @@ import (
 	"math"
 	"sync"
 	"time"
+	"unsafe"
 
 	"golang.org/x/sys/windows"
 )
@@ -12,6 +13,7 @@ import (
 const (
 	flightTick            = 16 * time.Millisecond
 	flightMinimumSpeed    = float32(0.1)
+	flightGravityRVA      = uintptr(0x39DD964)
 	flightMaximumSpeed    = float32(1000)
 	flightDefaultSpeed    = float32(8)
 	flightVirtualKeyW     = 0x57
@@ -42,6 +44,11 @@ func (a *App) FlightSetEnabled(enabled bool, speed float32) (FlightStatus, error
 	defer flightMu.Unlock()
 
 	if !enabled {
+		if a.flyingEnabled {
+			if err := a.setFlightGravityDisabled(false); err != nil {
+				return FlightStatus{Enabled: true, Speed: a.flightSpeed}, err
+			}
+		}
 		if a.flightStop != nil {
 			close(a.flightStop)
 			a.flightStop = nil
@@ -65,6 +72,9 @@ func (a *App) FlightSetEnabled(enabled bool, speed float32) (FlightStatus, error
 	if _, _, err := a.playerPositionAddresses(); err != nil {
 		return FlightStatus{}, err
 	}
+	if err := a.setFlightGravityDisabled(true); err != nil {
+		return FlightStatus{}, err
+	}
 
 	stop := make(chan struct{})
 	a.flightStop = stop
@@ -72,6 +82,39 @@ func (a *App) FlightSetEnabled(enabled bool, speed float32) (FlightStatus, error
 	a.flyingEnabled = true
 	go a.flightLoop(stop)
 	return FlightStatus{Enabled: true, Speed: speed}, nil
+}
+
+func (a *App) setFlightGravityDisabled(disabled bool) error {
+	addr := a.moduleBase + flightGravityRVA
+	current := make([]byte, 8)
+	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
+		return fmt.Errorf("读取飞行重力指令失败: %w", err)
+	}
+
+	original := []byte{0xC5, 0xF8, 0x29, 0x81, 0xD0, 0x00, 0x00, 0x00}
+	if disabled {
+		if allNop(current) {
+			return nil
+		}
+		if !bytesEqual(current, original) {
+			return fmt.Errorf("飞行重力指令字节未知: %s", bytesToHex(current))
+		}
+		if err := writeCodeMemory(a.hProcess, addr, []byte{0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90}); err != nil {
+			return fmt.Errorf("禁用飞行重力失败: %w", err)
+		}
+		return nil
+	}
+
+	if bytesEqual(current, original) {
+		return nil
+	}
+	if !allNop(current) {
+		return fmt.Errorf("飞行重力指令字节未知: %s", bytesToHex(current))
+	}
+	if err := writeCodeMemory(a.hProcess, addr, original); err != nil {
+		return fmt.Errorf("恢复飞行重力失败: %w", err)
+	}
+	return nil
 }
 
 func (a *App) FlightGetStatus() FlightStatus {
