@@ -136,6 +136,9 @@ type App struct {
 	playerDamageView           uintptr
 	monsterDamageHookInstalled bool
 	monsterDamageEnabled       bool
+	flyingEnabled              bool
+	flightSpeed                float32
+	flightStop                 chan struct{}
 	config                     AppConfig
 	configLoaded               bool
 }
@@ -1203,7 +1206,8 @@ func (a *App) CharaDetach() {
 	// jump installed makes a later tool instance mistake it for an unsupported
 	// game build and can also leave the game executing tool-owned code.
 	_ = a.releaseSigilMemoryHook()
-	_ = a.releaseWrightstoneMemoryHook()
+	// Stop the input loop before closing the target handle.
+	a.FlightSetEnabled(false, 0)
 	if a.hProcess != 0 {
 		windows.CloseHandle(a.hProcess)
 		a.hProcess = 0

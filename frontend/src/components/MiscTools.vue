@@ -15,6 +15,7 @@ import { CharaAttach, CharaDetach,
          DamageMeterGetStatus, DamageMeterReset,
          DamageOverlaySetEnabled, DamageOverlaySetValue, DamageOverlaySetFontSize,
          PlayerPositionGet, PlayerPositionSet,
+         FlightGetStatus, FlightSetEnabled,
          GetAppVersion, CheckUpdate, OpenReleasePage } from '../../wailsjs/go/main/App'
 
 const emit = defineEmits(['status'])
@@ -52,6 +53,8 @@ const playerPosition = reactive({ x: 0, y: 0, z: 0, address: 0 })
 const playerPositionInput = reactive({ x: '', y: '', z: '' })
 const playerPositionLoading = ref(false)
 const playerPositionLoaded = ref(false)
+const flightStatus = reactive({ enabled: false, speed: 8 })
+const flightLoading = ref(false)
 const currencies = ref([])
 const currencyInputs = reactive({})
 const currencyLoading = ref(false)
@@ -113,6 +116,7 @@ function disconnect() {
       Object.assign(damageMeterStatus, { connected: false, totalDamage: 0, monsterDamage: 0 })
       Object.assign(playerPosition, { x: 0, y: 0, z: 0, address: 0 })
       playerPositionLoaded.value = false
+      Object.assign(flightStatus, { enabled: false, speed: 8 })
       currencies.value = []
       Object.keys(currencyInputs).forEach((key) => delete currencyInputs[key])
       potions.value = []
@@ -494,6 +498,20 @@ function setPlayerPosition() {
     .finally(() => { playerPositionLoading.value = false })
 }
 
+function toggleFlight() {
+  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  flightLoading.value = true
+  const enabled = !flightStatus.enabled
+  const speed = Number(flightStatus.speed)
+  FlightSetEnabled(enabled, speed)
+    .then((status) => {
+      Object.assign(flightStatus, status)
+      emit('status', enabled ? '飞行模式已开启（仅游戏窗口在前台时响应按键）' : '飞行模式已关闭', 'success')
+    })
+    .catch((err) => emit('status', String(err), 'error'))
+    .finally(() => { flightLoading.value = false })
+}
+
 function applyDamageMeterStatus(status) {
   Object.assign(damageMeterStatus, {
     connected: !!(status && status.connected),
@@ -692,6 +710,21 @@ onBeforeUnmount(() => {
             <input v-model="playerPositionInput.z" type="number" step="any" class="batch-input coordinate-input" placeholder="Z" />
             <button class="btn-batch" @click="setPlayerPosition" :disabled="playerPositionLoading">设置坐标</button>
             <button class="btn-refresh" @click="loadPlayerPosition" :disabled="playerPositionLoading">{{ playerPositionLoading ? '读取中...' : '刷新坐标' }}</button>
+          </div>
+        </div>
+
+        <div class="memory-card" :class="{ active: flightStatus.enabled }">
+          <div class="memory-header">
+            <span class="memory-title">飞行模式</span>
+            <span class="memory-hint">W/A/S/D 世界轴移动 · Space 上升 · Ctrl 下降</span>
+          </div>
+          <div class="memory-info">
+            <span>状态: {{ flightStatus.enabled ? '开启' : '关闭' }}</span>
+            <span>速度: {{ formatFloat(flightStatus.speed) }}</span>
+          </div>
+          <div class="memory-row">
+            <input v-model.number="flightStatus.speed" type="number" min="0.1" max="1000" step="0.5" class="batch-input coordinate-input" :disabled="flightStatus.enabled" />
+            <button class="btn-batch" @click="toggleFlight" :disabled="flightLoading">{{ flightStatus.enabled ? '关闭飞行' : '开启飞行' }}</button>
           </div>
         </div>
 
