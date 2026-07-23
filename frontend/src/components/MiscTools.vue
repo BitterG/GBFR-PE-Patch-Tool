@@ -14,6 +14,7 @@ import { CharaAttach, CharaDetach,
          OtherSkinPurpleRuneGetStatus, OtherSkinPurpleRuneSetEnabled,
          DamageMeterGetStatus, DamageMeterReset,
          DamageOverlaySetEnabled, DamageOverlaySetValue, DamageOverlaySetFontSize,
+         PlayerPositionGet, PlayerPositionSet,
          GetAppVersion, CheckUpdate, OpenReleasePage } from '../../wailsjs/go/main/App'
 
 const emit = defineEmits(['status'])
@@ -47,6 +48,10 @@ const updateInfo = reactive({ currentVersion: 'v1.5.0', latestVersion: '', hasUp
 const updateLoading = ref(false)
 const damageMeterStatus = reactive({ connected: false, totalDamage: 0, monsterDamage: 0 })
 const damageMeterLoading = ref(false)
+const playerPosition = reactive({ x: 0, y: 0, z: 0, address: 0 })
+const playerPositionInput = reactive({ x: '', y: '', z: '' })
+const playerPositionLoading = ref(false)
+const playerPositionLoaded = ref(false)
 const currencies = ref([])
 const currencyInputs = reactive({})
 const currencyLoading = ref(false)
@@ -106,6 +111,8 @@ function disconnect() {
       Object.assign(unlockAllTrophyStatus, { found: false, address: 0, rva: 0, enabled: false, currentBytes: '' })
       Object.assign(otherSkinPurpleRuneStatus, { rva: 0, enabled: false, jumpOpcode: '', currentBytes: '' })
       Object.assign(damageMeterStatus, { connected: false, totalDamage: 0, monsterDamage: 0 })
+      Object.assign(playerPosition, { x: 0, y: 0, z: 0, address: 0 })
+      playerPositionLoaded.value = false
       currencies.value = []
       Object.keys(currencyInputs).forEach((key) => delete currencyInputs[key])
       potions.value = []
@@ -450,6 +457,43 @@ function setPotion(item) {
     .finally(() => { potionLoading.value = false })
 }
 
+function loadPlayerPosition() {
+  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  playerPositionLoading.value = true
+  PlayerPositionGet()
+    .then((position) => {
+      Object.assign(playerPosition, position)
+      Object.assign(playerPositionInput, { x: String(position.x), y: String(position.y), z: String(position.z) })
+      playerPositionLoaded.value = true
+    })
+    .catch((err) => {
+      playerPositionLoaded.value = false
+      emit('status', String(err), 'error')
+    })
+    .finally(() => { playerPositionLoading.value = false })
+}
+
+function setPlayerPosition() {
+  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  const x = Number(playerPositionInput.x)
+  const y = Number(playerPositionInput.y)
+  const z = Number(playerPositionInput.z)
+  if (![x, y, z].every(Number.isFinite) || [x, y, z].some((value) => Math.abs(value) > 10000000)) {
+    emit('status', '请输入有效的 X、Y、Z 坐标（绝对值不超过 10000000）', 'error')
+    return
+  }
+  playerPositionLoading.value = true
+  PlayerPositionSet(x, y, z)
+    .then((position) => {
+      Object.assign(playerPosition, position)
+      Object.assign(playerPositionInput, { x: String(position.x), y: String(position.y), z: String(position.z) })
+      playerPositionLoaded.value = true
+      emit('status', '玩家坐标已设置', 'success')
+    })
+    .catch((err) => emit('status', String(err), 'error'))
+    .finally(() => { playerPositionLoading.value = false })
+}
+
 function applyDamageMeterStatus(status) {
   Object.assign(damageMeterStatus, {
     connected: !!(status && status.connected),
@@ -630,6 +674,24 @@ onBeforeUnmount(() => {
           </div>
           <div class="memory-row">
             <button class="btn-refresh" @click="loadPotionValues" :disabled="potionLoading">刷新药水</button>
+          </div>
+        </div>
+
+        <div class="memory-card" :class="{ active: playerPositionLoaded }">
+          <div class="memory-header">
+            <span class="memory-title">玩家坐标</span>
+            <span class="memory-hint">仅支持游戏 2.0.2 · 只读</span>
+          </div>
+          <div class="memory-info">
+            <span>位置: X {{ formatFloat(playerPosition.x) }} · Y {{ formatFloat(playerPosition.y) }} · Z {{ formatFloat(playerPosition.z) }}</span>
+            <span>实体: {{ formatHex(playerPosition.address) }}</span>
+          </div>
+          <div class="memory-row">
+            <input v-model="playerPositionInput.x" type="number" step="any" class="batch-input coordinate-input" placeholder="X" />
+            <input v-model="playerPositionInput.y" type="number" step="any" class="batch-input coordinate-input" placeholder="Y" />
+            <input v-model="playerPositionInput.z" type="number" step="any" class="batch-input coordinate-input" placeholder="Z" />
+            <button class="btn-batch" @click="setPlayerPosition" :disabled="playerPositionLoading">设置坐标</button>
+            <button class="btn-refresh" @click="loadPlayerPosition" :disabled="playerPositionLoading">{{ playerPositionLoading ? '读取中...' : '刷新坐标' }}</button>
           </div>
         </div>
 
@@ -880,6 +942,7 @@ onBeforeUnmount(() => {
 .currency-name { font-size:0.78rem; font-weight:600; color:rgba(255,255,255,0.62); }
 .currency-meta { font-size:0.66rem; color:rgba(255,255,255,0.28); font-family:'Courier New',monospace; }
 .currency-input { width:120px; }
+.coordinate-input { width:100px; }
 .memory-card.active .currency-name { color:#1f2937; }
 .memory-card.active .currency-meta { color:rgba(31,41,55,0.56); }
 .update-new { color:#4ade80; }
