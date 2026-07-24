@@ -121,6 +121,7 @@ type LoadoutShareProgressionWeapon struct {
 type LoadoutShareWeaponState struct {
 	StoredHash           string                    `json:"storedHash"`
 	XP                   uint32                    `json:"xp"`
+	Level                int                       `json:"level,omitempty"`
 	Uncap                int                       `json:"uncap"`
 	Mirage               int                       `json:"mirage"`
 	Awakening            int                       `json:"awakening"`
@@ -130,6 +131,7 @@ type LoadoutShareWeaponState struct {
 	WrightstoneReference string                    `json:"wrightstoneReference,omitempty"`
 	State                int                       `json:"state,omitempty"`
 	SkillHashes          []string                  `json:"skillHashes"`
+	Skills               []LoadoutWeaponSkill      `json:"skills,omitempty"`
 	Wrightstone          *LoadoutWeaponWrightstone `json:"wrightstone,omitempty"`
 }
 
@@ -354,6 +356,11 @@ func buildLoadoutShare(path string, unitID uint32) (*LoadoutShare, error) {
 		Skills:            append([]LoadoutSkill(nil), source.Skills...),
 		WeaponSkillHashes: append([]string(nil), source.WeaponSkillHashes...),
 	}
+	if weaponHash, parseErr := ParseHashHex(source.WeaponHash); parseErr == nil {
+		if definition, known := progressionWeaponDefForHash(weaponHash); known {
+			share.WeaponName = progressionWeaponNameCN(definition)
+		}
+	}
 	for _, hash := range readFixedVec(save, loadoutMasteryIDType, source.UnitID, loadoutMaxMastery) {
 		share.MasteryHashes = append(share.MasteryHashes, hashText(hash))
 	}
@@ -480,10 +487,11 @@ func buildLoadoutShare(path string, unitID uint32) (*LoadoutShare, error) {
 		if weaponErr != nil {
 			return nil, fmt.Errorf("读取武器强化与祝福失败: %w", weaponErr)
 		}
+		applyMasterProgressWeaponSkillLevels(weapon.Skills, statContext.PermanentGrowth)
 		state := &LoadoutShareWeaponState{
-			StoredHash: weapon.StoredHash, XP: weapon.XP, Uncap: weapon.Uncap,
+			StoredHash: weapon.StoredHash, XP: weapon.XP, Level: weapon.Level, Uncap: weapon.Uncap,
 			Mirage: weapon.Mirage, Awakening: weapon.Awakening, Transcendence: weapon.Transcendence,
-			ExactState: true, Wrightstone: weapon.Wrightstone,
+			ExactState: true, Skills: weapon.Skills, Wrightstone: weapon.Wrightstone,
 		}
 		if entry, ok := save.findUnitExact(weaponFlagsIDType, weapon.UnitID); ok && entry.ValueCnt == 1 {
 			state.Flags = entry.Uint32()

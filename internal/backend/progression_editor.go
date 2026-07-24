@@ -280,6 +280,16 @@ func progressionItemName(def ProgressionItemDef) string {
 	return fmt.Sprintf("Uncatalogued Item %s", def.Hash)
 }
 
+func progressionWeaponNameCN(def ProgressionWeaponDef) string {
+	if name := strings.TrimSpace(def.NameCN); name != "" {
+		return name
+	}
+	if def.OwnerCode != "" {
+		return fmt.Sprintf("未收录角色武器 %s", def.InternalID)
+	}
+	return fmt.Sprintf("未收录武器 %s", def.Hash)
+}
+
 func progressionWeaponName(def ProgressionWeaponDef) string {
 	if useChinese() {
 		if strings.TrimSpace(def.NameCN) != "" {

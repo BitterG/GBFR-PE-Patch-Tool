@@ -179,7 +179,10 @@ async function apply(copy) {
       <div v-if="detail" class="summary">
         <div class="section-title">当前槽位配装摘要 <span>只读存档原始内容</span></div>
         <p><b>角色：</b>{{ text(detail.charaName || character?.charaName) }}（{{ text(detail.charaHash || selectedCharacter) }}）</p>
-        <p><b>武器：</b>{{ text(detail.weaponName) }}<template v-if="detail.weapon"> · Lv {{ detail.weapon.xp || 0 }} XP / 上限突破 {{ detail.weapon.uncap }} / 幻晶 {{ detail.weapon.mirage }} / 觉醒 {{ detail.weapon.awakening }}</template></p>
+        <div><b>武器：</b>{{ text(detail.weaponName) }}</div>
+        <div v-if="detail.weapon"><b>武器强化：</b>Lv {{ detail.weapon.level || '—' }} / 上限突破 {{ detail.weapon.uncap }} / 幻晶 {{ detail.weapon.mirage }} / 觉醒 {{ detail.weapon.awakening }} / 超凡 {{ detail.weapon.transcendence }}</div>
+        <div><b>武器技能：</b><ol v-if="detail.weapon?.skills?.length"><li v-for="item in detail.weapon.skills" :key="`${item.slot}-${item.traitHash}`">{{ item.slot + 1 }}. {{ text(item.name || item.traitHash) }} Lv {{ item.level }}</li></ol><span v-else>—</span></div>
+        <div><b>武器祝福：</b><template v-if="detail.weapon?.wrightstone">{{ text(detail.weapon.wrightstone.name) }}<ol v-if="detail.weapon.wrightstone.traits?.length"><li v-for="item in detail.weapon.wrightstone.traits" :key="`${item.index}-${item.hash}`">{{ item.index + 1 }}. {{ text(item.name || item.hash) }} Lv {{ item.level }}</li></ol></template><span v-else>—</span></div>
         <div><b>因子：</b><ol v-if="detailSigils.length"><li v-for="item in detailSigils" :key="`${item.index}-${item.slotId}`">{{ formatSigil(item) }}</li></ol><span v-else>—</span></div>
         <div><b>技能：</b><ul v-if="detailSkills.length"><li v-for="item in detailSkills" :key="item.hash">{{ text(item.name) }}（{{ item.hash }}）</li></ul><span v-else>—</span></div>
         <div><b>专精：</b><ul v-if="detailMastery.length"><li v-for="item in detailMastery" :key="item">{{ item }}</li></ul><span v-else>—</span></div>

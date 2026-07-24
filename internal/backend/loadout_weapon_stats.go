@@ -342,6 +342,15 @@ func readLoadoutWeaponContext(save *SaveData, slotID uint32) (*LoadoutWeaponCont
 	return context, nil
 }
 
+func wrightstoneNameCN(def *WrightstoneDef, hash uint32) string {
+	if def != nil {
+		if name, ok := wrightstoneCN[def.DisplayName]; ok {
+			return name
+		}
+	}
+	return fmt.Sprintf("未知武炼结晶 (%08X)", hash)
+}
+
 func readLoadoutWeaponWrightstone(save *SaveData, weaponUnitID uint32, warnings *[]string) *LoadoutWeaponWrightstone {
 	if save == nil || weaponUnitID < weaponSlotBase {
 		return nil
@@ -369,12 +378,14 @@ func readLoadoutWeaponWrightstone(save *SaveData, weaponUnitID uint32, warnings 
 		if warnings != nil {
 			*warnings = append(*warnings, fmt.Sprintf("武器实例 %d 的武炼结晶 %08X 未收录", weaponUnitID, stoneHash))
 		}
-		return nil
 	}
 	result := &LoadoutWeaponWrightstone{
-		Hash: hashText(stoneHash), InternalID: definition.InternalID,
-		Name: cnWrightstone(definition.DisplayName), Evidence: "save:2816+130000000-weapon-effective-traits",
+		Hash: hashText(stoneHash), Evidence: "save:2816+130000000-weapon-effective-traits",
 	}
+	if definition != nil {
+		result.InternalID = definition.InternalID
+	}
+	result.Name = wrightstoneNameCN(definition, stoneHash)
 	traitBase, traitBaseErr := weaponImbuedTraitUnitBase(weaponUnitID)
 	if traitBaseErr != nil {
 		if warnings != nil {
@@ -400,11 +411,15 @@ func readLoadoutWeaponWrightstone(save *SaveData, weaponUnitID uint32, warnings 
 			if warnings != nil {
 				*warnings = append(*warnings, fmt.Sprintf("武器实例 %d 的武炼结晶词条 %08X 未收录", weaponUnitID, traitHash))
 			}
-			continue
+		}
+		fallback := ""
+		traitID := ""
+		if trait != nil {
+			fallback, traitID = cnWrightstoneTrait(trait.DisplayName), trait.InternalID
 		}
 		result.Traits = append(result.Traits, LoadoutWeaponWrightstoneTrait{
-			Index: index, Hash: hashText(traitHash), TraitID: trait.InternalID,
-			Name: cnWrightstoneTrait(trait.DisplayName), Level: level,
+			Index: index, Hash: hashText(traitHash), TraitID: traitID,
+			Name: loadoutWeaponTraitNameFallback(traitHash, fallback), Level: level,
 		})
 	}
 	return result
@@ -725,6 +740,28 @@ func parseWeaponSkillHash(text string) (uint32, bool) {
 	return hash, err == nil
 }
 
+func loadoutWeaponTraitName(catalog *Catalog, hash uint32, fallback string) string {
+	if trait := catalog.LookupTraitByHash(hash); trait != nil {
+		if name, ok := traitCN[trait.DisplayName]; ok {
+			return name
+		}
+	}
+	return loadoutWeaponTraitNameFallback(hash, fallback)
+}
+
+func loadoutWeaponTraitNameFallback(hash uint32, fallback string) string {
+	if name, ok := runtimeNameCN[hash]; ok {
+		return name
+	}
+	if name, ok := traitCN[fallback]; ok {
+		return name
+	}
+	if fallback != "" && !strings.EqualFold(fallback, "unknown") {
+		return fallback
+	}
+	return fmt.Sprintf("未收录词条 %08X", hash)
+}
+
 func newLoadoutWeaponSkill(data *loadoutWeaponStatsFile, catalog *Catalog, weaponName string, slot int, hash uint32, level int, source, levelTableHash, unlockCondition string) LoadoutWeaponSkill {
 	hashString := hashText(hash)
 	traitID := data.TraitIDs[hashString]
@@ -756,5 +793,6 @@ func newLoadoutWeaponSkill(data *loadoutWeaponStatsFile, catalog *Catalog, weapo
 			name = verifiedName
 		}
 	}
+	name = loadoutWeaponTraitName(catalog, hash, name)
 	return LoadoutWeaponSkill{Slot: slot, TraitHash: hashString, TraitID: traitID, Name: name, Level: level, Effect: effect, Source: source, SourceWeapon: weaponName, LevelTableHash: levelTableHash, UnlockCondition: unlockCondition}
 }
