@@ -1,0 +1,1310 @@
+{
+  "version": "2.0.2",
+  "source": "GBFRDataTools 2.0.0 IDs + current Chinese names from GamerSky Relink Atlas (2026-07-15)",
+  "weapons": [
+    {
+      "hash": "AC65075C",
+      "internalId": "WEP_PL0000_01_01",
+      "name": "Traveller's Sword (Gran)",
+      "nameCn": "启程之剑",
+      "ownerCode": "PL0000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "11E6966A",
+      "internalId": "WEP_PL0000_02",
+      "name": "Durandal (Gran)",
+      "nameCn": "杜朗达尔",
+      "ownerCode": "PL0000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "D7CEE3B8",
+      "internalId": "WEP_PL0000_03",
+      "name": "Sword of Eos (Gran)",
+      "nameCn": "[枢星刃]曙光之剑",
+      "ownerCode": "PL0000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "57E95993",
+      "internalId": "WEP_PL0000_04",
+      "name": "Albacore Blade (Gran)",
+      "nameCn": "金枪鱼之刃",
+      "ownerCode": "PL0000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "CF9C4808",
+      "internalId": "WEP_PL0000_05",
+      "name": "Ultima Sword (Gran)",
+      "nameCn": "终极长剑",
+      "ownerCode": "PL0000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "E6518D5A",
+      "internalId": "WEP_PL0000_06",
+      "name": "Seven-Star Sword (Gran)",
+      "nameCn": "[圣刻]七星剑",
+      "ownerCode": "PL0000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "B9D3BDB9",
+      "internalId": "WEP_PL0000_10",
+      "name": "False Sword of the Apocalypse (Gran)",
+      "nameCn": "启示录伪剑",
+      "ownerCode": "PL0000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "D4CED80E",
+      "internalId": "WEP_PL0100_01",
+      "name": "Partenza (Djeeta)",
+      "nameCn": "启程",
+      "ownerCode": "PL0100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "5CECD788",
+      "internalId": "WEP_PL0100_02",
+      "name": "Durandal (Djeeta)",
+      "nameCn": "杜朗达尔",
+      "ownerCode": "PL0100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "0E0287DC",
+      "internalId": "WEP_PL0100_03",
+      "name": "Sword of Eos (Djeeta)",
+      "nameCn": "[枢星刃]曙光之剑",
+      "ownerCode": "PL0100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "4E2093BA",
+      "internalId": "WEP_PL0100_04",
+      "name": "Albacore Blade (Djeeta)",
+      "nameCn": "金枪鱼之刃",
+      "ownerCode": "PL0100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "32EE4D8A",
+      "internalId": "WEP_PL0100_05",
+      "name": "Ultima Sword (Djeeta)",
+      "nameCn": "终极长剑",
+      "ownerCode": "PL0100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "C9FCCCC6",
+      "internalId": "WEP_PL0100_06",
+      "name": "Seven-Star Sword (Djeeta)",
+      "nameCn": "[圣刻]七星剑",
+      "ownerCode": "PL0100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "C8263FE1",
+      "internalId": "WEP_PL0100_10",
+      "name": "False Sword of the Apocalypse (Djeeta)",
+      "nameCn": "启示录伪剑",
+      "ownerCode": "PL0100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "3B2082B6",
+      "internalId": "WEP_PL0200_01",
+      "name": "Rukalsa",
+      "nameCn": "蓝冰剑",
+      "ownerCode": "PL0200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "3D596697",
+      "internalId": "WEP_PL0200_02",
+      "name": "Flame Rapier",
+      "nameCn": "火焰细剑",
+      "ownerCode": "PL0200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "8B8FCB4E",
+      "internalId": "WEP_PL0200_03",
+      "name": "Murgleis",
+      "nameCn": "[苍誓剑]缪格雷斯",
+      "ownerCode": "PL0200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "2D9BE4CC",
+      "internalId": "WEP_PL0200_04",
+      "name": "Luminiera Sword Omega",
+      "nameCn": "光辉骑士之剑·玛格纳",
+      "ownerCode": "PL0200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "E1B27A1C",
+      "internalId": "WEP_PL0200_05",
+      "name": "Ephemeron",
+      "nameCn": "幻光",
+      "ownerCode": "PL0200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "E04031CF",
+      "internalId": "WEP_PL0200_06",
+      "name": "Blutgang",
+      "nameCn": "[守护剑]布尔特根",
+      "ownerCode": "PL0200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "BA30BD26",
+      "internalId": "WEP_PL0300_01",
+      "name": "Flintspike",
+      "nameCn": "刺刀长铳",
+      "ownerCode": "PL0300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "44B508FA",
+      "internalId": "WEP_PL0300_02",
+      "name": "Wheellock Axe",
+      "nameCn": "簧轮斧刃铳",
+      "ownerCode": "PL0300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "4E1AB7BB",
+      "internalId": "WEP_PL0300_03",
+      "name": "Benedia",
+      "nameCn": "[苍导铳]贝尼迪",
+      "ownerCode": "PL0300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "E7C972E6",
+      "internalId": "WEP_PL0300_04",
+      "name": "Tiamat Bolt Omega",
+      "nameCn": "提亚玛特之枪·玛格纳",
+      "ownerCode": "PL0300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "6DE3C01C",
+      "internalId": "WEP_PL0300_05",
+      "name": "Stormcloud",
+      "nameCn": "黑云",
+      "ownerCode": "PL0300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "F1845E70",
+      "internalId": "WEP_PL0300_06",
+      "name": "Freikugel",
+      "nameCn": "[魔葬弹]弗雷克格",
+      "ownerCode": "PL0300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "C54B8FE6",
+      "internalId": "WEP_PL0400_01",
+      "name": "Little Witch Scepter",
+      "nameCn": "小女巫权杖",
+      "ownerCode": "PL0400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "C88BE9EE",
+      "internalId": "WEP_PL0400_02",
+      "name": "Zhezl",
+      "nameCn": "双翼双蛇权杖",
+      "ownerCode": "PL0400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "22E79816",
+      "internalId": "WEP_PL0400_03",
+      "name": "Gambanteinn",
+      "nameCn": "[魔封杖]伽万泰因",
+      "ownerCode": "PL0400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "BE1BA9E3",
+      "internalId": "WEP_PL0400_04",
+      "name": "Colossus Cane Omega",
+      "nameCn": "克罗萨斯杖·玛格纳",
+      "ownerCode": "PL0400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "F0748132",
+      "internalId": "WEP_PL0400_05",
+      "name": "Tupsimati",
+      "nameCn": "天命杖",
+      "ownerCode": "PL0400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "FEBAC81A",
+      "internalId": "WEP_PL0400_06",
+      "name": "Caduceus",
+      "nameCn": "[蛇天导]双蛇十字权杖",
+      "ownerCode": "PL0400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "BFDD3AE2",
+      "internalId": "WEP_PL0500_01",
+      "name": "Dreyse",
+      "nameCn": "德莱赛步枪",
+      "ownerCode": "PL0500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "55A28F62",
+      "internalId": "WEP_PL0500_02",
+      "name": "Matchlock",
+      "nameCn": "火绳枪",
+      "ownerCode": "PL0500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "9249B9CA",
+      "internalId": "WEP_PL0500_03",
+      "name": "AK-4A",
+      "nameCn": "[联装弹]AK-4A",
+      "ownerCode": "PL0500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "EE6CD89E",
+      "internalId": "WEP_PL0500_04",
+      "name": "Leviathan Muzzle",
+      "nameCn": "利维坦之枪",
+      "ownerCode": "PL0500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "FD9E2000",
+      "internalId": "WEP_PL0500_05",
+      "name": "Clarion",
+      "nameCn": "战争号角",
+      "ownerCode": "PL0500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "3F39B5EB",
+      "internalId": "WEP_PL0500_06",
+      "name": "Draconic Fire",
+      "nameCn": "[黑灭击]龙焰铳",
+      "ownerCode": "PL0500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "071C082E",
+      "internalId": "WEP_PL0600_01",
+      "name": "Egoism",
+      "nameCn": "利己之刃",
+      "ownerCode": "PL0600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "1BCD26BC",
+      "internalId": "WEP_PL0600_02",
+      "name": "Sword Breaker",
+      "nameCn": "破刃剑",
+      "ownerCode": "PL0600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "E92002CA",
+      "internalId": "WEP_PL0600_03",
+      "name": "Love Eternal",
+      "nameCn": "[久远]永恒之爱",
+      "ownerCode": "PL0600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "6C382CFB",
+      "internalId": "WEP_PL0600_04",
+      "name": "Rose Crystal Knife",
+      "nameCn": "水晶玫瑰之刃",
+      "ownerCode": "PL0600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "F733DDD2",
+      "internalId": "WEP_PL0600_05",
+      "name": "Cortana",
+      "nameCn": "卡提纳",
+      "ownerCode": "PL0600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "07BB324C",
+      "internalId": "WEP_PL0600_06",
+      "name": "Dagger of Bahamut Coda",
+      "nameCn": "[祖龙刃]巴哈姆特之刃·终曲",
+      "ownerCode": "PL0600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "B29038DB",
+      "internalId": "WEP_PL0700_01",
+      "name": "Geisterpeitsche",
+      "nameCn": "幽幻噬魂鞭",
+      "ownerCode": "PL0700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "73263FE6",
+      "internalId": "WEP_PL0700_02",
+      "name": "Leather Belt",
+      "nameCn": "皮带",
+      "ownerCode": "PL0700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "0FAE326F",
+      "internalId": "WEP_PL0700_03",
+      "name": "Ethereal Lasher",
+      "nameCn": "灵驭",
+      "ownerCode": "PL0700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "6BB5E5FD",
+      "internalId": "WEP_PL0700_04",
+      "name": "Flame Lit Curl",
+      "nameCn": "火焰鞭",
+      "ownerCode": "PL0700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "3E331E1E",
+      "internalId": "WEP_PL0700_05",
+      "name": "Live Wire",
+      "nameCn": "电光导线",
+      "ownerCode": "PL0700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "2A924378",
+      "internalId": "WEP_PL0700_06",
+      "name": "Erinnerung",
+      "nameCn": "回忆",
+      "ownerCode": "PL0700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "3EC1D082",
+      "internalId": "WEP_PL0800_01",
+      "name": "Altachiara",
+      "nameCn": "阿尔塔其拉",
+      "ownerCode": "PL0800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "0EC52EA3",
+      "internalId": "WEP_PL0800_02",
+      "name": "Hoarfrost Blade Persius",
+      "nameCn": "冰雾剑佩尔索斯",
+      "ownerCode": "PL0800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "209AA176",
+      "internalId": "WEP_PL0800_03",
+      "name": "Blanc Comme Neige",
+      "nameCn": "如雪",
+      "ownerCode": "PL0800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "1B09A462",
+      "internalId": "WEP_PL0800_04",
+      "name": "Vegalta",
+      "nameCn": "不渝星刃",
+      "ownerCode": "PL0800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "72AAE787",
+      "internalId": "WEP_PL0800_05",
+      "name": "Knight of Ice",
+      "nameCn": "冰霜骑士",
+      "ownerCode": "PL0800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "7027741C",
+      "internalId": "WEP_PL0800_06",
+      "name": "Damascus Knife",
+      "nameCn": "[秘劫刃]大马士革匕首",
+      "ownerCode": "PL0800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "283CC36B",
+      "internalId": "WEP_PL0900_01",
+      "name": "Alabarda",
+      "nameCn": "斧枪",
+      "ownerCode": "PL0900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "68AAF1A0",
+      "internalId": "WEP_PL0900_02",
+      "name": "Swan",
+      "nameCn": "白鹄",
+      "ownerCode": "PL0900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "776CA5A8",
+      "internalId": "WEP_PL0900_03",
+      "name": "Treuer Krieger",
+      "nameCn": "[勇壮]斗士之戟",
+      "ownerCode": "PL0900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "3869E1C6",
+      "internalId": "WEP_PL0900_04",
+      "name": "Ukonvasara",
+      "nameCn": "乌贡瓦萨拉",
+      "ownerCode": "PL0900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "515B69C7",
+      "internalId": "WEP_PL0900_05",
+      "name": "Blossom Axe",
+      "nameCn": "绽花斧",
+      "ownerCode": "PL0900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "C84002E0",
+      "internalId": "WEP_PL0900_06",
+      "name": "Mjolnir",
+      "nameCn": "[碎神]姆乔尔尼尔",
+      "ownerCode": "PL0900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "159CA5B6",
+      "internalId": "WEP_PL1000_01",
+      "name": "Flamberge",
+      "nameCn": "火焰波浪剑",
+      "ownerCode": "PL1000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "3679A543",
+      "internalId": "WEP_PL1000_02",
+      "name": "Lohengrin",
+      "nameCn": "罗恩格林",
+      "ownerCode": "PL1000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "9712FDF2",
+      "internalId": "WEP_PL1000_03",
+      "name": "Antwerp",
+      "nameCn": "安特卫普",
+      "ownerCode": "PL1000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "980058ED",
+      "internalId": "WEP_PL1000_04",
+      "name": "Joyeuse",
+      "nameCn": "咎瓦尤斯",
+      "ownerCode": "PL1000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "98F8CA3E",
+      "internalId": "WEP_PL1000_05",
+      "name": "Lord of Flames",
+      "nameCn": "火焰领主",
+      "ownerCode": "PL1000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "84BF5DE8",
+      "internalId": "WEP_PL1000_06",
+      "name": "Gottfried",
+      "nameCn": "[白奏牙]戈特弗里德",
+      "ownerCode": "PL1000",
+      "maxLevel": 150
+    },
+    {
+      "hash": "BEFFB034",
+      "internalId": "WEP_PL1100_01",
+      "name": "Integrity",
+      "nameCn": "忠贞之刃",
+      "ownerCode": "PL1100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "5E36B1DD",
+      "internalId": "WEP_PL1100_02",
+      "name": "Broadsword of Earth",
+      "nameCn": "大地之剑",
+      "ownerCode": "PL1100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "4C3A7F95",
+      "internalId": "WEP_PL1100_03",
+      "name": "Ascalon",
+      "nameCn": "[戮龙]阿斯卡隆",
+      "ownerCode": "PL1100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "C1F29178",
+      "internalId": "WEP_PL1100_04",
+      "name": "Hrunting",
+      "nameCn": "赫伦汀",
+      "ownerCode": "PL1100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "49D10F32",
+      "internalId": "WEP_PL1100_05",
+      "name": "Windhose",
+      "nameCn": "龙卷",
+      "ownerCode": "PL1100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "E82DF9EC",
+      "internalId": "WEP_PL1100_06",
+      "name": "Balmung",
+      "nameCn": "[青焰]巴尔蒙克",
+      "ownerCode": "PL1100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "253333C3",
+      "internalId": "WEP_PL1200_01",
+      "name": "Claíomh Solais",
+      "nameCn": "光辉之剑",
+      "ownerCode": "PL1200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "DDC86786",
+      "internalId": "WEP_PL1200_02",
+      "name": "Arondight",
+      "nameCn": "阿隆戴特",
+      "ownerCode": "PL1200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "761A3597",
+      "internalId": "WEP_PL1200_03",
+      "name": "Claidheamh Soluis",
+      "nameCn": "[煌剑]光辉大剑",
+      "ownerCode": "PL1200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "33D3457F",
+      "internalId": "WEP_PL1200_04",
+      "name": "Ushumgal",
+      "nameCn": "乌修穆迦尔",
+      "ownerCode": "PL1200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "F71832EF",
+      "internalId": "WEP_PL1200_05",
+      "name": "Sahrivar",
+      "nameCn": "沙赫里瓦尔",
+      "ownerCode": "PL1200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "687ECE62",
+      "internalId": "WEP_PL1200_06",
+      "name": "Galatine",
+      "nameCn": "[三天击]嘉拉汀",
+      "ownerCode": "PL1200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "BC7F89FB",
+      "internalId": "WEP_PL1300_01",
+      "name": "Kiku-Ichimonji",
+      "nameCn": "菊一文字",
+      "ownerCode": "PL1300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "8BC0176A",
+      "internalId": "WEP_PL1300_02",
+      "name": "Asura",
+      "nameCn": "阿修罗",
+      "ownerCode": "PL1300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "B5C31AB2",
+      "internalId": "WEP_PL1300_03",
+      "name": "Fudo-Kuniyuki",
+      "nameCn": "[妖红刀]不动国行",
+      "ownerCode": "PL1300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "64368C4A",
+      "internalId": "WEP_PL1300_04",
+      "name": "Higurashi",
+      "nameCn": "晚蝉",
+      "ownerCode": "PL1300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "8B4A2615",
+      "internalId": "WEP_PL1300_05",
+      "name": "Xeno Phantom Demon Blade",
+      "nameCn": "六道·普天幻魔",
+      "ownerCode": "PL1300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "A1F477D6",
+      "internalId": "WEP_PL1300_06",
+      "name": "Swordfish",
+      "nameCn": "[直锐种]太刀鱼",
+      "ownerCode": "PL1300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "DB043DD7",
+      "internalId": "WEP_PL1400_01",
+      "name": "Nakamaki Nodachi",
+      "nameCn": "中卷野太刀",
+      "ownerCode": "PL1400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "DCC43052",
+      "internalId": "WEP_PL1400_02",
+      "name": "Kotetsu",
+      "nameCn": "虎彻",
+      "ownerCode": "PL1400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "099C8066",
+      "internalId": "WEP_PL1400_03",
+      "name": "Venustas",
+      "nameCn": "[神宝]丙子椒林剑",
+      "ownerCode": "PL1400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "11D39CE1",
+      "internalId": "WEP_PL1400_04",
+      "name": "Fluorithium Blade",
+      "nameCn": "萤丸",
+      "ownerCode": "PL1400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "4CE111FE",
+      "internalId": "WEP_PL1400_05",
+      "name": "Blade of Purification",
+      "nameCn": "净心除魔刀",
+      "ownerCode": "PL1400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "FFF2F00F",
+      "internalId": "WEP_PL1400_06",
+      "name": "Ameno Habakiri",
+      "nameCn": "[八颈斩]天羽羽斩",
+      "ownerCode": "PL1400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "18B2FC0E",
+      "internalId": "WEP_PL1500_01",
+      "name": "Brahma Gauntlet",
+      "nameCn": "梵天添甲",
+      "ownerCode": "PL1500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "630D33D5",
+      "internalId": "WEP_PL1500_02",
+      "name": "Rope Knuckles",
+      "nameCn": "绳索拳套",
+      "ownerCode": "PL1500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "B70179F1",
+      "internalId": "WEP_PL1500_03",
+      "name": "Crimson Finger",
+      "nameCn": "猩红之指",
+      "ownerCode": "PL1500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "F4C1DE98",
+      "internalId": "WEP_PL1500_04",
+      "name": "Golden Fists of Ura",
+      "nameCn": "温罗鬼面金甲",
+      "ownerCode": "PL1500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "AD5E2984",
+      "internalId": "WEP_PL1500_05",
+      "name": "Arkab",
+      "nameCn": "射手拳套",
+      "ownerCode": "PL1500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "AB6678D2",
+      "internalId": "WEP_PL1500_06",
+      "name": "Sky Piercer",
+      "nameCn": "[杰战甲]方天画戟",
+      "ownerCode": "PL1500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "CB5A08CD",
+      "internalId": "WEP_PL1600_01",
+      "name": "Spear of Arvess",
+      "nameCn": "阿尔贝斯之枪",
+      "ownerCode": "PL1600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "0A9B7790",
+      "internalId": "WEP_PL1600_02",
+      "name": "Sunspot Spear",
+      "nameCn": "素日暗斑枪",
+      "ownerCode": "PL1600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "02352554",
+      "internalId": "WEP_PL1600_03",
+      "name": "Brionac",
+      "nameCn": "[绝霸]布里欧纳克",
+      "ownerCode": "PL1600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "DA6EF17E",
+      "internalId": "WEP_PL1600_04",
+      "name": "Gisla",
+      "nameCn": "格劳西萨",
+      "ownerCode": "PL1600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "ABE40E34",
+      "internalId": "WEP_PL1600_05",
+      "name": "Huanglong Spear",
+      "nameCn": "黄龙枪",
+      "ownerCode": "PL1600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "304E4448",
+      "internalId": "WEP_PL1600_06",
+      "name": "Gae Bulg",
+      "nameCn": "[霸灭枪]迦耶伯格",
+      "ownerCode": "PL1600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "B03EA930",
+      "internalId": "WEP_PL1700_01",
+      "name": "Great Scythe Grynoth",
+      "nameCn": "巨镰古洛诺斯",
+      "ownerCode": "PL1700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "D055A41E",
+      "internalId": "WEP_PL1700_02",
+      "name": "Alsarav",
+      "nameCn": "阿尔萨之爱",
+      "ownerCode": "PL1700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "BDDCD5E3",
+      "internalId": "WEP_PL1700_03",
+      "name": "Wurtzite Scythe",
+      "nameCn": "[褐辉镰]锌晶之镰",
+      "ownerCode": "PL1700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "DFE5C297",
+      "internalId": "WEP_PL1700_04",
+      "name": "Soul Eater",
+      "nameCn": "噬魂者",
+      "ownerCode": "PL1700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "17DAC878",
+      "internalId": "WEP_PL1700_05",
+      "name": "Cosmic Scythe",
+      "nameCn": "宙域之镰",
+      "ownerCode": "PL1700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "411C89ED",
+      "internalId": "WEP_PL1700_06",
+      "name": "Ereshkigal",
+      "nameCn": "[厄魔刃]埃列什基伽勒",
+      "ownerCode": "PL1700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "56B2BA37",
+      "internalId": "WEP_PL1800_01",
+      "name": "Magnum Opus",
+      "nameCn": "秘术伟业",
+      "ownerCode": "PL1800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "F0951249",
+      "internalId": "WEP_PL1800_02",
+      "name": "Dream Atlas",
+      "nameCn": "观梦之书",
+      "ownerCode": "PL1800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "06F51A26",
+      "internalId": "WEP_PL1800_03",
+      "name": "Transmigration Tome",
+      "nameCn": "[无限论]圆环之书",
+      "ownerCode": "PL1800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "C4112EE6",
+      "internalId": "WEP_PL1800_04",
+      "name": "Sacred Codex",
+      "nameCn": "神圣法典",
+      "ownerCode": "PL1800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "480FA83F",
+      "internalId": "WEP_PL1800_05",
+      "name": "Arshivelle",
+      "nameCn": "亚西维尔",
+      "ownerCode": "PL1800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "7BFF8253",
+      "internalId": "WEP_PL1800_06",
+      "name": "Zosimos",
+      "nameCn": "[真典]佐西莫斯",
+      "ownerCode": "PL1800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "7463358A",
+      "internalId": "WEP_PL1900_01",
+      "name": "Ragnarok",
+      "nameCn": "诸神黄昏",
+      "ownerCode": "PL1900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "0940D965",
+      "internalId": "WEP_PL1900_02",
+      "name": "Aviaeth Faussart",
+      "nameCn": "阿维亚士兵剑",
+      "ownerCode": "PL1900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "95ACAD77",
+      "internalId": "WEP_PL1900_03",
+      "name": "Susanoo",
+      "nameCn": "[断罪]须佐",
+      "ownerCode": "PL1900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "495424B5",
+      "internalId": "WEP_PL1900_04",
+      "name": "Premium Sword",
+      "nameCn": "奢华炸虾剑",
+      "ownerCode": "PL1900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "82A244A3",
+      "internalId": "WEP_PL1900_05",
+      "name": "Ecke Sachs",
+      "nameCn": "埃克撒克逊",
+      "ownerCode": "PL1900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "1DE38944",
+      "internalId": "WEP_PL1900_06",
+      "name": "Sword of Bahamut",
+      "nameCn": "[祖龙剑]巴哈姆特之剑",
+      "ownerCode": "PL1900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "2C8681F8",
+      "internalId": "",
+      "name": "Karmic Sword of the Apocalypse",
+      "nameCn": "启示录业剑",
+      "ownerCode": "",
+      "maxLevel": 150
+    },
+    {
+      "hash": "F7D69475",
+      "internalId": "WEP_PL2100_01",
+      "name": "Apprentice",
+      "nameCn": "传承之剑",
+      "ownerCode": "PL2100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "2C4CAADD",
+      "internalId": "WEP_PL2100_03",
+      "name": "World Ender",
+      "nameCn": "[天纺刃]世界终焉",
+      "ownerCode": "PL2100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "A626F67E",
+      "internalId": "WEP_PL2100_04",
+      "name": "Sword of Michael",
+      "nameCn": "米迦勒之剑",
+      "ownerCode": "PL2100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "DFBB5727",
+      "internalId": "WEP_PL2100_06",
+      "name": "Efes",
+      "nameCn": "以弗所",
+      "ownerCode": "PL2100",
+      "maxLevel": 150
+    },
+    {
+      "hash": "DB8ED674",
+      "internalId": "WEP_PL2200_01",
+      "name": "Sette di Spade",
+      "nameCn": "七之宝剑",
+      "ownerCode": "PL2200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "73D34F1B",
+      "internalId": "WEP_PL2200_03",
+      "name": "Gateway-Star Sword",
+      "nameCn": "[七煌]天枢·极星剑",
+      "ownerCode": "PL2200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "70FD3C94",
+      "internalId": "WEP_PL2200_04",
+      "name": "Spada di Vento",
+      "nameCn": "风之宝剑",
+      "ownerCode": "PL2200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "74D764B7",
+      "internalId": "",
+      "name": "Sword of Eternal Splendor",
+      "nameCn": "十天光辉之佩剑",
+      "ownerCode": "PL2200",
+      "maxLevel": 150
+    },
+    {
+      "hash": "6C8F9232",
+      "internalId": "WEP_PL2300_01",
+      "name": "Bow of Dismissal",
+      "nameCn": "孤傲之弓",
+      "ownerCode": "PL2300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "DA807CA2",
+      "internalId": "WEP_PL2300_03",
+      "name": "Desolation-Crown Bow",
+      "nameCn": "[二诤]真灭·霸王弓",
+      "ownerCode": "PL2300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "91DDC1F1",
+      "internalId": "WEP_PL2300_04",
+      "name": "Hercules",
+      "nameCn": "赫拉克勒斯",
+      "ownerCode": "PL2300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "1064441E",
+      "internalId": "",
+      "name": "Bow of Eternal Splendor",
+      "nameCn": "十天光辉之弯弓",
+      "ownerCode": "PL2300",
+      "maxLevel": 150
+    },
+    {
+      "hash": "121CD3FD",
+      "internalId": "WEP_PL2400_01",
+      "name": "Contester",
+      "nameCn": "棍斗罗",
+      "ownerCode": "PL2400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "3C667A36",
+      "internalId": "WEP_PL2400_03",
+      "name": "Claw of the Dragonslayer",
+      "nameCn": "[界碎]伐龙爪戟",
+      "ownerCode": "PL2400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "60720167",
+      "internalId": "WEP_PL2400_04",
+      "name": "Two-by-Four",
+      "nameCn": "建筑木方",
+      "ownerCode": "PL2400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "10180036",
+      "internalId": "",
+      "name": "Invincible",
+      "nameCn": "[狼侠枪]无双矛铠",
+      "ownerCode": "PL2400",
+      "maxLevel": 150
+    },
+    {
+      "hash": "F76C20A2",
+      "internalId": "WEP_PL2500_01",
+      "name": "Al Fine",
+      "nameCn": "尽奏",
+      "ownerCode": "PL2500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "1CC90CAE",
+      "internalId": "",
+      "name": "Excalibur",
+      "nameCn": "[圣王剑]断钢剑",
+      "ownerCode": "PL2500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "EB3724B6",
+      "internalId": "WEP_PL2500_04",
+      "name": "Exo Maitrah Karuna",
+      "nameCn": "神尽异度·慈悲无量心",
+      "ownerCode": "PL2500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "90F5B18F",
+      "internalId": "",
+      "name": "Ricercar",
+      "nameCn": "[交响剑]寻梦",
+      "ownerCode": "PL2500",
+      "maxLevel": 150
+    },
+    {
+      "hash": "5F516E5F",
+      "internalId": "WEP_PL2600_01",
+      "name": "Embrasque Sword",
+      "nameCn": "恩布拉斯克之剑",
+      "ownerCode": "PL2600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "785A520A",
+      "internalId": "WEP_PL2600_02",
+      "name": "Colossus Buster Ira",
+      "nameCn": "克罗萨斯大剑·怒火",
+      "ownerCode": "PL2600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "969CF8C7",
+      "internalId": "",
+      "name": "Gram",
+      "nameCn": "[灭龙剑]格拉墨",
+      "ownerCode": "PL2600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "A1C42ADC",
+      "internalId": "WEP_PL2600_04",
+      "name": "Onikiri Yasutsuna",
+      "nameCn": "鬼切安纲",
+      "ownerCode": "PL2600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "78B64E9B",
+      "internalId": "",
+      "name": "Ridill",
+      "nameCn": "里德尔",
+      "ownerCode": "PL2600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "6CFF175C",
+      "internalId": "",
+      "name": "Schrödinger",
+      "nameCn": "[律崩]薛定谔",
+      "ownerCode": "PL2600",
+      "maxLevel": 150
+    },
+    {
+      "hash": "DAA4D559",
+      "internalId": "WEP_PL2700_01",
+      "name": "Flamek Thunder",
+      "nameCn": "弗拉梅克之雷",
+      "ownerCode": "PL2700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "09CC74CF",
+      "internalId": "WEP_PL2700_02",
+      "name": "Sephira Emerald Blaster",
+      "nameCn": "塞斐拉翠铳",
+      "ownerCode": "PL2700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "14B3AE92",
+      "internalId": "",
+      "name": "Stratomizer",
+      "nameCn": "[岩彗铳]斯特拉图姆火铳",
+      "ownerCode": "PL2700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "8F6FA5D0",
+      "internalId": "WEP_PL2700_04",
+      "name": "Nebuchad",
+      "nameCn": "尼布甲尼撒",
+      "ownerCode": "PL2700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "3897A020",
+      "internalId": "",
+      "name": "Ultima Gun",
+      "nameCn": "终极火铳",
+      "ownerCode": "PL2700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "6EEA0D21",
+      "internalId": "",
+      "name": "Hraesvelgr",
+      "nameCn": "[迅鹫]赫拉斯瓦尔格",
+      "ownerCode": "PL2700",
+      "maxLevel": 150
+    },
+    {
+      "hash": "75EC54D0",
+      "internalId": "WEP_PL2800_01",
+      "name": "Mephisto's Waltz",
+      "nameCn": "魔鬼圆舞曲",
+      "ownerCode": "PL2800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "6EC326D3",
+      "internalId": "",
+      "name": "Radiant Pointe",
+      "nameCn": "[白魔履]璀璨舞鞋",
+      "ownerCode": "PL2800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "B927FCA5",
+      "internalId": "WEP_PL2800_04",
+      "name": "Scheherazade",
+      "nameCn": "山鲁佐德",
+      "ownerCode": "PL2800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "D5EB1DEE",
+      "internalId": "",
+      "name": "Cross Road Shoes",
+      "nameCn": "[狱焰]交途鬼契",
+      "ownerCode": "PL2800",
+      "maxLevel": 150
+    },
+    {
+      "hash": "9240D597",
+      "internalId": "WEP_PL2900_01",
+      "name": "Hedera",
+      "nameCn": "春藤发饰",
+      "ownerCode": "PL2900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "1EB2B398",
+      "internalId": "",
+      "name": "Morbus Rose",
+      "nameCn": "[诀芳]青瘴花饰",
+      "ownerCode": "PL2900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "F7128B85",
+      "internalId": "WEP_PL2900_04",
+      "name": "Zagar",
+      "nameCn": "遮阳墨镜",
+      "ownerCode": "PL2900",
+      "maxLevel": 150
+    },
+    {
+      "hash": "CDB13688",
+      "internalId": "",
+      "name": "Stygian Ornament",
+      "nameCn": "[黑榫]幽冥华冠",
+      "ownerCode": "PL2900",
+      "maxLevel": 150
+    }
+  ]
+}

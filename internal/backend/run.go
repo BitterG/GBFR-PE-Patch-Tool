@@ -1,21 +1,25 @@
-package main
+package backend
 
 import (
 	"context"
 	"embed"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	wailswindows "github.com/wailsapp/wails/v2/pkg/options/windows"
+	"golang.org/x/sys/windows"
 )
 
-//go:embed all:frontend/dist
-var assets embed.FS
-
-func main() {
+// Run starts the command-line mode or the Wails desktop application.
+// The frontend filesystem is embedded by the root command package so the
+// backend can remain under internal/backend with its tests and data.
+func Run(assets embed.FS) {
 	if len(os.Args) > 1 {
 		if err := runWrightstoneCLI(os.Args[1:]); err != nil {
 			fmt.Fprintln(os.Stderr, err)
@@ -27,21 +31,27 @@ func main() {
 	app := NewApp()
 	sigilGen := NewSigilGen()
 	wrightstoneGen := NewWrightstoneGen()
-	offlineLoadout := NewOfflineLoadoutService()
+	summonSaveGen := NewSummonSaveGen()
 
 	err := wails.Run(&options.App{
 		Title:     "GBFR PE Patch Tool",
-		Width:     800,
-		Height:    600,
+		Width:     defaultAppWidth,
+		Height:    defaultAppHeight,
+		MinWidth:  minAppWidth,
+		MinHeight: minAppHeight,
 		Frameless: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
+		BackgroundColour: &options.RGBA{R: 243, G: 234, B: 211, A: 1},
+		Windows: &wailswindows.Options{
+			Theme: wailswindows.Light,
+		},
 		OnStartup: func(ctx context.Context) {
 			app.startup(ctx)
 			sigilGen.startup(ctx)
 			wrightstoneGen.startup(ctx)
+			summonSaveGen.startup(ctx)
 		},
 		OnBeforeClose: app.beforeClose,
 		OnShutdown:    app.shutdown,
@@ -49,13 +59,47 @@ func main() {
 			app,
 			sigilGen,
 			wrightstoneGen,
-			offlineLoadout,
+			summonSaveGen,
 		},
 	})
 
 	if err != nil {
-		println("Error:", err.Error())
+		reportStartupError(err)
 	}
+}
+
+// reportStartupError makes GUI-startup failures visible. Release builds do not
+// have a console window, so printing the error alone looked like a no-op to the
+// user (issue #19). Keep a small local log as well so WebView2/graphics/runtime
+// failures can be diagnosed without guessing.
+func reportStartupError(runErr error) {
+	logPath := appendDiagnosticError("startup", runErr)
+
+	text, _ := windows.UTF16PtrFromString(fmt.Sprintf(
+		"GBFR PE Patch Tool 启动失败：\n\n%v\n\n诊断日志：\n%s\n\n请检查 Microsoft Edge WebView2 Runtime 和安全软件拦截记录。",
+		runErr, logPath,
+	))
+	caption, _ := windows.UTF16PtrFromString("GBFR PE Patch Tool")
+	_, _ = windows.MessageBox(0, text, caption, 0x00000010) // MB_ICONERROR
+}
+
+func appendDiagnosticError(scope string, reportErr error) string {
+	logDir := filepath.Join(os.Getenv("LOCALAPPDATA"), "GBFR-PE-Patch-Tool")
+	if logDir == "GBFR-PE-Patch-Tool" {
+		logDir = filepath.Join(os.TempDir(), "GBFR-PE-Patch-Tool")
+	}
+	_ = os.MkdirAll(logDir, 0o755)
+	logPath := filepath.Join(logDir, "startup.log")
+	label := appVersion
+	if scope != "" {
+		label += " " + scope
+	}
+	message := fmt.Sprintf("[%s] %s: %v\n", time.Now().Format(time.RFC3339), label, reportErr)
+	if file, err := os.OpenFile(logPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644); err == nil {
+		_, _ = file.WriteString(message)
+		_ = file.Close()
+	}
+	return logPath
 }
 
 func runWrightstoneCLI(args []string) error {

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "description": "Max-quality Wrightstone item hashes. Trait max levels live in data/traits/traits.json. Save layout verified from observed SaveData1.dat ItemManager units 50000+; item hashes sourced from Nenkai public Item IDs.",
+  "wrightstones": [
+    {
+      "internalId": "ITEM_25_0131",
+      "hash": "0x09E6F629",
+      "displayName": "Dread Wrightstone",
+      "defaultTraitId": "SKILL_004_00",
+      "source": "Nenkai Item IDs; observed in SaveData1.dat",
+      "confidence": "high"
+    },
+    {
+      "internalId": "ITEM_26_0131",
+      "hash": "0x71173866",
+      "displayName": "Vitality Wrightstone",
+      "defaultTraitId": "SKILL_003_00",
+      "source": "Nenkai Item IDs; observed in SaveData1.dat",
+      "confidence": "high"
+    },
+    {
+      "internalId": "ITEM_27_0131",
+      "hash": "0x667EE1D3",
+      "displayName": "Fortification Wrightstone",
+      "defaultTraitId": "SKILL_001_00",
+      "source": "Nenkai Item IDs; lower Fortification Wrightstones observed in SaveData1.dat",
+      "confidence": "medium"
+    },
+    {
+      "internalId": "ITEM_28_0131",
+      "hash": "0x202A0DB9",
+      "displayName": "Sequestration Wrightstone",
+      "defaultTraitId": "SKILL_014_00",
+      "source": "Nenkai Item IDs; observed in SaveData1.dat",
+      "confidence": "high"
+    }
+  ]
+}

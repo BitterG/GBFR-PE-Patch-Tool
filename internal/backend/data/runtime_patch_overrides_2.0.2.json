@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "gameVersion": "2.0.2",
+  "gameExecutableSha256": "63340832BCF731FBC97796F686B05C988418E83D451D4A49B2244A85D00E297F",
+  "overrides": [
+    {
+      "featureId": "runtime-patch-040",
+      "evidenceLevel": "verified_field_repeat_game_2.0.2",
+      "evidenceNote": "2.0.2 现场验证通过：待机与连招受击流程均正常，连招中连续受击 3 次未再中断自动完美格挡。",
+      "appendSites": [
+        {
+          "symbol": "GBFR_PATCH_FIELD_01",
+          "module": "$process",
+          "aob": "8B 81 98 4F 01 00 83 C0 D0 83 F8 19 0F 82 ?? ?? ?? ?? 80 B9 40 8F 00 00 00 74 ??",
+          "offset": 12,
+          "patternValues": [
+            139,
+            129,
+            152,
+            79,
+            1,
+            0,
+            131,
+            192,
+            208,
+            131,
+            248,
+            25,
+            15,
+            130,
+            0,
+            0,
+            0,
+            0,
+            128,
+            185,
+            64,
+            143,
+            0,
+            0,
+            0,
+            116,
+            0
+          ],
+          "patternMasks": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            0,
+            0,
+            0,
+            0,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            0
+          ],
+          "enableBytes": [
+            144,
+            144,
+            144,
+            144,
+            144,
+            144
+          ],
+          "expectedOriginalBytes": [
+            15,
+            130,
+            143,
+            0,
+            0,
+            0
+          ],
+          "disableBytes": [],
+          "requiresRuntimeCapture": true
+        }
+      ]
+    }
+  ]
+}

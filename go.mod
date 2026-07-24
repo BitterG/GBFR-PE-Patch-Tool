@@ -3,9 +3,11 @@ module gbfrPlayerInfoEdit
 go 1.23.0
 
 require (
+	github.com/andybalholm/brotli v1.2.2
 	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/fxamacker/cbor/v2 v2.7.0
 	github.com/klauspost/compress v1.17.11
+	github.com/vmihailenco/msgpack/v5 v5.4.1
 	github.com/wailsapp/wails/v2 v2.12.0
 	golang.org/x/sys v0.30.0
 	modernc.org/sqlite v1.33.1
@@ -38,6 +40,7 @@ require (
 	github.com/tkrajina/go-reflector v0.5.8 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
+	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/wailsapp/go-webview2 v1.0.22 // indirect
 	github.com/wailsapp/mimetype v1.4.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect

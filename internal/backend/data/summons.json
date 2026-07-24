@@ -1,0 +1,1516 @@
+{
+  "summons": [
+    {
+      "hash": "0x3FD89C3A",
+      "displayName": "世须良加 · 史诗 · 伤害",
+      "baseName": "世须良加",
+      "code": "4600",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xBDD84E9A",
+      "displayName": "世须良加 · 史诗 · 伤害",
+      "baseName": "世须良加",
+      "code": "4600",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xA34BDECB",
+      "displayName": "世须良加 · 传说 · 伤害",
+      "baseName": "世须良加",
+      "code": "4600",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xE492E6BF",
+      "displayName": "世须良加 · 传说 · 伤害",
+      "baseName": "世须良加",
+      "code": "4600",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x0B366AD9",
+      "displayName": "巨爪焰鳄 · 史诗 · 伤害",
+      "baseName": "巨爪焰鳄",
+      "code": "1f00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xF98F8B97",
+      "displayName": "巨爪焰鳄 · 史诗 · 伤害",
+      "baseName": "巨爪焰鳄",
+      "code": "1f00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x1B6A4024",
+      "displayName": "巨爪焰鳄 · 传说 · 伤害",
+      "baseName": "巨爪焰鳄",
+      "code": "1f00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x6E5968FC",
+      "displayName": "路西法 · 传说 · 特殊",
+      "baseName": "路西法",
+      "code": "0000",
+      "cost": 5,
+      "typeName": "特殊"
+    },
+    {
+      "hash": "0x90BD4AC0",
+      "displayName": "路西法 · 传说 · 特殊",
+      "baseName": "路西法",
+      "code": "0000",
+      "cost": 5,
+      "typeName": "特殊"
+    },
+    {
+      "hash": "0x7996A856",
+      "displayName": "胡拉坎 · 稀有 · 伤害",
+      "baseName": "胡拉坎",
+      "code": "4900",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xCA95CD8C",
+      "displayName": "胡拉坎 · 稀有 · 伤害",
+      "baseName": "胡拉坎",
+      "code": "4900",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xE51CE5B0",
+      "displayName": "胡拉坎 · 史诗 · 伤害",
+      "baseName": "胡拉坎",
+      "code": "4900",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x52B14B66",
+      "displayName": "胡拉坎 · 传说 · 伤害",
+      "baseName": "胡拉坎",
+      "code": "4900",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x0BE2A43A",
+      "displayName": "巨爪岩鳄 · 史诗 · 伤害",
+      "baseName": "巨爪岩鳄",
+      "code": "1d00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x7A46E50E",
+      "displayName": "巨爪岩鳄 · 史诗 · 伤害",
+      "baseName": "巨爪岩鳄",
+      "code": "1d00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xA6BB6299",
+      "displayName": "巨爪岩鳄 · 传说 · 伤害",
+      "baseName": "巨爪岩鳄",
+      "code": "1d00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x855D018C",
+      "displayName": "莉莉丝 · 传说 · 特殊",
+      "baseName": "莉莉丝",
+      "code": "4500",
+      "cost": 5,
+      "typeName": "特殊"
+    },
+    {
+      "hash": "0xDFAB70B7",
+      "displayName": "莉莉丝 · 传说 · 特殊",
+      "baseName": "莉莉丝",
+      "code": "4500",
+      "cost": 5,
+      "typeName": "特殊"
+    },
+    {
+      "hash": "0x0F986ED9",
+      "displayName": "罗兰 · 传说 · 特殊",
+      "baseName": "罗兰",
+      "code": "0200",
+      "cost": 5,
+      "typeName": "特殊"
+    },
+    {
+      "hash": "0x81ECEC7F",
+      "displayName": "罗兰 · 传说 · 特殊",
+      "baseName": "罗兰",
+      "code": "0200",
+      "cost": 5,
+      "typeName": "特殊"
+    },
+    {
+      "hash": "0x5F3337B6",
+      "displayName": "哥布林军士 · 稀有 · 支援",
+      "baseName": "哥布林军士",
+      "code": "0d00",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x61C79814",
+      "displayName": "哥布林军士 · 史诗 · 支援",
+      "baseName": "哥布林军士",
+      "code": "0d00",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x3C381DCD",
+      "displayName": "哥布林角斗士 · 稀有 · 支援",
+      "baseName": "哥布林角斗士",
+      "code": "0e00",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xD6387CAA",
+      "displayName": "哥布林角斗士 · 史诗 · 支援",
+      "baseName": "哥布林角斗士",
+      "code": "0e00",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xF501285C",
+      "displayName": "哥布林角斗士 · 史诗 · 支援",
+      "baseName": "哥布林角斗士",
+      "code": "0e00",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x99A68616",
+      "displayName": "苍百长 · 稀有 · 支援",
+      "baseName": "苍百长",
+      "code": "0f00",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x31EE9BA5",
+      "displayName": "苍百长 · 史诗 · 支援",
+      "baseName": "苍百长",
+      "code": "0f00",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x4D84581F",
+      "displayName": "赤蛮尉 · 稀有 · 支援",
+      "baseName": "赤蛮尉",
+      "code": "1000",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x897FFAF0",
+      "displayName": "赤蛮尉 · 史诗 · 支援",
+      "baseName": "赤蛮尉",
+      "code": "1000",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xFD5FB92B",
+      "displayName": "哥布林勇士 · 史诗 · 支援",
+      "baseName": "哥布林勇士",
+      "code": "1100",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xC2F91A7F",
+      "displayName": "哥布林勇士 · 传说 · 支援",
+      "baseName": "哥布林勇士",
+      "code": "1100",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x55815E99",
+      "displayName": "玄夜叉 · 史诗 · 支援",
+      "baseName": "玄夜叉",
+      "code": "1200",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x524D1660",
+      "displayName": "玄夜叉 · 传说 · 支援",
+      "baseName": "玄夜叉",
+      "code": "1200",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xA062EC06",
+      "displayName": "朱罗刹 · 传说 · 支援",
+      "baseName": "朱罗刹",
+      "code": "1300",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x8E02E207",
+      "displayName": "死骸格拉森 · 史诗 · 伤害",
+      "baseName": "死骸格拉森",
+      "code": "1600",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xFC8444A1",
+      "displayName": "死骸格拉森 · 史诗 · 伤害",
+      "baseName": "死骸格拉森",
+      "code": "1600",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x0EE2670A",
+      "displayName": "死骸格拉森 · 传说 · 伤害",
+      "baseName": "死骸格拉森",
+      "code": "1600",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x326DC2DE",
+      "displayName": "冰骸斯卡米勒 · 史诗 · 伤害",
+      "baseName": "冰骸斯卡米勒",
+      "code": "1800",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x16BA3B8A",
+      "displayName": "冰骸斯卡米勒 · 传说 · 伤害",
+      "baseName": "冰骸斯卡米勒",
+      "code": "1800",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xEBEB3DC0",
+      "displayName": "群居狼 · 稀有 · 支援",
+      "baseName": "群居狼",
+      "code": "1900",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xEEEA2080",
+      "displayName": "群居狼 · 史诗 · 支援",
+      "baseName": "群居狼",
+      "code": "1900",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x2EACD79C",
+      "displayName": "角禽 · 稀有 · 支援",
+      "baseName": "角禽",
+      "code": "1a00",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x735DD55B",
+      "displayName": "角禽 · 史诗 · 支援",
+      "baseName": "角禽",
+      "code": "1a00",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x1B5DAEBD",
+      "displayName": "双足飞龙 · 稀有 · 伤害",
+      "baseName": "双足飞龙",
+      "code": "1b00",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x9BC09751",
+      "displayName": "双足飞龙 · 史诗 · 伤害",
+      "baseName": "双足飞龙",
+      "code": "1b00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x4B3D1768",
+      "displayName": "老双足飞龙 · 稀有 · 伤害",
+      "baseName": "老双足飞龙",
+      "code": "1c00",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xAA2BBDBF",
+      "displayName": "老双足飞龙 · 史诗 · 伤害",
+      "baseName": "老双足飞龙",
+      "code": "1c00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x03C95420",
+      "displayName": "巨爪霜鳄 · 史诗 · 伤害",
+      "baseName": "巨爪霜鳄",
+      "code": "1e00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xC52147D4",
+      "displayName": "巨爪霜鳄 · 史诗 · 伤害",
+      "baseName": "巨爪霜鳄",
+      "code": "1e00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x99CF3E05",
+      "displayName": "巨爪霜鳄 · 传说 · 伤害",
+      "baseName": "巨爪霜鳄",
+      "code": "1e00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x0D94B89F",
+      "displayName": "银史莱姆 · 史诗 · 支援",
+      "baseName": "银史莱姆",
+      "code": "2000",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x4EA296FC",
+      "displayName": "银史莱姆 · 传说 · 支援",
+      "baseName": "银史莱姆",
+      "code": "2000",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xE528E76F",
+      "displayName": "银史莱姆 · 传说 · 支援",
+      "baseName": "银史莱姆",
+      "code": "2000",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x316641A4",
+      "displayName": "金史莱姆 · 史诗 · 支援",
+      "baseName": "金史莱姆",
+      "code": "2100",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x439CDB88",
+      "displayName": "金史莱姆 · 传说 · 支援",
+      "baseName": "金史莱姆",
+      "code": "2100",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x1ABADE1D",
+      "displayName": "赛伊格亚 · 稀有 · 伤害",
+      "baseName": "赛伊格亚",
+      "code": "2200",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x1BE16847",
+      "displayName": "赛伊格亚 · 稀有 · 伤害",
+      "baseName": "赛伊格亚",
+      "code": "2200",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xEF554891",
+      "displayName": "赛伊格亚 · 史诗 · 伤害",
+      "baseName": "赛伊格亚",
+      "code": "2200",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xB96CB87D",
+      "displayName": "目目连 · 稀有 · 伤害",
+      "baseName": "目目连",
+      "code": "2300",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x7E8A659A",
+      "displayName": "目目连 · 史诗 · 伤害",
+      "baseName": "目目连",
+      "code": "2300",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x634A379D",
+      "displayName": "阿里曼 · 稀有 · 伤害",
+      "baseName": "阿里曼",
+      "code": "2400",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x6B514309",
+      "displayName": "阿里曼 · 史诗 · 伤害",
+      "baseName": "阿里曼",
+      "code": "2400",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x2EA15D18",
+      "displayName": "魔眼守卫 · 史诗 · 伤害",
+      "baseName": "魔眼守卫",
+      "code": "2500",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x6262979B",
+      "displayName": "魔眼守卫 · 传说 · 伤害",
+      "baseName": "魔眼守卫",
+      "code": "2500",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x3DD9ECEE",
+      "displayName": "火之种 · 稀有 · 支援",
+      "baseName": "火之种",
+      "code": "2600",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x4A65C97D",
+      "displayName": "火之种 · 史诗 · 支援",
+      "baseName": "火之种",
+      "code": "2600",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x852287BA",
+      "displayName": "水之种 · 稀有 · 支援",
+      "baseName": "水之种",
+      "code": "2700",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xA40E64F4",
+      "displayName": "水之种 · 史诗 · 支援",
+      "baseName": "水之种",
+      "code": "2700",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x30F63214",
+      "displayName": "光之种 · 稀有 · 支援",
+      "baseName": "光之种",
+      "code": "2800",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x4F484BBB",
+      "displayName": "光之种 · 史诗 · 支援",
+      "baseName": "光之种",
+      "code": "2800",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x59F8666F",
+      "displayName": "暗之种 · 稀有 · 支援",
+      "baseName": "暗之种",
+      "code": "2900",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x2E3CE3D9",
+      "displayName": "暗之种 · 史诗 · 支援",
+      "baseName": "暗之种",
+      "code": "2900",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xC3E918F9",
+      "displayName": "火精灵 · 稀有 · 伤害",
+      "baseName": "火精灵",
+      "code": "2a00",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xD751D8D2",
+      "displayName": "火精灵 · 史诗 · 伤害",
+      "baseName": "火精灵",
+      "code": "2a00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x1CC0E0EF",
+      "displayName": "水精灵 · 稀有 · 伤害",
+      "baseName": "水精灵",
+      "code": "2b00",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x9360B2B5",
+      "displayName": "水精灵 · 史诗 · 伤害",
+      "baseName": "水精灵",
+      "code": "2b00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x2E657B01",
+      "displayName": "机械武装·主机 · 稀有 · 伤害",
+      "baseName": "机械武装·主机",
+      "code": "3100",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x5365294F",
+      "displayName": "机械武装·主机 · 史诗 · 伤害",
+      "baseName": "机械武装·主机",
+      "code": "3100",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xB3C2F3A4",
+      "displayName": "强袭型机械武装·主机 · 稀有 · 伤害",
+      "baseName": "强袭型机械武装·主机",
+      "code": "3200",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xAE52556D",
+      "displayName": "强袭型机械武装·主机 · 史诗 · 伤害",
+      "baseName": "强袭型机械武装·主机",
+      "code": "3200",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x87C6C345",
+      "displayName": "巨石魔像 · 稀有 · 伤害",
+      "baseName": "巨石魔像",
+      "code": "3300",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xCC3C45F3",
+      "displayName": "巨石魔像 · 稀有 · 伤害",
+      "baseName": "巨石魔像",
+      "code": "3300",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xB79312A7",
+      "displayName": "巨石魔像 · 史诗 · 伤害",
+      "baseName": "巨石魔像",
+      "code": "3300",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x8CF23B58",
+      "displayName": "巨石魔像 · 传说 · 伤害",
+      "baseName": "巨石魔像",
+      "code": "3300",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x315695AE",
+      "displayName": "红宝石魔像 · 传说 · 伤害",
+      "baseName": "红宝石魔像",
+      "code": "3400",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x52E21E37",
+      "displayName": "红宝石魔像 · 传说 · 伤害",
+      "baseName": "红宝石魔像",
+      "code": "3400",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xF7F2D161",
+      "displayName": "狮鹫 · 史诗 · 伤害",
+      "baseName": "狮鹫",
+      "code": "3500",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xBFAC23DC",
+      "displayName": "狮鹫 · 传说 · 伤害",
+      "baseName": "狮鹫",
+      "code": "3500",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xC1CCBC3C",
+      "displayName": "漆黑猛禽 · 史诗 · 伤害",
+      "baseName": "漆黑猛禽",
+      "code": "3600",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xD4AC8684",
+      "displayName": "漆黑猛禽 · 传说 · 伤害",
+      "baseName": "漆黑猛禽",
+      "code": "3600",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x9D5C27DE",
+      "displayName": "贝希摩斯 · 史诗 · 伤害",
+      "baseName": "贝希摩斯",
+      "code": "3700",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x239F769F",
+      "displayName": "贝希摩斯 · 传说 · 伤害",
+      "baseName": "贝希摩斯",
+      "code": "3700",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xE4B7DCF9",
+      "displayName": "贝希摩斯 · 传说 · 伤害",
+      "baseName": "贝希摩斯",
+      "code": "3700",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xAC20C821",
+      "displayName": "恩奴基 · 史诗 · 伤害",
+      "baseName": "恩奴基",
+      "code": "3800",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x67C7E1FF",
+      "displayName": "恩奴基 · 传说 · 伤害",
+      "baseName": "恩奴基",
+      "code": "3800",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x38348E1E",
+      "displayName": "远古巨龙 · 史诗 · 伤害",
+      "baseName": "远古巨龙",
+      "code": "3900",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x556DA7B4",
+      "displayName": "远古巨龙 · 史诗 · 伤害",
+      "baseName": "远古巨龙",
+      "code": "3900",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xCE0039D4",
+      "displayName": "远古巨龙 · 传说 · 伤害",
+      "baseName": "远古巨龙",
+      "code": "3900",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x1E6543A3",
+      "displayName": "火龙布雷扎莱克 · 史诗 · 伤害",
+      "baseName": "火龙布雷扎莱克",
+      "code": "3a00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xF1C229F7",
+      "displayName": "火龙布雷扎莱克 · 史诗 · 伤害",
+      "baseName": "火龙布雷扎莱克",
+      "code": "3a00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x9F0ECF8B",
+      "displayName": "火龙布雷扎莱克 · 传说 · 伤害",
+      "baseName": "火龙布雷扎莱克",
+      "code": "3a00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xF2BE819E",
+      "displayName": "火龙布雷扎莱克 · 传说 · 伤害",
+      "baseName": "火龙布雷扎莱克",
+      "code": "3a00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x26E7CCB1",
+      "displayName": "冰龙威利努斯 · 史诗 · 伤害",
+      "baseName": "冰龙威利努斯",
+      "code": "3b00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x60A6D3A5",
+      "displayName": "冰龙威利努斯 · 史诗 · 伤害",
+      "baseName": "冰龙威利努斯",
+      "code": "3b00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xB960D2BB",
+      "displayName": "冰龙威利努斯 · 传说 · 伤害",
+      "baseName": "冰龙威利努斯",
+      "code": "3b00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x4FD78AF8",
+      "displayName": "地龙杜雷贝尔 · 史诗 · 伤害",
+      "baseName": "地龙杜雷贝尔",
+      "code": "3c00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x97E451A4",
+      "displayName": "地龙杜雷贝尔 · 史诗 · 伤害",
+      "baseName": "地龙杜雷贝尔",
+      "code": "3c00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x3BAD1134",
+      "displayName": "地龙杜雷贝尔 · 传说 · 伤害",
+      "baseName": "地龙杜雷贝尔",
+      "code": "3c00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xFF513849",
+      "displayName": "风龙伊尔西亚斯 · 史诗 · 伤害",
+      "baseName": "风龙伊尔西亚斯",
+      "code": "3d00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xFC8A2ECB",
+      "displayName": "风龙伊尔西亚斯 · 传说 · 伤害",
+      "baseName": "风龙伊尔西亚斯",
+      "code": "3d00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x666947C2",
+      "displayName": "白龙拉迪斯 · 史诗 · 伤害",
+      "baseName": "白龙拉迪斯",
+      "code": "3e00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x9384A5D3",
+      "displayName": "白龙拉迪斯 · 传说 · 伤害",
+      "baseName": "白龙拉迪斯",
+      "code": "3e00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x7F8364E5",
+      "displayName": "黑龙伊弗欧 · 稀有 · 伤害",
+      "baseName": "黑龙伊弗欧",
+      "code": "3f00",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x01B80951",
+      "displayName": "永暗藏匿者 · 史诗 · 伤害",
+      "baseName": "永暗藏匿者",
+      "code": "4000",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x2517C481",
+      "displayName": "黑龙伊弗欧 · 史诗 · 伤害",
+      "baseName": "黑龙伊弗欧",
+      "code": "3f00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x6D6CB496",
+      "displayName": "永暗藏匿者 · 史诗 · 伤害",
+      "baseName": "永暗藏匿者",
+      "code": "4000",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x0033943A",
+      "displayName": "黑龙伊弗欧 · 传说 · 伤害",
+      "baseName": "黑龙伊弗欧",
+      "code": "3f00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x8DB272E5",
+      "displayName": "黑龙伊弗欧 · 传说 · 伤害",
+      "baseName": "黑龙伊弗欧",
+      "code": "3f00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x8D7FDE58",
+      "displayName": "断罪铁骑 · 史诗 · 伤害",
+      "baseName": "断罪铁骑",
+      "code": "4100",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x045EFB5B",
+      "displayName": "断罪铁骑 · 传说 · 伤害",
+      "baseName": "断罪铁骑",
+      "code": "4100",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x15EC425E",
+      "displayName": "叛乱重炮 · 史诗 · 伤害",
+      "baseName": "叛乱重炮",
+      "code": "4200",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x6EE91E7D",
+      "displayName": "叛乱重炮 · 史诗 · 伤害",
+      "baseName": "叛乱重炮",
+      "code": "4200",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x847CF372",
+      "displayName": "叛乱重炮 · 传说 · 伤害",
+      "baseName": "叛乱重炮",
+      "code": "4200",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x8B489804",
+      "displayName": "眼镜蛇 · 稀有 · 伤害",
+      "baseName": "眼镜蛇",
+      "code": "4300",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x7A7615D3",
+      "displayName": "眼镜蛇 · 史诗 · 伤害",
+      "baseName": "眼镜蛇",
+      "code": "4300",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x9235FB9F",
+      "displayName": "眼镜蛇 · 史诗 · 伤害",
+      "baseName": "眼镜蛇",
+      "code": "4300",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xB360DD8D",
+      "displayName": "沙漠死神 · 稀有 · 伤害",
+      "baseName": "沙漠死神",
+      "code": "4400",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xE7F607DC",
+      "displayName": "沙漠死神 · 史诗 · 伤害",
+      "baseName": "沙漠死神",
+      "code": "4400",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x65E658D9",
+      "displayName": "伏尔甘博拉 · 史诗 · 伤害",
+      "baseName": "伏尔甘博拉",
+      "code": "4700",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x6F6BBBE0",
+      "displayName": "伏尔甘博拉 · 传说 · 伤害",
+      "baseName": "伏尔甘博拉",
+      "code": "4700",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xAD15D880",
+      "displayName": "伏尔甘博拉·虚无 · 传说 · 伤害",
+      "baseName": "伏尔甘博拉·虚无",
+      "code": "4800",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x5C42D57C",
+      "displayName": "胡拉坎·虚无 · 传说 · 伤害",
+      "baseName": "胡拉坎·虚无",
+      "code": "4a00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x23D839A3",
+      "displayName": "玛纳加尔姆 · 稀有 · 伤害",
+      "baseName": "玛纳加尔姆",
+      "code": "4b00",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x5E29E993",
+      "displayName": "玛纳加尔姆 · 稀有 · 伤害",
+      "baseName": "玛纳加尔姆",
+      "code": "4b00",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xD5536AE8",
+      "displayName": "玛纳加尔姆 · 史诗 · 伤害",
+      "baseName": "玛纳加尔姆",
+      "code": "4b00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0xDBD2F84E",
+      "displayName": "玛纳加尔姆 · 传说 · 伤害",
+      "baseName": "玛纳加尔姆",
+      "code": "4b00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x099E1DD3",
+      "displayName": "玛纳加尔姆·虚无 · 传说 · 伤害",
+      "baseName": "玛纳加尔姆·虚无",
+      "code": "4c00",
+      "cost": 5,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x391C7857",
+      "displayName": "灾祸之影 · 稀有 · 伤害",
+      "baseName": "灾祸之影",
+      "code": "4d00",
+      "cost": 3,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x551DC320",
+      "displayName": "灾祸之影 · 史诗 · 伤害",
+      "baseName": "灾祸之影",
+      "code": "4d00",
+      "cost": 4,
+      "typeName": "伤害"
+    },
+    {
+      "hash": "0x547E7DFC",
+      "displayName": "金枪鱼 · 稀有 · 支援",
+      "baseName": "金枪鱼",
+      "code": "4e00",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xF7EB57DD",
+      "displayName": "金枪鱼 · 史诗 · 支援",
+      "baseName": "金枪鱼",
+      "code": "4e00",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xB44A8A02",
+      "displayName": "金枪鱼 · 传说 · 支援",
+      "baseName": "金枪鱼",
+      "code": "4e00",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x3C4F2B7D",
+      "displayName": "怀揣希望的空之民 · 稀有 · 支援",
+      "baseName": "怀揣希望的空之民",
+      "code": "4f00",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x4BA8CEBA",
+      "displayName": "怀揣希望的空之民 · 稀有 · 支援",
+      "baseName": "怀揣希望的空之民",
+      "code": "4f00",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x67A73702",
+      "displayName": "怀揣希望的空之民 · 史诗 · 支援",
+      "baseName": "怀揣希望的空之民",
+      "code": "4f00",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x15ED6D77",
+      "displayName": "怀揣希望的空之民 · 传说 · 支援",
+      "baseName": "怀揣希望的空之民",
+      "code": "4f00",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x299C1A08",
+      "displayName": "托付愿望的空之民 · 稀有 · 支援",
+      "baseName": "托付愿望的空之民",
+      "code": "5000",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xB5449253",
+      "displayName": "托付愿望的空之民 · 稀有 · 支援",
+      "baseName": "托付愿望的空之民",
+      "code": "5000",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xCE8E0B79",
+      "displayName": "托付愿望的空之民 · 史诗 · 支援",
+      "baseName": "托付愿望的空之民",
+      "code": "5000",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x576310DF",
+      "displayName": "托付愿望的空之民 · 传说 · 支援",
+      "baseName": "托付愿望的空之民",
+      "code": "5000",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xDDB21C31",
+      "displayName": "弗尔卡自卫团 · 稀有 · 支援",
+      "baseName": "弗尔卡自卫团",
+      "code": "5100",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xF1FC31C4",
+      "displayName": "弗尔卡自卫团 · 史诗 · 支援",
+      "baseName": "弗尔卡自卫团",
+      "code": "5100",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x7E154422",
+      "displayName": "弗尔卡自卫团 · 传说 · 支援",
+      "baseName": "弗尔卡自卫团",
+      "code": "5100",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x9A6D89DC",
+      "displayName": "弗尔卡自卫团 · 传说 · 支援",
+      "baseName": "弗尔卡自卫团",
+      "code": "5100",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x8C607D26",
+      "displayName": "白狼兵团 · 稀有 · 支援",
+      "baseName": "白狼兵团",
+      "code": "5200",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xEF973D88",
+      "displayName": "白狼兵团 · 稀有 · 支援",
+      "baseName": "白狼兵团",
+      "code": "5200",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x514CF53B",
+      "displayName": "白狼兵团 · 史诗 · 支援",
+      "baseName": "白狼兵团",
+      "code": "5200",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x5CA9330A",
+      "displayName": "白狼兵团 · 传说 · 支援",
+      "baseName": "白狼兵团",
+      "code": "5200",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x44A5CAB1",
+      "displayName": "扎斯巴家 · 稀有 · 支援",
+      "baseName": "扎斯巴家",
+      "code": "5300",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xF862E7DA",
+      "displayName": "扎斯巴家 · 稀有 · 支援",
+      "baseName": "扎斯巴家",
+      "code": "5300",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xF32AA7A7",
+      "displayName": "扎斯巴家 · 史诗 · 支援",
+      "baseName": "扎斯巴家",
+      "code": "5300",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x4C966E4F",
+      "displayName": "扎斯巴家 · 传说 · 支援",
+      "baseName": "扎斯巴家",
+      "code": "5300",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xB4CF26C6",
+      "displayName": "希德霍姆兵 · 稀有 · 支援",
+      "baseName": "希德霍姆兵",
+      "code": "5400",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x1B9DE0FA",
+      "displayName": "希德霍姆兵 · 史诗 · 支援",
+      "baseName": "希德霍姆兵",
+      "code": "5400",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xA4F63A8F",
+      "displayName": "希德霍姆兵 · 传说 · 支援",
+      "baseName": "希德霍姆兵",
+      "code": "5400",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x58AA9CAD",
+      "displayName": "刃重众 · 稀有 · 支援",
+      "baseName": "刃重众",
+      "code": "5500",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x42465367",
+      "displayName": "刃重众 · 史诗 · 支援",
+      "baseName": "刃重众",
+      "code": "5500",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x730395DC",
+      "displayName": "刃重众 · 传说 · 支援",
+      "baseName": "刃重众",
+      "code": "5500",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xDA0B6092",
+      "displayName": "玛洛斯僧兵 · 稀有 · 支援",
+      "baseName": "玛洛斯僧兵",
+      "code": "5600",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x36CB5052",
+      "displayName": "玛洛斯僧兵 · 史诗 · 支援",
+      "baseName": "玛洛斯僧兵",
+      "code": "5600",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x16B702DC",
+      "displayName": "玛洛斯僧兵 · 传说 · 支援",
+      "baseName": "玛洛斯僧兵",
+      "code": "5600",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x6368A53D",
+      "displayName": "玛洛斯僧兵 · 传说 · 支援",
+      "baseName": "玛洛斯僧兵",
+      "code": "5600",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xA0C96959",
+      "displayName": "骑空团联盟拉法尔 · 稀有 · 支援",
+      "baseName": "骑空团联盟拉法尔",
+      "code": "5700",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x513D05CC",
+      "displayName": "骑空团联盟拉法尔 · 史诗 · 支援",
+      "baseName": "骑空团联盟拉法尔",
+      "code": "5700",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x109E2271",
+      "displayName": "骑空团联盟拉法尔 · 传说 · 支援",
+      "baseName": "骑空团联盟拉法尔",
+      "code": "5700",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xA608AECD",
+      "displayName": "裁判 · 传说 · 支援",
+      "baseName": "裁判",
+      "code": "5900",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xE6EBB6FA",
+      "displayName": "裁判 · 传说 · 支援",
+      "baseName": "裁判",
+      "code": "5900",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x1AB77FDF",
+      "displayName": "猫 · 传说 · 支援",
+      "baseName": "猫",
+      "code": "5f00",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x9118453A",
+      "displayName": "小钳蟹 · 稀有 · 支援",
+      "baseName": "小钳蟹",
+      "code": "6300",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x0525E77D",
+      "displayName": "小钳蟹 · 史诗 · 支援",
+      "baseName": "小钳蟹",
+      "code": "6300",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xF28D0E35",
+      "displayName": "小钳蟹 · 传说 · 支援",
+      "baseName": "小钳蟹",
+      "code": "6300",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x7E853E16",
+      "displayName": "神谕转轮 · 稀有 · 支援",
+      "baseName": "神谕转轮",
+      "code": "6400",
+      "cost": 3,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x03C8BF90",
+      "displayName": "神谕转轮 · 史诗 · 支援",
+      "baseName": "神谕转轮",
+      "code": "6400",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xD7555B1F",
+      "displayName": "神谕转轮 · 史诗 · 支援",
+      "baseName": "神谕转轮",
+      "code": "6400",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0xE24B4807",
+      "displayName": "神谕转轮 · 史诗 · 支援",
+      "baseName": "神谕转轮",
+      "code": "6400",
+      "cost": 4,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x47E2AE71",
+      "displayName": "神谕转轮 · 传说 · 支援",
+      "baseName": "神谕转轮",
+      "code": "6400",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x48732D1F",
+      "displayName": "神谕转轮 · 传说 · 支援",
+      "baseName": "神谕转轮",
+      "code": "6400",
+      "cost": 5,
+      "typeName": "支援"
+    },
+    {
+      "hash": "0x2F15455C",
+      "displayName": "别西卜 · 传说 · 特殊",
+      "baseName": "别西卜",
+      "code": "9200",
+      "cost": 5,
+      "typeName": "特殊"
+    },
+    {
+      "hash": "0xA7EFF558",
+      "displayName": "别西卜 · 传说 · 特殊",
+      "baseName": "别西卜",
+      "code": "9200",
+      "cost": 5,
+      "typeName": "特殊"
+    }
+  ]
+}

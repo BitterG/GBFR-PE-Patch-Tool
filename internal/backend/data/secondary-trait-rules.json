@@ -1,0 +1,81 @@
+﻿{
+    "schemaVersion":  1,
+    "description":  "Draft compatibility rules for secondary traits. This is not a complete rule database.",
+    "rules":  [
+                  {
+                      "id":  "known-supported-dark-huntress-warpath-plus-autorevive",
+                      "type":  "allow-secondary-trait",
+                      "sigilId":  "GEEN_171_93",
+                      "primaryTraitId":  "SKILL_171_02",
+                      "secondaryTraitId":  "SKILL_068_00",
+                      "allowedSecondaryLevels":  null,
+                      "notes":  "Current tool wrote this combination and raw save fields verified. Full in-game legality still should be tested before broad GUI release.",
+                      "source":  "Generated save output and current code",
+                      "confidence":  "medium"
+                  },
+                  {
+                      "id":  "known-test-war-elemental-plus-greater-aegis",
+                      "type":  "allow-secondary-trait",
+                      "sigilId":  "GEEN_146_24",
+                      "primaryTraitId":  "SKILL_146_00",
+                      "secondaryTraitId":  "SKILL_166_00",
+                      "allowedSecondaryLevels":  null,
+                      "notes":  "Level 30 was written as a test value. Treat as experimental until the real Greater Aegis max level is verified.",
+                      "source":  "Generated save output and current code",
+                      "confidence":  "low"
+                  },
+                  {
+                      "id":  "opus-alpha-plus-default-dmg-cap",
+                      "type":  "default-secondary-trait",
+                      "sigilId":  "GEEN_160_04",
+                      "primaryTraitId":  "SKILL_160_00",
+                      "secondaryTraitId":  "SKILL_020_00",
+                      "allowedSecondaryLevels":  null,
+                      "notes":  "Alpha+ normally defaults to DMG Cap as its secondary trait. The editor keeps DMG Cap preselected but allows overriding it for offline/local impossible-sigil testing.",
+                      "source":  "Nenkai Sigil/Gem IDs, Nenkai Trait/Skill IDs, and user offline testing requirement",
+                      "confidence":  "medium"
+                  },
+                  {
+                      "id":  "opus-beta-plus-default-dmg-cap",
+                      "type":  "default-secondary-trait",
+                      "sigilId":  "GEEN_161_04",
+                      "primaryTraitId":  "SKILL_161_00",
+                      "secondaryTraitId":  "SKILL_020_00",
+                      "allowedSecondaryLevels":  null,
+                      "notes":  "Beta+ normally defaults to DMG Cap as its secondary trait. The editor keeps DMG Cap preselected but allows overriding it for offline/local impossible-sigil testing.",
+                      "source":  "Nenkai Sigil/Gem IDs, Nenkai Trait/Skill IDs, and user offline testing requirement",
+                      "confidence":  "medium"
+                  },
+                  {
+                      "id":  "opus-gamma-plus-default-dmg-cap",
+                      "type":  "default-secondary-trait",
+                      "sigilId":  "GEEN_162_04",
+                      "primaryTraitId":  "SKILL_162_00",
+                      "secondaryTraitId":  "SKILL_020_00",
+                      "allowedSecondaryLevels":  null,
+                      "notes":  "Gamma+ normally defaults to DMG Cap as its secondary trait. The editor keeps DMG Cap preselected but allows overriding it for offline/local impossible-sigil testing.",
+                      "source":  "Nenkai Sigil/Gem IDs, Nenkai Trait/Skill IDs, and user offline testing requirement",
+                      "confidence":  "medium"
+                  }
+              ],
+    "invalidSecondaryTraitsOnPlusSigils":  [
+
+                                           ],
+    "globalRules":  [
+                        {
+                            "id":  "no-unverified-secondary-traits",
+                            "description":  "The future GUI should hide secondary traits that are not present in a verified allow-list for the selected + sigil, until a complete ban/allow table is extracted.",
+                            "confidence":  "high"
+                        },
+                        {
+                            "id":  "validate-again-before-write",
+                            "description":  "The backend must validate the selected sigil, primary trait, secondary trait, and levels against these local data files before writing.",
+                            "confidence":  "high"
+                        }
+                    ],
+    "todos":  [
+                  "Extract complete secondary trait pools from gem.SkillTypeLotIdForRandom2ndSkill and related skill lot tables.",
+                  "Add explicit banned secondary traits once verified.",
+                  "Keep this file as the backend validation source, not only a GUI filter."
+              ]
+}

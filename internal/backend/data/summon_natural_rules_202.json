@@ -1,0 +1,6978 @@
+{
+  "schemaVersion": 1,
+  "gameVersion": "2.0.2",
+  "sourceRole": "normalized from unpacked DLC 2.0.2 summon.tbl, summon_lot.tbl and summon_curve.tbl; names cross-checked against local hashes",
+  "generatedAt": "2026-07-22",
+  "rows": [
+    {
+      "typeHash": "0xBDD84E9A",
+      "name": "世须良加",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x74AA75D6",
+        "0x9232DC17",
+        "0xD2C8E10A",
+        "0x0AA20846",
+        "0x95F3FA86"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x3FD89C3A",
+      "name": "世须良加",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x0AA20846"
+      ],
+      "subParamHashes": [
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        4
+      ]
+    },
+    {
+      "typeHash": "0xA34BDECB",
+      "name": "世须良加",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x74AA75D6",
+        "0x9232DC17",
+        "0xD2C8E10A",
+        "0x0AA20846",
+        "0x95F3FA86",
+        "0x8B3BF60C"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0xE492E6BF",
+      "name": "世须良加",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xC0979A17"
+      ],
+      "subParamHashes": [
+        "0x00D171E0"
+      ],
+      "mainTraitLevels": [
+        4
+      ],
+      "subParamLevels": [
+        1
+      ]
+    },
+    {
+      "typeHash": "0x65E658D9",
+      "name": "伏尔甘博拉",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xE0ABFDFE",
+        "0x3C2B57B0",
+        "0x7C84A6B3",
+        "0x95F3FA86",
+        "0x24883AF3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x6F6BBBE0",
+      "name": "伏尔甘博拉",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xE0ABFDFE",
+        "0x3C2B57B0",
+        "0x7C84A6B3",
+        "0x95F3FA86",
+        "0x24883AF3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0xAD15D880",
+      "name": "伏尔甘博拉·虚无",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x73220725",
+        "0x0DE887A0",
+        "0xD2C8E10A",
+        "0x9702860F",
+        "0xE69A4694"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x30F63214",
+      "name": "光之种",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA9D17F55",
+        "0xF372F096",
+        "0x3FEC5F80"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x4F484BBB",
+      "name": "光之种",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA9D17F55",
+        "0xF372F096",
+        "0x3FEC5F80"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x326DC2DE",
+      "name": "冰骸斯卡米勒",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0x09AA7DB5",
+        "0x4F1A3683",
+        "0x7EDD69D0",
+        "0xB5FF9FD3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x16BA3B8A",
+      "name": "冰骸斯卡米勒",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0x09AA7DB5",
+        "0x4F1A3683",
+        "0x7EDD69D0",
+        "0xB5FF9FD3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x26E7CCB1",
+      "name": "冰龙威利努斯",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0x09AA7DB5",
+        "0xA7726190",
+        "0x3C2B57B0",
+        "0xE69A4694"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x60A6D3A5",
+      "name": "冰龙威利努斯",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xFB572681"
+      ],
+      "subParamHashes": [
+        "0xBC4E92CB"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        4
+      ]
+    },
+    {
+      "typeHash": "0xB960D2BB",
+      "name": "冰龙威利努斯",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0x09AA7DB5",
+        "0xA7726190",
+        "0x3C2B57B0",
+        "0xE69A4694",
+        "0xEE85CD1F"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x58AA9CAD",
+      "name": "刃重众",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x36E3848D",
+        "0x9389CC06",
+        "0xA7A45F28"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x42465367",
+      "name": "刃重众",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x36E3848D",
+        "0x9389CC06",
+        "0xA7A45F28"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x730395DC",
+      "name": "刃重众",
+      "equipCost": 1,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x36E3848D",
+        "0x9389CC06",
+        "0xA7A45F28"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0xA7EFF558",
+      "name": "别西卜",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "特殊",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x7CCFF74F",
+        "0xDC584F60",
+        "0xA7726190",
+        "0x0AA20846",
+        "0x57AB5B10",
+        "0x3D8153A1"
+      ],
+      "subParamHashes": [
+        "0x2EA9CA80",
+        "0xF2256E44",
+        "0x5A1D2C89",
+        "0x33C0D50C",
+        "0x54B09A37",
+        "0xA3E537B1",
+        "0xF0F77BC1",
+        "0x9245DFA4",
+        "0xA074A967",
+        "0xCE70C58A",
+        "0xAF39A3FB"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x2F15455C",
+      "name": "别西卜",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "特殊",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x7CCFF74F"
+      ],
+      "subParamHashes": [
+        "0xA074A967"
+      ],
+      "mainTraitLevels": [
+        11
+      ],
+      "subParamLevels": [
+        5
+      ]
+    },
+    {
+      "typeHash": "0x1B5DAEBD",
+      "name": "双足飞龙",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x1568E0E4",
+        "0x84078CB0",
+        "0x7C84A6B3",
+        "0xB360801D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x9BC09751",
+      "name": "双足飞龙",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x1568E0E4",
+        "0x84078CB0",
+        "0x7C84A6B3",
+        "0xB360801D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x6EE91E7D",
+      "name": "叛乱重炮",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC584F60",
+        "0x0DE887A0",
+        "0xE0ABFDFE",
+        "0x3F488339"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x15EC425E",
+      "name": "叛乱重炮",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xE0ABFDFE"
+      ],
+      "subParamHashes": [
+        "0xF7B0316F"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        3
+      ]
+    },
+    {
+      "typeHash": "0x847CF372",
+      "name": "叛乱重炮",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC584F60",
+        "0x0DE887A0",
+        "0xE0ABFDFE",
+        "0x3F488339"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x5F3337B6",
+      "name": "哥布林军士",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x3FEC5F80",
+        "0x50079A1C",
+        "0x3F488339",
+        "0x66DE60B1"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x61C79814",
+      "name": "哥布林军士",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x3FEC5F80",
+        "0x50079A1C",
+        "0x3F488339",
+        "0x66DE60B1"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xFD5FB92B",
+      "name": "哥布林勇士",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xCEB700EE",
+        "0xC0979A17",
+        "0x1C360C63",
+        "0x48A95B8D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xC2F91A7F",
+      "name": "哥布林勇士",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xCEB700EE",
+        "0xC0979A17",
+        "0x1C360C63",
+        "0x48A95B8D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x3C381DCD",
+      "name": "哥布林角斗士",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF372F096",
+        "0x8F502F0D",
+        "0x1C360C63",
+        "0x66DE60B1"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xF501285C",
+      "name": "哥布林角斗士",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF372F096",
+        "0x8F502F0D",
+        "0x1C360C63",
+        "0x66DE60B1"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xD6387CAA",
+      "name": "哥布林角斗士",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xF372F096"
+      ],
+      "subParamHashes": [
+        "0xA8900C80"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        3
+      ]
+    },
+    {
+      "typeHash": "0x4FD78AF8",
+      "name": "地龙杜雷贝尔",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC584F60",
+        "0x9232DC17",
+        "0x0DE887A0",
+        "0xD54F8CA7",
+        "0x95F3FA86"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x97E451A4",
+      "name": "地龙杜雷贝尔",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xD54F8CA7"
+      ],
+      "subParamHashes": [
+        "0x2FFB509F"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        3
+      ]
+    },
+    {
+      "typeHash": "0x3BAD1134",
+      "name": "地龙杜雷贝尔",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC584F60",
+        "0x9232DC17",
+        "0x0DE887A0",
+        "0xD54F8CA7",
+        "0x95F3FA86",
+        "0xCD18A77D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x9118453A",
+      "name": "小钳蟹",
+      "equipCost": 3,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC584F60",
+        "0x1470F860",
+        "0x05F2ECDC"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x0525E77D",
+      "name": "小钳蟹",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC584F60",
+        "0x1470F860",
+        "0x05F2ECDC"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xF28D0E35",
+      "name": "小钳蟹",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC584F60",
+        "0x1470F860",
+        "0x05F2ECDC",
+        "0x1B0D9897"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x7A46E50E",
+      "name": "巨爪岩鳄",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x05F2ECDC",
+        "0x6018372B",
+        "0x95F3FA86",
+        "0x48A95B8D",
+        "0x7C2E4D64"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x0BE2A43A",
+      "name": "巨爪岩鳄",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x48A95B8D"
+      ],
+      "subParamHashes": [
+        "0x5A39D81B"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        3
+      ]
+    },
+    {
+      "typeHash": "0xA6BB6299",
+      "name": "巨爪岩鳄",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x05F2ECDC",
+        "0x6018372B",
+        "0x95F3FA86",
+        "0x48A95B8D",
+        "0x7C2E4D64"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x0B366AD9",
+      "name": "巨爪焰鳄",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x74AA75D6",
+        "0xDC607D75",
+        "0xA898E283",
+        "0xD029FE08",
+        "0x7C84A6B3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xF98F8B97",
+      "name": "巨爪焰鳄",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x7C84A6B3"
+      ],
+      "subParamHashes": [
+        "0x00D171E0"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        4
+      ]
+    },
+    {
+      "typeHash": "0x1B6A4024",
+      "name": "巨爪焰鳄",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x74AA75D6",
+        "0xDC607D75",
+        "0xA898E283",
+        "0xD029FE08",
+        "0x7C84A6B3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x03C95420",
+      "name": "巨爪霜鳄",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0x73220725",
+        "0x8D78A19B",
+        "0xEAE321EB",
+        "0x24883AF3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xC52147D4",
+      "name": "巨爪霜鳄",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xFB572681"
+      ],
+      "subParamHashes": [
+        "0xF7B0316F"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        4
+      ]
+    },
+    {
+      "typeHash": "0x99CF3E05",
+      "name": "巨爪霜鳄",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0x73220725",
+        "0x8D78A19B",
+        "0xEAE321EB",
+        "0x24883AF3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x87C6C345",
+      "name": "巨石魔像",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC225C96",
+        "0x05F2ECDC",
+        "0x0AA20846",
+        "0x95F3FA86"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xCC3C45F3",
+      "name": "巨石魔像",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x95F3FA86"
+      ],
+      "subParamHashes": [
+        "0x2270BC40"
+      ],
+      "mainTraitLevels": [
+        5
+      ],
+      "subParamLevels": [
+        1
+      ]
+    },
+    {
+      "typeHash": "0xB79312A7",
+      "name": "巨石魔像",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC225C96",
+        "0x05F2ECDC",
+        "0x0AA20846",
+        "0x95F3FA86"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x8CF23B58",
+      "name": "巨石魔像",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC225C96",
+        "0x05F2ECDC",
+        "0x0AA20846",
+        "0x95F3FA86"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0xB4CF26C6",
+      "name": "希德霍姆兵",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA9D17F55",
+        "0xE6CDBA9C",
+        "0xD029FE08"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x1B9DE0FA",
+      "name": "希德霍姆兵",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA9D17F55",
+        "0xE6CDBA9C",
+        "0xD029FE08"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xA4F63A8F",
+      "name": "希德霍姆兵",
+      "equipCost": 1,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA9D17F55",
+        "0xE6CDBA9C",
+        "0xD029FE08"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0xDDB21C31",
+      "name": "弗尔卡自卫团",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x7CCFF74F",
+        "0x4F1A3683",
+        "0xD029FE08"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xF1FC31C4",
+      "name": "弗尔卡自卫团",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x7CCFF74F",
+        "0x4F1A3683",
+        "0xD029FE08"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x7E154422",
+      "name": "弗尔卡自卫团",
+      "equipCost": 1,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x7CCFF74F",
+        "0x4F1A3683",
+        "0xD029FE08"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x9A6D89DC",
+      "name": "弗尔卡自卫团",
+      "equipCost": 1,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x7CCFF74F"
+      ],
+      "subParamHashes": [
+        "0x00D171E0"
+      ],
+      "mainTraitLevels": [
+        13
+      ],
+      "subParamLevels": [
+        7
+      ]
+    },
+    {
+      "typeHash": "0xB3C2F3A4",
+      "name": "强袭型机械武装·主机",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x9232DC17",
+        "0x6018372B",
+        "0xCEB700EE",
+        "0x2242921F"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xAE52556D",
+      "name": "强袭型机械武装·主机",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x9232DC17",
+        "0x6018372B",
+        "0xCEB700EE",
+        "0x2242921F"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x3C4F2B7D",
+      "name": "怀揣希望的空之民",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xE0ABFDFE",
+        "0x6085DA25",
+        "0x0053599E"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x4BA8CEBA",
+      "name": "怀揣希望的空之民",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xE0ABFDFE"
+      ],
+      "subParamHashes": [
+        "0xA66241C9"
+      ],
+      "mainTraitLevels": [
+        5
+      ],
+      "subParamLevels": [
+        0
+      ]
+    },
+    {
+      "typeHash": "0x67A73702",
+      "name": "怀揣希望的空之民",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xE0ABFDFE",
+        "0x6085DA25",
+        "0x0053599E"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x15ED6D77",
+      "name": "怀揣希望的空之民",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xE0ABFDFE",
+        "0x6085DA25",
+        "0x0053599E"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0xAC20C821",
+      "name": "恩奴基",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA8A3163B",
+        "0xF26BAEA5",
+        "0xA2FA9685",
+        "0x82CE278D",
+        "0x48A95B8D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x67C7E1FF",
+      "name": "恩奴基",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA8A3163B",
+        "0xF26BAEA5",
+        "0xA2FA9685",
+        "0x82CE278D",
+        "0x48A95B8D",
+        "0xCD18A77D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x44A5CAB1",
+      "name": "扎斯巴家",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x1568E0E4",
+        "0x1470F860",
+        "0x318D12E9"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xF862E7DA",
+      "name": "扎斯巴家",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x318D12E9"
+      ],
+      "subParamHashes": [
+        "0x2270BC40"
+      ],
+      "mainTraitLevels": [
+        4
+      ],
+      "subParamLevels": [
+        1
+      ]
+    },
+    {
+      "typeHash": "0xF32AA7A7",
+      "name": "扎斯巴家",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x1568E0E4",
+        "0x1470F860",
+        "0x318D12E9"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x4C966E4F",
+      "name": "扎斯巴家",
+      "equipCost": 1,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x1568E0E4",
+        "0x1470F860",
+        "0x318D12E9"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0xB5449253",
+      "name": "托付愿望的空之民",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC225C96",
+        "0x36E3848D",
+        "0x82CE278D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x299C1A08",
+      "name": "托付愿望的空之民",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x36E3848D"
+      ],
+      "subParamHashes": [
+        "0xBC4E92CB"
+      ],
+      "mainTraitLevels": [
+        4
+      ],
+      "subParamLevels": [
+        1
+      ]
+    },
+    {
+      "typeHash": "0xCE8E0B79",
+      "name": "托付愿望的空之民",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC225C96",
+        "0x36E3848D",
+        "0x82CE278D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x576310DF",
+      "name": "托付愿望的空之民",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC225C96",
+        "0x36E3848D",
+        "0x82CE278D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x8D7FDE58",
+      "name": "断罪铁骑",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x09AA7DB5",
+        "0x6B694D6D",
+        "0xD2C8E10A",
+        "0xB360801D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x045EFB5B",
+      "name": "断罪铁骑",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x09AA7DB5",
+        "0x6B694D6D",
+        "0xD2C8E10A",
+        "0xB360801D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x59F8666F",
+      "name": "暗之种",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x0DE887A0",
+        "0x71F11A9B",
+        "0xF17850B9"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x2E3CE3D9",
+      "name": "暗之种",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x0DE887A0",
+        "0x71F11A9B",
+        "0xF17850B9"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xA062EC06",
+      "name": "朱罗刹",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC584F60",
+        "0xE6CDBA9C",
+        "0x73220725",
+        "0x84078CB0",
+        "0x48A95B8D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x2E657B01",
+      "name": "机械武装·主机",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC607D75",
+        "0x1470F860",
+        "0x82CE278D",
+        "0x2242921F"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x5365294F",
+      "name": "机械武装·主机",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC607D75",
+        "0x1470F860",
+        "0x82CE278D",
+        "0x2242921F"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x8E02E207",
+      "name": "死骸格拉森",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x7CCFF74F",
+        "0x9389CC06",
+        "0xA2FA9685",
+        "0xEAE321EB",
+        "0xE69A4694"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xFC8444A1",
+      "name": "死骸格拉森",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xA2FA9685"
+      ],
+      "subParamHashes": [
+        "0xA8900C80"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        4
+      ]
+    },
+    {
+      "typeHash": "0x0EE2670A",
+      "name": "死骸格拉森",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x7CCFF74F",
+        "0x9389CC06",
+        "0xA2FA9685",
+        "0xEAE321EB",
+        "0xE69A4694"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x852287BA",
+      "name": "水之种",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x29B292A8",
+        "0x50079A1C",
+        "0xCEB700EE"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xA40E64F4",
+      "name": "水之种",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x29B292A8",
+        "0x50079A1C",
+        "0xCEB700EE"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x1CC0E0EF",
+      "name": "水精灵",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x7CCFF74F",
+        "0xA9D17F55",
+        "0xFB572681",
+        "0xC0979A17"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x9360B2B5",
+      "name": "水精灵",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x7CCFF74F",
+        "0xA9D17F55",
+        "0xFB572681",
+        "0xC0979A17"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x6D6CB496",
+      "name": "永暗藏匿者",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xF26BAEA5"
+      ],
+      "subParamHashes": [
+        "0xA66241C9"
+      ],
+      "mainTraitLevels": [
+        1
+      ],
+      "subParamLevels": [
+        9
+      ]
+    },
+    {
+      "typeHash": "0x01B80951",
+      "name": "永暗藏匿者",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xF26BAEA5"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xB360DD8D",
+      "name": "沙漠死神",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x973B49AF",
+        "0xDC607D75",
+        "0x71F11A9B",
+        "0x6085DA25"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xE7F607DC",
+      "name": "沙漠死神",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x973B49AF",
+        "0xDC607D75",
+        "0x71F11A9B",
+        "0x6085DA25"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xC1CCBC3C",
+      "name": "漆黑猛禽",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x9232DC17",
+        "0x3C2B57B0",
+        "0xF17850B9",
+        "0x57AB5B10"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xD4AC8684",
+      "name": "漆黑猛禽",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x9232DC17",
+        "0x3C2B57B0",
+        "0xF17850B9",
+        "0x57AB5B10"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x3DD9ECEE",
+      "name": "火之种",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x36E3848D",
+        "0x8F502F0D",
+        "0xEAE321EB"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x4A65C97D",
+      "name": "火之种",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x36E3848D",
+        "0x8F502F0D",
+        "0xEAE321EB"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xC3E918F9",
+      "name": "火精灵",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xE0ABFDFE",
+        "0x8D78A19B",
+        "0x7C84A6B3",
+        "0x0053599E"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xD751D8D2",
+      "name": "火精灵",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xE0ABFDFE",
+        "0x8D78A19B",
+        "0x7C84A6B3",
+        "0x0053599E"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x1E6543A3",
+      "name": "火龙布雷扎莱克",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC584F60",
+        "0x50079A1C",
+        "0xB5FF9FD3",
+        "0x7C84A6B3",
+        "0x318D12E9"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xF1C229F7",
+      "name": "火龙布雷扎莱克",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x7C84A6B3"
+      ],
+      "subParamHashes": [
+        "0xA66241C9"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        4
+      ]
+    },
+    {
+      "typeHash": "0xF2BE819E",
+      "name": "火龙布雷扎莱克",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC584F60",
+        "0x50079A1C",
+        "0xB5FF9FD3",
+        "0x7C84A6B3",
+        "0x318D12E9",
+        "0xA1A8E39D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x9F0ECF8B",
+      "name": "火龙布雷扎莱克",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xDC584F60"
+      ],
+      "subParamHashes": [
+        "0xBC4E92CB"
+      ],
+      "mainTraitLevels": [
+        15
+      ],
+      "subParamLevels": [
+        4
+      ]
+    },
+    {
+      "typeHash": "0x391C7857",
+      "name": "灾祸之影",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x1568E0E4",
+        "0x73220725",
+        "0xA2FA9685",
+        "0x6085DA25"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x551DC320",
+      "name": "灾祸之影",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x1568E0E4",
+        "0x73220725",
+        "0xA2FA9685",
+        "0x6085DA25"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xF7F2D161",
+      "name": "狮鹫",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xB5FF9FD3",
+        "0x2FC8FBFF",
+        "0x318D12E9",
+        "0xA7A45F28"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xBFAC23DC",
+      "name": "狮鹫",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xB5FF9FD3",
+        "0x2FC8FBFF",
+        "0x318D12E9",
+        "0xA7A45F28"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x1AB77FDF",
+      "name": "猫",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x09AA7DB5",
+        "0xD2C8E10A",
+        "0x7C2E4D64"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x55815E99",
+      "name": "玄夜叉",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF26BAEA5",
+        "0xE6CDBA9C",
+        "0xA7726190",
+        "0x29B292A8"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x524D1660",
+      "name": "玄夜叉",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF26BAEA5",
+        "0xE6CDBA9C",
+        "0xA7726190",
+        "0x29B292A8"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0xDA0B6092",
+      "name": "玛洛斯僧兵",
+      "equipCost": 3,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xE0ABFDFE",
+        "0x9389CC06",
+        "0x70395731"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x36CB5052",
+      "name": "玛洛斯僧兵",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xE0ABFDFE",
+        "0x9389CC06",
+        "0x70395731"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x6368A53D",
+      "name": "玛洛斯僧兵",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xE0ABFDFE",
+        "0x9389CC06",
+        "0x70395731"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x16B702DC",
+      "name": "玛洛斯僧兵",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x9389CC06"
+      ],
+      "subParamHashes": [
+        "0xA66241C9"
+      ],
+      "mainTraitLevels": [
+        13
+      ],
+      "subParamLevels": [
+        7
+      ]
+    },
+    {
+      "typeHash": "0x5E29E993",
+      "name": "玛纳加尔姆",
+      "equipCost": 3,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0x74AA75D6",
+        "0x6085DA25",
+        "0x318D12E9",
+        "0x48A95B8D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x23D839A3",
+      "name": "玛纳加尔姆",
+      "equipCost": 3,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x318D12E9"
+      ],
+      "subParamHashes": [
+        "0xF7B0316F"
+      ],
+      "mainTraitLevels": [
+        5
+      ],
+      "subParamLevels": [
+        1
+      ]
+    },
+    {
+      "typeHash": "0xD5536AE8",
+      "name": "玛纳加尔姆",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0x74AA75D6",
+        "0x6085DA25",
+        "0x318D12E9",
+        "0x48A95B8D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xDBD2F84E",
+      "name": "玛纳加尔姆",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0x74AA75D6",
+        "0x6085DA25",
+        "0x318D12E9",
+        "0x48A95B8D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x099E1DD3",
+      "name": "玛纳加尔姆·虚无",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x09AA7DB5",
+        "0xD2C8E10A",
+        "0xD029FE08",
+        "0x9702860F",
+        "0x24883AF3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x8C607D26",
+      "name": "白狼兵团",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC225C96",
+        "0x09AA7DB5",
+        "0x7EDD69D0"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xEF973D88",
+      "name": "白狼兵团",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x09AA7DB5"
+      ],
+      "subParamHashes": [
+        "0xF7B0316F"
+      ],
+      "mainTraitLevels": [
+        4
+      ],
+      "subParamLevels": [
+        0
+      ]
+    },
+    {
+      "typeHash": "0x514CF53B",
+      "name": "白狼兵团",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC225C96",
+        "0x09AA7DB5",
+        "0x7EDD69D0"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x5CA9330A",
+      "name": "白狼兵团",
+      "equipCost": 1,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDC225C96",
+        "0x09AA7DB5",
+        "0x7EDD69D0"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x666947C2",
+      "name": "白龙拉迪斯",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x74AA75D6",
+        "0x36E3848D",
+        "0xA898E283",
+        "0xB5FF9FD3",
+        "0x24883AF3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x9384A5D3",
+      "name": "白龙拉迪斯",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x74AA75D6",
+        "0x36E3848D",
+        "0xA898E283",
+        "0xB5FF9FD3",
+        "0x24883AF3",
+        "0x8B3BF60C"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0xB96CB87D",
+      "name": "目目连",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA7726190",
+        "0x6B694D6D",
+        "0x2FC8FBFF",
+        "0x2242921F"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x7E8A659A",
+      "name": "目目连",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA7726190",
+        "0x6B694D6D",
+        "0x2FC8FBFF",
+        "0x2242921F"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x8B489804",
+      "name": "眼镜蛇",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x973B49AF",
+        "0xCEB700EE",
+        "0x71F11A9B"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x9235FB9F",
+      "name": "眼镜蛇",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x973B49AF",
+        "0xCEB700EE",
+        "0x71F11A9B"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x7A7615D3",
+      "name": "眼镜蛇",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x973B49AF"
+      ],
+      "subParamHashes": [
+        "0x00D171E0"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        3
+      ]
+    },
+    {
+      "typeHash": "0x7E853E16",
+      "name": "神谕转轮",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x84078CB0",
+        "0x7EDD69D0",
+        "0x57AB5B10"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xE24B4807",
+      "name": "神谕转轮",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x84078CB0",
+        "0x7EDD69D0",
+        "0x57AB5B10"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x03C8BF90",
+      "name": "神谕转轮",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xE6CDBA9C"
+      ],
+      "subParamHashes": [
+        "0xF7B0316F"
+      ],
+      "mainTraitLevels": [
+        7
+      ],
+      "subParamLevels": [
+        1
+      ]
+    },
+    {
+      "typeHash": "0xD7555B1F",
+      "name": "神谕转轮",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x84078CB0"
+      ],
+      "subParamHashes": [
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        3
+      ]
+    },
+    {
+      "typeHash": "0x47E2AE71",
+      "name": "神谕转轮",
+      "equipCost": 1,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x84078CB0",
+        "0x7EDD69D0",
+        "0x57AB5B10",
+        "0xF71F8997"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x48732D1F",
+      "name": "神谕转轮",
+      "equipCost": 1,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xC0979A17"
+      ],
+      "subParamHashes": [
+        "0x00D171E0"
+      ],
+      "mainTraitLevels": [
+        4
+      ],
+      "subParamLevels": [
+        1
+      ]
+    },
+    {
+      "typeHash": "0x52E21E37",
+      "name": "红宝石魔像",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA7726190",
+        "0x8F502F0D",
+        "0xD029FE08",
+        "0x95F3FA86",
+        "0xE69A4694"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x315695AE",
+      "name": "红宝石魔像",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x8F502F0D"
+      ],
+      "subParamHashes": [
+        "0x5A39D81B"
+      ],
+      "mainTraitLevels": [
+        11
+      ],
+      "subParamLevels": [
+        2
+      ]
+    },
+    {
+      "typeHash": "0x0F986ED9",
+      "name": "罗兰",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "特殊",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x7CCFF74F",
+        "0xE0ABFDFE",
+        "0xB5FF9FD3",
+        "0x95F3FA86",
+        "0x318D12E9",
+        "0x4C588C27"
+      ],
+      "subParamHashes": [
+        "0x2EA9CA80",
+        "0xF2256E44",
+        "0x5A1D2C89",
+        "0x33C0D50C",
+        "0x54B09A37",
+        "0xA3E537B1",
+        "0xF0F77BC1",
+        "0x9245DFA4",
+        "0xA074A967",
+        "0xCE70C58A",
+        "0xAF39A3FB"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x81ECEC7F",
+      "name": "罗兰",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "特殊",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x57AB5B10"
+      ],
+      "subParamHashes": [
+        "0x9245DFA4"
+      ],
+      "mainTraitLevels": [
+        11
+      ],
+      "subParamLevels": [
+        5
+      ]
+    },
+    {
+      "typeHash": "0xEBEB3DC0",
+      "name": "群居狼",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x3FEC5F80",
+        "0x36E3848D",
+        "0x0053599E"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xEEEA2080",
+      "name": "群居狼",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x3FEC5F80",
+        "0x36E3848D",
+        "0x0053599E"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x4B3D1768",
+      "name": "老双足飞龙",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x4F1A3683",
+        "0x05F2ECDC",
+        "0xCEB700EE",
+        "0x7C84A6B3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xAA2BBDBF",
+      "name": "老双足飞龙",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x4F1A3683",
+        "0x05F2ECDC",
+        "0xCEB700EE",
+        "0x7C84A6B3"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xCA95CD8C",
+      "name": "胡拉坎",
+      "equipCost": 3,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF26BAEA5",
+        "0x74AA75D6",
+        "0xC0979A17",
+        "0x6085DA25",
+        "0x57AB5B10"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x7996A856",
+      "name": "胡拉坎",
+      "equipCost": 3,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xC0979A17"
+      ],
+      "subParamHashes": [
+        "0x00D171E0"
+      ],
+      "mainTraitLevels": [
+        4
+      ],
+      "subParamLevels": [
+        1
+      ]
+    },
+    {
+      "typeHash": "0xE51CE5B0",
+      "name": "胡拉坎",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF26BAEA5",
+        "0x74AA75D6",
+        "0xC0979A17",
+        "0x6085DA25",
+        "0x57AB5B10"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x52B14B66",
+      "name": "胡拉坎",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF26BAEA5",
+        "0x74AA75D6",
+        "0xC0979A17",
+        "0x6085DA25",
+        "0x57AB5B10"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x5C42D57C",
+      "name": "胡拉坎·虚无",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA898E283",
+        "0xD029FE08",
+        "0x9702860F",
+        "0x24883AF3",
+        "0xE69A4694"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x99A68616",
+      "name": "苍百长",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA7726190",
+        "0x6B694D6D",
+        "0x8D78A19B"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x31EE9BA5",
+      "name": "苍百长",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA7726190",
+        "0x6B694D6D",
+        "0x8D78A19B"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xDFAB70B7",
+      "name": "莉莉丝",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "特殊",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x3FEC5F80",
+        "0x9389CC06",
+        "0x71F11A9B",
+        "0xB5FF9FD3",
+        "0x24883AF3",
+        "0x4C588C27"
+      ],
+      "subParamHashes": [
+        "0x2EA9CA80",
+        "0xF2256E44",
+        "0x5A1D2C89",
+        "0x33C0D50C",
+        "0x54B09A37",
+        "0xA3E537B1",
+        "0xF0F77BC1",
+        "0x9245DFA4",
+        "0xA074A967",
+        "0xCE70C58A",
+        "0xAF39A3FB"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x855D018C",
+      "name": "莉莉丝",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "特殊",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x95F3FA86"
+      ],
+      "subParamHashes": [
+        "0xCE70C58A"
+      ],
+      "mainTraitLevels": [
+        11
+      ],
+      "subParamLevels": [
+        5
+      ]
+    },
+    {
+      "typeHash": "0xE6EBB6FA",
+      "name": "裁判",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDBE1D775",
+        "0x8D2ADB6E",
+        "0x5C862E13"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0xA608AECD",
+      "name": "裁判",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xC0979A17"
+      ],
+      "subParamHashes": [
+        "0x00D171E0"
+      ],
+      "mainTraitLevels": [
+        4
+      ],
+      "subParamLevels": [
+        1
+      ]
+    },
+    {
+      "typeHash": "0x2EACD79C",
+      "name": "角禽",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x84078CB0",
+        "0x318D12E9",
+        "0xA7A45F28"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x735DD55B",
+      "name": "角禽",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x84078CB0",
+        "0x318D12E9",
+        "0xA7A45F28"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x9D5C27DE",
+      "name": "贝希摩斯",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x73220725",
+        "0x8D78A19B",
+        "0xB5FF9FD3",
+        "0x82CE278D",
+        "0x57AB5B10"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xE4B7DCF9",
+      "name": "贝希摩斯",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x73220725",
+        "0x8D78A19B",
+        "0xB5FF9FD3",
+        "0x82CE278D",
+        "0x57AB5B10",
+        "0xA1A8E39D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x239F769F",
+      "name": "贝希摩斯",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xB5FF9FD3"
+      ],
+      "subParamHashes": [
+        "0xF7B0316F"
+      ],
+      "mainTraitLevels": [
+        11
+      ],
+      "subParamLevels": [
+        2
+      ]
+    },
+    {
+      "typeHash": "0x1BE16847",
+      "name": "赛伊格亚",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0x4F1A3683",
+        "0x82CE278D",
+        "0xB360801D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x1ABADE1D",
+      "name": "赛伊格亚",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xFB572681"
+      ],
+      "subParamHashes": [
+        "0x00D171E0"
+      ],
+      "mainTraitLevels": [
+        4
+      ],
+      "subParamLevels": [
+        0
+      ]
+    },
+    {
+      "typeHash": "0xEF554891",
+      "name": "赛伊格亚",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0x4F1A3683",
+        "0x82CE278D",
+        "0xB360801D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x4D84581F",
+      "name": "赤蛮尉",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA8A3163B",
+        "0x2FC8FBFF",
+        "0xA7A45F28"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x897FFAF0",
+      "name": "赤蛮尉",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xA8A3163B",
+        "0x2FC8FBFF",
+        "0xA7A45F28"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x6E5968FC",
+      "name": "路西法",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "特殊",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xDBE1D775",
+        "0x8D2ADB6E",
+        "0x5C862E13",
+        "0x9232DC17",
+        "0x71F11A9B",
+        "0xEE85CD1F"
+      ],
+      "subParamHashes": [
+        "0x2EA9CA80",
+        "0xF2256E44",
+        "0x5A1D2C89",
+        "0x33C0D50C",
+        "0x54B09A37",
+        "0xA3E537B1",
+        "0xF0F77BC1",
+        "0x9245DFA4",
+        "0xA074A967",
+        "0xCE70C58A",
+        "0xAF39A3FB"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x90BD4AC0",
+      "name": "路西法",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "特殊",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x5C862E13"
+      ],
+      "subParamHashes": [
+        "0x5A1D2C89"
+      ],
+      "mainTraitLevels": [
+        11
+      ],
+      "subParamLevels": [
+        5
+      ]
+    },
+    {
+      "typeHash": "0x38348E1E",
+      "name": "远古巨龙",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x7CCFF74F",
+        "0xF372F096",
+        "0xE69A4694",
+        "0x82CE278D",
+        "0x48A95B8D"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x556DA7B4",
+      "name": "远古巨龙",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x2FC8FBFF"
+      ],
+      "subParamHashes": [
+        "0xA3539FBB"
+      ],
+      "mainTraitLevels": [
+        10
+      ],
+      "subParamLevels": [
+        4
+      ]
+    },
+    {
+      "typeHash": "0xCE0039D4",
+      "name": "远古巨龙",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x7CCFF74F",
+        "0xF372F096",
+        "0xE69A4694",
+        "0x82CE278D",
+        "0x48A95B8D",
+        "0xF71F8997"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x316641A4",
+      "name": "金史莱姆",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x5E422AE5",
+        "0xF687C5EF",
+        "0xC86F3082",
+        "0x4C588C27"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10,
+        15
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x439CDB88",
+      "name": "金史莱姆",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x5E422AE5",
+        "0xF687C5EF",
+        "0xC86F3082",
+        "0x4C588C27"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x547E7DFC",
+      "name": "金枪鱼",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x5E422AE5",
+        "0xF687C5EF",
+        "0xC86F3082"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0xF7EB57DD",
+      "name": "金枪鱼",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x5E422AE5",
+        "0xF687C5EF",
+        "0xC86F3082"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xB44A8A02",
+      "name": "金枪鱼",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x5E422AE5",
+        "0xF687C5EF",
+        "0xC86F3082",
+        "0x0EAD65E0"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x0D94B89F",
+      "name": "银史莱姆",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x5E422AE5",
+        "0xF687C5EF",
+        "0xC86F3082",
+        "0x8B3BF60C"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10,
+        15
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xE528E76F",
+      "name": "银史莱姆",
+      "equipCost": 1,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x5E422AE5",
+        "0xF687C5EF",
+        "0xC86F3082",
+        "0x8B3BF60C"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x4EA296FC",
+      "name": "银史莱姆",
+      "equipCost": 1,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0x5E422AE5"
+      ],
+      "subParamHashes": [
+        "0xBC4E92CB"
+      ],
+      "mainTraitLevels": [
+        11
+      ],
+      "subParamLevels": [
+        4
+      ]
+    },
+    {
+      "typeHash": "0x634A379D",
+      "name": "阿里曼",
+      "equipCost": 1,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x84078CB0",
+        "0x6018372B",
+        "0x7C2E4D64",
+        "0x66DE60B1"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x6B514309",
+      "name": "阿里曼",
+      "equipCost": 1,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x84078CB0",
+        "0x6018372B",
+        "0x7C2E4D64",
+        "0x66DE60B1"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xFF513849",
+      "name": "风龙伊尔西亚斯",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF26BAEA5",
+        "0x9232DC17",
+        "0x05F2ECDC",
+        "0x0AA20846",
+        "0x57AB5B10"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0xFC8A2ECB",
+      "name": "风龙伊尔西亚斯",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF26BAEA5",
+        "0x9232DC17",
+        "0x05F2ECDC",
+        "0x0AA20846",
+        "0x57AB5B10",
+        "0x0EAD65E0"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0xA0C96959",
+      "name": "骑空团联盟拉法尔",
+      "equipCost": 2,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x73220725",
+        "0x6085DA25",
+        "0xC35B111B"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x513D05CC",
+      "name": "骑空团联盟拉法尔",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x73220725",
+        "0x6085DA25",
+        "0xC35B111B"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x109E2271",
+      "name": "骑空团联盟拉法尔",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "支援",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0x73220725",
+        "0x6085DA25",
+        "0xC35B111B"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x2EA15D18",
+      "name": "魔眼守卫",
+      "equipCost": 2,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0xA8A3163B",
+        "0x05F2ECDC",
+        "0xE69A4694"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x6262979B",
+      "name": "魔眼守卫",
+      "equipCost": 2,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xFB572681",
+        "0xA8A3163B",
+        "0x05F2ECDC",
+        "0xE69A4694"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x7F8364E5",
+      "name": "黑龙伊弗欧",
+      "equipCost": 3,
+      "tier": "I",
+      "tierIndex": 0,
+      "variant": 3,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF26BAEA5",
+        "0x74AA75D6",
+        "0x1470F860",
+        "0x36E3848D",
+        "0xA2FA9685"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        4,
+        5,
+        6
+      ],
+      "subParamLevels": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "typeHash": "0x2517C481",
+      "name": "黑龙伊弗欧",
+      "equipCost": 3,
+      "tier": "II",
+      "tierIndex": 1,
+      "variant": 4,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF26BAEA5",
+        "0x74AA75D6",
+        "0x1470F860",
+        "0x36E3848D",
+        "0xA2FA9685"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "subParamLevels": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "typeHash": "0x8DB272E5",
+      "name": "黑龙伊弗欧",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "随机",
+      "mainTraitHashes": [
+        "0xF26BAEA5",
+        "0x74AA75D6",
+        "0x1470F860",
+        "0x36E3848D",
+        "0xA2FA9685",
+        "0x3D8153A1"
+      ],
+      "subParamHashes": [
+        "0x2270BC40",
+        "0xBC4E92CB",
+        "0xA3539FBB",
+        "0x75138D21",
+        "0x5A39D81B",
+        "0xA8900C80",
+        "0xF7B0316F",
+        "0xA66241C9",
+        "0x00D171E0",
+        "0x2FFB509F",
+        "0x664E8E32"
+      ],
+      "mainTraitLevels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "subParamLevels": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "typeHash": "0x0033943A",
+      "name": "黑龙伊弗欧",
+      "equipCost": 3,
+      "tier": "III",
+      "tierIndex": 2,
+      "variant": 5,
+      "typeName": "伤害",
+      "mode": "固定",
+      "mainTraitHashes": [
+        "0xA2FA9685"
+      ],
+      "subParamHashes": [
+        "0xA3539FBB"
+      ],
+      "mainTraitLevels": [
+        11
+      ],
+      "subParamLevels": [
+        7
+      ]
+    }
+  ]
+}

@@ -1,0 +1,414 @@
+{
+  "skills": [
+    {
+      "hash": "0x50079A1C",
+      "displayName": "攻击力",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xF372F096",
+      "displayName": "体力",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x8D78A19B",
+      "displayName": "暴击率",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xCEB700EE",
+      "displayName": "昏厥",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x3F488339",
+      "displayName": "背水",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x2FC8FBFF",
+      "displayName": "热血",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x1C360C63",
+      "displayName": "蓄力攻击",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x3FEC5F80",
+      "displayName": "协同攻击",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xC0979A17",
+      "displayName": "暴击伤害",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x6B694D6D",
+      "displayName": "弱点攻击",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xA7A45F28",
+      "displayName": "连击收招",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xB360801D",
+      "displayName": "集中炮火",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xDC584F60",
+      "displayName": "伤害上限",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xF17850B9",
+      "displayName": "连击加成",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x71F11A9B",
+      "displayName": "暴君",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xC35B111B",
+      "displayName": "蓄力会心",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x4F1A3683",
+      "displayName": "弱化状态特效",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xA9D17F55",
+      "displayName": "Overdrive特效",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xE6CDBA9C",
+      "displayName": "坚守",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xA1A8E39D",
+      "displayName": "霸体",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xE69A4694",
+      "displayName": "豪胆",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x973B49AF",
+      "displayName": "中毒抗性",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x7C84A6B3",
+      "displayName": "灼热抗性",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xD54F8CA7",
+      "displayName": "泥沙抗性",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xFB572681",
+      "displayName": "冰冻抗性",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x2242921F",
+      "displayName": "麻痹抗性",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x0AA20846",
+      "displayName": "格挡性能",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x3C2B57B0",
+      "displayName": "格挡仇火",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x8B3BF60C",
+      "displayName": "躲避性能",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x7C2E4D64",
+      "displayName": "躲避仇火",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x9389CC06",
+      "displayName": "回复性能",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x6085DA25",
+      "displayName": "自愈",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x7CCFF74F",
+      "displayName": "HP吸收",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x95F3FA86",
+      "displayName": "自动复活",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x318D12E9",
+      "displayName": "迅捷能力",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x05F2ECDC",
+      "displayName": "怒涛",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xB5FF9FD3",
+      "displayName": "激昂",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x24883AF3",
+      "displayName": "药水携带数",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xDC607D75",
+      "displayName": "匿踪",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x6018372B",
+      "displayName": "挑衅",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xF687C5EF",
+      "displayName": "获得经验值",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xC86F3082",
+      "displayName": "获得金币",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xEAE321EB",
+      "displayName": "能力伤害",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xE0ABFDFE",
+      "displayName": "守护",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xA2FA9685",
+      "displayName": "缓速抗性",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x9702860F",
+      "displayName": "灾祸抗性",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x0053599E",
+      "displayName": "蓄力强化",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x1470F860",
+      "displayName": "坚持",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x0EAD65E0",
+      "displayName": "全弱化效果抗性",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x09AA7DB5",
+      "displayName": "凝神",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xD2C8E10A",
+      "displayName": "明镜止水",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x29B292A8",
+      "displayName": "抗争",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x7EDD69D0",
+      "displayName": "怒发冲冠",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x8F502F0D",
+      "displayName": "奋不顾身",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x84078CB0",
+      "displayName": "快速蓄力",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x66DE60B1",
+      "displayName": "防御DOWN抗性",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x1B0D9897",
+      "displayName": "钳蟹的报恩",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x74AA75D6",
+      "displayName": "刚健",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xDC225C96",
+      "displayName": "修罗",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x4C588C27",
+      "displayName": "属性克制转换",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x5E422AE5",
+      "displayName": "获得MSP",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x57AB5B10",
+      "displayName": "追击",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x82CE278D",
+      "displayName": "身无长技",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x1568E0E4",
+      "displayName": "先发制人",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x70395731",
+      "displayName": "穷寇心",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xCD18A77D",
+      "displayName": "万能药",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xA8A3163B",
+      "displayName": "刀上舞",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xDBE1D775",
+      "displayName": "α秘纹",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x8D2ADB6E",
+      "displayName": "β秘纹",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x5C862E13",
+      "displayName": "γ秘纹",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x48A95B8D",
+      "displayName": "金刚",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xF71F8997",
+      "displayName": "自动药水",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xEE85CD1F",
+      "displayName": "狂战士",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x3D8153A1",
+      "displayName": "斯巴达",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x0DE887A0",
+      "displayName": "天星之炼",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xA7726190",
+      "displayName": "天星之煌",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x9232DC17",
+      "displayName": "天星之界",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x36E3848D",
+      "displayName": "天星之焰",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xA898E283",
+      "displayName": "天星之雪",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xD029FE08",
+      "displayName": "浪迹天涯",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x73220725",
+      "displayName": "天星之止息",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xF26BAEA5",
+      "displayName": "分歧",
+      "maxLevel": 15
+    }
+  ]
+}

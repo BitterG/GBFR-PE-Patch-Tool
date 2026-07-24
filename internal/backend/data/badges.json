@@ -1,0 +1,6466 @@
+{
+ "0": {
+  "zh": "翱翔天際的旅人",
+  "en": "Sky Voyager"
+ },
+ "1": {
+  "zh": "風渡的造訪者",
+  "en": "Visitor from Beyond"
+ },
+ "2": {
+  "zh": "風息之島拯救者",
+  "en": "Savior of the Windswept Isle"
+ },
+ "3": {
+  "zh": "風息嵐神平定者",
+  "en": "Pacifier of the Divine Gale"
+ },
+ "4": {
+  "zh": "星旅戰艦擊墜者",
+  "en": "Destroyer of the Armada"
+ },
+ "5": {
+  "zh": "隔絕神狼對抗者",
+  "en": "Tamer of the Divine Wolf"
+ },
+ "6": {
+  "zh": "鎮守巨神對抗者",
+  "en": "Saboteur of the Divine Tower"
+ },
+ "7": {
+  "zh": "畏懼炎神平息者",
+  "en": "Extinguisher of the Divine Flame"
+ },
+ "8": {
+  "zh": "蒼藍之聲傾聽者",
+  "en": "One with the Blue"
+ },
+ "9": {
+  "zh": "花都的守護者",
+  "en": "Guardian of Seedhollow"
+ },
+ "10": {
+  "zh": "新手騎空士",
+  "en": "Lift Off"
+ },
+ "11": {
+  "zh": "無盡旅途赴行者",
+  "en": "Eternal Adventurer"
+ },
+ "12": {
+  "zh": "傑加的守護者",
+  "en": "Defender of Zegagrande"
+ },
+ "13": {
+  "zh": "傑加的救世主",
+  "en": "Savior of Zegagrande"
+ },
+ "14": {
+  "zh": "超越異靈",
+  "en": "Above and Beyond"
+ },
+ "15": {
+  "zh": "完美英雄",
+  "en": "Perfectly Heroic"
+ },
+ "16": {
+  "zh": "【極】",
+  "en": "Hardcore"
+ },
+ "17": {
+  "zh": "狂人",
+  "en": "Insanity"
+ },
+ "18": {
+  "zh": "神擊",
+  "en": "Godslayer"
+ },
+ "19": {
+  "zh": "星與空的奇蹟",
+  "en": "Reunited and It Feels So Good"
+ },
+ "20": {
+  "zh": "異靈粉碎者",
+  "en": "Pro Gamer Moves"
+ },
+ "21": {
+  "zh": "熟練騎空士",
+  "en": "Adept Skyfarer"
+ },
+ "22": {
+  "zh": "知名騎空士",
+  "en": "Renowned Skyfarer"
+ },
+ "23": {
+  "zh": "霸空",
+  "en": "Supreme Skyfarer"
+ },
+ "24": {
+  "zh": "星翔",
+  "en": "Soaring Skyfarer"
+ },
+ "25": {
+  "zh": "傳說",
+  "en": "Legendary Skyfarer"
+ },
+ "26": {
+  "zh": "氣勢如虹",
+  "en": "Up-and-Comer"
+ },
+ "27": {
+  "zh": "中堅",
+  "en": "Making Waves"
+ },
+ "28": {
+  "zh": "風雲人物",
+  "en": "Winds of Change"
+ },
+ "29": {
+  "zh": "麒麟兒",
+  "en": "Prodigal Rise"
+ },
+ "30": {
+  "zh": "名譽騎空士",
+  "en": "Glorious Skyfaring"
+ },
+ "31": {
+  "zh": "技巧超群",
+  "en": "Sent from the Heavens"
+ },
+ "32": {
+  "zh": "身經百戰",
+  "en": "A Nose for Quests"
+ },
+ "33": {
+  "zh": "災厄平息者",
+  "en": "Battle-Hardened"
+ },
+ "34": {
+  "zh": "救贖者",
+  "en": "Quest Crusher"
+ },
+ "35": {
+  "zh": "千軍萬馬",
+  "en": "Questing Is My Passion"
+ },
+ "36": {
+  "zh": "紅人",
+  "en": "Distinguished"
+ },
+ "37": {
+  "zh": "大紅人",
+  "en": "Celebrated"
+ },
+ "38": {
+  "zh": "全空的領袖",
+  "en": "Preeminent"
+ },
+ "39": {
+  "zh": "好人",
+  "en": "Commendable"
+ },
+ "40": {
+  "zh": "大好人",
+  "en": "Commendabler"
+ },
+ "41": {
+  "zh": "☆★ＧＯＯＤ★☆",
+  "en": "Commendablest"
+ },
+ "42": {
+  "zh": "The Dragon Knights",
+  "en": "The Dragon Knights"
+ },
+ "43": {
+  "zh": "固定班底",
+  "en": "From Humble Beginnings"
+ },
+ "44": {
+  "zh": "風之旅人",
+  "en": "Windswept Traveler"
+ },
+ "45": {
+  "zh": "風之騎空士",
+  "en": "Windswept Skyfarer"
+ },
+ "46": {
+  "zh": "風之英雄",
+  "en": "Windswept Paragon"
+ },
+ "47": {
+  "zh": "霍爾嘉探險家",
+  "en": "Folca Questpert"
+ },
+ "48": {
+  "zh": "花之旅人",
+  "en": "Blooming Traveler"
+ },
+ "49": {
+  "zh": "花之騎空士",
+  "en": "Blooming Skyfarer"
+ },
+ "50": {
+  "zh": "花之英雄",
+  "en": "Blooming Paragon"
+ },
+ "51": {
+  "zh": "席多霍姆探險家",
+  "en": "Seedhollow Questpert"
+ },
+ "52": {
+  "zh": "可靠的鄰人",
+  "en": "A Helpful Neighbor"
+ },
+ "53": {
+  "zh": "輕而易舉！",
+  "en": "Not a Problem!"
+ },
+ "54": {
+  "zh": "迅速解決！",
+  "en": "Easy as Pie!"
+ },
+ "55": {
+  "zh": "包在我身上！",
+  "en": "Gimme All Yer Quests!"
+ },
+ "56": {
+  "zh": "編織羈絆之翼",
+  "en": "Unshakeable Bonds"
+ },
+ "57": {
+  "zh": "鸚鵡螺號的協助者",
+  "en": "Nautilus Backer"
+ },
+ "58": {
+  "zh": "溫柔的大姐姐",
+  "en": "More than a Knight"
+ },
+ "59": {
+  "zh": "散播歡笑",
+  "en": "Smile Maker"
+ },
+ "60": {
+  "zh": "花開少女",
+  "en": "Blooming Maiden"
+ },
+ "61": {
+  "zh": "卡爾賽達的恩人",
+  "en": "Kharzeda's Hero"
+ },
+ "62": {
+  "zh": "溫柔的謊言",
+  "en": "Little White Lie"
+ },
+ "63": {
+  "zh": "格羅斯加爾德的英雄",
+  "en": "Hero of Grosgard"
+ },
+ "64": {
+  "zh": "超級英雄",
+  "en": "Superhero"
+ },
+ "65": {
+  "zh": "炎帝的家臣",
+  "en": "New Vassals"
+ },
+ "66": {
+  "zh": "救國忠騎士",
+  "en": "For King and Country"
+ },
+ "67": {
+  "zh": "清廉、正直、高潔",
+  "en": "Forever Pure and Righteous"
+ },
+ "68": {
+  "zh": "釣神",
+  "en": "Fishergod"
+ },
+ "69": {
+  "zh": "千人斬",
+  "en": "Slayer of Thousands"
+ },
+ "70": {
+  "zh": "活生生的傳說",
+  "en": "Fist of Legend"
+ },
+ "71": {
+  "zh": "天才美少女鍊金術師☆彡",
+  "en": "The Cutest Alchemist"
+ },
+ "72": {
+  "zh": "滅罪者",
+  "en": "Crime Slayer"
+ },
+ "73": {
+  "zh": "命運閱覽者",
+  "en": "Fate Watcher"
+ },
+ "74": {
+  "zh": "命運編織者",
+  "en": "Fate Beholder"
+ },
+ "75": {
+  "zh": "命運傳道者",
+  "en": "Fate Seer"
+ },
+ "76": {
+  "zh": "空之記錄者",
+  "en": "Casual Scribe"
+ },
+ "77": {
+  "zh": "歷史探究者",
+  "en": "Budding Archivist"
+ },
+ "78": {
+  "zh": "真相迫近者",
+  "en": "Truth Seeker"
+ },
+ "79": {
+  "zh": "萬物知曉者",
+  "en": "All-Knowing Librarian"
+ },
+ "80": {
+  "zh": "千里之蟹始於足下",
+  "en": "In a Pinch"
+ },
+ "81": {
+  "zh": "喜歡螃蟹",
+  "en": "I Like Crabs"
+ },
+ "82": {
+  "zh": "螃蟹☆嘉年華",
+  "en": "To Crablivion and Beyond"
+ },
+ "83": {
+  "zh": "一心只有螃蟹",
+  "en": "Head Empty, Just Crabs"
+ },
+ "84": {
+  "zh": "寶物獵人",
+  "en": "The Hunt Is On"
+ },
+ "85": {
+  "zh": "寶箱獵手",
+  "en": "Look What I Found"
+ },
+ "86": {
+  "zh": "財寶獵人",
+  "en": "What's in the Box?!"
+ },
+ "87": {
+  "zh": "寶藏大師",
+  "en": "Compulsive Chest Opener"
+ },
+ "88": {
+  "zh": "黏糊糊的東西",
+  "en": "Slime Time"
+ },
+ "89": {
+  "zh": "史萊姆獵人",
+  "en": "Slime Hunter"
+ },
+ "90": {
+  "zh": "手下留情",
+  "en": "Goo Away"
+ },
+ "91": {
+  "zh": "世界第一帥",
+  "en": "Slime's the Limit"
+ },
+ "92": {
+  "zh": "遠古答覆者",
+  "en": "Ancient Assassin"
+ },
+ "93": {
+  "zh": "巴列薩雷克凍結者",
+  "en": "Iced Vrazarek"
+ },
+ "94": {
+  "zh": "維里奴斯炙烤者",
+  "en": "Roasted Wilinus"
+ },
+ "95": {
+  "zh": "多貝爾攀登者",
+  "en": "Crumbled Corvell"
+ },
+ "96": {
+  "zh": "伊爾西斯擊墜者",
+  "en": "Suffocated Elusious"
+ },
+ "97": {
+  "zh": "伊維爾照耀者",
+  "en": "Lit Up Evyl"
+ },
+ "98": {
+  "zh": "力量就是一切",
+  "en": "Power is Power"
+ },
+ "99": {
+  "zh": "極致收藏家",
+  "en": "Superior Collection"
+ },
+ "100": {
+  "zh": "宿命斬斷者",
+  "en": "Denier of Destiny"
+ },
+ "101": {
+  "zh": "火之獵人",
+  "en": "Fire Hunter"
+ },
+ "102": {
+  "zh": "赤星之翼",
+  "en": "Fire Primal's Emancipator"
+ },
+ "103": {
+  "zh": "風之獵人",
+  "en": "Wind Hunter"
+ },
+ "104": {
+  "zh": "綠星之翼",
+  "en": "Wind Primal's Emancipator"
+ },
+ "105": {
+  "zh": "水之獵人",
+  "en": "Water Hunter"
+ },
+ "106": {
+  "zh": "青星之翼",
+  "en": "Water Primal's Emancipator"
+ },
+ "107": {
+  "zh": "土之獵人",
+  "en": "Earth Hunter"
+ },
+ "108": {
+  "zh": "黃星之翼",
+  "en": "Earth Primal's Emancipator"
+ },
+ "109": {
+  "zh": "災禍之門封縛者",
+  "en": "Sealed the Calamitous Gates"
+ },
+ "110": {
+  "zh": "至天星神屠滅者",
+  "en": "Vanquished the Astral Solstice"
+ },
+ "111": {
+  "zh": "紫銀雙翼擊潰者",
+  "en": "Felled the Wings of Darkness"
+ },
+ "112": {
+  "zh": "星晶獸獵人",
+  "en": "Primal Beast Hunter"
+ },
+ "113": {
+  "zh": "星神殺手",
+  "en": "Primal Beast Slayer"
+ },
+ "114": {
+  "zh": "殺戮戰場徘徊者",
+  "en": "Primal Terror"
+ },
+ "115": {
+  "zh": "神話破壞者",
+  "en": "Primal Undertaker"
+ },
+ "116": {
+  "zh": "奧義準備好了！",
+  "en": "Unleash Hell"
+ },
+ "117": {
+  "zh": "奧義就交給我！",
+  "en": "Bound for Greatness"
+ },
+ "118": {
+  "zh": "放大招",
+  "en": "Blast 'Em"
+ },
+ "119": {
+  "zh": "絕技",
+  "en": "Art of War"
+ },
+ "120": {
+  "zh": "FULL CHAIN！",
+  "en": "Full Burst!"
+ },
+ "121": {
+  "zh": "OVERCHAIN！",
+  "en": "Overburst!"
+ },
+ "122": {
+  "zh": "軍神",
+  "en": "Bursting with Power"
+ },
+ "123": {
+  "zh": "超究極",
+  "en": "Bursting Beyond"
+ },
+ "124": {
+  "zh": "連結攻擊手",
+  "en": "Let's Link Up"
+ },
+ "125": {
+  "zh": "連結大師",
+  "en": "Link Master"
+ },
+ "126": {
+  "zh": "共鳴者",
+  "en": "Take My Hand"
+ },
+ "127": {
+  "zh": "共鳴神",
+  "en": "Found the Missing Link"
+ },
+ "128": {
+  "zh": "羈絆連繫者",
+  "en": "It's Linking Time"
+ },
+ "129": {
+  "zh": "以心傳心",
+  "en": "Mind Melding"
+ },
+ "130": {
+  "zh": "默契十足",
+  "en": "We're Compatible"
+ },
+ "131": {
+  "zh": "共時性",
+  "en": "Synchronicity"
+ },
+ "132": {
+  "zh": "一馬當先",
+  "en": "Spirit Breaker"
+ },
+ "133": {
+  "zh": "重視夥伴",
+  "en": "I Got You"
+ },
+ "134": {
+  "zh": "補師",
+  "en": "Lifesaver"
+ },
+ "135": {
+  "zh": "不死鳥",
+  "en": "Phoenix"
+ },
+ "136": {
+  "zh": "粗魯人",
+  "en": "Gimme a Break"
+ },
+ "137": {
+  "zh": "脫韁野馬",
+  "en": "Skyfarer Smash!"
+ },
+ "138": {
+  "zh": "破壞神",
+  "en": "We Will Wreck You"
+ },
+ "139": {
+  "zh": "奧祕閃耀的騎空士",
+  "en": "Skybound Captain"
+ },
+ "140": {
+  "zh": "超越災禍之門的騎空士",
+  "en": "Gate-Crushing Captain"
+ },
+ "141": {
+  "zh": "超越紫銀雙翼的騎空士",
+  "en": "Darkness-Smashing Captain"
+ },
+ "142": {
+  "zh": "奧祕閃耀的守護騎士",
+  "en": "Skybound Guardian"
+ },
+ "143": {
+  "zh": "超越災禍之門的守護騎士",
+  "en": "Gate-Crushing Guardian"
+ },
+ "144": {
+  "zh": "超越紫銀雙翼的守護騎士",
+  "en": "Darkness-Smashing Guardian"
+ },
+ "145": {
+  "zh": "奧祕閃耀的操舵士",
+  "en": "Skybound Helmsman"
+ },
+ "146": {
+  "zh": "超越災禍之門的操舵士",
+  "en": "Gate-Crushing Helmsman"
+ },
+ "147": {
+  "zh": "超越紫銀雙翼的操舵士",
+  "en": "Darkness-Smashing Helmsman"
+ },
+ "148": {
+  "zh": "奧祕閃耀的魔導士",
+  "en": "Skybound Mage"
+ },
+ "149": {
+  "zh": "超越災禍之門的魔導士",
+  "en": "Gate-Crushing Mage"
+ },
+ "150": {
+  "zh": "超越紫銀雙翼的魔導士",
+  "en": "Darkness-Smashing Mage"
+ },
+ "151": {
+  "zh": "奧祕閃耀的薔薇",
+  "en": "Skybound Rose"
+ },
+ "152": {
+  "zh": "超越災禍之門的薔薇",
+  "en": "Gate-Crushing Rose"
+ },
+ "153": {
+  "zh": "超越紫銀雙翼的薔薇",
+  "en": "Darkness-Smashing Rose"
+ },
+ "154": {
+  "zh": "奧祕閃耀的狙擊手",
+  "en": "Skybound Sniper"
+ },
+ "155": {
+  "zh": "超越災禍之門的狙擊手",
+  "en": "Gate-Crushing Sniper"
+ },
+ "156": {
+  "zh": "超越紫銀雙翼的狙擊手",
+  "en": "Darkness-Smashing Sniper"
+ },
+ "157": {
+  "zh": "奧祕閃耀的幽靈少女",
+  "en": "Skybound Ghost"
+ },
+ "158": {
+  "zh": "超越災禍之門的幽靈少女",
+  "en": "Gate-Crushing Ghost"
+ },
+ "159": {
+  "zh": "超越紫銀雙翼的幽靈少女",
+  "en": "Darkness-Smashing Ghost"
+ },
+ "160": {
+  "zh": "奧祕閃耀的雙劍士",
+  "en": "Skybound Twinfang"
+ },
+ "161": {
+  "zh": "超越災禍之門的雙劍士",
+  "en": "Gate-Crushing Twinfang"
+ },
+ "162": {
+  "zh": "超越紫銀雙翼的雙劍士",
+  "en": "Darkness-Smashing Twinfang"
+ },
+ "163": {
+  "zh": "奧祕閃耀的驍勇騎士",
+  "en": "Skybound Champion"
+ },
+ "164": {
+  "zh": "超越災禍之門的驍勇騎士",
+  "en": "Gate-Crushing Champion"
+ },
+ "165": {
+  "zh": "超越紫銀雙翼的驍勇騎士",
+  "en": "Darkness-Smashing Champion"
+ },
+ "166": {
+  "zh": "奧祕閃耀的炎帝",
+  "en": "Skybound Lord"
+ },
+ "167": {
+  "zh": "超越災禍之門的炎帝",
+  "en": "Gate-Crushing Lord"
+ },
+ "168": {
+  "zh": "超越紫銀雙翼的炎帝",
+  "en": "Darkness-Smashing Lord"
+ },
+ "169": {
+  "zh": "奧祕閃耀的狩龍者",
+  "en": "Skybound Dragonslayer"
+ },
+ "170": {
+  "zh": "超越災禍之門的狩龍者",
+  "en": "Gate-Crushing Dragonslayer"
+ },
+ "171": {
+  "zh": "超越紫銀雙翼的狩龍者",
+  "en": "Darkness-Smashing Dragonslayer"
+ },
+ "172": {
+  "zh": "奧祕閃耀的聖騎士",
+  "en": "Skybound Holy Knight"
+ },
+ "173": {
+  "zh": "超越災禍之門的聖騎士",
+  "en": "Gate-Crushing Holy Knight"
+ },
+ "174": {
+  "zh": "超越紫銀雙翼的聖騎士",
+  "en": "Darkness-Smashing Holy Knight"
+ },
+ "175": {
+  "zh": "奧祕閃耀的妖劍士",
+  "en": "Skybound Fencer"
+ },
+ "176": {
+  "zh": "超越災禍之門的妖劍士",
+  "en": "Gate-Crushing Fencer"
+ },
+ "177": {
+  "zh": "超越紫銀雙翼的妖劍士",
+  "en": "Darkness-Smashing Fencer"
+ },
+ "178": {
+  "zh": "奧祕閃耀的斬姬",
+  "en": "Skybound Butterfly"
+ },
+ "179": {
+  "zh": "超越災禍之門的斬姬",
+  "en": "Gate-Crushing Butterfly"
+ },
+ "180": {
+  "zh": "超越紫銀雙翼的斬姬",
+  "en": "Darkness-Smashing Butterfly"
+ },
+ "181": {
+  "zh": "奧祕閃耀的大拳豪",
+  "en": "Skybound Brawler"
+ },
+ "182": {
+  "zh": "超越災禍之門的大拳豪",
+  "en": "Gate-Crushing Brawler"
+ },
+ "183": {
+  "zh": "超越紫銀雙翼的大拳豪",
+  "en": "Darkness-Smashing Brawler"
+ },
+ "184": {
+  "zh": "奧祕閃耀的鍊金術師",
+  "en": "Skybound Alchemist"
+ },
+ "185": {
+  "zh": "超越災禍之門的鍊金術師",
+  "en": "Gate-Crushing Alchemist"
+ },
+ "186": {
+  "zh": "超越紫銀雙翼的鍊金術師",
+  "en": "Darkness-Smashing Alchemist"
+ },
+ "187": {
+  "zh": "奧祕閃耀的剛劍士",
+  "en": "Skybound Swordsman"
+ },
+ "188": {
+  "zh": "超越災禍之門的剛劍士",
+  "en": "Gate-Crushing Swordsman"
+ },
+ "189": {
+  "zh": "超越紫銀雙翼的剛劍士",
+  "en": "Darkness-Smashing Swordsman"
+ },
+ "190": {
+  "zh": "天空旅程",
+  "en": "Getting Good"
+ },
+ "191": {
+  "zh": "飛向未來",
+  "en": "Date with Destiny"
+ },
+ "192": {
+  "zh": "蒼空探求者",
+  "en": "Skyblazer"
+ },
+ "193": {
+  "zh": "翱翔天際的新銳",
+  "en": "Racing Across the Sky"
+ },
+ "194": {
+  "zh": "爛好人",
+  "en": "Room for Improvement"
+ },
+ "195": {
+  "zh": "專業騎空士",
+  "en": "Professional Skyfarer"
+ },
+ "196": {
+  "zh": "棟梁",
+  "en": "Guts and Glory"
+ },
+ "197": {
+  "zh": "一路順風",
+  "en": "Clear Skies Ahead"
+ },
+ "198": {
+  "zh": "蒼藍劍士",
+  "en": "Blue Fencer"
+ },
+ "199": {
+  "zh": "冰柱防禦者",
+  "en": "Wall of Ice"
+ },
+ "200": {
+  "zh": "誓約守護者",
+  "en": "Guardian of Promises"
+ },
+ "201": {
+  "zh": "蒼天守護騎士",
+  "en": "Azure Guardian"
+ },
+ "202": {
+  "zh": "刀劍狂熱者",
+  "en": "Sword Fanatic"
+ },
+ "203": {
+  "zh": "喜歡可愛的東西",
+  "en": "Can't Handle Cuteness"
+ },
+ "204": {
+  "zh": "露莉亞的守護者",
+  "en": "Lyria's Guardian"
+ },
+ "205": {
+  "zh": "真心誠意",
+  "en": "Unfailing Loyalty"
+ },
+ "206": {
+  "zh": "隨興槍手",
+  "en": "Rough-and-Tumble Gunner"
+ },
+ "207": {
+  "zh": "暴風突擊手",
+  "en": "Like a Tempest"
+ },
+ "208": {
+  "zh": "頂尖操舵手",
+  "en": "Greatest Helmsman in the World"
+ },
+ "209": {
+  "zh": "蒼穹領路人",
+  "en": "Into the Brink"
+ },
+ "210": {
+  "zh": "紓壓專家",
+  "en": "Durationist"
+ },
+ "211": {
+  "zh": "靦腆之人",
+  "en": "Fun to Tease"
+ },
+ "212": {
+  "zh": "冷冽的男人",
+  "en": "Pessimist"
+ },
+ "213": {
+  "zh": "行雲流水",
+  "en": "Going with the Flow"
+ },
+ "214": {
+  "zh": "小小魔導士",
+  "en": "Little Powerhouse"
+ },
+ "215": {
+  "zh": "純真治療師",
+  "en": "Sincere Healer"
+ },
+ "216": {
+  "zh": "大法師",
+  "en": "Archmage"
+ },
+ "217": {
+  "zh": "蒼翠的魔法少女",
+  "en": "Heart of Magic"
+ },
+ "218": {
+  "zh": "不服輸",
+  "en": "Hates to Lose"
+ },
+ "219": {
+  "zh": "喜歡時尚",
+  "en": "Loves to Impress"
+ },
+ "220": {
+  "zh": "優秀的淑女",
+  "en": "Sophisticated Lady"
+ },
+ "221": {
+  "zh": "天真爛漫",
+  "en": "Genuine Talent"
+ },
+ "222": {
+  "zh": "鐵處女",
+  "en": "Iron Maiden"
+ },
+ "223": {
+  "zh": "支配者",
+  "en": "Dominator"
+ },
+ "224": {
+  "zh": "玫瑰女皇",
+  "en": "Rose Queen"
+ },
+ "225": {
+  "zh": "蒼麗的薔薇",
+  "en": "Verdant Garden"
+ },
+ "226": {
+  "zh": "魯曼西的守護者",
+  "en": "Protector of Lumacie"
+ },
+ "227": {
+  "zh": "過去現在連繫者",
+  "en": "Bridging Past and Present"
+ },
+ "228": {
+  "zh": "伊歐的知己",
+  "en": "Io's Confidant"
+ },
+ "229": {
+  "zh": "櫻花爛漫",
+  "en": "Fully Blossomed"
+ },
+ "230": {
+  "zh": "雙酬傭兵",
+  "en": "Twice the Mercenary"
+ },
+ "231": {
+  "zh": "鷹眼",
+  "en": "Eagle-Eyed"
+ },
+ "232": {
+  "zh": "悲嘆倖存者",
+  "en": "Sorrowful Survivor"
+ },
+ "233": {
+  "zh": "蒼醒的志士",
+  "en": "Human War Machine"
+ },
+ "234": {
+  "zh": "喝呀——！！",
+  "en": "Soiya!"
+ },
+ "235": {
+  "zh": "可靠的大叔",
+  "en": "Aging Like Wine"
+ },
+ "236": {
+  "zh": "男子漢的作風",
+  "en": "Way of the Macho"
+ },
+ "237": {
+  "zh": "深藏不露",
+  "en": "Seasoned Expert"
+ },
+ "238": {
+  "zh": "無名幽靈",
+  "en": "Nameless Ghost"
+ },
+ "239": {
+  "zh": "靈質",
+  "en": "Ectoplasmic"
+ },
+ "240": {
+  "zh": "幽靈調教師",
+  "en": "Ghost Tamer"
+ },
+ "241": {
+  "zh": "幽葬的少女",
+  "en": "Phantom Maiden"
+ },
+ "242": {
+  "zh": "調教者",
+  "en": "Whipped into Shape"
+ },
+ "243": {
+  "zh": "昔日的少女",
+  "en": "Relic of the Past"
+ },
+ "244": {
+  "zh": "夾縫立足者",
+  "en": "Between Life and Death"
+ },
+ "245": {
+  "zh": "幽天月花",
+  "en": "Under the Winter Moonlight"
+ },
+ "246": {
+  "zh": "雙劍士",
+  "en": "Two Blades Are Better than One"
+ },
+ "247": {
+  "zh": "皇家蒼騎士",
+  "en": "Royal Blue Knight"
+ },
+ "248": {
+  "zh": "冰雪騎士",
+  "en": "Knight of Ice"
+ },
+ "249": {
+  "zh": "忠誓的騎士團團長",
+  "en": "Chivalrous Knight Captain"
+ },
+ "250": {
+  "zh": "榮譽的龍騎士",
+  "en": "Proud Dragon Knight"
+ },
+ "251": {
+  "zh": "白龍騎士團團長",
+  "en": "Captain of the White Dragons"
+ },
+ "252": {
+  "zh": "范恩的死黨",
+  "en": "Vane's Best Friend"
+ },
+ "253": {
+  "zh": "光明正大",
+  "en": "Forthright and Honorable"
+ },
+ "254": {
+  "zh": "微笑英雄",
+  "en": "Never without a Smile"
+ },
+ "255": {
+  "zh": "英勇戰士",
+  "en": "Brave Warrior"
+ },
+ "256": {
+  "zh": "英豪勇士",
+  "en": "What It Takes to Be a Hero"
+ },
+ "257": {
+  "zh": "不屈不撓的騎士",
+  "en": "Indominable Knight"
+ },
+ "258": {
+  "zh": "家事就交給我",
+  "en": "I'll Do the Dishes!"
+ },
+ "259": {
+  "zh": "廚藝精湛系男子",
+  "en": "Master Chef"
+ },
+ "260": {
+  "zh": "我為人人",
+  "en": "One for All"
+ },
+ "261": {
+  "zh": "臥龍鳳雛",
+  "en": "Burgeoning Promise"
+ },
+ "262": {
+  "zh": "火焰之狼",
+  "en": "Burning Wolf"
+ },
+ "263": {
+  "zh": "緋紅王子",
+  "en": "Crimson Prince"
+ },
+ "264": {
+  "zh": "烈焰之主",
+  "en": "Regal Trailblazer"
+ },
+ "265": {
+  "zh": "炎帝",
+  "en": "Lord of Flames"
+ },
+ "266": {
+  "zh": "雞冠頭的小哥",
+  "en": "Sir Burnsalot"
+ },
+ "267": {
+  "zh": "無盡烈炎",
+  "en": "Inextinguishable Flame"
+ },
+ "268": {
+  "zh": "王道赴行者",
+  "en": "Kingdom Builder"
+ },
+ "269": {
+  "zh": "威風凜凜",
+  "en": "Great and Noble Leader"
+ },
+ "270": {
+  "zh": "雄心護衛",
+  "en": "Aggressive Sword Arm"
+ },
+ "271": {
+  "zh": "赦免騎士",
+  "en": "Dutybound Knight"
+ },
+ "272": {
+  "zh": "狂悍龍騎士",
+  "en": "Savage Dragoon"
+ },
+ "273": {
+  "zh": "屠龍者",
+  "en": "Dragonslayer"
+ },
+ "274": {
+  "zh": "豪傑",
+  "en": "Majesty"
+ },
+ "275": {
+  "zh": "黑龍之刃",
+  "en": "Blade of the Black Dragons"
+ },
+ "276": {
+  "zh": "真龍屠滅者",
+  "en": "Slayer of True Dragons"
+ },
+ "277": {
+  "zh": "捨身取義",
+  "en": "Devoted to Duty"
+ },
+ "278": {
+  "zh": "神聖騎士",
+  "en": "Holy Knight"
+ },
+ "279": {
+  "zh": "煌輝劍士",
+  "en": "Brilliant Swordmaster"
+ },
+ "280": {
+  "zh": "恩典聖騎士",
+  "en": "Graceful Paladin"
+ },
+ "281": {
+  "zh": "榮冠聖騎士",
+  "en": "Preeminent Knight of Lumiel"
+ },
+ "282": {
+  "zh": "嬌小的聖騎士",
+  "en": "The Little Knight That Could"
+ },
+ "283": {
+  "zh": "兒童餐！",
+  "en": "Little Skyfarer's Lunch"
+ },
+ "284": {
+  "zh": "盧米埃之劍",
+  "en": "Sword of Lumiel"
+ },
+ "285": {
+  "zh": "一騎當千",
+  "en": "Equal to a Thousand Knights"
+ },
+ "286": {
+  "zh": "古怪的釣手",
+  "en": "Vintage Angler"
+ },
+ "287": {
+  "zh": "隱居劍客",
+  "en": "Hermit with a Sword"
+ },
+ "288": {
+  "zh": "劍術大師",
+  "en": "Master Fencer"
+ },
+ "289": {
+  "zh": "變化自如的妖劍士",
+  "en": "Phantasmagoric Swordmaster"
+ },
+ "290": {
+  "zh": "來去無蹤",
+  "en": "Vagabond"
+ },
+ "291": {
+  "zh": "活到老學到老",
+  "en": "Old Dogs Can Learn New Tricks"
+ },
+ "292": {
+  "zh": "吞舟之魚",
+  "en": "Big Fish"
+ },
+ "293": {
+  "zh": "一刃必殺",
+  "en": "One-Stroke Deathbringer"
+ },
+ "294": {
+  "zh": "蝶夢",
+  "en": "Fluttering Dreamer"
+ },
+ "295": {
+  "zh": "沉睡劍士",
+  "en": "Ethereal Fencer"
+ },
+ "296": {
+  "zh": "無瑕",
+  "en": "Purehearted"
+ },
+ "297": {
+  "zh": "幻形的斬姬",
+  "en": "Butterfly of Death"
+ },
+ "298": {
+  "zh": "格殺勿論",
+  "en": "License to Kill"
+ },
+ "299": {
+  "zh": "曬日光浴高手",
+  "en": "Napping under the Sun"
+ },
+ "300": {
+  "zh": "照顧行家",
+  "en": "Spoiling Them Rotten"
+ },
+ "301": {
+  "zh": "泡沫夢幻",
+  "en": "Ephemeral Samurai"
+ },
+ "302": {
+  "zh": "孤拳",
+  "en": "Mega Punch"
+ },
+ "303": {
+  "zh": "拳擊大師",
+  "en": "Knuckle Sandwich"
+ },
+ "304": {
+  "zh": "隕石擊碎者",
+  "en": "Meteoric Smasher"
+ },
+ "305": {
+  "zh": "獨步古今的大拳豪",
+  "en": "History's Mightiest Fist"
+ },
+ "306": {
+  "zh": "赤手空拳",
+  "en": "Fists Only"
+ },
+ "307": {
+  "zh": "破天荒",
+  "en": "Unparalleled"
+ },
+ "308": {
+  "zh": "怒髮衝冠",
+  "en": "Eternally Raging"
+ },
+ "309": {
+  "zh": "天下無雙",
+  "en": "These Fists Don't Lie"
+ },
+ "310": {
+  "zh": "可愛鍊金術師",
+  "en": "Sweet Alchemist"
+ },
+ "311": {
+  "zh": "驚奇鍊金術師",
+  "en": "Inspiring Alchemist"
+ },
+ "312": {
+  "zh": "創世鍊金術師",
+  "en": "Genius Alchemist"
+ },
+ "313": {
+  "zh": "開闢的鍊金術師",
+  "en": "Founder of Alchemy"
+ },
+ "314": {
+  "zh": "稀世天才",
+  "en": "Once in a Millennia"
+ },
+ "315": {
+  "zh": "跨越時空的睿智之書",
+  "en": "Walking Library"
+ },
+ "316": {
+  "zh": "始祖",
+  "en": "The OG"
+ },
+ "317": {
+  "zh": "萬物流轉",
+  "en": "Change is the Only Constant"
+ },
+ "318": {
+  "zh": "萬物破壞者",
+  "en": "Breaker"
+ },
+ "319": {
+  "zh": "征服者",
+  "en": "Subjugator"
+ },
+ "320": {
+  "zh": "贖罪戰士",
+  "en": "Redeemer"
+ },
+ "321": {
+  "zh": "破壞之業刃",
+  "en": "Destroyer"
+ },
+ "322": {
+  "zh": "沉默寡言",
+  "en": "A Man of Few Words"
+ },
+ "323": {
+  "zh": "90秒內解決掉",
+  "en": "Gone in 90 Seconds"
+ },
+ "324": {
+  "zh": "斷罪",
+  "en": "Judge, Jury, and Executioner"
+ },
+ "325": {
+  "zh": "畫龍點睛",
+  "en": "The Dragon Within"
+ },
+ "326": {
+  "zh": "蒼空的直劍士",
+  "en": "Captain's Collection"
+ },
+ "327": {
+  "zh": "蒼空的直劍大師",
+  "en": "Captain's Trove"
+ },
+ "328": {
+  "zh": "誓約的細劍士",
+  "en": "Katalina's Collection"
+ },
+ "329": {
+  "zh": "誓約的細劍大師",
+  "en": "Katalina's Trove"
+ },
+ "330": {
+  "zh": "引導的刺槍手",
+  "en": "Rackam's Collection"
+ },
+ "331": {
+  "zh": "引導的刺槍大師",
+  "en": "Rackam's Trove"
+ },
+ "332": {
+  "zh": "繁花的魔杖士",
+  "en": "Io's Collection"
+ },
+ "333": {
+  "zh": "繁花的魔杖大師",
+  "en": "Io's Trove"
+ },
+ "334": {
+  "zh": "悠久的短劍士",
+  "en": "Rosetta's Collection"
+ },
+ "335": {
+  "zh": "悠久的短劍大師",
+  "en": "Rosetta's Trove"
+ },
+ "336": {
+  "zh": "老練的獵槍手",
+  "en": "Eugen's Collection"
+ },
+ "337": {
+  "zh": "老練的獵槍大師",
+  "en": "Eugen's Trove"
+ },
+ "338": {
+  "zh": "幽想的驅鞭手",
+  "en": "Ferry's Collection"
+ },
+ "339": {
+  "zh": "幽想的驅鞭大師",
+  "en": "Ferry's Trove"
+ },
+ "340": {
+  "zh": "傑出的雙劍士",
+  "en": "Lancelot's Collection"
+ },
+ "341": {
+  "zh": "傑出的雙劍大師",
+  "en": "Lancelot's Trove"
+ },
+ "342": {
+  "zh": "不屈的槍斧士",
+  "en": "Vane's Collection"
+ },
+ "343": {
+  "zh": "不屈的槍斧大師",
+  "en": "Vane's Trove"
+ },
+ "344": {
+  "zh": "烈焰的長劍士",
+  "en": "Percival's Collection"
+ },
+ "345": {
+  "zh": "烈焰的長劍大師",
+  "en": "Percival's Trove"
+ },
+ "346": {
+  "zh": "退魔的巨劍士",
+  "en": "Siegfried's Collection"
+ },
+ "347": {
+  "zh": "退魔的巨劍大師",
+  "en": "Siegfried's Trove"
+ },
+ "348": {
+  "zh": "榮光的聖劍士",
+  "en": "Charlotta's Collection"
+ },
+ "349": {
+  "zh": "榮光的聖劍大師",
+  "en": "Charlotta's Trove"
+ },
+ "350": {
+  "zh": "隱逸的妖劍士",
+  "en": "Yodarha's Collection"
+ },
+ "351": {
+  "zh": "隱逸的妖劍大師",
+  "en": "Yodarha's Trove"
+ },
+ "352": {
+  "zh": "幻形的太刀手",
+  "en": "Narmaya's Collection"
+ },
+ "353": {
+  "zh": "幻形的太刀大師",
+  "en": "Narmaya's Trove"
+ },
+ "354": {
+  "zh": "傳說之拳",
+  "en": "Ghandagoza's Collection"
+ },
+ "355": {
+  "zh": "拳王",
+  "en": "Ghandagoza's Trove"
+ },
+ "356": {
+  "zh": "極致的魔導書士",
+  "en": "Cagliostro's Collection"
+ },
+ "357": {
+  "zh": "極致的魔導書大師",
+  "en": "Cagliostro's Trove"
+ },
+ "358": {
+  "zh": "贖罪的剛劍士",
+  "en": "Id's Collection"
+ },
+ "359": {
+  "zh": "贖罪的剛劍大師",
+  "en": "Id's Trove"
+ },
+ "360": {
+  "zh": "成堆的武器",
+  "en": "Bunch o' Pointy Things"
+ },
+ "361": {
+  "zh": "軍械庫",
+  "en": "Growing Arsenal"
+ },
+ "362": {
+  "zh": "致命武器",
+  "en": "Lethal Weapons"
+ },
+ "363": {
+  "zh": "武器狂熱者",
+  "en": "Armed to the Teeth"
+ },
+ "364": {
+  "zh": "鋼鐵職人",
+  "en": "Ironsmith"
+ },
+ "365": {
+  "zh": "玄黑職人",
+  "en": "Bronzesmith"
+ },
+ "366": {
+  "zh": "白銀職人",
+  "en": "Silversmith"
+ },
+ "367": {
+  "zh": "黃金職人",
+  "en": "Goldsmith"
+ },
+ "368": {
+  "zh": "偉大職人",
+  "en": "Grandsmith"
+ },
+ "369": {
+  "zh": "極限突破者",
+  "en": "Limit Breaker"
+ },
+ "370": {
+  "zh": "5突",
+  "en": "Five Stars"
+ },
+ "371": {
+  "zh": "50突",
+  "en": "Fifty Stars"
+ },
+ "372": {
+  "zh": "100突",
+  "en": "One Hundred Stars"
+ },
+ "373": {
+  "zh": "突神",
+  "en": "All the Stars"
+ },
+ "374": {
+  "zh": "恆常因子",
+  "en": "Available Everywhere"
+ },
+ "375": {
+  "zh": "稀世因子",
+  "en": "Not as Common"
+ },
+ "376": {
+  "zh": "特異因子",
+  "en": "Rare Find"
+ },
+ "377": {
+  "zh": "異才因子",
+  "en": "Pretty Epic"
+ },
+ "378": {
+  "zh": "超越因子",
+  "en": "Stuff of Legends"
+ },
+ "379": {
+  "zh": "因子入門者",
+  "en": "Sigil Casual"
+ },
+ "380": {
+  "zh": "因子收藏家",
+  "en": "Sigil Collector"
+ },
+ "381": {
+  "zh": "因子狂熱者",
+  "en": "Sigil Fanatic"
+ },
+ "382": {
+  "zh": "第六感",
+  "en": "Sigil Sense"
+ },
+ "383": {
+  "zh": "因子訓練者",
+  "en": "Sigil Trainee"
+ },
+ "384": {
+  "zh": "因子研究者",
+  "en": "Sigil Researcher"
+ },
+ "385": {
+  "zh": "因子第一把交椅",
+  "en": "Sigil Savant"
+ },
+ "386": {
+  "zh": "因子權威",
+  "en": "Ask Me About My Sigils"
+ },
+ "387": {
+  "zh": "繼承的寶石",
+  "en": "Power of the Plus"
+ },
+ "388": {
+  "zh": "（＋99）",
+  "en": "Plus Ninety Nine"
+ },
+ "389": {
+  "zh": "（＋200）",
+  "en": "Plus Two Hundred"
+ },
+ "390": {
+  "zh": "（＋500）",
+  "en": "Plus Five Hundred"
+ },
+ "391": {
+  "zh": "星神的恩惠",
+  "en": "Favored by the Primeval Gods"
+ },
+ "392": {
+  "zh": "星神的祝福",
+  "en": "Blessed by the Primeval Gods"
+ },
+ "393": {
+  "zh": "星神的寵愛",
+  "en": "Ordained by the Primeval Gods"
+ },
+ "394": {
+  "zh": "蒼翔的大騎空士",
+  "en": "Grand Skyfarer"
+ },
+ "395": {
+  "zh": "清雅的大守護騎士",
+  "en": "Grand Guardian"
+ },
+ "396": {
+  "zh": "果敢的大操舵士",
+  "en": "Grand Helmsman"
+ },
+ "397": {
+  "zh": "無比的大魔導士",
+  "en": "Grand Mage"
+ },
+ "398": {
+  "zh": "妖豔的大薔薇",
+  "en": "Grand Rose"
+ },
+ "399": {
+  "zh": "威風的大狙擊手",
+  "en": "Grand Sniper"
+ },
+ "400": {
+  "zh": "深遠的大幽靈",
+  "en": "Grand Ghost"
+ },
+ "401": {
+  "zh": "流麗的俊雙劍士",
+  "en": "Grand Twinfang"
+ },
+ "402": {
+  "zh": "熾烈的勇壯騎士",
+  "en": "Grand Champion"
+ },
+ "403": {
+  "zh": "輝煌的大炎帝",
+  "en": "Grand Lord"
+ },
+ "404": {
+  "zh": "俊傑的大狩龍者",
+  "en": "Grand Dragonslayer"
+ },
+ "405": {
+  "zh": "高潔的大聖騎士",
+  "en": "Grand Holy Knight"
+ },
+ "406": {
+  "zh": "痛快的大妖劍士",
+  "en": "Grand Swordmaster"
+ },
+ "407": {
+  "zh": "典麗的大斬姬",
+  "en": "Grand Butterfly"
+ },
+ "408": {
+  "zh": "豪壯的大拳豪",
+  "en": "Grand Brawler"
+ },
+ "409": {
+  "zh": "灼然的大鍊金術師",
+  "en": "Grand Alchemist"
+ },
+ "410": {
+  "zh": "孤高的大剛劍士",
+  "en": "Grand Avenger"
+ },
+ "411": {
+  "zh": "專業",
+  "en": "Awaken!"
+ },
+ "412": {
+  "zh": "力量冀求者",
+  "en": "Thirst for Power"
+ },
+ "413": {
+  "zh": "全能者",
+  "en": "Waking the Armory"
+ },
+ "414": {
+  "zh": "覺醒者",
+  "en": "Fully Awake"
+ },
+ "415": {
+  "zh": "究極全能者",
+  "en": "Perfecting the Armory"
+ },
+ "416": {
+  "zh": "命運的邂逅",
+  "en": "Fateful Encounter"
+ },
+ "417": {
+  "zh": "命運共同體",
+  "en": "Fateful Matchmaker"
+ },
+ "418": {
+  "zh": "自豪的騎空團",
+  "en": "This Crew Is Going Places"
+ },
+ "419": {
+  "zh": "蒼之英雄",
+  "en": "Flexing"
+ },
+ "420": {
+  "zh": "勇者",
+  "en": "Valorous"
+ },
+ "421": {
+  "zh": "神威",
+  "en": "God Tier"
+ },
+ "422": {
+  "zh": "天空夥伴",
+  "en": "Veteran Crew"
+ },
+ "423": {
+  "zh": "無雙騎空團",
+  "en": "Unrivaled Crew"
+ },
+ "424": {
+  "zh": "神威騎空團",
+  "en": "Glorious Crew"
+ },
+ "425": {
+  "zh": "神威大騎空團",
+  "en": "God-Tier Crew"
+ },
+ "426": {
+  "zh": "盡頭邁進者",
+  "en": "To the Ends of the Skies"
+ },
+ "427": {
+  "zh": "星辰探究者",
+  "en": "Touched the Stars"
+ },
+ "428": {
+  "zh": "全空霸主",
+  "en": "Ruler of the Skies"
+ },
+ "429": {
+  "zh": "神之手",
+  "en": "Playing with All Aces"
+ },
+ "430": {
+  "zh": "求道之人",
+  "en": "First Steps"
+ },
+ "431": {
+  "zh": "解放之人",
+  "en": "Improving Steadily"
+ },
+ "432": {
+  "zh": "超越之人",
+  "en": "True Skill"
+ },
+ "433": {
+  "zh": "絕對之人",
+  "en": "Absolute Mastery"
+ },
+ "434": {
+  "zh": "界限跨越者",
+  "en": "Mastery Breaker"
+ },
+ "435": {
+  "zh": "巔峰立足者",
+  "en": "Scaling Peaks"
+ },
+ "436": {
+  "zh": "天空的登峰造極者",
+  "en": "Smashing Limits"
+ },
+ "437": {
+  "zh": "空皇",
+  "en": "Shattering Skies"
+ },
+ "438": {
+  "zh": "界限再越者",
+  "en": "Overpowered"
+ },
+ "439": {
+  "zh": "顛峰跨越者",
+  "en": "Over Overpowered"
+ },
+ "440": {
+  "zh": "究境赴行者",
+  "en": "Beyond Overpowered"
+ },
+ "441": {
+  "zh": "空神",
+  "en": "Overmastered"
+ },
+ "442": {
+  "zh": "碧的搭檔",
+  "en": "Vyrn's Bestest Pal"
+ },
+ "443": {
+  "zh": "露莉亞的重要之人",
+  "en": "Cherished by Lyria"
+ },
+ "444": {
+  "zh": "特異點",
+  "en": "The Singularity"
+ },
+ "445": {
+  "zh": "姐姐大人",
+  "en": "Kat"
+ },
+ "446": {
+  "zh": "冰山美人",
+  "en": "Chilling Beauty"
+ },
+ "447": {
+  "zh": "冰劍精通者",
+  "en": "Ice to Meet You"
+ },
+ "448": {
+  "zh": "適合煙硝味的男人",
+  "en": "Smoking Gun"
+ },
+ "449": {
+  "zh": "技巧高超的操舵士",
+  "en": "Prodigious Helmsman"
+ },
+ "450": {
+  "zh": "空之羅盤",
+  "en": "The Crew's Compass"
+ },
+ "451": {
+  "zh": "可靠的夥伴",
+  "en": "High Standards"
+ },
+ "452": {
+  "zh": "純真少女",
+  "en": "Studious"
+ },
+ "453": {
+  "zh": "魔法精通者",
+  "en": "Magic Is Easy"
+ },
+ "454": {
+  "zh": "森林麗人",
+  "en": "Forest Beauty"
+ },
+ "455": {
+  "zh": "沉迷於你",
+  "en": "Captivation Incarnate"
+ },
+ "456": {
+  "zh": "久遠",
+  "en": "Love Eternal"
+ },
+ "457": {
+  "zh": "鋼鐵傭兵",
+  "en": "Tough as Nails"
+ },
+ "458": {
+  "zh": "悔恨背負者",
+  "en": "Burdened by Regret"
+ },
+ "459": {
+  "zh": "狙擊精通者",
+  "en": "Supreme Gunner"
+ },
+ "460": {
+  "zh": "孤高的白色亡靈",
+  "en": "Solitary Spirit"
+ },
+ "461": {
+  "zh": "幽獸親近者",
+  "en": "Chosen Family"
+ },
+ "462": {
+  "zh": "調教精通者",
+  "en": "Beast Tamer"
+ },
+ "463": {
+  "zh": "不會收拾的男子",
+  "en": "Secretly Untidy"
+ },
+ "464": {
+  "zh": "秀麗美男子",
+  "en": "Too Handsome"
+ },
+ "465": {
+  "zh": "雙劍精通者",
+  "en": "Meet the Twin Daggers"
+ },
+ "466": {
+  "zh": "笨狗",
+  "en": "Mongrel"
+ },
+ "467": {
+  "zh": "重視朋友",
+  "en": "Stalwart Ally"
+ },
+ "468": {
+  "zh": "大勇之人",
+  "en": "Shouldering Burdens"
+ },
+ "469": {
+  "zh": "家臣募集中",
+  "en": "Vassals Wanted"
+ },
+ "470": {
+  "zh": "紅蓮貴公子",
+  "en": "Vermillion Noble"
+ },
+ "471": {
+  "zh": "焰刃精通者",
+  "en": "Blade and Fire"
+ },
+ "472": {
+  "zh": "正義的假面",
+  "en": "Mask of Justice"
+ },
+ "473": {
+  "zh": "暴龍鮮血浸浴者",
+  "en": "Stained by Dragon Blood"
+ },
+ "474": {
+  "zh": "龍魂",
+  "en": "Dragon Soul"
+ },
+ "475": {
+  "zh": "喔～我的盧米埃～",
+  "en": "Oh My Lumiel!"
+ },
+ "476": {
+  "zh": "祝福的輝劍",
+  "en": "Luminous Sword"
+ },
+ "477": {
+  "zh": "聖劍技精通者",
+  "en": "Tiny Radiance"
+ },
+ "478": {
+  "zh": "分海劍豪",
+  "en": "Cleaver of Seas"
+ },
+ "479": {
+  "zh": "劈斬萬物的絕影之翁",
+  "en": "Don't Blink"
+ },
+ "480": {
+  "zh": "劍之極致通曉者",
+  "en": "Ultimate Swordmaster"
+ },
+ "481": {
+  "zh": "冥想入眠者",
+  "en": "Meditating or Napping"
+ },
+ "482": {
+  "zh": "修羅",
+  "en": "Asura"
+ },
+ "483": {
+  "zh": "雪月花",
+  "en": "Snow, Moon, and Flowers"
+ },
+ "484": {
+  "zh": "後繼者募集中",
+  "en": "Disciples Wanted"
+ },
+ "485": {
+  "zh": "隕石粉碎者",
+  "en": "Rage for Breakfast"
+ },
+ "486": {
+  "zh": "拳術精通者",
+  "en": "Punch First, Questions Later"
+ },
+ "487": {
+  "zh": "世界第一可愛☆",
+  "en": "Cutest in the World"
+ },
+ "488": {
+  "zh": "真理知曉者",
+  "en": "Possessor of Truth"
+ },
+ "489": {
+  "zh": "極致掌握者",
+  "en": "Height of Perfection"
+ },
+ "490": {
+  "zh": "機械白癡",
+  "en": "Awful with Machines"
+ },
+ "491": {
+  "zh": "贖罪背負者",
+  "en": "On the Path to Atonement"
+ },
+ "492": {
+  "zh": "剛劍精通者",
+  "en": "Penance or Bust"
+ },
+ "493": {
+  "zh": "晶靈狂熱者",
+  "en": "Anima Maniac"
+ },
+ "494": {
+  "zh": "超級晶靈狂熱者",
+  "en": "Super Anima Maniac"
+ },
+ "495": {
+  "zh": "究極晶靈狂熱者",
+  "en": "Ultimate Anima Maniac"
+ },
+ "496": {
+  "zh": "有錢人",
+  "en": "Windfall"
+ },
+ "497": {
+  "zh": "富豪",
+  "en": "Rich"
+ },
+ "498": {
+  "zh": "大富豪",
+  "en": "Filthy Rich"
+ },
+ "499": {
+  "zh": "全空富豪榜常客",
+  "en": "One Percenter"
+ },
+ "500": {
+  "zh": "鍛造鋪的常客",
+  "en": "Blacksmith Patron"
+ },
+ "501": {
+  "zh": "鍛造鋪的熟客",
+  "en": "Blacksmith Regular"
+ },
+ "502": {
+  "zh": "鍛造鋪的老主顧",
+  "en": "Blacksmith Benefactor"
+ },
+ "503": {
+  "zh": "VIP待遇",
+  "en": "VIP Customer"
+ },
+ "504": {
+  "zh": "交換入門",
+  "en": "First Investment"
+ },
+ "505": {
+  "zh": "交換能手",
+  "en": "Small-Time Trader"
+ },
+ "506": {
+  "zh": "交換行家",
+  "en": "Renowned Trader"
+ },
+ "507": {
+  "zh": "以物易物之鬼",
+  "en": "Siero's Protégé"
+ },
+ "508": {
+  "zh": "鍊成初學者",
+  "en": "Novice Transmuter"
+ },
+ "509": {
+  "zh": "鍊成專家",
+  "en": "Pro Transmuter"
+ },
+ "510": {
+  "zh": "鍊成大師",
+  "en": "Master Transmuter"
+ },
+ "511": {
+  "zh": "神級鍊金術師",
+  "en": "Ascended Transmuter"
+ },
+ "512": {
+  "zh": "遺物配送人",
+  "en": "How Much for This?"
+ },
+ "513": {
+  "zh": "寶藏同好會",
+  "en": "Curio Lovers Unite"
+ },
+ "514": {
+  "zh": "札斯柏一家的老主顧",
+  "en": "Part of the Family"
+ },
+ "515": {
+  "zh": "我的寶藏～",
+  "en": "Have Curios, Will Trade"
+ },
+ "516": {
+  "zh": "幸運之人",
+  "en": "Jackpot!"
+ },
+ "517": {
+  "zh": "珍品收藏家",
+  "en": "Diamonds in the Rough"
+ },
+ "518": {
+  "zh": "全空第一蒐集家",
+  "en": "Luck Be a Lady"
+ },
+ "519": {
+  "zh": "天天鍛鍊！",
+  "en": "Daily Exercise"
+ },
+ "520": {
+  "zh": "戰鬥修行中",
+  "en": "Training for Battle"
+ },
+ "521": {
+  "zh": "特訓君愛好家",
+  "en": "Bashing Sir Barrold"
+ },
+ "522": {
+  "zh": "幹勁全空第一",
+  "en": "Maximum Motivation"
+ },
+ "523": {
+  "zh": "強者",
+  "en": "Buff Stuff"
+ },
+ "524": {
+  "zh": "百萬之力！",
+  "en": "It's Over 1,000,000!"
+ },
+ "525": {
+  "zh": "火力自豪",
+  "en": "Now We're Dealing Damage"
+ },
+ "526": {
+  "zh": "速度自豪",
+  "en": "Speed Is My Forte"
+ },
+ "527": {
+  "zh": "十秒倒數破壞者",
+  "en": "10-Second Knockout"
+ },
+ "528": {
+  "zh": "韋馱天",
+  "en": "Speedrunner"
+ },
+ "529": {
+  "zh": "速攻",
+  "en": "Run and Gun"
+ },
+ "530": {
+  "zh": "扭轉乾坤",
+  "en": "Game Changer"
+ },
+ "531": {
+  "zh": "颯",
+  "en": "Fleet Foot"
+ },
+ "532": {
+  "zh": "王牌",
+  "en": "Ace"
+ },
+ "533": {
+  "zh": "火力輸出者",
+  "en": "Deal That Damage"
+ },
+ "534": {
+  "zh": "電光石火",
+  "en": "Strike Fast, Strike Hard"
+ },
+ "535": {
+  "zh": "書籤",
+  "en": "Wishlister"
+ },
+ "536": {
+  "zh": "寶物研究家",
+  "en": "Treasure Seeker"
+ },
+ "537": {
+  "zh": "強欲者",
+  "en": "Feeling Greedy"
+ },
+ "538": {
+  "zh": "物欲魔人",
+  "en": "Materialistic"
+ },
+ "539": {
+  "zh": "鍾愛的組合",
+  "en": "Always Prepared"
+ },
+ "540": {
+  "zh": "效率追求者",
+  "en": "Always Efficient"
+ },
+ "541": {
+  "zh": "編制大師",
+  "en": "Always Optimized"
+ },
+ "542": {
+  "zh": "神話",
+  "en": "To Stand Among Myths"
+ },
+ "543": {
+  "zh": "天上人",
+  "en": "To Hell and Back Again"
+ },
+ "544": {
+  "zh": "任務大師",
+  "en": "No Quest Unturned"
+ },
+ "545": {
+  "zh": "鐵腕",
+  "en": "Overkill"
+ },
+ "546": {
+  "zh": "太有幹勁",
+  "en": "Peerless Killer"
+ },
+ "547": {
+  "zh": "速度之星",
+  "en": "Speedster"
+ },
+ "548": {
+  "zh": "如風",
+  "en": "Incomparable Speed"
+ },
+ "549": {
+  "zh": "特別的人",
+  "en": "That Special Someone"
+ },
+ "550": {
+  "zh": "斬斷禍根之刃",
+  "en": "Fighting Death"
+ },
+ "551": {
+  "zh": "七彩光輝",
+  "en": "Roy G. Biv"
+ },
+ "552": {
+  "zh": "傳奇殺戮者",
+  "en": "Legendary Slayer"
+ },
+ "553": {
+  "zh": "紀錄保持者",
+  "en": "Record Holder"
+ },
+ "554": {
+  "zh": "遠古破解者",
+  "en": "Ancient Agonizer"
+ },
+ "555": {
+  "zh": "巴列薩雷克凝固者",
+  "en": "Vrazarek Vanquisher"
+ },
+ "556": {
+  "zh": "維里奴斯昇華者",
+  "en": "Wilinus Warmonger"
+ },
+ "557": {
+  "zh": "多貝爾橫越者",
+  "en": "Corvell Conqueror"
+ },
+ "558": {
+  "zh": "伊爾西斯擊潰者",
+  "en": "Elusious Eradicator"
+ },
+ "559": {
+  "zh": "拉迪斯制勝者",
+  "en": "Radis Renouncer"
+ },
+ "560": {
+  "zh": "六龍征服者",
+  "en": "Dragon Dreadnaught"
+ },
+ "561": {
+  "zh": "白狼",
+  "en": "Silver Wolf"
+ },
+ "562": {
+  "zh": "刃重",
+  "en": "Sword Veil"
+ },
+ "563": {
+  "zh": "傑加的最強猛者",
+  "en": "Zegagrande's Finest"
+ },
+ "564": {
+  "zh": "昏暗的刀刃",
+  "en": "Brooding Blade"
+ },
+ "565": {
+  "zh": "汙穢嵐神平定者",
+  "en": "Pacifier of Vital Wind"
+ },
+ "566": {
+  "zh": "混濁冰神對抗者",
+  "en": "Tamer of Sequestered Frost"
+ },
+ "567": {
+  "zh": "屈行炎神平息者",
+  "en": "Extinguisher of Dreadful Fire"
+ },
+ "568": {
+  "zh": "凌駕黑銀破局的英雄",
+  "en": "Surpassing Wings of Darkness"
+ },
+ "569": {
+  "zh": "神斬",
+  "en": "Godsbane"
+ },
+ "570": {
+  "zh": "凌駕弒神機神的英雄",
+  "en": "Surpassing the Automagod"
+ },
+ "571": {
+  "zh": "月滅",
+  "en": "Moonbreaker"
+ },
+ "572": {
+  "zh": "凌駕墮天司之王的英雄",
+  "en": "Surpassing Dark Rapture"
+ },
+ "573": {
+  "zh": "巨星",
+  "en": "Superstar Nova"
+ },
+ "574": {
+  "zh": "虛無驅魔師",
+  "en": "Nihilla Exorcist"
+ },
+ "575": {
+  "zh": "奧祕閃耀的鮮紅長槍",
+  "en": "Skybound Spear"
+ },
+ "576": {
+  "zh": "超越災禍之門的鮮紅長槍",
+  "en": "Gate-Crushing Spear"
+ },
+ "577": {
+  "zh": "超越紫銀雙翼的鮮紅長槍",
+  "en": "Darkness-Smashing Spear"
+ },
+ "578": {
+  "zh": "奧祕閃耀的漆黑大鐮",
+  "en": "Skybound Scythe"
+ },
+ "579": {
+  "zh": "超越災禍之門的漆黑大鐮",
+  "en": "Gate-Crushing Scythe"
+ },
+ "580": {
+  "zh": "超越紫銀雙翼的漆黑大鐮",
+  "en": "Darkness-Smashing Scythe"
+ },
+ "581": {
+  "zh": "亞爾貝斯的契約者",
+  "en": "Arvess's Contractor"
+ },
+ "582": {
+  "zh": "緋紅槍兵",
+  "en": "Crimson Lancer"
+ },
+ "583": {
+  "zh": "爆風之槍",
+  "en": "Explosive Spear"
+ },
+ "584": {
+  "zh": "亞爾貝斯的共鳴",
+  "en": "Resonating with Arvess"
+ },
+ "585": {
+  "zh": "展現你的力量！",
+  "en": "Show Them Our Power!"
+ },
+ "586": {
+  "zh": "空中飛躍",
+  "en": "Terror from Above"
+ },
+ "587": {
+  "zh": "熾炎之激情",
+  "en": "Blazing Pathos"
+ },
+ "588": {
+  "zh": "茜空千鳥",
+  "en": "Sunset Plover"
+ },
+ "589": {
+  "zh": "格羅諾斯的契約者",
+  "en": "Grynoth's Contractor"
+ },
+ "590": {
+  "zh": "悔恨鐮使",
+  "en": "Remorseful Scythe"
+ },
+ "591": {
+  "zh": "鐮刃之月",
+  "en": "Sickle Moon"
+ },
+ "592": {
+  "zh": "格羅諾斯的共鳴",
+  "en": "Resonating with Grynoth"
+ },
+ "593": {
+  "zh": "背後交給你了",
+  "en": "Watch My Back"
+ },
+ "594": {
+  "zh": "毛良之伊：己以千止加",
+  "en": "Sabet Odem"
+ },
+ "595": {
+  "zh": "這副身體是特製的",
+  "en": "Unbreakable Body"
+ },
+ "596": {
+  "zh": "鎧袖一觸",
+  "en": "No Peeking Under the Helmet"
+ },
+ "597": {
+  "zh": "鮮紅的長槍手",
+  "en": "Zeta's Collection"
+ },
+ "598": {
+  "zh": "鮮紅的長槍大師",
+  "en": "Zeta's Trove"
+ },
+ "599": {
+  "zh": "冥闇的大鐮手",
+  "en": "Vaseraga's Collection"
+ },
+ "600": {
+  "zh": "冥闇的大鐮大師",
+  "en": "Vaseraga's Trove"
+ },
+ "601": {
+  "zh": "傑作收藏家",
+  "en": "Curator's Magnum Opus"
+ },
+ "602": {
+  "zh": "耀光的大槍士",
+  "en": "Grand Spear"
+ },
+ "603": {
+  "zh": "堂堂的大鐮手",
+  "en": "Grand Scythe"
+ },
+ "604": {
+  "zh": "極限邁進者",
+  "en": "Approaching Supremacy"
+ },
+ "605": {
+  "zh": "至高之聖刻",
+  "en": "Supreme Celestial"
+ },
+ "606": {
+  "zh": "至高之守護劍",
+  "en": "Supreme Refuge"
+ },
+ "607": {
+  "zh": "至高之魔葬彈",
+  "en": "Supreme Purifier"
+ },
+ "608": {
+  "zh": "至高之蛇天導",
+  "en": "Supreme Coil"
+ },
+ "609": {
+  "zh": "至高之祖龍刃",
+  "en": "Supreme Primal"
+ },
+ "610": {
+  "zh": "至高之黑滅擊",
+  "en": "Supreme Dagger"
+ },
+ "611": {
+  "zh": "至高之幽麗鞭",
+  "en": "Supreme Beyond"
+ },
+ "612": {
+  "zh": "至高之祕劫刃",
+  "en": "Supreme Unseen"
+ },
+ "613": {
+  "zh": "至高之神碎",
+  "en": "Supreme Crusher"
+ },
+ "614": {
+  "zh": "至高之白奏牙",
+  "en": "Supreme Fang"
+ },
+ "615": {
+  "zh": "至高之青焰",
+  "en": "Supreme Blaze"
+ },
+ "616": {
+  "zh": "至高之三天擊",
+  "en": "Supreme Wrath"
+ },
+ "617": {
+  "zh": "至高之直銳種",
+  "en": "Supreme Scales"
+ },
+ "618": {
+  "zh": "至高之八頸斬",
+  "en": "Supreme Beheader"
+ },
+ "619": {
+  "zh": "至高之傑戰甲",
+  "en": "Supreme Fist"
+ },
+ "620": {
+  "zh": "至高之真典",
+  "en": "Supreme Truth"
+ },
+ "621": {
+  "zh": "至高之霸滅槍",
+  "en": "Supreme Impaler"
+ },
+ "622": {
+  "zh": "至高之厄魔刃",
+  "en": "Supreme Doom"
+ },
+ "623": {
+  "zh": "至高之祖龍劍",
+  "en": "Supreme Sword"
+ },
+ "624": {
+  "zh": "【頂】",
+  "en": "Completionist"
+ },
+ "625": {
+  "zh": "小雛鳥",
+  "en": "Ducky"
+ },
+ "626": {
+  "zh": "重要的搭檔",
+  "en": "Partners for Life"
+ },
+ "627": {
+  "zh": "穿槍精通者",
+  "en": "Sweets or Death"
+ },
+ "628": {
+  "zh": "來杯牛奶",
+  "en": "Scythe Therapy"
+ },
+ "629": {
+  "zh": "大鐮歡樂時光",
+  "en": "I'm Right Behind You"
+ },
+ "630": {
+  "zh": "凶刃精通者",
+  "en": "Gentle Reaper"
+ },
+ "631": {
+  "zh": "位高則任重",
+  "en": "Noblesse Oblige"
+ },
+ "632": {
+  "zh": "看穿一切",
+  "en": "Eye Spy"
+ },
+ "633": {
+  "zh": "奧祕閃耀的劍聖",
+  "en": "Skybound Spirit Edge"
+ },
+ "634": {
+  "zh": "超越災禍之門的劍聖",
+  "en": "Gate-Crushing Spirit Edge"
+ },
+ "635": {
+  "zh": "超越紫銀雙翼的劍聖",
+  "en": "Darkness-Smashing Spirit Edge"
+ },
+ "636": {
+  "zh": "奧祕閃耀的魔眼",
+  "en": "Skybound Dark Huntress"
+ },
+ "637": {
+  "zh": "超越災禍之門的魔眼",
+  "en": "Gate-Crushing Dark Huntress"
+ },
+ "638": {
+  "zh": "超越紫銀雙翼的魔眼",
+  "en": "Darkness-Smashing Dark Huntress"
+ },
+ "639": {
+  "zh": "北極光",
+  "en": "The Northern Lights"
+ },
+ "640": {
+  "zh": "深不可測的男人",
+  "en": "Hearkener of the Boundary"
+ },
+ "641": {
+  "zh": "大哥哥",
+  "en": "I Studied the Blade"
+ },
+ "642": {
+  "zh": "苦惱的首領",
+  "en": "Swimming in a Sea of Stars"
+ },
+ "643": {
+  "zh": "一臉壞笑",
+  "en": "Master of Smug"
+ },
+ "644": {
+  "zh": "全空最強",
+  "en": "Star Sword Sovereign"
+ },
+ "645": {
+  "zh": "閃耀之箭",
+  "en": "Shining Arrow"
+ },
+ "646": {
+  "zh": "天生的獵手",
+  "en": "Solo Sniper"
+ },
+ "647": {
+  "zh": "這一箭絕不失手",
+  "en": "Dodge This"
+ },
+ "648": {
+  "zh": "要麻痺嗎？",
+  "en": "All-Seeing Eye"
+ },
+ "649": {
+  "zh": "蘇恩「蘇」不了",
+  "en": "Hawkish Bowmaster"
+ },
+ "650": {
+  "zh": "正射必中",
+  "en": "I Never Miss"
+ },
+ "651": {
+  "zh": "七天的用劍士",
+  "en": "Seofon's Collection"
+ },
+ "652": {
+  "zh": "七天的用劍大師",
+  "en": "Seofon's Trove"
+ },
+ "653": {
+  "zh": "二天的操弓手",
+  "en": "Tweyen's Collection"
+ },
+ "654": {
+  "zh": "二天的操弓大師",
+  "en": "Tweyen's Trove"
+ },
+ "655": {
+  "zh": "高雅的大劍聖",
+  "en": "Grand Seventh Eternal"
+ },
+ "656": {
+  "zh": "翔翼的大獵手",
+  "en": "Grand Second Eternal"
+ },
+ "657": {
+  "zh": "劍聖",
+  "en": "Ultimate Spirit Edge"
+ },
+ "658": {
+  "zh": "神弓",
+  "en": "Unparalleled Huntress"
+ },
+ "659": {
+  "zh": "形跡可疑的男人",
+  "en": "Bottomless Potential"
+ },
+ "660": {
+  "zh": "世界基石",
+  "en": "I Am the World's Anchor"
+ },
+ "661": {
+  "zh": "最強之劍",
+  "en": "Sky's Strongest Blade"
+ },
+ "662": {
+  "zh": "怕寂寞",
+  "en": "Nonconformist"
+ },
+ "663": {
+  "zh": "最喜歡茶會",
+  "en": "My Actions Do the Talking"
+ },
+ "664": {
+  "zh": "魔導弓精通者",
+  "en": "Queller of the Arcane Bow"
+ },
+ "665": {
+  "zh": "暴禍屠滅者",
+  "en": "Behemoth Slayer"
+ },
+ "666": {
+  "zh": "噬獸者",
+  "en": "Behemoth Eater"
+ },
+ "667": {
+  "zh": "古戰場的英雄",
+  "en": "Ultimate Enlightenment Achieved"
+ },
+ "668": {
+  "zh": "向天提問者",
+  "en": "Inquisitive about the Skies"
+ },
+ "669": {
+  "zh": "奧祕閃耀的天司長",
+  "en": "Skybound Supreme Primarch"
+ },
+ "670": {
+  "zh": "超越災禍之門的天司長",
+  "en": "Gate-Crushing Primarch"
+ },
+ "671": {
+  "zh": "超越紫銀雙翼的天司長",
+  "en": "Darkness-Smashing Primarch"
+ },
+ "672": {
+  "zh": "一時之羽",
+  "en": "Fleeting Wings"
+ },
+ "673": {
+  "zh": "引導世界之光",
+  "en": "Light that Guides the World"
+ },
+ "674": {
+  "zh": "微苦",
+  "en": "Bittersweet Memories"
+ },
+ "675": {
+  "zh": "好纖細的手指",
+  "en": "Your Fingers Are Delicate"
+ },
+ "676": {
+  "zh": "虛無主義者",
+  "en": "Nihilist"
+ },
+ "677": {
+  "zh": "雲外蒼天",
+  "en": "The Skies Will Always Be Blue"
+ },
+ "678": {
+  "zh": "審判的神劍士",
+  "en": "Wielder of Judgment's Blade"
+ },
+ "679": {
+  "zh": "審判的神劍大師",
+  "en": "Master of Judgment's Blade"
+ },
+ "680": {
+  "zh": "博雅的大天司長",
+  "en": "Worldly Supreme Primarch"
+ },
+ "681": {
+  "zh": "天司長",
+  "en": "Supreme Primarch"
+ },
+ "682": {
+  "zh": "鯊魚殲滅者",
+  "en": "Shark Buster"
+ },
+ "683": {
+  "zh": "至高存在的鄰人",
+  "en": "Coffee Buddy"
+ },
+ "684": {
+  "zh": "至高無上的一杯",
+  "en": "The Perfect Brew"
+ },
+ "685": {
+  "zh": "六面羽翼",
+  "en": "Six-Winged"
+ },
+ "686": {
+  "zh": "十二面羽翼",
+  "en": "Twelve-Winged"
+ },
+ "687": {
+  "zh": "我開始因子合成了",
+  "en": "Look What I Made!"
+ },
+ "688": {
+  "zh": "因子合成技工",
+  "en": "Sigil Crafter"
+ },
+ "689": {
+  "zh": "因子合成名家",
+  "en": "Sigil Maestro"
+ },
+ "693": {
+  "zh": "Master of Relink",
+  "en": "Master of Relink"
+ },
+ "694": {
+  "zh": "凶獸",
+  "en": "Beast Mode"
+ },
+ "695": {
+  "zh": "弒月者",
+  "en": "Moon Exorcist"
+ },
+ "696": {
+  "zh": "格蘭賽法號的乘員",
+  "en": "Captain of the Grandcypher"
+ },
+ "697": {
+  "zh": "卡塔莉娜的戰友",
+  "en": "I Roll with Katalina"
+ },
+ "698": {
+  "zh": "拉卡姆的友人",
+  "en": "I Roll with Rackam"
+ },
+ "699": {
+  "zh": "伊歐的朋友",
+  "en": "I Roll with Io"
+ },
+ "700": {
+  "zh": "尤金的戰友",
+  "en": "I Roll with Eugen"
+ },
+ "701": {
+  "zh": "蘿賽塔的友人",
+  "en": "I Roll with Rosetta"
+ },
+ "702": {
+  "zh": "夏綠蒂的戰友",
+  "en": "I Roll with Charlotta"
+ },
+ "703": {
+  "zh": "剛特克澤的修行夥伴",
+  "en": "I Throw Hands with Ghandagoza"
+ },
+ "704": {
+  "zh": "菲莉的朋友",
+  "en": "I Roll with Ferry"
+ },
+ "705": {
+  "zh": "娜魯梅亞的朋友",
+  "en": "I Roll with Narmaya"
+ },
+ "706": {
+  "zh": "蘭斯洛特的戰友",
+  "en": "I Roll with Lancelot"
+ },
+ "707": {
+  "zh": "范恩的戰友",
+  "en": "I Roll with Vane"
+ },
+ "708": {
+  "zh": "帕西瓦爾的戰友",
+  "en": "I Roll with Percival"
+ },
+ "709": {
+  "zh": "齊格菲的戰友",
+  "en": "I Roll with Siegfried"
+ },
+ "710": {
+  "zh": "卡莉歐斯托蘿的友人",
+  "en": "I Roll with Cagliostro"
+ },
+ "711": {
+  "zh": "尤達爾拉哈的戰友",
+  "en": "I Roll with Yodarha"
+ },
+ "712": {
+  "zh": "瑟塔的戰友",
+  "en": "I Roll with Zeta"
+ },
+ "713": {
+  "zh": "巴薩拉加的戰友",
+  "en": "I Roll with Vaseraga"
+ },
+ "714": {
+  "zh": "伊度的戰友",
+  "en": "I Roll with Id"
+ },
+ "715": {
+  "zh": "席耶提的戰友",
+  "en": "I Roll with Seofon"
+ },
+ "716": {
+  "zh": "蘇恩的戰友",
+  "en": "I Roll with Tweyen"
+ },
+ "717": {
+  "zh": "聖德芬的戰友",
+  "en": "I Roll with Sandalphon"
+ },
+ "718": {
+  "zh": "戰鬥大師",
+  "en": "Battle Master"
+ },
+ "719": {
+  "zh": "身經百戰的騎空士",
+  "en": "Ultimate Survivor"
+ },
+ "720": {
+  "zh": "卡塔莉娜的鄰人",
+  "en": "Katalina's Deputy"
+ },
+ "721": {
+  "zh": "拉卡姆的鄰人",
+  "en": "Rackam's Deputy"
+ },
+ "722": {
+  "zh": "伊歐的鄰人",
+  "en": "Io's Deputy"
+ },
+ "723": {
+  "zh": "尤金的鄰人",
+  "en": "Eugen's Deputy"
+ },
+ "724": {
+  "zh": "蘿賽塔的鄰人",
+  "en": "Rosetta's Deputy"
+ },
+ "725": {
+  "zh": "夏綠蒂的鄰人",
+  "en": "Charlotta's Deputy"
+ },
+ "726": {
+  "zh": "剛特克澤的弟子",
+  "en": "Ghandagoza's Disciple"
+ },
+ "727": {
+  "zh": "菲莉的鄰人",
+  "en": "Ferry's Deputy"
+ },
+ "728": {
+  "zh": "娜魯梅亞的鄰人",
+  "en": "Narmaya's Deputy"
+ },
+ "729": {
+  "zh": "蘭斯洛特的侍從",
+  "en": "Lancelot's Knight-Errant"
+ },
+ "730": {
+  "zh": "范恩的侍從",
+  "en": "Vane's Knight-Errant"
+ },
+ "731": {
+  "zh": "帕西瓦爾的侍從",
+  "en": "Percival's Knight-Errant"
+ },
+ "732": {
+  "zh": "齊格菲的侍從",
+  "en": "Siegfried's Knight-Errant"
+ },
+ "733": {
+  "zh": "卡莉歐斯托蘿的弟子",
+  "en": "Cagliostro's Disciple"
+ },
+ "734": {
+  "zh": "尤達爾拉哈的弟子",
+  "en": "Yodarha's Disciple"
+ },
+ "735": {
+  "zh": "瑟塔的後輩",
+  "en": "Zeta's Protégé"
+ },
+ "736": {
+  "zh": "巴薩拉加的後輩",
+  "en": "Vaseraga's Protégé"
+ },
+ "737": {
+  "zh": "伊度的部下",
+  "en": "Id's Adherent"
+ },
+ "738": {
+  "zh": "席耶提的鄰人",
+  "en": "Seofon's Deputy"
+ },
+ "739": {
+  "zh": "蘇恩的鄰人",
+  "en": "Tweyen's Deputy"
+ },
+ "740": {
+  "zh": "聖德芬的侍天司",
+  "en": "Sandalphon's Successor"
+ },
+ "741": {
+  "zh": "舞刃",
+  "en": "I Stole the Show"
+ },
+ "742": {
+  "zh": "鬥神",
+  "en": "God of War"
+ },
+ "743": {
+  "zh": "真‧異靈",
+  "en": "Shin Versa"
+ },
+ "744": {
+  "zh": "萬物毀滅者",
+  "en": "Destroyer of Worlds"
+ },
+ "745": {
+  "zh": "World Bahamut",
+  "en": "World Bahamut"
+ },
+ "746": {
+  "zh": "不知畏懼",
+  "en": "Fearless"
+ },
+ "747": {
+  "zh": "膽大不屈",
+  "en": "Chaos Mettle"
+ },
+ "748": {
+  "zh": "未踏之礎",
+  "en": "Where No One Has Gone Before"
+ },
+ "749": {
+  "zh": "馳騁天地者",
+  "en": "Mover of Heaven and Earth"
+ },
+ "750": {
+  "zh": "魔境霸者",
+  "en": "Vanquisher of Fiends"
+ },
+ "751": {
+  "zh": "混沌攻破者",
+  "en": "Chaos Dunker"
+ },
+ "752": {
+  "zh": "天上無敵",
+  "en": "Broke the Grade Cap"
+ },
+ "753": {
+  "zh": "極星",
+  "en": "Celestial Star"
+ },
+ "754": {
+  "zh": "無路可退",
+  "en": "Can't Stop, Won't Stop"
+ },
+ "755": {
+  "zh": "000",
+  "en": "Triple Zero"
+ },
+ "756": {
+  "zh": "【Ø】",
+  "en": "Ø"
+ },
+ "757": {
+  "zh": "地平線破壞者",
+  "en": "Horizon Breaker"
+ },
+ "758": {
+  "zh": "紫銀片翼",
+  "en": "One-Winged Dragon"
+ },
+ "759": {
+  "zh": "凱旋",
+  "en": "Trionfi"
+ },
+ "760": {
+  "zh": "阻止世界之胎動者",
+  "en": "Vanquisher of the Inchoate"
+ },
+ "761": {
+  "zh": "新世界秩序",
+  "en": "New World Order"
+ },
+ "762": {
+  "zh": "契約者",
+  "en": "Contractor"
+ },
+ "763": {
+  "zh": "至高之七刻",
+  "en": "Supreme Seven-Edge"
+ },
+ "764": {
+  "zh": "至高之二穿",
+  "en": "Supreme Two-Arrow"
+ },
+ "765": {
+  "zh": "至高之天湊劍",
+  "en": "Supreme Terminus"
+ },
+ "766": {
+  "zh": "白狼義勇兵",
+  "en": "Silver Wolf Guru"
+ },
+ "767": {
+  "zh": "奧祕閃耀的狼王",
+  "en": "Skybound Gladiator"
+ },
+ "768": {
+  "zh": "超越災禍之門的狼王",
+  "en": "Gate-Crushing Gladiator"
+ },
+ "769": {
+  "zh": "超越紫銀雙翼的狼王",
+  "en": "Darkness-Smashing Gladiator"
+ },
+ "770": {
+  "zh": "狂戰槍兵",
+  "en": "Absolute Mad Lancer"
+ },
+ "771": {
+  "zh": "狂飆大將軍",
+  "en": "100-Star General"
+ },
+ "772": {
+  "zh": "我就是最強",
+  "en": "Simply the Best"
+ },
+ "773": {
+  "zh": "愉快痛快打個稀爛",
+  "en": "Exuberant Pulverizer"
+ },
+ "774": {
+  "zh": "媽媽的味道",
+  "en": "Mom's Home Cooking"
+ },
+ "775": {
+  "zh": "天下無敵",
+  "en": "I Have No Equal"
+ },
+ "776": {
+  "zh": "強悍的剛槍士",
+  "en": "Gallanza's Collection"
+ },
+ "777": {
+  "zh": "強悍的剛槍大師",
+  "en": "Gallanza's Trove"
+ },
+ "778": {
+  "zh": "豪武的大狼王",
+  "en": "Grand Gladiator"
+ },
+ "779": {
+  "zh": "至高之狼俠槍",
+  "en": "Supreme Duelseeker"
+ },
+ "780": {
+  "zh": "狼王",
+  "en": "Big Rad Wolf"
+ },
+ "781": {
+  "zh": "最強男子漢",
+  "en": "World's Strongest Man"
+ },
+ "782": {
+  "zh": "哇哈哈！",
+  "en": "Mwahaha!"
+ },
+ "783": {
+  "zh": "剛槍",
+  "en": "Fortune Favors the Bold"
+ },
+ "784": {
+  "zh": "伽藍薩的戰友",
+  "en": "I Roll with Gallanza"
+ },
+ "785": {
+  "zh": "伽藍薩的部下",
+  "en": "Gallanza's Adherent"
+ },
+ "786": {
+  "zh": "茶會成員",
+  "en": "Come Join My Tea Party"
+ },
+ "787": {
+  "zh": "奧祕閃耀的刃姬",
+  "en": "Skybound Bladequeen"
+ },
+ "788": {
+  "zh": "超越災禍之門的刃姬",
+  "en": "Gate-Crushing Bladequeen"
+ },
+ "789": {
+  "zh": "超越紫銀雙翼的刃姬",
+  "en": "Darkness-Smashing Bladequeen"
+ },
+ "790": {
+  "zh": "八重之刃",
+  "en": "Octet Blade"
+ },
+ "791": {
+  "zh": "百重指揮者",
+  "en": "Realm-Famous Conductor"
+ },
+ "792": {
+  "zh": "崇高傳說講述者",
+  "en": "Fabled Storyteller"
+ },
+ "793": {
+  "zh": "極致傳說",
+  "en": "Saga Superiór"
+ },
+ "794": {
+  "zh": "喜歡鬆餅",
+  "en": "Let Them Eat Pancake"
+ },
+ "795": {
+  "zh": "百花繚亂",
+  "en": "In Full Bloom"
+ },
+ "796": {
+  "zh": "壯麗的魔劍士",
+  "en": "Maglielle's Collection"
+ },
+ "797": {
+  "zh": "壯麗的魔劍大師",
+  "en": "Maglielle's Trove"
+ },
+ "798": {
+  "zh": "優美的大刃姬",
+  "en": "Grand Bladequeen"
+ },
+ "799": {
+  "zh": "至高之交響劍",
+  "en": "Supreme Virtuosa"
+ },
+ "800": {
+  "zh": "刃姬",
+  "en": "Making It Rain Blades"
+ },
+ "801": {
+  "zh": "一、二、三",
+  "en": "Un, Deux, Trois"
+ },
+ "802": {
+  "zh": "紅茶狂熱者",
+  "en": "Tea-aholic"
+ },
+ "803": {
+  "zh": "劍舞",
+  "en": "May I Have This Sword Dance?"
+ },
+ "804": {
+  "zh": "瑪姬拉芙莉爾的戰友",
+  "en": "I Float with Maglielle"
+ },
+ "805": {
+  "zh": "瑪姬拉芙莉爾的部下",
+  "en": "Maglielle's Deputy"
+ },
+ "806": {
+  "zh": "麻煩製造者",
+  "en": "Troublemaker"
+ },
+ "807": {
+  "zh": "奧祕閃耀的蒼藍之劍",
+  "en": "Skybound Hellcat"
+ },
+ "808": {
+  "zh": "超越災禍之門的蒼藍之劍",
+  "en": "Gate-Crushing Hellcat"
+ },
+ "809": {
+  "zh": "超越紫銀雙翼的蒼藍之劍",
+  "en": "Darkness-Smashing Hellcat"
+ },
+ "810": {
+  "zh": "狂怒之道",
+  "en": "Fury Road"
+ },
+ "811": {
+  "zh": "艾姆布拉斯的共鳴",
+  "en": "Resonating with Embrasque"
+ },
+ "812": {
+  "zh": "絕對不會輸",
+  "en": "Never Take the L"
+ },
+ "813": {
+  "zh": "全部都交給我吧！",
+  "en": "Leave Everything to Me!"
+ },
+ "814": {
+  "zh": "2000kcal",
+  "en": "2,000 Kcal"
+ },
+ "815": {
+  "zh": "不朽不滅",
+  "en": "I Am Immortal"
+ },
+ "816": {
+  "zh": "不滅的封劍士",
+  "en": "Beatrix's Collection"
+ },
+ "817": {
+  "zh": "不滅的封劍大師",
+  "en": "Beatrix's Trove"
+ },
+ "818": {
+  "zh": "壯烈的大戰士",
+  "en": "Grand Hellcat"
+ },
+ "819": {
+  "zh": "至高之律崩",
+  "en": "Supreme Maverick"
+ },
+ "820": {
+  "zh": "群青",
+  "en": "Ultramarine"
+ },
+ "821": {
+  "zh": "獎勵是組織麵包",
+  "en": "I Get Paid in Donuts"
+ },
+ "822": {
+  "zh": "最喜歡點心",
+  "en": "Sweet Tooth"
+ },
+ "823": {
+  "zh": "不屈的群青",
+  "en": "The Undying Blue"
+ },
+ "824": {
+  "zh": "貝雅特麗絲的戰友",
+  "en": "I Roll with Beatrix"
+ },
+ "825": {
+  "zh": "貝雅特麗絲的後輩",
+  "en": "Beatrix's Protégé"
+ },
+ "826": {
+  "zh": "狗狗好朋友",
+  "en": "Dog Rescuer"
+ },
+ "827": {
+  "zh": "奧祕閃耀的閃灼步槍",
+  "en": "Skybound Commando"
+ },
+ "828": {
+  "zh": "超越災禍之門的閃灼步槍",
+  "en": "Gate-Crushing Commando"
+ },
+ "829": {
+  "zh": "超越紫銀雙翼的閃灼步槍",
+  "en": "Darkness-Smashing Commando"
+ },
+ "830": {
+  "zh": "轟雷閃狼",
+  "en": "Lightning Wolf"
+ },
+ "831": {
+  "zh": "弗拉梅格的共鳴",
+  "en": "Resonating with Flamek"
+ },
+ "832": {
+  "zh": "狗派",
+  "en": "Dog Lover"
+ },
+ "833": {
+  "zh": "霍閃的子彈",
+  "en": "Polished Bullet"
+ },
+ "834": {
+  "zh": "撲克臉",
+  "en": "Poker Face"
+ },
+ "835": {
+  "zh": "安閒恬靜",
+  "en": "Cool and Composed"
+ },
+ "836": {
+  "zh": "霹靂的步槍士",
+  "en": "Eustace's Collection"
+ },
+ "837": {
+  "zh": "霹靂的步槍大師",
+  "en": "Eustace's Trove"
+ },
+ "838": {
+  "zh": "冷面的大步槍士",
+  "en": "Grand Commando"
+ },
+ "839": {
+  "zh": "至高之迅鷲",
+  "en": "Supreme Trigger"
+ },
+ "840": {
+  "zh": "雷狼",
+  "en": "Thunderwolf"
+ },
+ "841": {
+  "zh": "冀望安穩與寂靜",
+  "en": "Give Me Peace and Quiet"
+ },
+ "842": {
+  "zh": "組織的菁英",
+  "en": "Society Elite"
+ },
+ "843": {
+  "zh": "孤高之狼",
+  "en": "Lone Wolf"
+ },
+ "844": {
+  "zh": "尤斯堤斯的戰友",
+  "en": "I Roll with Eustace"
+ },
+ "845": {
+  "zh": "尤斯堤斯的後輩",
+  "en": "Eustace's Protégé"
+ },
+ "846": {
+  "zh": "可能性的化身",
+  "en": "Nexus of Potential"
+ },
+ "847": {
+  "zh": "挑戰混沌的騎空士",
+  "en": "Chaos-Defying Skyfarer"
+ },
+ "848": {
+  "zh": "開拓光明的騎空士",
+  "en": "Hope-Inspiring Skyfarer"
+ },
+ "849": {
+  "zh": "降魔的騎空士",
+  "en": "Empyrean Skyfarer"
+ },
+ "850": {
+  "zh": "天惠的騎空士",
+  "en": "Blessed Skyfarer"
+ },
+ "851": {
+  "zh": "超越的騎空士",
+  "en": "Transcendent Skyfarer"
+ },
+ "852": {
+  "zh": "理頂的騎空士",
+  "en": "Otherworldly Skyfarer"
+ },
+ "853": {
+  "zh": "盡涯的騎空士",
+  "en": "Limit-Breaking Skyfarer"
+ },
+ "854": {
+  "zh": "英勇之心",
+  "en": "Heart of the Sky"
+ },
+ "855": {
+  "zh": "挑戰混沌的守護騎士",
+  "en": "Chaos-Defying Guardian"
+ },
+ "856": {
+  "zh": "開拓光明的守護騎士",
+  "en": "Hope-Inspiring Guardian"
+ },
+ "857": {
+  "zh": "降魔的守護騎士",
+  "en": "Empyrean Guardian"
+ },
+ "858": {
+  "zh": "榮光冰霜",
+  "en": "Ice in My Veins"
+ },
+ "859": {
+  "zh": "進化的劍士",
+  "en": "Focused Fencer"
+ },
+ "860": {
+  "zh": "大師守護者",
+  "en": "Harder than Diamond"
+ },
+ "861": {
+  "zh": "盡涯的守護騎士",
+  "en": "Limit-Breaking Guardian"
+ },
+ "862": {
+  "zh": "誓約之劍",
+  "en": "Oathsworn Blade"
+ },
+ "863": {
+  "zh": "挑戰混沌的操舵士",
+  "en": "Chaos-Defying Helmsman"
+ },
+ "864": {
+  "zh": "開拓光明的操舵士",
+  "en": "Hope-Inspiring Helmsman"
+ },
+ "865": {
+  "zh": "降魔的操舵士",
+  "en": "Empyrean Helmsman"
+ },
+ "866": {
+  "zh": "榮光突擊",
+  "en": "Soaring Gunslinger"
+ },
+ "867": {
+  "zh": "操舵士的航行",
+  "en": "Boundless Voyager"
+ },
+ "868": {
+  "zh": "大師槍手",
+  "en": "Shooting for the Stars"
+ },
+ "869": {
+  "zh": "盡涯的操舵士",
+  "en": "Limit-Breaking Helmsman"
+ },
+ "870": {
+  "zh": "諾亞的摯友",
+  "en": "Noa's Bestie"
+ },
+ "871": {
+  "zh": "挑戰混沌的魔導士",
+  "en": "Chaos-Defying Mage"
+ },
+ "872": {
+  "zh": "開拓光明的魔導士",
+  "en": "Hope-Inspiring Mage"
+ },
+ "873": {
+  "zh": "降魔的魔導士",
+  "en": "Empyrean Mage"
+ },
+ "874": {
+  "zh": "榮光法師",
+  "en": "Mage of Glory"
+ },
+ "875": {
+  "zh": "進化的治療師",
+  "en": "Healer of Hearts and Minds"
+ },
+ "876": {
+  "zh": "大師魔導士",
+  "en": "Spellslinging Phenom"
+ },
+ "877": {
+  "zh": "盡涯的魔導士",
+  "en": "Limit-Breaking Mage"
+ },
+ "878": {
+  "zh": "小大人淑女",
+  "en": "Lady of Culture"
+ },
+ "879": {
+  "zh": "挑戰混沌的薔薇",
+  "en": "Chaos-Defying Rose"
+ },
+ "880": {
+  "zh": "開拓光明的薔薇",
+  "en": "Hope-Inspiring Rose"
+ },
+ "881": {
+  "zh": "降魔的薔薇",
+  "en": "Empyrean Rose"
+ },
+ "882": {
+  "zh": "榮光玫瑰",
+  "en": "Primal Blossom"
+ },
+ "883": {
+  "zh": "進化的支配者",
+  "en": "Vine-Whip Dominator"
+ },
+ "884": {
+  "zh": "大師玫瑰",
+  "en": "Exalted Bouquet"
+ },
+ "885": {
+  "zh": "盡涯的薔薇",
+  "en": "Limit-Breaking Rose"
+ },
+ "886": {
+  "zh": "大馬士革薔薇",
+  "en": "Rosa Damascena"
+ },
+ "887": {
+  "zh": "挑戰混沌的狙擊手",
+  "en": "Chaos-Defying Sniper"
+ },
+ "888": {
+  "zh": "開拓光明的狙擊手",
+  "en": "Hope-Inspiring Sniper"
+ },
+ "889": {
+  "zh": "降魔的狙擊手",
+  "en": "Empyrean Sniper"
+ },
+ "890": {
+  "zh": "榮光老兵",
+  "en": "Soldier of Honor"
+ },
+ "891": {
+  "zh": "進化的狙擊手",
+  "en": "Sniper Extraordinaire"
+ },
+ "892": {
+  "zh": "大師老兵",
+  "en": "Super Trooper"
+ },
+ "893": {
+  "zh": "盡涯的狙擊手",
+  "en": "Limit-Breaking Sniper"
+ },
+ "894": {
+  "zh": "達成與母親之海約定者",
+  "en": "Made a Vow to the Mother Sea"
+ },
+ "895": {
+  "zh": "挑戰混沌的幽靈少女",
+  "en": "Chaos-Defying Ghost"
+ },
+ "896": {
+  "zh": "開拓光明的幽靈少女",
+  "en": "Hope-Inspiring Ghost"
+ },
+ "897": {
+  "zh": "降魔的幽靈少女",
+  "en": "Empyrean Ghost"
+ },
+ "898": {
+  "zh": "榮光幽魂",
+  "en": "The Spice of Afterlife"
+ },
+ "899": {
+  "zh": "進化的幽靈少女",
+  "en": "Ascendant Soul"
+ },
+ "900": {
+  "zh": "大師幽魂",
+  "en": "Spectacular Specter"
+ },
+ "901": {
+  "zh": "盡涯的幽靈少女",
+  "en": "Limit-Breaking Ghost"
+ },
+ "902": {
+  "zh": "夙願以償的幽魂",
+  "en": "Ghost with the Most"
+ },
+ "903": {
+  "zh": "挑戰混沌的雙劍士",
+  "en": "Chaos-Defying Twinfang"
+ },
+ "904": {
+  "zh": "開拓光明的雙劍士",
+  "en": "Hope-Inspiring Twinfang"
+ },
+ "905": {
+  "zh": "降魔的雙劍士",
+  "en": "Empyrean Twinfang"
+ },
+ "906": {
+  "zh": "榮光蒼騎士",
+  "en": "Ice Ice Lancey"
+ },
+ "907": {
+  "zh": "進化的雙劍士",
+  "en": "Twinblade Zenith"
+ },
+ "908": {
+  "zh": "大師騎士",
+  "en": "Exalted Knight Captain"
+ },
+ "909": {
+  "zh": "盡涯的雙劍士",
+  "en": "Limit-Breaking Twinfang"
+ },
+ "910": {
+  "zh": "銀誓",
+  "en": "The Silver Blur"
+ },
+ "911": {
+  "zh": "挑戰混沌的驍勇騎士",
+  "en": "Chaos-Defying Champion"
+ },
+ "912": {
+  "zh": "開拓光明的驍勇騎士",
+  "en": "Hope-Inspiring Champion"
+ },
+ "913": {
+  "zh": "降魔的驍勇騎士",
+  "en": "Empyrean Champion"
+ },
+ "914": {
+  "zh": "榮光勇士",
+  "en": "Bringing Home the Bacon"
+ },
+ "915": {
+  "zh": "進化的勇士",
+  "en": "Big-Hearted Paragon"
+ },
+ "916": {
+  "zh": "大師英雄",
+  "en": "Everyone's Favorite Hero"
+ },
+ "917": {
+  "zh": "盡涯的驍勇騎士",
+  "en": "Limit-Breaking Champion"
+ },
+ "918": {
+  "zh": "勇壯",
+  "en": "Dauntless Fortress"
+ },
+ "919": {
+  "zh": "挑戰混沌的炎帝",
+  "en": "Chaos-Defying Lord"
+ },
+ "920": {
+  "zh": "開拓光明的炎帝",
+  "en": "Hope-Inspiring Lord"
+ },
+ "921": {
+  "zh": "降魔的炎帝",
+  "en": "Empyrean Lord"
+ },
+ "922": {
+  "zh": "榮光君主",
+  "en": "All Hail"
+ },
+ "923": {
+  "zh": "進化的烈焰",
+  "en": "Untamable Flame"
+ },
+ "924": {
+  "zh": "大師烈火",
+  "en": "Immaculate Inferno"
+ },
+ "925": {
+  "zh": "盡涯的炎帝",
+  "en": "Limit-Breaking Lord"
+ },
+ "926": {
+  "zh": "炎皇",
+  "en": "God of Flames"
+ },
+ "927": {
+  "zh": "挑戰混沌的狩龍者",
+  "en": "Chaos-Defying Dragonslayer"
+ },
+ "928": {
+  "zh": "開拓光明的狩龍者",
+  "en": "Hope-Inspiring Dragonslayer"
+ },
+ "929": {
+  "zh": "降魔的狩龍者",
+  "en": "Empyrean Dragonslayer"
+ },
+ "930": {
+  "zh": "榮光護衛",
+  "en": "The Helmed Knight Rises"
+ },
+ "931": {
+  "zh": "進化的赦免騎士",
+  "en": "Oblivion Cleaver"
+ },
+ "932": {
+  "zh": "大師龍騎士",
+  "en": "Exalted Vanquisher"
+ },
+ "933": {
+  "zh": "盡涯的狩龍者",
+  "en": "Limit-Breaking Dragonslayer"
+ },
+ "934": {
+  "zh": "龍戮",
+  "en": "Dragon's Bane"
+ },
+ "935": {
+  "zh": "挑戰混沌的聖騎士",
+  "en": "Chaos-Defying Holy Knight"
+ },
+ "936": {
+  "zh": "開拓光明的聖騎士",
+  "en": "Hope-Inspiring Holy Knight"
+ },
+ "937": {
+  "zh": "降魔的聖騎士",
+  "en": "Empyrean Holy Knight"
+ },
+ "938": {
+  "zh": "榮光耀輝",
+  "en": "Crowning Achievement"
+ },
+ "939": {
+  "zh": "進化的聖騎士",
+  "en": "Towering over the Competition"
+ },
+ "940": {
+  "zh": "大師聖騎士",
+  "en": "Exalted Paladin"
+ },
+ "941": {
+  "zh": "盡涯的聖騎士",
+  "en": "Limit-Breaking Holy Knight"
+ },
+ "942": {
+  "zh": "正義的執行者",
+  "en": "Enforcer of Justice"
+ },
+ "943": {
+  "zh": "挑戰混沌的妖劍士",
+  "en": "Chaos-Defying Swordmaster"
+ },
+ "944": {
+  "zh": "開拓光明的妖劍士",
+  "en": "Hope-Inspiring Swordmaster"
+ },
+ "945": {
+  "zh": "降魔的妖劍士",
+  "en": "Empyrean Swordmaster"
+ },
+ "946": {
+  "zh": "榮光劍術大師",
+  "en": "Windslicing Dynamo"
+ },
+ "947": {
+  "zh": "進化的劍客",
+  "en": "Showing Minnows How It's Done"
+ },
+ "948": {
+  "zh": "大師釣手",
+  "en": "Angler God"
+ },
+ "949": {
+  "zh": "盡涯的妖劍士",
+  "en": "Limit-Breaking Swordmaster"
+ },
+ "950": {
+  "zh": "無想零刃",
+  "en": "Serene Sinker"
+ },
+ "951": {
+  "zh": "挑戰混沌的斬姬",
+  "en": "Chaos-Defying Butterfly"
+ },
+ "952": {
+  "zh": "開拓光明的斬姬",
+  "en": "Hope-Inspiring Butterfly"
+ },
+ "953": {
+  "zh": "降魔的斬姬",
+  "en": "Empyrean Butterfly"
+ },
+ "954": {
+  "zh": "榮光劍士",
+  "en": "Beautiful. Cheerful. Lethal."
+ },
+ "955": {
+  "zh": "進化的無瑕",
+  "en": "Swift-Edge Virtue"
+ },
+ "956": {
+  "zh": "大師蝴蝶",
+  "en": "Battlefield Monarch"
+ },
+ "957": {
+  "zh": "盡涯的斬姬",
+  "en": "Limit-Breaking Butterfly"
+ },
+ "958": {
+  "zh": "紫雲百景",
+  "en": "One Hundred Cloudscapes"
+ },
+ "959": {
+  "zh": "挑戰混沌的大拳豪",
+  "en": "Chaos-Defying Brawler"
+ },
+ "960": {
+  "zh": "開拓光明的大拳豪",
+  "en": "Hope-Inspiring Brawler"
+ },
+ "961": {
+  "zh": "降魔的大拳豪",
+  "en": "Empyrean Brawler"
+ },
+ "962": {
+  "zh": "榮光孤拳",
+  "en": "Knockout King"
+ },
+ "963": {
+  "zh": "進化的拳擊",
+  "en": "Meteor Buster"
+ },
+ "964": {
+  "zh": "大師開創者",
+  "en": "Exalted Founder"
+ },
+ "965": {
+  "zh": "盡涯的大拳豪",
+  "en": "Limit-Breaking Brawler"
+ },
+ "966": {
+  "zh": "神拳",
+  "en": "Godhand"
+ },
+ "967": {
+  "zh": "挑戰混沌的鍊金術師",
+  "en": "Chaos-Defying Alchemist"
+ },
+ "968": {
+  "zh": "開拓光明的鍊金術師",
+  "en": "Hope-Inspiring Alchemist"
+ },
+ "969": {
+  "zh": "降魔的鍊金術師",
+  "en": "Empyrean Alchemist"
+ },
+ "970": {
+  "zh": "榮光智者",
+  "en": "You Can't Transmute Wisdom"
+ },
+ "971": {
+  "zh": "進化的天才",
+  "en": "Beyond Evolutionary"
+ },
+ "972": {
+  "zh": "大師鍊金術師",
+  "en": "Genius at Work"
+ },
+ "973": {
+  "zh": "盡涯的鍊金術師",
+  "en": "Limit-Breaking Alchemist"
+ },
+ "974": {
+  "zh": "永劫少女",
+  "en": "Eternal Cutie"
+ },
+ "975": {
+  "zh": "挑戰混沌的鮮紅長槍",
+  "en": "Chaos-Defying Spear"
+ },
+ "976": {
+  "zh": "開拓光明的鮮紅長槍",
+  "en": "Hope-Inspiring Spear"
+ },
+ "977": {
+  "zh": "降魔的鮮紅長槍",
+  "en": "Empyrean Spear"
+ },
+ "978": {
+  "zh": "榮光槍兵",
+  "en": "Stick a Spear in It"
+ },
+ "979": {
+  "zh": "進化的激情",
+  "en": "Blazing Highflyer"
+ },
+ "980": {
+  "zh": "大師擊潰者",
+  "en": "Vaunted Vaulter"
+ },
+ "981": {
+  "zh": "盡涯的鮮紅長槍",
+  "en": "Limit-Breaking Spear"
+ },
+ "982": {
+  "zh": "真‧亞爾貝斯",
+  "en": "Shin Arvess"
+ },
+ "983": {
+  "zh": "挑戰混沌的漆黑大鐮",
+  "en": "Chaos-Defying Scythe"
+ },
+ "984": {
+  "zh": "開拓光明的漆黑大鐮",
+  "en": "Hope-Inspiring Scythe"
+ },
+ "985": {
+  "zh": "降魔的漆黑大鐮",
+  "en": "Empyrean Scythe"
+ },
+ "986": {
+  "zh": "榮光鐮使",
+  "en": "Do Fear the Reaper"
+ },
+ "987": {
+  "zh": "進化的影食",
+  "en": "Augmented Eclipse"
+ },
+ "988": {
+  "zh": "大師狂戰士",
+  "en": "Exalted Berserker"
+ },
+ "989": {
+  "zh": "盡涯的漆黑大鐮",
+  "en": "Limit-Breaking Scythe"
+ },
+ "990": {
+  "zh": "真‧格羅諾斯",
+  "en": "Shin Grynoth"
+ },
+ "991": {
+  "zh": "挑戰混沌的劍聖",
+  "en": "Chaos-Defying Spirit Edge"
+ },
+ "992": {
+  "zh": "開拓光明的劍聖",
+  "en": "Hope-Inspiring Spirit Edge"
+ },
+ "993": {
+  "zh": "降魔的劍聖",
+  "en": "Empyrean Spirit Edge"
+ },
+ "994": {
+  "zh": "榮光永恆",
+  "en": "Eternal Glory"
+ },
+ "995": {
+  "zh": "進化的劍聖",
+  "en": "Trailblazing Swordplay"
+ },
+ "996": {
+  "zh": "大師劍聖",
+  "en": "World's Greatest Sword Collector"
+ },
+ "997": {
+  "zh": "盡涯的劍聖",
+  "en": "Limit-Breaking Spirit Edge"
+ },
+ "998": {
+  "zh": "劍王",
+  "en": "Celestial of the Blade"
+ },
+ "999": {
+  "zh": "挑戰混沌的魔眼",
+  "en": "Chaos-Defying Dark Huntress"
+ },
+ "1000": {
+  "zh": "開拓光明的魔眼",
+  "en": "Hope-Inspiring Dark Huntress"
+ },
+ "1001": {
+  "zh": "降魔的魔眼",
+  "en": "Empyrean Dark Huntress"
+ },
+ "1002": {
+  "zh": "榮光之眼",
+  "en": "Eyes on the Prize"
+ },
+ "1003": {
+  "zh": "進化的獵手",
+  "en": "Top of the Food Chain"
+ },
+ "1004": {
+  "zh": "大師弓手",
+  "en": "Exalted Bowmaster"
+ },
+ "1005": {
+  "zh": "盡涯的魔眼",
+  "en": "Limit-Breaking Dark Huntress"
+ },
+ "1006": {
+  "zh": "獵王",
+  "en": "Celestial of the Hunt"
+ },
+ "1007": {
+  "zh": "挑戰混沌的天司長",
+  "en": "Chaos-Defying Supreme Primarch"
+ },
+ "1008": {
+  "zh": "開拓光明的天司長",
+  "en": "Hope-Inspiring Supreme Primarch"
+ },
+ "1009": {
+  "zh": "降魔的天司長",
+  "en": "Empyrean Supreme Primarch"
+ },
+ "1010": {
+  "zh": "榮光光輪",
+  "en": "Glorious Halo"
+ },
+ "1011": {
+  "zh": "進化的羽翼",
+  "en": "Wings of Evolution"
+ },
+ "1012": {
+  "zh": "大師神意",
+  "en": "Paradise Found"
+ },
+ "1013": {
+  "zh": "盡涯的天司長",
+  "en": "Limit-Breaking Supreme Primarch"
+ },
+ "1014": {
+  "zh": "Ain Soph Aur",
+  "en": "Ain Soph Aur"
+ },
+ "1015": {
+  "zh": "挑戰混沌的剛劍士",
+  "en": "Chaos-Defying Avenger"
+ },
+ "1016": {
+  "zh": "開拓光明的剛劍士",
+  "en": "Hope-Inspiring Avenger"
+ },
+ "1017": {
+  "zh": "降魔的剛劍士",
+  "en": "Empyrean Avenger"
+ },
+ "1018": {
+  "zh": "榮光龍劍士",
+  "en": "Revel in Glorious Destruction"
+ },
+ "1019": {
+  "zh": "進化的破壞者",
+  "en": "Mr. Break Id"
+ },
+ "1020": {
+  "zh": "大師征服者",
+  "en": "Exalted Subjugator"
+ },
+ "1021": {
+  "zh": "盡涯的剛劍士",
+  "en": "Limit-Breaking Avenger"
+ },
+ "1022": {
+  "zh": "替身之心",
+  "en": "Versalis Heart"
+ },
+ "1023": {
+  "zh": "挑戰混沌的狼王",
+  "en": "Chaos-Defying Gladiator"
+ },
+ "1024": {
+  "zh": "開拓光明的狼王",
+  "en": "Hope-Inspiring Gladiator"
+ },
+ "1025": {
+  "zh": "降魔的狼王",
+  "en": "Empyrean Gladiator"
+ },
+ "1026": {
+  "zh": "榮光戰士",
+  "en": "King of the Ring"
+ },
+ "1027": {
+  "zh": "進化的將領",
+  "en": "Career Commander"
+ },
+ "1028": {
+  "zh": "大師毀滅者",
+  "en": "Apex Skullcracker"
+ },
+ "1029": {
+  "zh": "盡涯的狼王",
+  "en": "Limit-Breaking Gladiator"
+ },
+ "1030": {
+  "zh": "八萬嵐死",
+  "en": "Storming Death"
+ },
+ "1031": {
+  "zh": "挑戰混沌的刃姬",
+  "en": "Chaos-Defying Bladequeen"
+ },
+ "1032": {
+  "zh": "開拓光明的刃姬",
+  "en": "Hope-Inspiring Bladequeen"
+ },
+ "1033": {
+  "zh": "降魔的刃姬",
+  "en": "Empyrean Bladequeen"
+ },
+ "1034": {
+  "zh": "榮光聖樂",
+  "en": "When I Talk, Everyone Listens"
+ },
+ "1035": {
+  "zh": "進化的夜曲",
+  "en": "Nocturne of Superlatives"
+ },
+ "1036": {
+  "zh": "大師指揮家",
+  "en": "Exalted Maestro"
+ },
+ "1037": {
+  "zh": "盡涯的刃姬",
+  "en": "Limit-Breaking Bladequeen"
+ },
+ "1038": {
+  "zh": "極致交響曲",
+  "en": "Symphony Superiór"
+ },
+ "1039": {
+  "zh": "挑戰混沌的蒼藍之劍",
+  "en": "Chaos-Defying Hellcat"
+ },
+ "1040": {
+  "zh": "開拓光明的蒼藍之劍",
+  "en": "Hope-Inspiring Hellcat"
+ },
+ "1041": {
+  "zh": "降魔的蒼藍之劍",
+  "en": "Empyrean Hellcat"
+ },
+ "1042": {
+  "zh": "榮光劍志",
+  "en": "Danger Is My Middle Name"
+ },
+ "1043": {
+  "zh": "進化的新生",
+  "en": "Second Advent"
+ },
+ "1044": {
+  "zh": "大師戰士",
+  "en": "Agent of Mayhem"
+ },
+ "1045": {
+  "zh": "盡涯的蒼藍之劍",
+  "en": "Limit-Breaking Hellcat"
+ },
+ "1046": {
+  "zh": "真‧艾姆布拉斯",
+  "en": "Shin Embrasque"
+ },
+ "1047": {
+  "zh": "挑戰混沌的閃灼步槍",
+  "en": "Chaos-Defying Commando"
+ },
+ "1048": {
+  "zh": "開拓光明的閃灼步槍",
+  "en": "Hope-Inspiring Commando"
+ },
+ "1049": {
+  "zh": "降魔的閃灼步槍",
+  "en": "Empyrean Commando"
+ },
+ "1050": {
+  "zh": "榮光雷霆",
+  "en": "Faster than Lightning"
+ },
+ "1051": {
+  "zh": "進化的眩雷",
+  "en": "Supercharged"
+ },
+ "1052": {
+  "zh": "大師射手",
+  "en": "Distinguished Service"
+ },
+ "1053": {
+  "zh": "盡涯的閃灼步槍",
+  "en": "Limit-Breaking Commando"
+ },
+ "1054": {
+  "zh": "真‧弗拉梅格",
+  "en": "Shin Flamek"
+ },
+ "1055": {
+  "zh": "挑戰混沌的艷花",
+  "en": "Chaos-Defying Enchantress"
+ },
+ "1056": {
+  "zh": "開拓光明的艷花",
+  "en": "Hope-Inspiring Enchantress"
+ },
+ "1057": {
+  "zh": "降魔的艷花",
+  "en": "Empyrean Enchantress"
+ },
+ "1058": {
+  "zh": "榮光光芒",
+  "en": "Luminous Luminary"
+ },
+ "1059": {
+  "zh": "進化的四重",
+  "en": "Four-Armed and Dangerous"
+ },
+ "1060": {
+  "zh": "大師賢者",
+  "en": "Exalted Evoker"
+ },
+ "1061": {
+  "zh": "盡涯的艷花",
+  "en": "Limit-Breaking Enchantress"
+ },
+ "1062": {
+  "zh": "惡魔的新娘",
+  "en": "Bride of The Devil"
+ },
+ "1063": {
+  "zh": "挑戰混沌的常闇",
+  "en": "Chaos-Defying Darkness"
+ },
+ "1064": {
+  "zh": "開拓光明的常闇",
+  "en": "Hope-Inspiring Darkness"
+ },
+ "1065": {
+  "zh": "降魔的常闇",
+  "en": "Empyrean Darkness"
+ },
+ "1066": {
+  "zh": "榮光之闇",
+  "en": "Embrace Darkness"
+ },
+ "1067": {
+  "zh": "進化的暗幕",
+  "en": "Eclipsing Evolution"
+ },
+ "1068": {
+  "zh": "大師巨龍",
+  "en": "Exalted Dragon"
+ },
+ "1069": {
+  "zh": "盡涯的常闇",
+  "en": "Limit-Breaking Darkness"
+ },
+ "1070": {
+  "zh": "先祖",
+  "en": "Ancestral"
+ },
+ "1071": {
+  "zh": "憧憬",
+  "en": "Aspiring Dreamer"
+ },
+ "1072": {
+  "zh": "剛勇",
+  "en": "Courageous"
+ },
+ "1073": {
+  "zh": "巨大魚",
+  "en": "Big Tuna"
+ },
+ "1074": {
+  "zh": "終極",
+  "en": "Stay Blue"
+ },
+ "1075": {
+  "zh": "流星",
+  "en": "Meteora"
+ },
+ "1076": {
+  "zh": "七滅",
+  "en": "Ruination"
+ },
+ "1077": {
+  "zh": "直劍高手",
+  "en": "True Legend"
+ },
+ "1078": {
+  "zh": "決意",
+  "en": "Tenacious"
+ },
+ "1079": {
+  "zh": "陽炎",
+  "en": "Mirage"
+ },
+ "1080": {
+  "zh": "輝刃",
+  "en": "Blade of Light"
+ },
+ "1081": {
+  "zh": "一閃",
+  "en": "Ephemeral"
+ },
+ "1082": {
+  "zh": "蒼之誓約",
+  "en": "Protector of the Blue"
+ },
+ "1083": {
+  "zh": "堅韌",
+  "en": "Unyielding"
+ },
+ "1084": {
+  "zh": "細劍高手",
+  "en": "Legendary Guardian"
+ },
+ "1085": {
+  "zh": "渴望",
+  "en": "Full of Ambition"
+ },
+ "1086": {
+  "zh": "槍刃",
+  "en": "Flak and Slash"
+ },
+ "1087": {
+  "zh": "亂壞",
+  "en": "Hurricane"
+ },
+ "1088": {
+  "zh": "硝煙",
+  "en": "Gunsmoke"
+ },
+ "1089": {
+  "zh": "蒼之子彈",
+  "en": "Horizon's Bullet"
+ },
+ "1090": {
+  "zh": "必殺",
+  "en": "No Scope 360 Headshot"
+ },
+ "1091": {
+  "zh": "刺槍高手",
+  "en": "Knife to a Gun Fight"
+ },
+ "1092": {
+  "zh": "追求",
+  "en": "Tireless Seeker"
+ },
+ "1093": {
+  "zh": "雙蛇",
+  "en": "Twin Serpent"
+ },
+ "1094": {
+  "zh": "業火",
+  "en": "Hellfire"
+ },
+ "1095": {
+  "zh": "昇華",
+  "en": "Uplifter"
+ },
+ "1096": {
+  "zh": "蒼之純心",
+  "en": "Virtuous Heart"
+ },
+ "1097": {
+  "zh": "奇蹟",
+  "en": "Miracle Worker"
+ },
+ "1098": {
+  "zh": "魔杖高手",
+  "en": "I'm a Wand-erkind"
+ },
+ "1099": {
+  "zh": "忘卻",
+  "en": "Oblivion"
+ },
+ "1100": {
+  "zh": "櫛刃",
+  "en": "Snapdragon"
+ },
+ "1101": {
+  "zh": "生命",
+  "en": "Sunflower"
+ },
+ "1102": {
+  "zh": "奈落",
+  "en": "Red Spider Lily"
+ },
+ "1103": {
+  "zh": "蒼之神祕",
+  "en": "Forget-Me-Not"
+ },
+ "1104": {
+  "zh": "螺旋",
+  "en": "Wall of Thorns"
+ },
+ "1105": {
+  "zh": "真實之愛",
+  "en": "That's the Power of Love"
+ },
+ "1106": {
+  "zh": "海原",
+  "en": "Tide Turner"
+ },
+ "1107": {
+  "zh": "火種",
+  "en": "Incendiary"
+ },
+ "1108": {
+  "zh": "霧冰",
+  "en": "Hail of Bullets"
+ },
+ "1109": {
+  "zh": "無骨",
+  "en": "I Speak My Mind"
+ },
+ "1110": {
+  "zh": "蒼之悔悟",
+  "en": "Penitent"
+ },
+ "1111": {
+  "zh": "龍咢",
+  "en": "Roaring Dragon"
+ },
+ "1112": {
+  "zh": "獵槍高手",
+  "en": "Big Guns Expert"
+ },
+ "1113": {
+  "zh": "幽界",
+  "en": "Join Me in the Spirit Realm"
+ },
+ "1114": {
+  "zh": "上質",
+  "en": "Genuine"
+ },
+ "1115": {
+  "zh": "舞炎",
+  "en": "Blazing Jump Roper"
+ },
+ "1116": {
+  "zh": "本能",
+  "en": "Snap Reflexes"
+ },
+ "1117": {
+  "zh": "未來",
+  "en": "Unfurled Possibilities"
+ },
+ "1118": {
+  "zh": "無形",
+  "en": "Nebulous"
+ },
+ "1119": {
+  "zh": "驅鞭高手",
+  "en": "The Whipping Dead"
+ },
+ "1120": {
+  "zh": "勇氣",
+  "en": "The Bold and the Dutiful"
+ },
+ "1121": {
+  "zh": "冰獄",
+  "en": "Cocytus"
+ },
+ "1122": {
+  "zh": "強韌",
+  "en": "Relentless"
+ },
+ "1123": {
+  "zh": "冰劍",
+  "en": "Allow Me to Break the Ice"
+ },
+ "1124": {
+  "zh": "忠心",
+  "en": "Ever Loyal"
+ },
+ "1125": {
+  "zh": "祕刃",
+  "en": "Hidden Blade"
+ },
+ "1126": {
+  "zh": "雙劍高手",
+  "en": "Two Swords Are Better than One"
+ },
+ "1127": {
+  "zh": "不屈",
+  "en": "Steadfast"
+ },
+ "1128": {
+  "zh": "白刃",
+  "en": "Swan Song"
+ },
+ "1129": {
+  "zh": "雷光",
+  "en": "I'm Electrifying"
+ },
+ "1130": {
+  "zh": "風雅",
+  "en": "Chic"
+ },
+ "1131": {
+  "zh": "英雄",
+  "en": "When a Hero Comes Along"
+ },
+ "1132": {
+  "zh": "迅雷",
+  "en": "Bringing the Thunder"
+ },
+ "1133": {
+  "zh": "槍斧高手",
+  "en": "Axe-cellent"
+ },
+ "1134": {
+  "zh": "王道",
+  "en": "Royal"
+ },
+ "1135": {
+  "zh": "紅蓮",
+  "en": "Cardinal"
+ },
+ "1136": {
+  "zh": "凱歌",
+  "en": "Ode to Greatness"
+ },
+ "1137": {
+  "zh": "自然",
+  "en": "Naturally Gifted"
+ },
+ "1138": {
+  "zh": "王者",
+  "en": "King Me"
+ },
+ "1139": {
+  "zh": "霸道",
+  "en": "You Shall Bend the Knee"
+ },
+ "1140": {
+  "zh": "長劍高手",
+  "en": "Long May I Reign"
+ },
+ "1141": {
+  "zh": "忠義",
+  "en": "Honor Bound"
+ },
+ "1142": {
+  "zh": "死地",
+  "en": "I'm a Survivor"
+ },
+ "1143": {
+  "zh": "黑血",
+  "en": "Bloodstained"
+ },
+ "1144": {
+  "zh": "灰燼",
+  "en": "Ashes to Ashes"
+ },
+ "1145": {
+  "zh": "災厄",
+  "en": "Calamitous"
+ },
+ "1146": {
+  "zh": "寶刃",
+  "en": "Slayer of Fortune"
+ },
+ "1147": {
+  "zh": "巨劍高手",
+  "en": "Master of the Greatsword"
+ },
+ "1148": {
+  "zh": "榮光",
+  "en": "In the Name of Glory"
+ },
+ "1149": {
+  "zh": "頑強",
+  "en": "Never Say Never"
+ },
+ "1150": {
+  "zh": "激情",
+  "en": "Passionate"
+ },
+ "1151": {
+  "zh": "惡滅",
+  "en": "Eradicator of Evil"
+ },
+ "1152": {
+  "zh": "重壓",
+  "en": "Righteous Fury"
+ },
+ "1153": {
+  "zh": "勝利",
+  "en": "Victorious"
+ },
+ "1154": {
+  "zh": "聖劍高手",
+  "en": "More Humble than Thou Art"
+ },
+ "1155": {
+  "zh": "翁",
+  "en": "The Honorable"
+ },
+ "1156": {
+  "zh": "阿修羅",
+  "en": "Super Ashura"
+ },
+ "1157": {
+  "zh": "晚蟬",
+  "en": "Nightsong"
+ },
+ "1158": {
+  "zh": "幻魔",
+  "en": "Blade of the Phantasm"
+ },
+ "1159": {
+  "zh": "不動",
+  "en": "Immovable"
+ },
+ "1160": {
+  "zh": "太刀魚",
+  "en": "Fish Sticks"
+ },
+ "1161": {
+  "zh": "妖劍高手",
+  "en": "Illusory Swiftblade"
+ },
+ "1162": {
+  "zh": "蝴蝶",
+  "en": "Butterfly Effect"
+ },
+ "1163": {
+  "zh": "虎徹",
+  "en": "Tiger Swallowtail"
+ },
+ "1164": {
+  "zh": "紫苑",
+  "en": "Blue Aster"
+ },
+ "1165": {
+  "zh": "清廉",
+  "en": "Selfless"
+ },
+ "1166": {
+  "zh": "威光",
+  "en": "Imperious"
+ },
+ "1167": {
+  "zh": "妖刀",
+  "en": "Bladed Beauty"
+ },
+ "1168": {
+  "zh": "太刀高手",
+  "en": "Way of the Blademaster"
+ },
+ "1169": {
+  "zh": "紅拳",
+  "en": "Red Fist"
+ },
+ "1170": {
+  "zh": "綱拳",
+  "en": "Rope-a-Dope"
+ },
+ "1171": {
+  "zh": "魔拳",
+  "en": "Throw Up the Horns"
+ },
+ "1172": {
+  "zh": "瞬拳",
+  "en": "Fist of the Star"
+ },
+ "1173": {
+  "zh": "金拳",
+  "en": "Goldfinger"
+ },
+ "1174": {
+  "zh": "鬼拳",
+  "en": "Sting Like an Oni"
+ },
+ "1175": {
+  "zh": "拳拳拳拳拳拳",
+  "en": "You Are Already Dead"
+ },
+ "1176": {
+  "zh": "可愛",
+  "en": "So Cute It Hurts"
+ },
+ "1177": {
+  "zh": "樞要",
+  "en": "Essential Reading"
+ },
+ "1178": {
+  "zh": "禁忌",
+  "en": "Taboo"
+ },
+ "1179": {
+  "zh": "追憶",
+  "en": "Etched in History"
+ },
+ "1180": {
+  "zh": "真理",
+  "en": "Unabridged"
+ },
+ "1181": {
+  "zh": "睿智",
+  "en": "Great Sage"
+ },
+ "1182": {
+  "zh": "魔導書蒐集家",
+  "en": "Killer Librarian"
+ },
+ "1183": {
+  "zh": "焦熱",
+  "en": "Scorching Hot"
+ },
+ "1184": {
+  "zh": "紅炎",
+  "en": "Solar Flare"
+ },
+ "1185": {
+  "zh": "宿命",
+  "en": "Karma"
+ },
+ "1186": {
+  "zh": "光輝",
+  "en": "Heavenly Pillar"
+ },
+ "1187": {
+  "zh": "殲滅",
+  "en": "Annihilator"
+ },
+ "1188": {
+  "zh": "反骨",
+  "en": "Rebel"
+ },
+ "1189": {
+  "zh": "長槍高手",
+  "en": "The Impaler"
+ },
+ "1190": {
+  "zh": "朧闇",
+  "en": "Ethereal Darkness"
+ },
+ "1191": {
+  "zh": "純真",
+  "en": "Gift of Love"
+ },
+ "1192": {
+  "zh": "深淵",
+  "en": "Perdition"
+ },
+ "1193": {
+  "zh": "黎明",
+  "en": "Daybreak"
+ },
+ "1194": {
+  "zh": "弔魂",
+  "en": "Soul Shepherd"
+ },
+ "1195": {
+  "zh": "嗟怨",
+  "en": "Acrimonious"
+ },
+ "1196": {
+  "zh": "大鐮高手",
+  "en": "Reapers Gonna Reap"
+ },
+ "1197": {
+  "zh": "十全",
+  "en": "Perfect Ten"
+ },
+ "1198": {
+  "zh": "烈風",
+  "en": "Tempest"
+ },
+ "1199": {
+  "zh": "星海",
+  "en": "Stellar"
+ },
+ "1200": {
+  "zh": "極劍",
+  "en": "One Sword to Rule Them All"
+ },
+ "1201": {
+  "zh": "用劍高手",
+  "en": "Oops! All Swords"
+ },
+ "1202": {
+  "zh": "旋律",
+  "en": "Elegy"
+ },
+ "1203": {
+  "zh": "煌矢",
+  "en": "Labor of Love"
+ },
+ "1204": {
+  "zh": "光束",
+  "en": "Revenant Ray"
+ },
+ "1205": {
+  "zh": "極弓",
+  "en": "One Bow to Rule Them All"
+ },
+ "1206": {
+  "zh": "操弓高手",
+  "en": "Master of Arrow-Dynamics"
+ },
+ "1207": {
+  "zh": "無垢",
+  "en": "Free of Sin"
+ },
+ "1208": {
+  "zh": "緋",
+  "en": "Fire"
+ },
+ "1209": {
+  "zh": "昏焰",
+  "en": "Vengeful"
+ },
+ "1210": {
+  "zh": "陽光",
+  "en": "Sunshine"
+ },
+ "1211": {
+  "zh": "匯集願望者",
+  "en": "Keeper of Promises"
+ },
+ "1212": {
+  "zh": "黃昏",
+  "en": "It's the End of the World"
+ },
+ "1213": {
+  "zh": "星刃",
+  "en": "Blade of Avia"
+ },
+ "1214": {
+  "zh": "尊爵不凡‧金黃星期五的炸蝦神子",
+  "en": "Premium Prodigy"
+ },
+ "1215": {
+  "zh": "逆轉",
+  "en": "The Comeback Kid"
+ },
+ "1216": {
+  "zh": "八雲",
+  "en": "Epic"
+ },
+ "1217": {
+  "zh": "蓋世",
+  "en": "World Dominator"
+ },
+ "1218": {
+  "zh": "剛劍高手",
+  "en": "Greatsworder of Death"
+ },
+ "1219": {
+  "zh": "星槍",
+  "en": "Spear of Avia"
+ },
+ "1220": {
+  "zh": "夜露死苦",
+  "en": "Nice to Beat You"
+ },
+ "1221": {
+  "zh": "凶禍",
+  "en": "Disaster Mode"
+ },
+ "1222": {
+  "zh": "第一",
+  "en": "Number One"
+ },
+ "1223": {
+  "zh": "剛槍高手",
+  "en": "Iron-Willed General"
+ },
+ "1224": {
+  "zh": "星劍",
+  "en": "Conjurer of Avia"
+ },
+ "1225": {
+  "zh": "灼炎",
+  "en": "Fire of Purification"
+ },
+ "1226": {
+  "zh": "裁定",
+  "en": "Grand Arbiter"
+ },
+ "1227": {
+  "zh": "真摯",
+  "en": "My Fair Lady"
+ },
+ "1228": {
+  "zh": "魔劍操舞高手",
+  "en": "Blade Dance Master Class"
+ },
+ "1229": {
+  "zh": "突破",
+  "en": "Nothing Can Stop Me"
+ },
+ "1230": {
+  "zh": "劍戟",
+  "en": "Firebrand"
+ },
+ "1231": {
+  "zh": "鬼切",
+  "en": "Helmsplitter"
+ },
+ "1232": {
+  "zh": "龍心",
+  "en": "Dragonheart"
+ },
+ "1233": {
+  "zh": "戰塵",
+  "en": "Ready to Rumble"
+ },
+ "1234": {
+  "zh": "兩斷",
+  "en": "Cleaver"
+ },
+ "1235": {
+  "zh": "封劍高手",
+  "en": "Embrasque's Champion"
+ },
+ "1236": {
+  "zh": "萬雷",
+  "en": "Raging Lightning"
+ },
+ "1237": {
+  "zh": "未知",
+  "en": "Incognito"
+ },
+ "1238": {
+  "zh": "覺悟",
+  "en": "Ready and Willing"
+ },
+ "1239": {
+  "zh": "星碎",
+  "en": "Supernova"
+ },
+ "1240": {
+  "zh": "憤怒",
+  "en": "Punisher"
+ },
+ "1241": {
+  "zh": "魔彈",
+  "en": "Seek and Destroy"
+ },
+ "1242": {
+  "zh": "步槍高手",
+  "en": "Man with the Electric Gun"
+ },
+ "1243": {
+  "zh": "魔妖",
+  "en": "Made a Deal with The Devil"
+ },
+ "1244": {
+  "zh": "舞姬",
+  "en": "Dancing Queen"
+ },
+ "1245": {
+  "zh": "華麗",
+  "en": "Eyes on Me"
+ },
+ "1246": {
+  "zh": "傾國",
+  "en": "Knockout Beauty"
+ },
+ "1247": {
+  "zh": "踢技高手",
+  "en": "Kick Ass"
+ },
+ "1248": {
+  "zh": "咒蔦",
+  "en": "Cursed Ivy"
+ },
+ "1249": {
+  "zh": "常闇",
+  "en": "I Wear My Sunglasses at Night"
+ },
+ "1250": {
+  "zh": "朽花",
+  "en": "Corpse Flower"
+ },
+ "1251": {
+  "zh": "淵源",
+  "en": "Genesis"
+ },
+ "1252": {
+  "zh": "統領黑暗者",
+  "en": "Master of Darkness's Domain"
+ },
+ "1253": {
+  "zh": "異界探查挑戰者",
+  "en": "Interdimensional Inquisitor"
+ },
+ "1254": {
+  "zh": "無秩序領域闖蕩者",
+  "en": "Entropy Explorer"
+ },
+ "1255": {
+  "zh": "混沌王座壓制者",
+  "en": "I Sit on the Chaos Throne"
+ },
+ "1256": {
+  "zh": "鬥爭盡頭抵達者",
+  "en": "Apex Conqueror"
+ },
+ "1257": {
+  "zh": "魔王",
+  "en": "Demon King"
+ },
+ "1258": {
+  "zh": "戰略性撤退之證",
+  "en": "All According to Keikaku"
+ },
+ "1259": {
+  "zh": "最喜歡大家",
+  "en": "I Love You All!"
+ },
+ "1260": {
+  "zh": "境界鬥破者",
+  "en": "Get Out of My Way"
+ },
+ "1261": {
+  "zh": "沸騰的鬥爭",
+  "en": "Passion for Strife"
+ },
+ "1262": {
+  "zh": "暴威之風",
+  "en": "A Force to Be Reckoned With"
+ },
+ "1266": {
+  "zh": "血煙生還者",
+  "en": "Whatever Doesn't Kill Me..."
+ },
+ "1267": {
+  "zh": "橫掃一切者",
+  "en": "Last One Standing"
+ },
+ "1268": {
+  "zh": "生存王",
+  "en": "Survival of the Fittest"
+ },
+ "1269": {
+  "zh": "不敗的勇者",
+  "en": "Remorseless"
+ },
+ "1270": {
+  "zh": "破竹快進擊",
+  "en": "Like a Hot Knife Through Butter"
+ },
+ "1271": {
+  "zh": "無雙",
+  "en": "Do Not Pursue"
+ },
+ "1275": {
+  "zh": "魑魅魍魎",
+  "en": "Demons and Spirits, Oh My!"
+ },
+ "1276": {
+  "zh": "遊戲高手",
+  "en": "Built for Gaming"
+ },
+ "1277": {
+  "zh": "路人",
+  "en": "Nameless"
+ },
+ "1278": {
+  "zh": "路人大叔",
+  "en": "Bob"
+ },
+ "1279": {
+  "zh": "我啦，是我！",
+  "en": "One of Us! One of Us!"
+ },
+ "1280": {
+  "zh": "特技跑者",
+  "en": "Traceur"
+ },
+ "1281": {
+  "zh": "幻影怪盜",
+  "en": "Phantom Rock Collector"
+ },
+ "1282": {
+  "zh": "疾風",
+  "en": "Run like the Wind"
+ },
+ "1283": {
+  "zh": "史萊姆追捕手",
+  "en": "Slime Catcher"
+ },
+ "1284": {
+  "zh": "拜託不要是無屬性",
+  "en": "I Ain't Takin' No Plain DMG"
+ },
+ "1285": {
+  "zh": "以前可是很強的",
+  "en": "No Respect These Days"
+ },
+ "1286": {
+  "zh": "瞌睡安迪",
+  "en": "Drowsy Drew"
+ },
+ "1287": {
+  "zh": "臨界行者",
+  "en": "In the Liminal Zone"
+ },
+ "1288": {
+  "zh": "異界觀測者",
+  "en": "They're the Same Picture"
+ },
+ "1289": {
+  "zh": "境界的證人",
+  "en": "I Came, I Saw, I Discovered"
+ },
+ "1290": {
+  "zh": "名偵探",
+  "en": "Chief Inspector"
+ },
+ "1291": {
+  "zh": "混沌之門",
+  "en": "Gate of Chaos"
+ },
+ "1292": {
+  "zh": "領域破壞者",
+  "en": "Realmbreaker"
+ },
+ "1293": {
+  "zh": "頂尖強者",
+  "en": "At the Top of My Game"
+ },
+ "1294": {
+  "zh": "萬全風息",
+  "en": "Vitality Hoarder"
+ },
+ "1295": {
+  "zh": "萬全隔絕",
+  "en": "Sequestration Hoarder"
+ },
+ "1296": {
+  "zh": "萬全鎮守",
+  "en": "Fortification Hoarder"
+ },
+ "1297": {
+  "zh": "萬全畏懼",
+  "en": "Dread Hoarder"
+ },
+ "1298": {
+  "zh": "萬全破壞",
+  "en": "Destruction Hoarder"
+ },
+ "1299": {
+  "zh": "萬全鬥爭",
+  "en": "Warfare Hoarder"
+ },
+ "1300": {
+  "zh": "萬全災門",
+  "en": "Calamity Hoarder"
+ },
+ "1301": {
+  "zh": "萬全混沌",
+  "en": "Chaos Hoarder"
+ },
+ "1302": {
+  "zh": "風息",
+  "en": "Vitality Buff"
+ },
+ "1303": {
+  "zh": "隔絕",
+  "en": "Sequestration Buff"
+ },
+ "1304": {
+  "zh": "鎮守",
+  "en": "Fortification Buff"
+ },
+ "1305": {
+  "zh": "畏懼",
+  "en": "Dread Buff"
+ },
+ "1306": {
+  "zh": "破壞與再生",
+  "en": "Rebirth and Destruction"
+ },
+ "1307": {
+  "zh": "鬥爭",
+  "en": "Warfare Buff"
+ },
+ "1308": {
+  "zh": "救贖",
+  "en": "Salvation Buff"
+ },
+ "1309": {
+  "zh": "混沌",
+  "en": "Chaos Buff"
+ },
+ "1310": {
+  "zh": "匯沌倖存者",
+  "en": "I Survived the Conflux"
+ },
+ "1311": {
+  "zh": "宿星的騎空士",
+  "en": "Coronated Skyfarer"
+ },
+ "1312": {
+  "zh": "宿星的守護騎士",
+  "en": "Coronated Guardian"
+ },
+ "1313": {
+  "zh": "宿星的操舵士",
+  "en": "Coronated Helmsman"
+ },
+ "1314": {
+  "zh": "宿星的魔導士",
+  "en": "Coronated Mage"
+ },
+ "1315": {
+  "zh": "宿星的薔薇",
+  "en": "Coronated Rose"
+ },
+ "1316": {
+  "zh": "宿星的狙擊手",
+  "en": "Coronated Sniper"
+ },
+ "1317": {
+  "zh": "宿星的幽靈少女",
+  "en": "Coronated Ghost"
+ },
+ "1318": {
+  "zh": "宿星的雙劍士",
+  "en": "Coronated Twinfang"
+ },
+ "1319": {
+  "zh": "宿星的驍勇騎士",
+  "en": "Coronated Champion"
+ },
+ "1320": {
+  "zh": "宿星的炎帝",
+  "en": "Coronated Lord"
+ },
+ "1321": {
+  "zh": "宿星的狩龍者",
+  "en": "Coronated Dragonslayer"
+ },
+ "1322": {
+  "zh": "宿星的聖騎士",
+  "en": "Coronated Holy Knight"
+ },
+ "1323": {
+  "zh": "宿星的妖劍士",
+  "en": "Coronated Swordmaster"
+ },
+ "1324": {
+  "zh": "宿星的斬姬",
+  "en": "Coronated Butterfly"
+ },
+ "1325": {
+  "zh": "宿星的大拳豪",
+  "en": "Coronated Brawler"
+ },
+ "1326": {
+  "zh": "宿星的鍊金術師",
+  "en": "Coronated Alchemist"
+ },
+ "1327": {
+  "zh": "宿星的鮮紅長槍",
+  "en": "Coronated Spear"
+ },
+ "1328": {
+  "zh": "宿星的漆黑大鐮",
+  "en": "Coronated Scythe"
+ },
+ "1329": {
+  "zh": "宿星的劍聖",
+  "en": "Coronated Spirit Edge"
+ },
+ "1330": {
+  "zh": "宿星的魔眼",
+  "en": "Coronated Dark Huntress"
+ },
+ "1331": {
+  "zh": "宿星的天司長",
+  "en": "Coronated Supreme Primarch"
+ },
+ "1332": {
+  "zh": "宿星的剛劍士",
+  "en": "Coronated Avenger"
+ },
+ "1333": {
+  "zh": "宿星的狼王",
+  "en": "Coronated Gladiator"
+ },
+ "1334": {
+  "zh": "宿星的刃姬",
+  "en": "Coronated Bladequeen"
+ },
+ "1335": {
+  "zh": "宿星的蒼藍之劍",
+  "en": "Coronated Hellcat"
+ },
+ "1336": {
+  "zh": "宿星的閃灼步槍",
+  "en": "Coronated Commando"
+ },
+ "1337": {
+  "zh": "宿星的艷花",
+  "en": "Coronated Enchantress"
+ },
+ "1338": {
+  "zh": "宿星的常闇",
+  "en": "Coronated Darkness"
+ },
+ "1339": {
+  "zh": "路過的鮪魚",
+  "en": "Of Course Fish Fly"
+ },
+ "1340": {
+  "zh": "大腹肉",
+  "en": "Fatty Tuna"
+ },
+ "1341": {
+  "zh": "三片切法",
+  "en": "Sushi Chef"
+ },
+ "1342": {
+  "zh": "全新螃蟹",
+  "en": "Hello, Dark Pince, My Old Friend"
+ },
+ "1343": {
+  "zh": "漆黑螃蟹",
+  "en": "Crabaholic"
+ },
+ "1344": {
+  "zh": "螃蟹奇想",
+  "en": "Crabblue Fantasy"
+ },
+ "1345": {
+  "zh": "奔",
+  "en": "Got the Whole Whorl In My Hands"
+ },
+ "1346": {
+  "zh": "請多指教",
+  "en": "We're in This Together"
+ },
+ "1347": {
+  "zh": "承蒙關照",
+  "en": "Happy to Help"
+ },
+ "1348": {
+  "zh": "我自認是最強",
+  "en": "Satisfaction Guaranteed"
+ },
+ "1349": {
+  "zh": "傑出之友",
+  "en": "Your Friendly Neighborhood"
+ },
+ "1350": {
+  "zh": "特等幫手",
+  "en": "Premium Helper"
+ },
+ "1351": {
+  "zh": "特別指導者",
+  "en": "Special Mentor"
+ },
+ "1352": {
+  "zh": "炙手可熱",
+  "en": "In High Demand"
+ },
+ "1353": {
+  "zh": "熟客",
+  "en": "High Roller"
+ },
+ "1354": {
+  "zh": "多謝關照",
+  "en": "Can't Thank You Enough"
+ },
+ "1355": {
+  "zh": "命運見證人",
+  "en": "Fate Weaver"
+ },
+ "1356": {
+  "zh": "命運與共者",
+  "en": "Fate Altruist"
+ },
+ "1357": {
+  "zh": "傳道者",
+  "en": "Evangelist"
+ },
+ "1358": {
+  "zh": "沒有什麼是不可能的！",
+  "en": "Master of the Side Hustle"
+ },
+ "1359": {
+  "zh": "展望明天者",
+  "en": "Archiver of Sky's Evolution"
+ },
+ "1360": {
+  "zh": "武器愛好者",
+  "en": "Drowning in Weapons"
+ },
+ "1361": {
+  "zh": "武裝狂熱者",
+  "en": "Weapons Enthusiast"
+ },
+ "1362": {
+  "zh": "行走武器庫",
+  "en": "Walking Armory"
+ },
+ "1363": {
+  "zh": "傑出",
+  "en": "Rampage"
+ },
+ "1364": {
+  "zh": "白眉",
+  "en": "Dominating"
+ },
+ "1365": {
+  "zh": "神域",
+  "en": "Unstoppable"
+ },
+ "1366": {
+  "zh": "鬥將",
+  "en": "Godlike"
+ },
+ "1367": {
+  "zh": "武神",
+  "en": "Impossible"
+ },
+ "1368": {
+  "zh": "白眉騎空團",
+  "en": "Battle-Tested Crew"
+ },
+ "1369": {
+  "zh": "鬥志騎空團",
+  "en": "First-Class Crew"
+ },
+ "1370": {
+  "zh": "白眉大騎空團",
+  "en": "Untouchable Crew"
+ },
+ "1371": {
+  "zh": "鬥志大騎空團",
+  "en": "Excelsior Crew"
+ },
+ "1372": {
+  "zh": "豪邁卓犖霸者騎空團",
+  "en": "Realm-Bending Crew"
+ },
+ "1373": {
+  "zh": "十億之力！！",
+  "en": "It's Over 1,000,000,000!"
+ },
+ "1374": {
+  "zh": "迅捷攻擊手",
+  "en": "Breakneck Speed"
+ },
+ "1375": {
+  "zh": "閃光",
+  "en": "2 Fast 2 Injurious"
+ },
+ "1376": {
+  "zh": "半分連擊王",
+  "en": "Half-Minute Smackdown"
+ },
+ "1377": {
+  "zh": "閃光之力",
+  "en": "Flash and Fury"
+ },
+ "1378": {
+  "zh": "超負荷",
+  "en": "Training Overlord"
+ },
+ "1379": {
+  "zh": "神的一分鐘",
+  "en": "God in 60 Seconds"
+ },
+ "1382": {
+  "zh": "受虐癖",
+  "en": "Give It to Me, Baby"
+ },
+ "1383": {
+  "zh": "無二之友",
+  "en": "Friends Forever"
+ },
+ "1384": {
+  "zh": "芬多蘭契民",
+  "en": "Feendrache's Pride"
+ },
+ "1385": {
+  "zh": "完全不覺得會輸呢",
+  "en": "Elite Beatdown Agents"
+ },
+ "1386": {
+  "zh": "家人",
+  "en": "Family, Family, Family"
+ },
+ "1387": {
+  "zh": "叛逆期",
+  "en": "Rebel with a Cause"
+ },
+ "1388": {
+  "zh": "耶嘿☆",
+  "en": "Blue Steel!"
+ },
+ "1389": {
+  "zh": "超級上相",
+  "en": "Photogenic"
+ },
+ "1390": {
+  "zh": "攝影能手",
+  "en": "Gifted Photographer"
+ },
+ "1391": {
+  "zh": "貓派",
+  "en": "Cat Lover"
+ },
+ "1392": {
+  "zh": "霍爾嘉野鳥協會",
+  "en": "Folca Birding Society"
+ },
+ "1393": {
+  "zh": "親切",
+  "en": "Moon's No Longer Haunted"
+ },
+ "1394": {
+  "zh": "白金之空",
+  "en": "Platinum Sky"
+ },
+ "1395": {
+  "zh": "超越神擊的羽翼",
+  "en": "Wings of Destruction"
+ },
+ "1396": {
+  "zh": "究極之人",
+  "en": "The Ultimate"
+ },
+ "1397": {
+  "zh": "伊度",
+  "en": "Id"
+ },
+ "1398": {
+  "zh": "前往寬闊、信念交會的藍天",
+  "en": "Skybound Heart"
+ },
+ "1399": {
+  "zh": "我的字典裡沒有不可能！",
+  "en": "Nothing Is Impossible!"
+ },
+ "1400": {
+  "zh": "最棒的騎空團",
+  "en": "Squad's All Here"
+ },
+ "1401": {
+  "zh": "命運的榮景",
+  "en": "Fate Can't Wait"
+ },
+ "1402": {
+  "zh": "追憶的路標",
+  "en": "Reminiscence"
+ },
+ "1403": {
+  "zh": "解放祕藏之力",
+  "en": "True Potential"
+ },
+ "1404": {
+  "zh": "被遺忘的天空",
+  "en": "The Forgotten Sky"
+ },
+ "1405": {
+  "zh": "西方之空，邊境之地",
+  "en": "The Western Frontier"
+ },
+ "1406": {
+  "zh": "暴風來襲",
+  "en": "Tempest on the Horizon"
+ },
+ "1407": {
+  "zh": "星之獸",
+  "en": "Creation of the Stars"
+ },
+ "1408": {
+  "zh": "天空依舊蔚藍",
+  "en": "Skies Forever Blue"
+ },
+ "1409": {
+  "zh": "銀白世界中的暗影",
+  "en": "Shadows in the Snowscape"
+ },
+ "1410": {
+  "zh": "尋求希望",
+  "en": "In Search of Hope"
+ },
+ "1411": {
+  "zh": "航標",
+  "en": "Warning Signs"
+ },
+ "1412": {
+  "zh": "Relink",
+  "en": "Relink"
+ },
+ "1413": {
+  "zh": "空之願，星之夢",
+  "en": "Opposing Wills"
+ },
+ "1414": {
+  "zh": "交給我就對了！",
+  "en": "Leave It to Me"
+ },
+ "1415": {
+  "zh": "良好交流",
+  "en": "It's All About Communication"
+ },
+ "1416": {
+  "zh": "搞笑餅！",
+  "en": "Primal Beast Punisher"
+ },
+ "1417": {
+  "zh": "為世為人",
+  "en": "I Try to Help"
+ },
+ "1418": {
+  "zh": "完美射手",
+  "en": "Sharpshooter"
+ },
+ "1419": {
+  "zh": "戰爭倖存者",
+  "en": "Cannon Crusher"
+ },
+ "1420": {
+  "zh": "闇炎之子",
+  "en": "Child of Darkness and Flames"
+ },
+ "1421": {
+  "zh": "汝之名為",
+  "en": "Primeval Dragon"
+ },
+ "1422": {
+  "zh": "FULL CHAIN",
+  "en": "About to Full Burst"
+ },
+ "1423": {
+  "zh": "我想這應該是最強的了",
+  "en": "Don't Think It Goes Higher Than That"
+ },
+ "1424": {
+  "zh": "不會吧……超帥的啦……！",
+  "en": "In Perfect Sync"
+ },
+ "1425": {
+  "zh": "奧連之鬼",
+  "en": "Chain Burst Champion"
+ },
+ "1426": {
+  "zh": "不遺餘力",
+  "en": "No Holding Back"
+ },
+ "1427": {
+  "zh": "不會讓你得逞！",
+  "en": "Field Medic"
+ },
+ "1428": {
+  "zh": "練技的強者",
+  "en": "It's Called Skill"
+ },
+ "1429": {
+  "zh": "強化後就高枕無憂",
+  "en": "Buff Buffet"
+ },
+ "1430": {
+  "zh": "弱化後就高枕無憂",
+  "en": "Debuff Deluge"
+ },
+ "1431": {
+  "zh": "生存戰略",
+  "en": "I Will Survive"
+ },
+ "1432": {
+  "zh": "大好機會！",
+  "en": "Give Me Something to Break"
+ },
+ "1433": {
+  "zh": "邂逅的故事",
+  "en": "A Fateful Encounter"
+ },
+ "1434": {
+  "zh": "……有過這樣的事喔",
+  "en": "A Fateful Farewell"
+ },
+ "1435": {
+  "zh": "精彩的戰鬥",
+  "en": "Push It to the Limit"
+ },
+ "1436": {
+  "zh": "Amazing！",
+  "en": "I Like It When Numbers Go Up"
+ },
+ "1437": {
+  "zh": "果然還是要螃蟹呢",
+  "en": "Crabs Are Neat"
+ },
+ "1438": {
+  "zh": "真相的一隅",
+  "en": "Closer to the Truth"
+ },
+ "1439": {
+  "zh": "寶物探索者",
+  "en": "Treasure Hunter"
+ },
+ "1440": {
+  "zh": "寶物大師",
+  "en": "Unlocked and Unloaded"
+ },
+ "1441": {
+  "zh": "用特訓君來特訓",
+  "en": "Practice Makes Perfect"
+ },
+ "1442": {
+  "zh": "1突",
+  "en": "No Cap"
+ },
+ "1443": {
+  "zh": "來雜貨屋買雜～貨！",
+  "en": "Knickknack Shack Regular"
+ },
+ "1444": {
+  "zh": "千里之行始於足下",
+  "en": "On the Road to Mastery"
+ },
+ "1445": {
+  "zh": "善於安排",
+  "en": "Making Ends Meet"
+ },
+ "1446": {
+  "zh": "久等啦，團長",
+  "en": "Welcome to the Crew"
+ },
+ "1447": {
+  "zh": "這是特別優惠",
+  "en": "On the House"
+ },
+ "1448": {
+  "zh": "ENDLESS RAGNAROK",
+  "en": "Endless Ragnarok"
+ },
+ "1449": {
+  "zh": "征服混沌的羽翼",
+  "en": "Wings that Subjugated Chaos"
+ },
+ "1450": {
+  "zh": "極理的盡頭",
+  "en": "Broke the Laws of Nature"
+ },
+ "1451": {
+  "zh": "凌駕終末的羽翼",
+  "en": "Wings Beyond the Grand Finale"
+ },
+ "1452": {
+  "zh": "擊敗不滅者",
+  "en": "Destroyer of the Immortal"
+ },
+ "1453": {
+  "zh": "赤炎克服者",
+  "en": "Conqueror of Flameborn Fate"
+ },
+ "1454": {
+  "zh": "完美的理想世界",
+  "en": "A Perfect World Realized"
+ },
+ "1455": {
+  "zh": "十天眾擊敗者",
+  "en": "The Eternals Got Nothing On Me"
+ },
+ "1456": {
+  "zh": "極限極致究極終極",
+  "en": "Extremely Excellent Execution"
+ },
+ "1457": {
+  "zh": "混沌的盡頭",
+  "en": "On the Edge of Chaos"
+ },
+ "1458": {
+  "zh": "極沌名人",
+  "en": "Can't Beat My High Score"
+ },
+ "1459": {
+  "zh": "我會迅速解決！",
+  "en": "I'll Make This Quick!"
+ },
+ "1460": {
+  "zh": "汝，勿忘死亡",
+  "en": "Memento Mori"
+ },
+ "1461": {
+  "zh": "喔嗚喔嗚耶耶耶————！！",
+  "en": "Whoa-Whoa Yeaaah!"
+ },
+ "1462": {
+  "zh": "混沌之子",
+  "en": "Chaos Kid"
+ },
+ "1463": {
+  "zh": "13突",
+  "en": "13 Uncaps"
+ },
+ "1464": {
+  "zh": "滿級",
+  "en": "Level Overflow"
+ },
+ "1465": {
+  "zh": "滿級之後",
+  "en": "It's Peak"
+ },
+ "1466": {
+  "zh": "人生就是生存戰",
+  "en": "Life Is Shell"
+ },
+ "1467": {
+  "zh": "終末夕獸殺戮者",
+  "en": "Ragnalia Slayer"
+ },
+ "1468": {
+  "zh": "極星的指引",
+  "en": "Welcome to the Club"
+ },
+ "1469": {
+  "zh": "攻破境界之古戰場者",
+  "en": "Passed Prelims"
+ },
+ "1470": {
+  "zh": "征討極致混沌之道者",
+  "en": "This Is My Chaos"
+ },
+ "1471": {
+  "zh": "異界探訪者",
+  "en": "Frequent Confluxer"
+ },
+ "1472": {
+  "zh": "上啊上啊團長！",
+  "en": "Ike Ike Danchou!"
+ },
+ "1473": {
+  "zh": "加油加油團長！",
+  "en": "Ganbare Ganbare Danchou!"
+ },
+ "1474": {
+  "zh": "這個轉盤不得了！",
+  "en": "This Thing's Rigged!"
+ },
+ "1475": {
+  "zh": "上啊上啊！保持下去！",
+  "en": "Go! Go! Pow! Pow!"
+ },
+ "1476": {
+  "zh": "希望能獲得更強的力量",
+  "en": "More... More!"
+ },
+ "1477": {
+  "zh": "領悟奧祕",
+  "en": "Points Expert"
+ },
+ "1478": {
+  "zh": "宿命的榮景",
+  "en": "Wings of Fate"
+ },
+ "1479": {
+  "zh": "任務開始",
+  "en": "Mission Is a Go"
+ },
+ "1480": {
+  "zh": "昨日之敵為今日之友",
+  "en": "Enemies Yesterday, Friends Today"
+ },
+ "1481": {
+  "zh": "鮮烈之力",
+  "en": "Strong and Beautiful"
+ },
+ "1482": {
+  "zh": "六龍之「黑」",
+  "en": "The Black of the Six Dragons"
+ },
+ "1483": {
+  "zh": "徹底★改造",
+  "en": "Overhaul!"
+ },
+ "1484": {
+  "zh": "邁向高手的領域",
+  "en": "To Be a Master"
+ },
+ "1485": {
+  "zh": "眼中光芒……驟然閃爍……！！",
+  "en": "My Evil Eye Approves!"
+ },
+ "1486": {
+  "zh": "追風的新翼",
+  "en": "Get On My Level, Newcomers"
+ },
+ "1487": {
+  "zh": "蟹之彼方",
+  "en": "Where the Wee Pincers Are"
+ },
+ "1488": {
+  "zh": "驚異！漆黑螃蟹真的存在！！",
+  "en": "The Crabs in Black Do Exist!"
+ },
+ "1489": {
+  "zh": "能用的東西就通通利用",
+  "en": "All-Purpose Ether"
+ },
+ "1490": {
+  "zh": "化身使用者",
+  "en": "Doppelgänger Commander"
+ },
+ "1491": {
+  "zh": "新手召喚師",
+  "en": "Pure Summoner"
+ },
+ "1492": {
+  "zh": "百鍊召喚師",
+  "en": "Sum 100"
+ },
+ "1493": {
+  "zh": "神祕履行者",
+  "en": "Divine Caller"
+ },
+ "1494": {
+  "zh": "羈絆體現者",
+  "en": "Let's Network"
+ },
+ "1495": {
+  "zh": "羈絆＋50",
+  "en": "Followers +50"
+ },
+ "1496": {
+  "zh": "羈絆＋100",
+  "en": "Followers +100"
+ },
+ "1497": {
+  "zh": "羈絆＋200",
+  "en": "Followers +200"
+ },
+ "1499": {
+  "zh": "緣分連結者",
+  "en": "Bound by Fate"
+ },
+ "1500": {
+  "zh": "森羅萬象的呼喚",
+  "en": "Voice of the Universe"
+ },
+ "1501": {
+  "zh": "神異形召喚師",
+  "en": "Omega Summoner"
+ },
+ "1502": {
+  "zh": "究極召喚師",
+  "en": "Ultimate Summoner"
+ },
+ "1503": {
+  "zh": "超究極召喚師",
+  "en": "Super Ultimate Summoner"
+ },
+ "1504": {
+  "zh": "妨害召喚師",
+  "en": "Jamming Is My Jam"
+ },
+ "1505": {
+  "zh": "咒術召喚師",
+  "en": "What Sorcery Is This?!"
+ },
+ "1506": {
+  "zh": "侵蝕者",
+  "en": "Hex Maniac"
+ },
+ "1507": {
+  "zh": "輔助召喚師",
+  "en": "Everyone Needs Supplements"
+ },
+ "1508": {
+  "zh": "增幅召喚師",
+  "en": "Buff Summoner"
+ },
+ "1509": {
+  "zh": "後援團長",
+  "en": "Captain of the Cheer Squad"
+ },
+ "1510": {
+  "zh": "醫術召喚師",
+  "en": "Medic!"
+ },
+ "1511": {
+  "zh": "治療召喚師",
+  "en": "Someone Call for a Doctor?"
+ },
+ "1512": {
+  "zh": "療癒者",
+  "en": "Healing Hand"
+ },
+ "1513": {
+  "zh": "老大的好夥伴",
+  "en": "Zathba's Favorite"
+ },
+ "1514": {
+  "zh": "靈峰尼裘里斯的修行僧",
+  "en": "Acolyte of Mellose"
+ },
+ "1515": {
+  "zh": "風渡的便利屋",
+  "en": "Mr. Fix It on Call"
+ },
+ "1516": {
+  "zh": "星旅之徒",
+  "en": "Zealot of Avia"
+ },
+ "1517": {
+  "zh": "四玉二環",
+  "en": "Dragonspeaker"
+ },
+ "1518": {
+  "zh": "星神之子",
+  "en": "Child of the Primeval Gods"
+ },
+ "1519": {
+  "zh": "破局體現者",
+  "en": "Catastrophe Incarnate"
+ },
+ "1520": {
+  "zh": "海神綿津見",
+  "en": "God of the Sea"
+ },
+ "1521": {
+  "zh": "喵喚師",
+  "en": "Cat Whisperer"
+ },
+ "1522": {
+  "zh": "就是螃蟹",
+  "en": "I'm a Crab"
+ },
+ "1523": {
+  "zh": "救世巫女",
+  "en": "Shaman of Salvation"
+ },
+ "1524": {
+  "zh": "已無所畏懼",
+  "en": "Not Afraid of Anything Anymore"
+ },
+ "1525": {
+  "zh": "碧麗的二天輝星",
+  "en": "Radiant Blue of Eternal Renown"
+ },
+ "1526": {
+  "zh": "天元突破",
+  "en": "Surmounted the Chromatic Wings"
+ },
+ "1527": {
+  "zh": "超越極理者",
+  "en": "Architect of My Own Providence"
+ },
+ "1528": {
+  "zh": "【理】",
+  "en": "I AM THE LAW"
+ },
+ "1529": {
+  "zh": "無庸置疑的強者",
+  "en": "Steel Monarch"
+ },
+ "1530": {
+  "zh": "吾",
+  "en": "It's Good to Be King"
+ },
+ "1531": {
+  "zh": "【鬥】",
+  "en": "Checkmate"
+ },
+ "1532": {
+  "zh": "賢者",
+  "en": "Wise One"
+ },
+ "1533": {
+  "zh": "超脫攝理者",
+  "en": "Defier of Logic"
+ },
+ "1534": {
+  "zh": "阿卡路姆的呼喚",
+  "en": "Call of the Arcarum"
+ },
+ "1535": {
+  "zh": "連結蒼藍之絆吧",
+  "en": "Step Forth, Beyond the Blue"
+ },
+ "1536": {
+  "zh": "親愛的星星",
+  "en": "My Precious Star"
+ },
+ "1537": {
+  "zh": "奧祕閃耀的艷花",
+  "en": "Skybound Enchantress"
+ },
+ "1538": {
+  "zh": "超越災禍之門的艷花",
+  "en": "Gate-Crushing Enchantress"
+ },
+ "1539": {
+  "zh": "超越紫銀雙翼的艷花",
+  "en": "Darkness-Smashing Enchantress"
+ },
+ "1540": {
+  "zh": "光輝賢者",
+  "en": "Luminous Sage"
+ },
+ "1541": {
+  "zh": "力之賢者",
+  "en": "The Strength Evoker"
+ },
+ "1542": {
+  "zh": "誘惑的惡魔",
+  "en": "Beguiling Devil"
+ },
+ "1543": {
+  "zh": "思念朋友",
+  "en": "Powered by Friendship"
+ },
+ "1544": {
+  "zh": "尋人中",
+  "en": "MISSING"
+ },
+ "1545": {
+  "zh": "光輝燦爛",
+  "en": "Razzle-Dazzle"
+ },
+ "1546": {
+  "zh": "惡魔的踢技家",
+  "en": "Fraux's Collection"
+ },
+ "1547": {
+  "zh": "惡魔的踢技大師",
+  "en": "Fraux's Trove"
+ },
+ "1548": {
+  "zh": "燦然的大賢者",
+  "en": "Grand Enchantress"
+ },
+ "1549": {
+  "zh": "至高之獄焰",
+  "en": "Supreme Hellblaze"
+ },
+ "1550": {
+  "zh": "轉世",
+  "en": "In a World of My Own"
+ },
+ "1551": {
+  "zh": "神祕少女",
+  "en": "Mystery Girl"
+ },
+ "1552": {
+  "zh": "不輕言放棄",
+  "en": "I'm No Quitter"
+ },
+ "1553": {
+  "zh": "偷偷募集朋友中",
+  "en": "Making Friends Along the Way"
+ },
+ "1554": {
+  "zh": "芙拉烏的友人",
+  "en": "I Roll with Fraux"
+ },
+ "1555": {
+  "zh": "芙拉烏的鄰人",
+  "en": "Fraux's Deputy"
+ },
+ "1556": {
+  "zh": "失落的連結",
+  "en": "The Missing Link"
+ },
+ "1557": {
+  "zh": "奧祕閃耀的常闇",
+  "en": "Skybound Darkness"
+ },
+ "1558": {
+  "zh": "超越災禍之門的常闇",
+  "en": "Gate-Crushing Darkness"
+ },
+ "1559": {
+  "zh": "超越紫銀雙翼的常闇",
+  "en": "Darkness-Smashing Wedge"
+ },
+ "1560": {
+  "zh": "闇黑之龍",
+  "en": "Black Dragon"
+ },
+ "1561": {
+  "zh": "理外之黑",
+  "en": "Limitless Black"
+ },
+ "1562": {
+  "zh": "空之楔",
+  "en": "Wedge of the Sky"
+ },
+ "1563": {
+  "zh": "伴侶募集中",
+  "en": "Show Me the Dyad"
+ },
+ "1564": {
+  "zh": "薪火相傳的觀察者",
+  "en": "Life Steward"
+ },
+ "1565": {
+  "zh": "漆黑一色",
+  "en": "Total Eclipse"
+ },
+ "1566": {
+  "zh": "闇黑的咒蝕士",
+  "en": "Fediel's Collection"
+ },
+ "1567": {
+  "zh": "闇黑的咒蝕大師",
+  "en": "Fediel's Trove"
+ },
+ "1568": {
+  "zh": "昏暝的大黑龍",
+  "en": "Grand Darkness"
+ },
+ "1569": {
+  "zh": "至高之黑楔",
+  "en": "Supreme Dark Wedge"
+ },
+ "1570": {
+  "zh": "黑理",
+  "en": "Law of Darkness"
+ },
+ "1571": {
+  "zh": "無法抗拒的好奇心",
+  "en": "Curious like a Dragon"
+ },
+ "1572": {
+  "zh": "自由奔放",
+  "en": "Free Spirit"
+ },
+ "1573": {
+  "zh": "人類文化觀察中",
+  "en": "Researcher of Mortal Culture"
+ },
+ "1574": {
+  "zh": "菲迪耶爾的友人",
+  "en": "I Roll with Fediel"
+ },
+ "1575": {
+  "zh": "菲迪耶爾的隨從",
+  "en": "Fediel's Adherent"
+ },
+ "1576": {
+  "zh": "白銀勇狼",
+  "en": "Rising Wolf"
+ },
+ "1577": {
+  "zh": "暴風將軍",
+  "en": "Storm General"
+ },
+ "1578": {
+  "zh": "刃之練習曲",
+  "en": "Etude of Daggers"
+ },
+ "1579": {
+  "zh": "舞劍淑女",
+  "en": "Sword Maiden"
+ },
+ "1580": {
+  "zh": "群青復歸",
+  "en": "Prodigal Ultramarine"
+ },
+ "1581": {
+  "zh": "不滅劍士",
+  "en": "Immortal Saber"
+ },
+ "1582": {
+  "zh": "孤高狙擊手",
+  "en": "Solitary Sniper"
+ },
+ "1583": {
+  "zh": "迅雷偵查者",
+  "en": "Thunder Scout"
+ },
+ "1584": {
+  "zh": "暮光舞者",
+  "en": "Twilight Dancer"
+ },
+ "1585": {
+  "zh": "輝耀行者",
+  "en": "Footloose and Radiant"
+ },
+ "1586": {
+  "zh": "黑之觀察者",
+  "en": "The Dark Has Eyes"
+ },
+ "1587": {
+  "zh": "瘴息傾吐者",
+  "en": "Toxic"
+ },
+ "1588": {
+  "zh": "七星劍刃",
+  "en": "Seventh Heaven"
+ },
+ "1589": {
+  "zh": "完美劍王",
+  "en": "Saber This Moment"
+ },
+ "1590": {
+  "zh": "二王極弓",
+  "en": "Forever Tweyenty"
+ },
+ "1591": {
+  "zh": "完美弓弧",
+  "en": "Perfect Arc"
+ },
+ "1592": {
+  "zh": "光之使者",
+  "en": "Lightbringer"
+ },
+ "1593": {
+  "zh": "救贖福音",
+  "en": "Evangelium"
+ },
+ "1594": {
+  "zh": "花都異變探查者",
+  "en": "Hole Plugger of Seedhollow"
+ },
+ "1595": {
+  "zh": "進階異變平息者",
+  "en": "Shut It Down!"
+ },
+ "1596": {
+  "zh": "路人短髮",
+  "en": "Can't Fool Me"
+ },
+ "1597": {
+  "zh": "朧",
+  "en": "Purple Haze"
+ },
+ "1598": {
+  "zh": "史萊姆追擊者",
+  "en": "Slime Chaser"
+ },
+ "1599": {
+  "zh": "完美八號",
+  "en": "Möbius Walker"
+ },
+ "1600": {
+  "zh": "弒神者",
+  "en": "Divine Deicide"
+ },
+ "1601": {
+  "zh": "紫銀",
+  "en": "There Can Only Be One"
+ },
+ "1602": {
+  "zh": "絕對的唯一王者",
+  "en": "Supreme King"
+ },
+ "1603": {
+  "zh": "至王",
+  "en": "Preeminent King"
+ },
+ "1604": {
+  "zh": "新世界之神",
+  "en": "Founder of a New World"
+ },
+ "1605": {
+  "zh": "世界",
+  "en": "The World"
+ },
+ "1606": {
+  "zh": "樂園放逐",
+  "en": "Paradise Lost"
+ },
+ "1607": {
+  "zh": "默示",
+  "en": "Wings of Revelation"
+ },
+ "1608": {
+  "zh": "至高之理",
+  "en": "Logos Prime"
+ },
+ "1609": {
+  "zh": "極理",
+  "en": "Above the Law"
+ },
+ "1610": {
+  "zh": "相撲戰士",
+  "en": "Sumo Warrior"
+ },
+ "1611": {
+  "zh": "不沉艦",
+  "en": "Absolute Unit"
+ },
+ "1612": {
+  "zh": "橫綱",
+  "en": "Yokozuna"
+ },
+ "1613": {
+  "zh": "星穹破壞者",
+  "en": "Celestial Squisher"
+ },
+ "1614": {
+  "zh": "天之史萊姆",
+  "en": "Slimeway to Heaven"
+ },
+ "1615": {
+  "zh": "天上之主",
+  "en": "In Slime We Trust"
+ },
+ "1616": {
+  "zh": "擊墜王",
+  "en": "Red Baron"
+ },
+ "1617": {
+  "zh": "世間罕見的奇妙戰友",
+  "en": "Stranger Than Fiction"
+ },
+ "1618": {
+  "zh": "食欲的化身",
+  "en": "Sushi Afishionado"
+ },
+ "1619": {
+  "zh": "勇猛果斷",
+  "en": "The Valiant"
+ },
+ "1620": {
+  "zh": "無論誰看都是高手",
+  "en": "IYKYK"
+ },
+ "1621": {
+  "zh": "脫穎而出的猛將",
+  "en": "Rising Star"
+ },
+ "1622": {
+  "zh": "超越神者",
+  "en": "And We Have Killed Him"
+ },
+ "1623": {
+  "zh": "原始",
+  "en": "The Primeval"
+ },
+ "1624": {
+  "zh": "滅星者",
+  "en": "Starkiller"
+ },
+ "1625": {
+  "zh": "機神",
+  "en": "Automagod"
+ },
+ "1626": {
+  "zh": "超越永恆者",
+  "en": "To Eternity and Beyond"
+ },
+ "1627": {
+  "zh": "天星",
+  "en": "Better than All the Rest"
+ }
+}

@@ -17,6 +17,8 @@ const exportVersion = ref('')
 const exportComment = ref('')
 const importedVersion = ref('')
 const importedComment = ref('')
+const importWarnings = ref([])
+const sharedLoadout = ref(null)
 const logsLoadouts = ref([])
 const logsRecords = ref([])
 const selectedLogsLoadout = ref('')
@@ -45,6 +47,25 @@ function validEntry(value) {
   if (!value || typeof value !== 'object') return false
   return ['sigilHash', 'sigilLevel', 'primaryTraitHash', 'primaryTraitLevel', 'secondaryTraitHash', 'secondaryTraitLevel']
     .every(key => Number.isInteger(value[key]) && value[key] >= 0 && value[key] <= 0xFFFFFFFF)
+}
+
+function validCompleteLoadout(data) {
+  if (!data || data.format !== 'gbfr-loadout' || !Number.isInteger(data.version) || data.version < 1 || data.version > 10 || !Array.isArray(data.sigils)) return false
+  const hash = value => typeof value === 'string' && /^(?:0x)?[0-9a-f]{1,8}$/i.test(value)
+  const level = value => Number.isInteger(value) && value >= 0
+  const indexes = new Set()
+  if (data.sigils.length > MAX_ENTRIES || !data.sigils.every(item => {
+    if (!item || !level(item.level) || !level(item.primaryTraitLevel) || !hash(item.hash) || !hash(item.primaryTraitHash) || (item.secondaryTraitHash && !hash(item.secondaryTraitHash))) return false
+    if (data.version >= 2 && (!Number.isInteger(item.index) || item.index < 0 || item.index >= MAX_ENTRIES || indexes.has(item.index))) return false
+    indexes.add(item.index); return true
+  })) return false
+  if (Array.isArray(data.summons) && (data.summons.length !== 4 || !data.summons.every(item => item && hash(item.typeHash) && hash(item.mainTraitHash) && hash(item.subParamHash) && level(item.mainTraitLevel) && level(item.subParamLevel) && level(item.rank)))) return false
+  if ((data.skills?.length || 0) > 4 || !data.skills?.every?.(item => item && hash(item.hash))) return false
+  if ((data.masteryHashes?.length || 0) > 50 || !data.masteryHashes?.every?.(hash)) return false
+  if (data.weaponSkillHashes && (!Array.isArray(data.weaponSkillHashes) || !data.weaponSkillHashes.every(hash))) return false
+  if (data.version >= 4 && (!Array.isArray(data.overLimit) || data.overLimit.length !== 4 || !data.overLimit.every((item, index) => item && item.index === index && level(item.level) && (!item.attributeHash || hash(item.attributeHash))))) return false
+  if (data.version >= 5 && (!Array.isArray(data.weaponSkillHashes) || data.weaponSkillHashes.length !== 5)) return false
+  return true
 }
 
 const sigilNames = computed(() => new Map(options.sigils.map(item => [item.hash >>> 0, item.displayName])))
@@ -115,6 +136,8 @@ async function startRecord() {
   try {
     await enableReader()
     entries.value = []
+    sharedLoadout.value = null
+    importWarnings.value = []
     writeIndex.value = 0
     lastSeen = ''
     mode.value = 'record'
@@ -140,6 +163,8 @@ async function startWrite() {
 function clearEntries() {
   if (mode.value !== 'idle') return
   entries.value = []
+  sharedLoadout.value = null
+  importWarnings.value = []
   writeIndex.value = 0
 }
 
@@ -154,7 +179,9 @@ function selectLogsLoadout() {
   const loadout = logsLoadouts.value[Number(selectedLogsLoadout.value)]
   if (!loadout) return
   entries.value = loadout.entries.map(snapshot)
-  importedVersion.value = 'GBFR Logs'
+  sharedLoadout.value = loadout.loadout || null
+  importWarnings.value = loadout.warnings || []
+  importedVersion.value = sharedLoadout.value ? `GBFR Logs / gbfr-loadout v${sharedLoadout.value.version}` : 'GBFR Logs'
   importedComment.value = [loadout.playerName, loadout.characterName].filter(Boolean).join(' / ')
   writeIndex.value = 0
   show(`已选择 ${importedComment.value || '玩家'} 的 ${entries.value.length} 条配装`, 'success')
@@ -180,17 +207,14 @@ function closeLogsDialog() { logsDialogOpen.value = false }
 
 function exportJSON() {
   if (!entries.value.length) { show('没有可导出的配装', 'error'); return }
-  const data = JSON.stringify({
-    format: FORMAT,
-    version: VERSION,
-    loadoutVersion: exportVersion.value.trim(),
-    comment: exportComment.value.trim(),
-    entries: entries.value,
-  }, null, 2)
+  const payload = sharedLoadout.value
+    ? sharedLoadout.value
+    : { format: FORMAT, version: VERSION, loadoutVersion: exportVersion.value.trim(), comment: exportComment.value.trim(), entries: entries.value }
+  const data = JSON.stringify(payload, null, 2)
   const url = URL.createObjectURL(new Blob([data], { type: 'application/json' }))
   const link = document.createElement('a')
   link.href = url
-  link.download = 'gbfr-sigil-loadout.json'
+  link.download = sharedLoadout.value ? 'gbfr-loadout.json' : 'gbfr-sigil-loadout.json'
   link.click()
   URL.revokeObjectURL(url)
 }
@@ -202,15 +226,21 @@ async function importJSON(event) {
   if (!file || mode.value !== 'idle') return
   try {
     const data = JSON.parse(await file.text())
-    if (data?.format !== FORMAT || data?.version !== VERSION || !Array.isArray(data.entries)) {
-      throw new Error('不是支持的因子配装 JSON 文件')
+    const complete = validCompleteLoadout(data)
+    const sourceEntries = complete
+      ? data.sigils.map(item => ({ sigilHash: parseInt(item.hash, 16), sigilLevel: item.level, primaryTraitHash: parseInt(item.primaryTraitHash, 16), primaryTraitLevel: item.primaryTraitLevel, secondaryTraitHash: parseInt(item.secondaryTraitHash || '0', 16), secondaryTraitLevel: item.secondaryTraitLevel || 0 }))
+      : data?.entries
+    if ((!complete && (data?.format !== FORMAT || data?.version !== VERSION)) || !Array.isArray(sourceEntries)) {
+      throw new Error('不是支持的因子或完整配装 JSON 文件')
     }
-    if (!data.entries.length || data.entries.length > MAX_ENTRIES || !data.entries.every(validEntry)) {
-      throw new Error('配装条目无效，数量必须为 1 到 12 条')
+    if (!sourceEntries.length || sourceEntries.length > MAX_ENTRIES || !sourceEntries.every(validEntry)) {
+      throw new Error('配装因子条目无效，数量必须为 1 到 12 条')
     }
-    entries.value = data.entries.map(snapshot)
-    exportVersion.value = typeof data.loadoutVersion === 'string' ? data.loadoutVersion : ''
-    exportComment.value = typeof data.comment === 'string' ? data.comment : ''
+    entries.value = sourceEntries.map(snapshot)
+    sharedLoadout.value = complete ? data : null
+    importWarnings.value = []
+    exportVersion.value = complete ? `gbfr-loadout v${data.version}` : (typeof data.loadoutVersion === 'string' ? data.loadoutVersion : '')
+    exportComment.value = complete ? (typeof data.name === 'string' ? data.name : '') : (typeof data.comment === 'string' ? data.comment : '')
     importedVersion.value = exportVersion.value
     importedComment.value = exportComment.value
     writeIndex.value = 0
@@ -282,9 +312,13 @@ onBeforeUnmount(stop)
         <span v-if="importedVersion">导入版本：{{ importedVersion }}</span>
         <span v-if="importedComment">导入注释：{{ importedComment }}</span>
       </div>
+      <div v-if="importWarnings.length" class="import-warnings">
+        <strong>导入警告</strong>
+        <span v-for="(warning, index) in importWarnings" :key="index">{{ warning }}</span>
+      </div>
       <p class="hint">录制：被录制角色装好12个因子进入 持有物>因子 按角色筛选，焦点第1行点录制后焦点依次向下滑动到第12行完成。
         写入：与录制同理，被写入角色佩戴12个未使用的任意因子，持有物>因子 按角色筛选，从第1行点击写入滑到12行。
-      注意事项：不要装备两个及以上个完全相同的因子，不要滑太快，会导致遗漏，看不懂的可以去看看我的视频
+      注意事项：不要装备两个及以上个完全相同的因子，不要滑太快，会导致遗漏。完整 `gbfr-loadout` 文件和 GBFR Logs 快照会保留武器、技能、召唤石、专精、上限突破等草稿数据；本模块当前只会实际写入因子，其他字段不会直接写入未经验证的存档布局。
       </p>
     </section>
 
@@ -329,7 +363,9 @@ onBeforeUnmount(stop)
 .export-fields input, .export-fields textarea { box-sizing:border-box; width:100%; padding:7px 9px; border:1px solid rgba(255,255,255,.13); border-radius:6px; background:rgba(255,255,255,.05); color:rgba(255,255,255,.85); font:inherit; font-size:.75rem; outline:none; resize:vertical; }
 .export-fields input:focus, .export-fields textarea:focus { border-color:rgba(103,232,249,.4); }
 .export-fields input:disabled, .export-fields textarea:disabled { opacity:.45; }
-.imported-meta { display:flex; flex-direction:column; gap:3px; margin-top:10px; color:rgba(103,232,249,.7); font-size:.7rem; }
+.imported-meta, .import-warnings { display:flex; flex-direction:column; gap:3px; margin-top:10px; font-size:.7rem; }
+.imported-meta { color:rgba(103,232,249,.7); }
+.import-warnings { color:rgba(251,191,36,.82); }
 .hint, .empty { margin:10px 0 0; color:rgba(255,255,255,.4); font-size:.72rem; line-height:1.5; }
 @media (max-width:560px) { .export-fields { grid-template-columns:1fr; } }
 .entries { list-style:none; margin:10px 0 0; padding:0; display:flex; flex-direction:column; gap:3px; }

@@ -1,0 +1,311 @@
+{
+  "schemaVersion": 1,
+  "calibrationId": "gbfr-2.0.2-field-runtime-2026-07-21",
+  "gameVersion": "2.0.2",
+  "gameExecutableSha256": "63340832BCF731FBC97796F686B05C988418E83D451D4A49B2244A85D00E297F",
+  "layoutId": "relink-2.0.2-runtime-character-panel-v3",
+  "access": "PROCESS_QUERY_INFORMATION | PROCESS_VM_READ",
+  "runtimeLayout": {
+    "managerRva": "0x7C24980",
+    "accessChain": [
+      "module + managerRva -> manager",
+      "manager + 0x08/0x10 -> directory/runtime ID vector",
+      "manager + 0xA40/0xA58 -> status map bucket table/mask",
+      "bucket node + 0x10/0x30 -> map key/status object"
+    ],
+    "identity": {
+      "directoryHashSource": "status map key",
+      "runtimeIdSource": "ID vector or map key",
+      "candidateObjectHashOffset": "0x59F0",
+      "candidateObjectHashObservation": "00000000 for the observed Io object; not an identity requirement"
+    },
+    "statusFlags": {
+      "readyOffset": "0x5EBC",
+      "eligibilityOffset": "0x5EBE",
+      "observation": "diagnostic metadata only; exact map-key identity is not vetoed by these flags"
+    },
+    "fields": [
+      {
+        "name": "hp",
+        "rawType": "i32",
+        "relativeOffset": "0x04",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads_and_screen"
+      },
+      {
+        "name": "attack",
+        "rawType": "i32",
+        "relativeOffset": "0x08",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads_and_screen"
+      },
+      {
+        "name": "stunPower",
+        "rawType": "f32",
+        "relativeOffset": "0x10",
+        "displayScale": 10,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads_screen_and_repeated_node_delta"
+      },
+      {
+        "name": "critRate",
+        "rawType": "f32",
+        "relativeOffset": "0x14",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads_and_screen"
+      },
+      {
+        "name": "permanentAttack",
+        "rawType": "f32",
+        "relativeOffset": "0x58F8",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads"
+      },
+      {
+        "name": "permanentHP",
+        "rawType": "f32",
+        "relativeOffset": "0x58FC",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads"
+      },
+      {
+        "name": "permanentCritRate",
+        "rawType": "f32",
+        "relativeOffset": "0x5900",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads"
+      },
+      {
+        "name": "permanentStun",
+        "rawType": "f32",
+        "relativeOffset": "0x5904",
+        "displayScale": 10,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads_and_panel_scale"
+      },
+      {
+        "name": "level",
+        "rawType": "i32",
+        "relativeOffset": "0x5B44",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads"
+      },
+      {
+        "name": "baseHP",
+        "rawType": "i32",
+        "relativeOffset": "0x5B48",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads"
+      },
+      {
+        "name": "baseAttack",
+        "rawType": "i32",
+        "relativeOffset": "0x5B4C",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads"
+      },
+      {
+        "name": "baseStun",
+        "rawType": "f32",
+        "relativeOffset": "0x5B54",
+        "displayScale": 10,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads_and_panel_scale"
+      },
+      {
+        "name": "baseCritRate",
+        "rawType": "i32",
+        "relativeOffset": "0x5B58",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads"
+      },
+      {
+        "name": "masterHP",
+        "rawType": "i32",
+        "relativeOffset": "0x5B64",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads"
+      },
+      {
+        "name": "masterAttack",
+        "rawType": "i32",
+        "relativeOffset": "0x5B68",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads"
+      },
+      {
+        "name": "fateHP",
+        "rawType": "i32",
+        "relativeOffset": "0x5B70",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads_and_final_panel_match"
+      },
+      {
+        "name": "fateAttack",
+        "rawType": "i32",
+        "relativeOffset": "0x5B74",
+        "displayScale": 1,
+        "sampleRoleCount": 2,
+        "evidenceLevel": "verified_two_roles_three_reads_and_final_panel_match"
+      }
+    ]
+  },
+  "runtimeWeaponSnapshot": {
+    "access": "same read-only character status object; three identical reads required",
+    "fields": [
+      { "name": "weaponSlotId", "rawType": "u32", "relativeOffset": "0x50" },
+      { "name": "weaponHash", "rawType": "u32", "relativeOffset": "0x54" },
+      { "name": "wrightstoneTraits", "rawType": "3 x (u32 hash, i32 level)", "relativeOffset": "0x70" },
+      { "name": "wrightstoneHash", "rawType": "u32", "relativeOffset": "0x88" },
+      { "name": "effectiveWeaponSkills", "rawType": "4 x (u32 hash, i32 level)", "relativeOffset": "0xF4" }
+    ],
+    "roleObservations": [
+      {
+        "role": "Io",
+        "weaponSkillObservation": "rebuilt Catastrophe effective Lv32 while the static weapon table level is Lv30",
+        "wrightstoneObservation": "Stun Power Lv20, Supplementary Damage Lv15 and the character's third live trait"
+      },
+      {
+        "role": "Djeeta",
+        "weaponSkillObservation": "Catastrophe effective Lv25 equals the static weapon level",
+        "wrightstoneObservation": "Stun Power Lv20, Supplementary Damage Lv15, Critical Hit Rate Lv10"
+      }
+    ],
+    "evidenceLevel": "verified_two_roles_three_reads_and_final_panel_match"
+  },
+  "roleSamples": [
+    {
+      "role": "Io",
+      "directoryHash": "4D0A60C3",
+      "runtimeId": "4D0A60C3",
+      "identitySource": "map_key",
+      "stableReads": 3,
+      "screenMatched": true,
+      "panel": {
+        "hp": 132977,
+        "attack": 111259,
+        "stunPower": 306,
+        "rawStunPower": 30.599998,
+        "critRate": 124
+      }
+    },
+    {
+      "role": "Djeeta",
+      "directoryHash": "A4ACBA76",
+      "runtimeId": "A4ACBA76",
+      "identitySource": "map_key",
+      "stableReads": 3,
+      "screenMatched": true,
+      "panel": {
+        "hp": 102131,
+        "attack": 25887,
+        "stunPower": 216,
+        "rawStunPower": 21.6,
+        "critRate": 115
+      }
+    }
+  ],
+  "experiments": [
+    {
+      "nodeHash": "1F52146F",
+      "role": "Io",
+      "category": "SB_LIMIT",
+      "sourceActionValue": 0.4,
+      "sourceDescription": "stun power +0.4",
+      "classification": "verified_final_panel",
+      "method": "single-node loadout A/B/A/B through the game UI",
+      "repeated": true,
+      "aPanels": [
+        { "hp": 159573, "attack": 111259, "stunPower": 306, "rawStunPower": 30.599998, "critRate": 108 },
+        { "hp": 159573, "attack": 111259, "stunPower": 306, "rawStunPower": 30.599998, "critRate": 108 }
+      ],
+      "bPanels": [
+        { "hp": 159573, "attack": 111259, "stunPower": 302, "rawStunPower": 30.2, "critRate": 108 },
+        { "hp": 159573, "attack": 111259, "stunPower": 302, "rawStunPower": 30.2, "critRate": 108 }
+      ],
+      "displayDelta": { "hp": 0, "attack": 0, "stunPower": 4, "critRate": 0 },
+      "conclusion": "the source float32 action value uses raw status scale; the character panel displays it at x10"
+    },
+    {
+      "nodeHash": "A66398F9",
+      "role": "Io",
+      "category": "SB_DEF",
+      "sourceDescription": "maximum HP +15000",
+      "classification": "verified_final_panel",
+      "method": "single-node loadout A/B/A/B through the game UI",
+      "repeated": true,
+      "aPanels": [
+        { "hp": 159573, "attack": 111259, "stunPower": 306, "critRate": 108 },
+        { "hp": 159573, "attack": 111259, "stunPower": 306, "critRate": 108 }
+      ],
+      "bPanels": [
+        { "hp": 140673, "attack": 111259, "stunPower": 306, "critRate": 108 },
+        { "hp": 140673, "attack": 111259, "stunPower": 306, "critRate": 108 }
+      ],
+      "displayDelta": { "hp": 18900, "attack": 0, "stunPower": 0, "critRate": 0 },
+      "conclusion": "the flat 15000 HP contribution is multiplied by the observed loadout's 1.26 HP layer"
+    },
+    {
+      "nodeHash": "E0E6FF0C",
+      "role": "Io",
+      "category": "SB_DEF",
+      "sourceDescription": "damage reduction while inside the concentration effect area when mastery is active",
+      "classification": "negative_town_panel_observation",
+      "method": "single-node loadout comparison in town and a bounded 24 KiB status-window scan",
+      "repeated": false,
+      "displayDelta": { "hp": 0, "attack": 0, "stunPower": 0, "critRate": 0 },
+      "negativeObservation": "no change in the four town panel fields and no direct node hash in the scanned status window",
+      "missingEvidence": "training hit samples with the concentration area inactive/active, including pre-hit HP, post-hit HP, damage and current buffs"
+    },
+    {
+      "nodeHash": "2BE0D486",
+      "role": "Io",
+      "category": "SB_ATK",
+      "sourceDescription": "defense +5%",
+      "classification": "verified_combat_damage_single_role",
+      "method": "same enemy, same attack, full HP before each hit; one baseline hit and two identical defense-enabled hits",
+      "repeated": true,
+      "displayDelta": { "hp": 0, "attack": 0, "stunPower": 0, "critRate": 0 },
+      "combatDamage": {
+        "maxHp": 126645,
+        "baselinePostHitHp": 89707,
+        "baselineDamage": 36938,
+        "defensePostHitHp": [91554, 91554],
+        "defenseDamage": 35091,
+        "observedDamageRatePercent": 94.9997292760842,
+        "observedReductionPercent": 5.00027072391575
+      },
+      "conclusion": "the unconditional defense percentage reduces received damage by the same percentage; displayed integer damage is consistent with applying a 0.95 multiplier",
+      "remainingEvidence": "repeat the baseline after restoring the paired save and confirm another role before generalizing every stacking and cap boundary"
+    }
+  ],
+  "masteryBoundaryEvidence": {
+    "storageCapacity": [10, 10, 10, 20],
+    "conclusion": "50 slots are structural capacity, not the current unlock state",
+    "verifiedSaveGradients": [
+      { "unitId": 10002, "totalMsp": 0, "masterLevel": 1, "capacities": [1, 0, 0, 0] },
+      { "unitId": 10001, "totalMsp": 136500, "masterLevel": 20, "capacities": [10, 10, 0, 0] },
+      { "unitId": 10004, "totalMsp": 3309499, "masterLevel": 50, "capacities": [10, 10, 10, 20] }
+    ],
+    "remainingBoundary": "a zero-MSP save alone still cannot distinguish system-not-opened from opened-with-zero-MSP without an additional progression flag or UI observation"
+  },
+  "safety": {
+    "runtimeAccess": "read-only",
+    "rawMemoryExported": false,
+    "absoluteAddressesExported": false,
+    "saveExperiment": "reversible preset-only experiments followed by exact whole-save restoration and checksum verification"
+  }
+}

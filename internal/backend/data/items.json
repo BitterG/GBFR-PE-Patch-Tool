@@ -1,0 +1,2190 @@
+{
+  "version": "2.0.2",
+  "source": "物品ID.xlsx (2026-07-14)",
+  "items": [
+    {
+      "hash": "DB1D4F35",
+      "nameEn": "Cobblestone",
+      "nameCn": "圆石",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "D5E89BC8",
+      "nameEn": "Whorlshroom",
+      "nameCn": "旋风菇",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "DEED762B",
+      "nameEn": "Tempestone",
+      "nameCn": "飓风石",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "B451E459",
+      "nameEn": "Valley Bloom",
+      "nameCn": "白谷草",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "EB0CCD8D",
+      "nameEn": "Charred Lumber",
+      "nameCn": "烧焦的木材",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "1C67E865",
+      "nameEn": "Damaged Tail Fin",
+      "nameCn": "残缺的尾翼",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "F430B195",
+      "nameEn": "Machine Unit",
+      "nameCn": "动力组件",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "C3D96C52",
+      "nameEn": "High-Grade Scrap",
+      "nameCn": "优质的废弃元件",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "E0937C5B",
+      "nameEn": "Ice Spire",
+      "nameCn": "霜柱",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "2D510205",
+      "nameEn": "Snow Pillow",
+      "nameCn": "雪枕",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "1CF9A666",
+      "nameEn": "Frosted Flower",
+      "nameCn": "冰中花",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "DD3F9978",
+      "nameEn": "Eternal Snowflake",
+      "nameCn": "永冻冰晶",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "206C6EC1",
+      "nameEn": "Desert Ash",
+      "nameCn": "沙漠矿尘",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "926D4AE9",
+      "nameEn": "Red-Hot Cactus",
+      "nameCn": "铁火仙人掌",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "EB0A1DC8",
+      "nameEn": "Fornax Stone",
+      "nameCn": "锻炉石",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "050C5228",
+      "nameEn": "Electromagnetic Sand",
+      "nameCn": "电磁砂核",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "514D7AA0",
+      "nameEn": "Magma Worm",
+      "nameCn": "岩浆虫",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "759850CA",
+      "nameEn": "Salamander Egg",
+      "nameCn": "火蜥蜴蛋",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "26FA7DA3",
+      "nameEn": "Vermillion Powder",
+      "nameCn": "星晶砂",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "C263CCDC",
+      "nameEn": "Phondam Sulfur",
+      "nameCn": "枫达慕硫磺",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "726575FF",
+      "nameEn": "Busted Manikin",
+      "nameCn": "假人残骸",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "C2E4D287",
+      "nameEn": "Aviaeth Prayer Book",
+      "nameCn": "星旅祈祷书",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "79C247F6",
+      "nameEn": "Patalena Glass",
+      "nameCn": "帕塔莱纳之晶",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "09C7A73E",
+      "nameEn": "Bloomsword Hilt",
+      "nameCn": "花剑护手",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "7992B6F0",
+      "nameEn": "Welkin Reflection",
+      "nameCn": "碧虚记忆",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "3031E3E4",
+      "nameEn": "Dark Liquid",
+      "nameCn": "黑暗液体",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "FEEAFCCF",
+      "nameEn": "Disast Ore",
+      "nameCn": "灾祸之石",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "6E49A111",
+      "nameEn": "Astral Matter",
+      "nameCn": "星界物质",
+      "category": "基础素材与采集物 / Gathering & Basic Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "9519F56A",
+      "nameEn": "Wind Shard",
+      "nameCn": "风之碎片",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "141EF3A7",
+      "nameEn": "Wind Orb",
+      "nameCn": "风之宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "5CEADFBC",
+      "nameEn": "Cyclone Orb",
+      "nameCn": "烈空宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "9352DED3",
+      "nameEn": "Water Shard",
+      "nameCn": "水之碎片",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "8B75E58A",
+      "nameEn": "Water Orb",
+      "nameCn": "水之宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "1AA4382D",
+      "nameEn": "Frost Orb",
+      "nameCn": "雾冰宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "8E1CB52D",
+      "nameEn": "Earth Shard",
+      "nameCn": "土之碎片",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "9C694865",
+      "nameEn": "Earth Orb",
+      "nameCn": "土之宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "28592CB2",
+      "nameEn": "Rumbling Orb",
+      "nameCn": "大地宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "B78AC87F",
+      "nameEn": "Fire Shard",
+      "nameCn": "炎之碎片",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "92781B4B",
+      "nameEn": "Fire Orb",
+      "nameCn": "炎之宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "38D2ECD0",
+      "nameEn": "Inferno Orb",
+      "nameCn": "红莲宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "ABA63A29",
+      "nameEn": "Dark Shard",
+      "nameCn": "暗之碎片",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "208FA9E4",
+      "nameEn": "Dark Orb",
+      "nameCn": "暗之宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "F6EE4068",
+      "nameEn": "Abysm Orb",
+      "nameCn": "地狱宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "FA737B89",
+      "nameEn": "Light Shard",
+      "nameCn": "光之碎片",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "6BDF6669",
+      "nameEn": "Light Orb",
+      "nameCn": "光之宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "15C3F606",
+      "nameEn": "Shining Orb",
+      "nameCn": "煌光宝珠",
+      "category": "元素碎片与宝珠 / Elemental Shards & Orbs",
+      "dangerous": false
+    },
+    {
+      "hash": "D15091D9",
+      "nameEn": "Furycane Anima",
+      "nameCn": "胡拉坎之魂",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "4F1E4C13",
+      "nameEn": "Furycane Omega Anima",
+      "nameCn": "胡拉坎玛格纳之魂",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "729D7FB0",
+      "nameEn": "Vitality Hoof",
+      "nameCn": "生机之蹄",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "4A41482C",
+      "nameEn": "Vitality Lush Hoof",
+      "nameCn": "生机之翠蹄",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "815B2EE4",
+      "nameEn": "Managarmr Anima",
+      "nameCn": "玛纳加尔姆之魂",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "1A114B03",
+      "nameEn": "Managarmr Omega Anima",
+      "nameCn": "玛纳加尔姆玛格纳之魂",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "173851D4",
+      "nameEn": "Sequestered Mane",
+      "nameCn": "隔绝之鬃",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "B0782428",
+      "nameEn": "Sequestered Flood Mane",
+      "nameCn": "隔绝之苍鬃",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "BC413B80",
+      "nameEn": "Excavallion Anima",
+      "nameCn": "艾卡利翁之魂",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "13FCF405",
+      "nameEn": "Excavallion Omega Anima",
+      "nameCn": "艾卡利翁玛格纳之魂",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "BA799E24",
+      "nameEn": "Fortified Hearth",
+      "nameCn": "镇守之炉",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "451F7D7A",
+      "nameEn": "Vulkan Bolla Anima",
+      "nameCn": "伏尔甘博拉之魂",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "E5481168",
+      "nameEn": "Vulkan Bolla Omega Anima",
+      "nameCn": "伏尔甘博拉玛格纳之魂",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "4C4CAA77",
+      "nameEn": "Dreaded Tail",
+      "nameCn": "畏惧之尾",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "35F709E3",
+      "nameEn": "Dreaded Temper Tail",
+      "nameCn": "畏惧之赤尾",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "434C567F",
+      "nameEn": "Angra Mainyu Anima",
+      "nameCn": "安格拉·曼纽之魂",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "ED3B872D",
+      "nameEn": "Angra Mainyu Omega Anima",
+      "nameCn": "安格拉·曼纽玛格纳之魂",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "5E2D3D63",
+      "nameEn": "Calamitous Hand",
+      "nameCn": "灾祸之爪",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "C05CA6A1",
+      "nameEn": "Protector's Pride",
+      "nameCn": "守护者的荣耀",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "6B4E2182",
+      "nameEn": "Id Anamnesis",
+      "nameCn": "伊德的记忆",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "E35076B2",
+      "nameEn": "Destrudo",
+      "nameCn": "决死本能",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "456D2BB3",
+      "nameEn": "Mortido",
+      "nameCn": "自毁本能",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "C783F39D",
+      "nameEn": "Alpha Wolf's Valor",
+      "nameCn": "狼王的勇武",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "99307633",
+      "nameEn": "Gallanza Anamnesis",
+      "nameCn": "伽兰查的记忆",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "0F6B4A1F",
+      "nameEn": "Silver Wolf Clovis",
+      "nameCn": "白狼枪尖",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "6E13E372",
+      "nameEn": "Silver Wolf Trefoil",
+      "nameCn": "白狼混沌尖",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "DF18535C",
+      "nameEn": "Bladecaller's Gambit",
+      "nameCn": "刃姬的谋略",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "B4693222",
+      "nameEn": "Maglielle Anamnesis",
+      "nameCn": "玛琪拉菲菈的记忆",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "65C8078D",
+      "nameEn": "Cutthroat Fang",
+      "nameCn": "刃重耳钉",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "4C21DC42",
+      "nameEn": "Fellowship Fang",
+      "nameCn": "刃重混沌钉",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "54FC643A",
+      "nameEn": "Furycane Nihilla Core",
+      "nameCn": "胡拉坎·虚无之核",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "7B600740",
+      "nameEn": "Nihilla-Cast Sword",
+      "nameCn": "虚无·诅咒之剑",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "BB579CAF",
+      "nameEn": "Managarmr Nihilla Core",
+      "nameCn": "玛纳加尔姆·虚无之核",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "D93D7206",
+      "nameEn": "Nihilla Horn of Disdain",
+      "nameCn": "虚无·抗拒之角",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "9371081E",
+      "nameEn": "Vulkan Bolla Nihilla Core",
+      "nameCn": "伏尔甘博拉·虚无之核",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "D9D98ED6",
+      "nameEn": "Nihilla-Fused Dark Plasma",
+      "nameCn": "虚无·黑暗之炎",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "1E133AAC",
+      "nameEn": "Dark Residue",
+      "nameCn": "暗黑碎片",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "11722A61",
+      "nameEn": "Tears of the Apocalypse",
+      "nameCn": "终焉暗晶",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "A9CBB5AF",
+      "nameEn": "Canaan Whitebloom",
+      "nameCn": "迦南白花",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "0311B2DE",
+      "nameEn": "Sparks of the Apocalypse",
+      "nameCn": "终焉混沌晶",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "6F38AFE1",
+      "nameEn": "World Idean",
+      "nameCn": "世界意念",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "85F40D79",
+      "nameEn": "Chaotic Signum",
+      "nameCn": "混沌之印",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "8A08F64E",
+      "nameEn": "Auroral Signum",
+      "nameCn": "极光之印",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "D147A1BA",
+      "nameEn": "Abyssal Wings",
+      "nameCn": "漆黑棘羽",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "05474649",
+      "nameEn": "Provenance Crystal",
+      "nameCn": "至理结晶",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "F7DC6ED9",
+      "nameEn": "Hexachrome Quartz",
+      "nameCn": "至理六合晶",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "FAF93BCC",
+      "nameEn": "Blaze of the Wedges",
+      "nameCn": "定榫精火",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "01EAA064",
+      "nameEn": "Demigod Feather",
+      "nameCn": "半神之羽",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "181381E5",
+      "nameEn": "Divinity Shackle",
+      "nameCn": "神之枷锁",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "5392DEE6",
+      "nameEn": "Divine Blightplume",
+      "nameCn": "神之混沌羽",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "68BAFC37",
+      "nameEn": "Forgotten Azureplume",
+      "nameCn": "被遗忘的苍羽",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "C1563862",
+      "nameEn": "Divinity's Crimsonplume",
+      "nameCn": "神威红羽",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "831F31FF",
+      "nameEn": "Sown Emptiness",
+      "nameCn": "虚无之棘",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "DF713FA9",
+      "nameEn": "Ultimate Memory",
+      "nameCn": "超级存储器",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "FD1DC09A",
+      "nameEn": "Primeval Firestorm Node",
+      "nameCn": "焚天源节点",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "25165316",
+      "nameEn": "Primeval Aquashade Node",
+      "nameCn": "覆水源节点",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "686F12AD",
+      "nameEn": "Primeval Galewing Node",
+      "nameCn": "劫风源节点",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "53A9D491",
+      "nameEn": "Primeval Landslide Node",
+      "nameCn": "裂地源节点",
+      "category": "星晶兽与首领素材 / Primal Beast & Boss Drops",
+      "dangerous": false
+    },
+    {
+      "hash": "BEE8897D",
+      "nameEn": "Dragon Scale",
+      "nameCn": "龙鳞",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "8FFE7300",
+      "nameEn": "Dragon Wing",
+      "nameCn": "龙翼",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "05D2CF79",
+      "nameEn": "Red Dragon Scale",
+      "nameCn": "赤龙鳞",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "94DD261D",
+      "nameEn": "Firewyrm's Jewel",
+      "nameCn": "火龙珠",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "D0F04D9F",
+      "nameEn": "Primordial Fire",
+      "nameCn": "原初之火",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "F90A5398",
+      "nameEn": "Blue Dragon Scale",
+      "nameCn": "青龙鳞",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "51355C28",
+      "nameEn": "Icewyrm's Jewel",
+      "nameCn": "冰龙珠",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "A2452B7C",
+      "nameEn": "Primordial Water",
+      "nameCn": "原初之水",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "9D598751",
+      "nameEn": "Brown Dragon Scale",
+      "nameCn": "地龙鳞",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "CDDE3137",
+      "nameEn": "Earthwyrm's Jewel",
+      "nameCn": "地龙珠",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "89406DB0",
+      "nameEn": "Primordial Earth",
+      "nameCn": "原初之土",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "E82861B1",
+      "nameEn": "Green Dragon Scale",
+      "nameCn": "风龙鳞",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "91CCBC0F",
+      "nameEn": "Windwyrm's Jewel",
+      "nameCn": "风龙珠",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "A1EAD2C2",
+      "nameEn": "Primordial Wind",
+      "nameCn": "原初之风",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "64473A6A",
+      "nameEn": "White Dragon Scale",
+      "nameCn": "白龙鳞",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "98E75FCB",
+      "nameEn": "Whitewyrm's Jewel",
+      "nameCn": "白龙珠",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "882F94A7",
+      "nameEn": "Primordial Light",
+      "nameCn": "原初之光",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "9F548DB0",
+      "nameEn": "Black Dragon Scale",
+      "nameCn": "黑龙鳞",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "9E75A958",
+      "nameEn": "Blackwyrm's Jewel",
+      "nameCn": "黑龙珠",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "C83F9E36",
+      "nameEn": "Primordial Darkness",
+      "nameCn": "原初之暗",
+      "category": "龙系素材 / Dragon Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "CD298CC8",
+      "nameEn": "Griffin Feather",
+      "nameCn": "狮鹫之羽",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "7E7999B3",
+      "nameEn": "Griffin Talon",
+      "nameCn": "狮鹫钩爪",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "65D98A52",
+      "nameEn": "Giant Beak",
+      "nameCn": "狮鹫巨喙",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "C96755A7",
+      "nameEn": "Landbeast Claw",
+      "nameCn": "地兽之爪",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "0E7CBC8E",
+      "nameEn": "Majestic Beak",
+      "nameCn": "极佳坚喙",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "52BB246C",
+      "nameEn": "Landbeast Plate",
+      "nameCn": "地兽外壳",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "21B32140",
+      "nameEn": "Landbeast Horn",
+      "nameCn": "地兽硬角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "25289584",
+      "nameEn": "Landbeast Grimspike",
+      "nameCn": "地兽异角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "D6CC00D6",
+      "nameEn": "Frostbeast Claw",
+      "nameCn": "冰兽之爪",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "9282ABBE",
+      "nameEn": "Frostbeast Plate",
+      "nameCn": "冰兽外壳",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "D943BEE6",
+      "nameEn": "Frostbeast Horn",
+      "nameCn": "冰兽硬角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "7500C5D9",
+      "nameEn": "Frostbeast Grimspike",
+      "nameCn": "冰兽异角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "354D4683",
+      "nameEn": "Flamebeast Claw",
+      "nameCn": "炎兽之爪",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "F82726D9",
+      "nameEn": "Flamebeast Plate",
+      "nameCn": "炎兽外壳",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "4C9BE4DE",
+      "nameEn": "Flamebeast Horn",
+      "nameCn": "炎兽硬角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "695EA716",
+      "nameEn": "Flamebeast Grimspike",
+      "nameCn": "炎兽异角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "D5AF421A",
+      "nameEn": "Golem Finger",
+      "nameCn": "魔像石指",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "99F44080",
+      "nameEn": "Golem Rockjaw",
+      "nameCn": "魔像巨颚",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "6D876FAB",
+      "nameEn": "Crimson Horn",
+      "nameCn": "深红之角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "9BA6E51D",
+      "nameEn": "Frozen Horn",
+      "nameCn": "冰封之角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "82C111C8",
+      "nameEn": "Terra Horn",
+      "nameCn": "大地之角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "745FD287",
+      "nameEn": "Typhoon Horn",
+      "nameCn": "台风之角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "786407F5",
+      "nameEn": "Bright Horn",
+      "nameCn": "光明之角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "09F9339E",
+      "nameEn": "Abyssal Horn",
+      "nameCn": "深渊之角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "E68DA071",
+      "nameEn": "Calamity Corkscrew",
+      "nameCn": "灾祸曲角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "2D007309",
+      "nameEn": "Horn of Bahamut",
+      "nameCn": "巴哈姆特之角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "D47F792A",
+      "nameEn": "Bizarre Wing",
+      "nameCn": "怪异之翼",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "ED91FE58",
+      "nameEn": "Bizarre Ice Spine",
+      "nameCn": "怪异冰棘",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "E4070E98",
+      "nameEn": "Chilling Demon Eye",
+      "nameCn": "冰冻魔眼",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "17F349BA",
+      "nameEn": "Vile Demon Eye",
+      "nameCn": "极冰怪异魔眼",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "B83B6B1D",
+      "nameEn": "Bleak Bone",
+      "nameCn": "忘却之骨",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "0692327C",
+      "nameEn": "Bleak Armguard",
+      "nameCn": "忘却护腕",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "8BEF5254",
+      "nameEn": "Frosty War Axe",
+      "nameCn": "冰冻巨斧",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "6837EFC6",
+      "nameEn": "Extinction War Axe",
+      "nameCn": "极冰忘却战斧",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "20612B0A",
+      "nameEn": "Purgatory Bone",
+      "nameCn": "炼狱之骨",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "9BE7982B",
+      "nameEn": "Purgatory Armguard",
+      "nameCn": "炼狱护腕",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "68FF3A08",
+      "nameEn": "Searing War Axe",
+      "nameCn": "灼热巨斧",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "19871BF3",
+      "nameEn": "Excoriation War Axe",
+      "nameCn": "极惨炼狱战斧",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "D465046A",
+      "nameEn": "Mythril Wheel",
+      "nameCn": "秘银之轮",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "B763E7AC",
+      "nameEn": "Condemnation Saw",
+      "nameCn": "断罪之锯",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "7EB26854",
+      "nameEn": "Ether Battery",
+      "nameCn": "以太电池",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "D7DB4607",
+      "nameEn": "Extension Bracer",
+      "nameCn": "镇压型移动装置",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "C5406BBA",
+      "nameEn": "Swivel Cannon",
+      "nameCn": "扫荡型加农炮",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "23C59C51",
+      "nameEn": "Judgment Prongs",
+      "nameCn": "审判型机杖",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "04C18EEC",
+      "nameEn": "Carnage Pulse Unit",
+      "nameCn": "杀戮型脉冲组件",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": true
+    },
+    {
+      "hash": "F7F9A658",
+      "nameEn": "Sinister Prongs",
+      "nameCn": "凶邪机杖",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "77DF2F30",
+      "nameEn": "Crowning Parapet",
+      "nameCn": "城墙头冠",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "D4EE7FC3",
+      "nameEn": "Blood Ruby",
+      "nameCn": "血红晶",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "000EB8F5",
+      "nameEn": "Chieftain's Braid",
+      "nameCn": "兽人将领发束",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "9E0FFA73",
+      "nameEn": "Greatshield Fragment",
+      "nameCn": "狂乱大盾碎片",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "3048DAA9",
+      "nameEn": "Broken Savage Sword",
+      "nameCn": "断裂的蛮剑",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "2A5548A9",
+      "nameEn": "Fool's Fractured Jaw",
+      "nameCn": "黑金之颚",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "381526A4",
+      "nameEn": "Blood-Soaked Helm",
+      "nameCn": "罗刹之盔",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "67E3F274",
+      "nameEn": "Tayu'itar Head Unit",
+      "nameCn": "泰尤达尔·头部组件",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "C037D7F0",
+      "nameEn": "Death Nail",
+      "nameCn": "狂暴锐锋",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "3C3B449F",
+      "nameEn": "Wing of Portent",
+      "nameCn": "狂暴之兆",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "0F34EABC",
+      "nameEn": "Crown of Lament",
+      "nameCn": "恸哭之石",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "3AE09B39",
+      "nameEn": "Rancorous Lance",
+      "nameCn": "毁灭凶角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "BDBF43EE",
+      "nameEn": "Spiteband of Lament",
+      "nameCn": "恸哭之混沌石",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "ADFFE24E",
+      "nameEn": "Bestial Ritual Stone",
+      "nameCn": "狂兽勾玉",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "5A5FA153",
+      "nameEn": "Ancient Hollowpoint",
+      "nameCn": "古龙洞角",
+      "category": "怪物部位与器官 / Monster Parts",
+      "dangerous": false
+    },
+    {
+      "hash": "43915122",
+      "nameEn": "Damascus Ingot",
+      "nameCn": "大马士革钢",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "B2045655",
+      "nameEn": "Azurite's Splendor",
+      "nameCn": "苍穹之辉",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "20C742DE",
+      "nameEn": "Azurite Shard",
+      "nameCn": "苍穹碎片",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "90DF952A",
+      "nameEn": "Silver Centrum",
+      "nameCn": "银天之辉",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "8816ADC5",
+      "nameEn": "Prism Chip",
+      "nameCn": "星晶碎片",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "4325AB79",
+      "nameEn": "Flawed Prism",
+      "nameCn": "星晶碎块",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "7CFA41FC",
+      "nameEn": "Flawless Prism",
+      "nameCn": "星晶块",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "23F2E797",
+      "nameEn": "Rainbow Prism",
+      "nameCn": "虹星晶",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "687733C4",
+      "nameEn": "Fortitude Shard",
+      "nameCn": "锻武碎片",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "644536DF",
+      "nameEn": "Fortitude Crystal (S)",
+      "nameCn": "锻武结晶·小",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "7948DE7D",
+      "nameEn": "Fortitude Crystal (M)",
+      "nameCn": "锻武结晶·中",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "24DF54EE",
+      "nameEn": "Fortitude Crystal (L)",
+      "nameCn": "锻武结晶·大",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "8C4FC319",
+      "nameEn": "Chaos Refinium",
+      "nameCn": "混沌精炼材",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "541D3800",
+      "nameEn": "Standard Refinium",
+      "nameCn": "基础精炼材",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "99D6247E",
+      "nameEn": "Quality Refinium",
+      "nameCn": "高等精炼材",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "24725515",
+      "nameEn": "Exceptional Refinium",
+      "nameCn": "梦幻精炼材",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "0EB683CD",
+      "nameEn": "Grand Refinium I",
+      "nameCn": "华贵精炼材I",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "98CDB46F",
+      "nameEn": "Grand Refinium II",
+      "nameCn": "华贵精炼材II",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "64A63FBC",
+      "nameEn": "Grand Refinium III",
+      "nameCn": "华贵精炼材III",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "8D888638",
+      "nameEn": "Blue-Sky Spirit",
+      "nameCn": "苍天之魂",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "9A3DC719",
+      "nameEn": "Blue-Sky Flare",
+      "nameCn": "苍天烽火",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "537CB6D9",
+      "nameEn": "Ragnite (Defender)",
+      "nameCn": "终焉钢锭【防御】",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "86FB2EE1",
+      "nameEn": "Ragnite (Stunner)",
+      "nameCn": "终焉钢锭【昏厥】",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "654FA095",
+      "nameEn": "Ragnite (Ascension)",
+      "nameCn": "终焉钢锭【觉醒】",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "1F4BAE8C",
+      "nameEn": "Ragnite (Stinger)",
+      "nameCn": "终焉钢锭【暴击】",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "54732298",
+      "nameEn": "Ragnite (Executioner)",
+      "nameCn": "终焉钢锭【弱点】",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "1C195D33",
+      "nameEn": "Ragnite (Terminus)",
+      "nameCn": "终焉钢锭【究极】",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "65063E17",
+      "nameEn": "Mythic Artifact",
+      "nameCn": "神代忆体",
+      "category": "养成与强化材料 / Upgrade & Uncap Materials",
+      "dangerous": false
+    },
+    {
+      "hash": "E379E863",
+      "nameEn": "Copper Spellbook",
+      "nameCn": "拉结尔之书·铜",
+      "category": "经验书与药水 / Spellbooks & Potions",
+      "dangerous": false
+    },
+    {
+      "hash": "648CDA74",
+      "nameEn": "Silver Spellbook",
+      "nameCn": "拉结尔之书·银",
+      "category": "经验书与药水 / Spellbooks & Potions",
+      "dangerous": false
+    },
+    {
+      "hash": "AD856C0C",
+      "nameEn": "Gold Spellbook",
+      "nameCn": "拉结尔之书·金",
+      "category": "经验书与药水 / Spellbooks & Potions",
+      "dangerous": false
+    },
+    {
+      "hash": "9B442642",
+      "nameEn": "Ambrosia",
+      "nameCn": "不死仙果",
+      "category": "经验书与药水 / Spellbooks & Potions",
+      "dangerous": false
+    },
+    {
+      "hash": "3916849C",
+      "nameEn": "Green Potion",
+      "nameCn": "治疗药水",
+      "category": "经验书与药水 / Spellbooks & Potions",
+      "dangerous": false
+    },
+    {
+      "hash": "94132AE1",
+      "nameEn": "Mega Potion",
+      "nameCn": "强效药水",
+      "category": "经验书与药水 / Spellbooks & Potions",
+      "dangerous": false
+    },
+    {
+      "hash": "A84CA7E9",
+      "nameEn": "Blue Potion",
+      "nameCn": "群疗药水(蓝药瓶)",
+      "category": "经验书与药水 / Spellbooks & Potions",
+      "dangerous": false
+    },
+    {
+      "hash": "E6E075E8",
+      "nameEn": "Revival Potion",
+      "nameCn": "复活药水(黄药品)",
+      "category": "经验书与药水 / Spellbooks & Potions",
+      "dangerous": false
+    },
+    {
+      "hash": "9738C87A",
+      "nameEn": "Champion Merit",
+      "nameCn": "荣光之证",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "6F1FABE6",
+      "nameEn": "Supreme Merit",
+      "nameCn": "霸者之证",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "2E94D39A",
+      "nameEn": "Legendary Merit",
+      "nameCn": "究极之证",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "C043BAC9",
+      "nameEn": "Daybreak Merit",
+      "nameCn": "黎明之证",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "5D7078CD",
+      "nameEn": "Copper Dalia Badge",
+      "nameCn": "达丽雅铜奖章",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "81BF605C",
+      "nameEn": "Silver Dalia Badge",
+      "nameCn": "达丽雅银奖章",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "5C07839A",
+      "nameEn": "Gold Dalia Badge",
+      "nameCn": "达丽雅金奖章",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "F8F91F7E",
+      "nameEn": "Gold Badge Ticket",
+      "nameCn": "达丽雅金奖章优待券(副本卷)",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "60CB5EA6",
+      "nameEn": "Revenant Medallion",
+      "nameCn": "天星章",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "09370A3A",
+      "nameEn": "Knickknack Voucher",
+      "nameCn": "万事屋抽奖券",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "58FC9B99",
+      "nameEn": "Transmarvel Voucher",
+      "nameCn": "高级炼成券",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "F42D8C01",
+      "nameEn": "Curio",
+      "nameCn": "遗物",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "DE302978",
+      "nameEn": "Rafale Coin",
+      "nameCn": "拉法尔纪念币",
+      "category": "凭证、奖章与票券 / Merits, Badges & Vouchers",
+      "dangerous": false
+    },
+    {
+      "hash": "35C7FBA0",
+      "nameEn": "Crewmate Card",
+      "nameCn": "角色解锁券",
+      "category": "角色解锁券 / Crewmate Cards",
+      "dangerous": false
+    },
+    {
+      "hash": "8572B2CE",
+      "nameEn": "Crewmate Card: Seofon",
+      "nameCn": "希耶提专用解锁券",
+      "category": "角色解锁券 / Crewmate Cards",
+      "dangerous": false
+    },
+    {
+      "hash": "FE52F7CB",
+      "nameEn": "Crewmate Card: Tweyen",
+      "nameCn": "索恩专用解锁券",
+      "category": "角色解锁券 / Crewmate Cards",
+      "dangerous": false
+    },
+    {
+      "hash": "5B5B8603",
+      "nameEn": "Crewmate Card: Sandalphon",
+      "nameCn": "圣德芬专用解锁券",
+      "category": "角色解锁券 / Crewmate Cards",
+      "dangerous": false
+    },
+    {
+      "hash": "EB707EA7",
+      "nameEn": "Crewmate Card: Gallanza",
+      "nameCn": "伽兰查专用解锁券",
+      "category": "角色解锁券 / Crewmate Cards",
+      "dangerous": false
+    },
+    {
+      "hash": "E8926145",
+      "nameEn": "Crewmate Card: Maglielle",
+      "nameCn": "玛琪拉菲菈专用解锁券",
+      "category": "角色解锁券 / Crewmate Cards",
+      "dangerous": false
+    },
+    {
+      "hash": "41E4C8CE",
+      "nameEn": "Crewmate Card: Fraux",
+      "nameCn": "芙劳专用解锁券",
+      "category": "角色解锁券 / Crewmate Cards",
+      "dangerous": false
+    },
+    {
+      "hash": "06E5185F",
+      "nameEn": "Crewmate Card: Fediel",
+      "nameCn": "菲迪埃尔专用解锁券",
+      "category": "角色解锁券 / Crewmate Cards",
+      "dangerous": false
+    },
+    {
+      "hash": "1DA0A639",
+      "nameEn": "Ukhar Core",
+      "nameCn": "强力核心",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "6096C6BF",
+      "nameEn": "Chronos Core",
+      "nameCn": "时光核心",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "03A19196",
+      "nameEn": "Era Core",
+      "nameCn": "末日核心",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "EE2559C6",
+      "nameEn": "Wee Pincer",
+      "nameCn": "小钳蟹",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "9FBA96D1",
+      "nameEn": "Dark Wee Pincer",
+      "nameCn": "漆黑小钳蟹",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "778897F4",
+      "nameEn": "Sky Map Piece",
+      "nameCn": "空图碎片",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "FA674FBD",
+      "nameEn": "Rolan's Transceiver",
+      "nameCn": "罗兰的传声机",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "F147229B",
+      "nameEn": "Lyria's Journal",
+      "nameCn": "露莉亚笔记",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "771D9272",
+      "nameEn": "Avia Research Logs",
+      "nameCn": "阿维亚研究记录",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "F58676D3",
+      "nameEn": "Rolan's Notes",
+      "nameCn": "罗兰的手记",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "11A0F065",
+      "nameEn": "Protocol Fiber",
+      "nameCn": "制式纤维",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "29A7EEC9",
+      "nameEn": "Mana Circuit",
+      "nameCn": "魔力主板",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "D1D832C0",
+      "nameEn": "Lunary Detector",
+      "nameCn": "月之感应装置",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "C1DCB7AE",
+      "nameEn": "Lunary Cell",
+      "nameCn": "月之单元",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "7388FE67",
+      "nameEn": "Sephira Luster",
+      "nameCn": "塞斐拉之光",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "82619167",
+      "nameEn": "Vallion Commemorative Coin",
+      "nameCn": "卡利翁纪念铜币",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "0F479FA7",
+      "nameEn": "Heliotrope Urn",
+      "nameCn": "紫银灵息",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "3F8F4EFD",
+      "nameEn": "Terror Urn",
+      "nameCn": "黑银灵息",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "41E92F0A",
+      "nameEn": "Reality Thorn",
+      "nameCn": "神之棘",
+      "category": "核心与关键物品 / Cores & Key Items",
+      "dangerous": false
+    },
+    {
+      "hash": "EEDFA4E4",
+      "nameEn": "Color Pack 1",
+      "nameCn": "角色颜色包1",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": false
+    },
+    {
+      "hash": "C48004DD",
+      "nameEn": "Color Pack 2",
+      "nameCn": "角色颜色包2",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": false
+    },
+    {
+      "hash": "79E48056",
+      "nameEn": "Color Pack 3",
+      "nameCn": "角色颜色包3",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": false
+    },
+    {
+      "hash": "32DC23F3",
+      "nameEn": "Color Pack 4",
+      "nameCn": "角色颜色包4",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": false
+    },
+    {
+      "hash": "5AF14960",
+      "nameEn": "Color Pack 5",
+      "nameCn": "角色颜色包5",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": false
+    },
+    {
+      "hash": "D11BAAFC",
+      "nameEn": "Concept Art Color Pack",
+      "nameCn": "印象色礼包",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": false
+    },
+    {
+      "hash": "6C375D99",
+      "nameEn": "Sky Memory: Infinitesimal and Infinite",
+      "nameCn": "空之记忆“亿万生灵”",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": true
+    },
+    {
+      "hash": "2C0B5A82",
+      "nameEn": "Sky Memory: Manifestation",
+      "nameCn": "空之记忆“降世”",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": true
+    },
+    {
+      "hash": "96A00C42",
+      "nameEn": "Sky Memory: Love's Legacy",
+      "nameCn": "空之记忆“爱的传承”",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": true
+    },
+    {
+      "hash": "E3ABC397",
+      "nameEn": "Sky Memory: The War",
+      "nameCn": "空之记忆“霸空战争”",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": true
+    },
+    {
+      "hash": "0943913B",
+      "nameEn": "Sky Memory: The Girl in Blue",
+      "nameCn": "空之记忆“苍之少女”",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": true
+    },
+    {
+      "hash": "C57A5FE9",
+      "nameEn": "Sky Memory: Divided Skies",
+      "nameCn": "空之记忆“天空断隔”",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": true
+    },
+    {
+      "hash": "4249436E",
+      "nameEn": "Sky Memory: Sundered God",
+      "nameCn": "空之记忆“二分之神”",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": true
+    },
+    {
+      "hash": "74201317",
+      "nameEn": "Sky Memory: Rebirthed Genesis",
+      "nameCn": "空之记忆“创世之再生”",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": false
+    },
+    {
+      "hash": "F74A6A4D",
+      "nameEn": "Fan-Fave Crown",
+      "nameCn": "斗蟹双角",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": false
+    },
+    {
+      "hash": "5942C5FB",
+      "nameEn": "Rebelwear",
+      "nameCn": "反抗之甲",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": false
+    },
+    {
+      "hash": "D27ACE64",
+      "nameEn": "Veil Armet",
+      "nameCn": "隐秘铠甲·头盔",
+      "category": "外观、颜色与记忆 / Cosmetics, Colors & Memories",
+      "dangerous": false
+    },
+    {
+      "hash": "8E5A0C09",
+      "nameEn": "Rupie",
+      "nameCn": "金币(不会增加实际金币数量)",
+      "category": "货币与点数 / Currencies & Points",
+      "dangerous": false
+    },
+    {
+      "hash": "0657F403",
+      "nameEn": "Mastery Point",
+      "nameCn": "历练点数",
+      "category": "货币与点数 / Currencies & Points",
+      "dangerous": false
+    },
+    {
+      "hash": "68EADAA9",
+      "nameEn": "Conflux Point",
+      "nameCn": "混融点数",
+      "category": "货币与点数 / Currencies & Points",
+      "dangerous": false
+    },
+    {
+      "hash": "2657283E",
+      "nameEn": "Resonance Point",
+      "nameCn": "共鸣点数",
+      "category": "货币与点数 / Currencies & Points",
+      "dangerous": false
+    },
+    {
+      "hash": "A7C72F41",
+      "nameEn": "Glitterstone (S)",
+      "nameCn": "闪亮石·小",
+      "category": "货币与点数 / Currencies & Points",
+      "dangerous": false
+    },
+    {
+      "hash": "30E31AFE",
+      "nameEn": "Glitterstone (L)",
+      "nameCn": "闪亮石·大",
+      "category": "货币与点数 / Currencies & Points",
+      "dangerous": false
+    },
+    {
+      "hash": "147EF70A",
+      "nameEn": "Glittercrystal",
+      "nameCn": "闪亮结晶",
+      "category": "货币与点数 / Currencies & Points",
+      "dangerous": false
+    },
+    {
+      "hash": "F692F716",
+      "nameEn": "Glittercrystal Cluster",
+      "nameCn": "闪亮晶块",
+      "category": "货币与点数 / Currencies & Points",
+      "dangerous": false
+    },
+    {
+      "hash": "78FE6E2C",
+      "nameEn": "Silver Key",
+      "nameCn": "苍银之钥",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "8682C2AC",
+      "nameEn": "Gold Key",
+      "nameCn": "黄金宝钥",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "86B12ABC",
+      "nameEn": "Whitewing Key",
+      "nameCn": "白翼之钥",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "41776DFD",
+      "nameEn": "Mirage Munition",
+      "nameCn": "武器幻晶",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "659230F4",
+      "nameEn": "Supreme Weapon Essence",
+      "nameCn": "究极器之极意",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "C93E2FDD",
+      "nameEn": "Child of Darkness and Flames",
+      "nameCn": "召唤石[暗炎之子]",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "8BF58697",
+      "nameEn": "Wings from the Boundary",
+      "nameCn": "召唤石[涯之银龙]",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "CF24B2F6",
+      "nameEn": "Colossus of Fortification",
+      "nameCn": "召唤石[镇守巨神]",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "CB39E0FC",
+      "nameEn": "Windcrest",
+      "nameCn": "风散草",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "29BBA035",
+      "nameEn": "Beast Warding Stick",
+      "nameCn": "驱兽人香木",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "E600BE75",
+      "nameEn": "Well-Used Gardening Tools",
+      "nameCn": "用惯了的洒水壶和铲子",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "7F695B76",
+      "nameEn": "Evergreen Crystal",
+      "nameCn": "深绿极水晶",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "981C29BD",
+      "nameEn": "Evergreen Crystal Fragment",
+      "nameCn": "破碎的深绿水晶碎片",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "E8C461CA",
+      "nameEn": "Azure Gemstone",
+      "nameCn": "琉璃色半宝石",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "F384E322",
+      "nameEn": "Tears of Repentance",
+      "nameCn": "净罪之泪",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "CD6AF550",
+      "nameEn": "Twilight Sphere",
+      "nameCn": "月黑之珠",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "EAC2D7AB",
+      "nameEn": "Kaleidosphere",
+      "nameCn": "多彩之珠",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "131A4636",
+      "nameEn": "Iridescent Effigy Shell",
+      "nameCn": "精灵像变色外壳",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "9FC6585E",
+      "nameEn": "Midnight Sun's Amber",
+      "nameCn": "白夜沉眠的琥珀石",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "CE0B379E",
+      "nameEn": "Desert Oil",
+      "nameCn": "沙漠油脂",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "CB0781EF",
+      "nameEn": "Life Link",
+      "nameCn": "生命连接",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "71BC9232",
+      "nameEn": "Elpis, the Mind Sealer",
+      "nameCn": "封心器“埃尔匹斯”",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "FF1A207A",
+      "nameEn": "Golden Crab Statue",
+      "nameCn": "黄金蟹像",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "076A9F41",
+      "nameEn": "Jet-Black Crab Statue",
+      "nameCn": "漆黑蟹像",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "06C0D0A1",
+      "nameEn": "Golden Albacore Statue",
+      "nameCn": "黄金金枪鱼像",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    },
+    {
+      "hash": "E578BB85",
+      "nameEn": "Dehg's Catalyst Stone",
+      "nameCn": "Deg催化剂",
+      "category": "其他杂项与特殊道具 / Other Special Items",
+      "dangerous": false
+    }
+  ]
+}

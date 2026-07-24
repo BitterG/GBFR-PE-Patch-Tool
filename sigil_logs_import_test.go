@@ -12,8 +12,16 @@ import (
 
 func TestReadLogsSigilLoadouts(t *testing.T) {
 	blob, err := cbor.Marshal(logsEncounter{PlayerData: [4]*logsPlayer{{
+		ActorIndex:    12,
 		DisplayName:   "Player",
 		CharacterName: "Player",
+		CharacterType: "PL2700",
+		WeaponKey:     "WEP_PL2700_02_01",
+		Abilities:     []uint32{11, 12},
+		Skillboard:    []uint32{21},
+		Summons:       []logsSummon{{SummonID: 31}, {SummonID: 32}, {SummonID: 33}, {SummonID: 34}},
+		WeaponState:   &logsWeaponState{WeaponID: 41, Exp: 42},
+		Stats:         &logsRecordStats{Level: 100, HP: 1000, Attack: 2000},
 		Sigils: []logsSigil{{
 			FirstTraitID: 1, FirstTraitLevel: 15,
 			SecondTraitID: 2, SecondTraitLevel: 15,
@@ -57,5 +65,9 @@ func TestReadLogsSigilLoadouts(t *testing.T) {
 	entry := result[0].Loadouts[0].Entries[0]
 	if entry.SigilHash != 3 || entry.PrimaryTraitHash != 1 || entry.SecondaryTraitHash != 2 {
 		t.Fatalf("unexpected entry: %#v", entry)
+	}
+	loadout := result[0].Loadouts[0].Loadout
+	if loadout == nil || loadout.OwnerCode != "PL2700" || loadout.WeaponHash != "00000029" || len(loadout.Summons) != 4 || len(loadout.Skills) != 2 || len(loadout.MasteryHashes) != 1 || len(loadout.Weapon.Wrightstone.Traits) != 0 {
+		t.Fatalf("unexpected complete loadout draft: %#v", loadout)
 	}
 }

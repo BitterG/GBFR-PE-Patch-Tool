@@ -47,3 +47,5 @@
 
 #Git Bash/MSYS
 *.stackdump
+
+.reasonix/
