@@ -121,7 +121,7 @@ function selectSlot() {
   detail.value = null
   if (savePath.value.trim()) {
     LoadoutDetail(savePath.value.trim(), Number(item.unitId))
-      .then(value => { detail.value = value })
+      .then(value => { detail.value = value; for (const warning of value.warnings || []) show(warning, 'error') })
       .catch(error => show(`读取槽位详情失败: ${String(error)}`, 'error'))
   }
 }

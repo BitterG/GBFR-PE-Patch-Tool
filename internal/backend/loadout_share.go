@@ -174,6 +174,7 @@ type LoadoutShare struct {
 	Character         *LoadoutShareCharacterProgression `json:"character,omitempty"`
 	Weapon            *LoadoutShareWeaponState          `json:"weapon,omitempty"`
 	OverLimit         []LoadoutShareOverLimit           `json:"overLimit,omitempty"`
+	Warnings          []string                          `json:"warnings,omitempty"`
 }
 
 type LoadoutImportCapabilities struct {
@@ -357,9 +358,14 @@ func buildLoadoutShare(path string, unitID uint32) (*LoadoutShare, error) {
 		share.MasteryHashes = append(share.MasteryHashes, hashText(hash))
 	}
 	for _, sigil := range source.Sigils {
+		if sigil.Missing {
+			share.Warnings = append(share.Warnings, fmt.Sprintf("因子槽位 %d 引用的 SlotID %d 已失效，未导出该因子", sigil.Index+1, sigil.SlotID))
+			continue
+		}
 		gemUnitID, ok := ix.gemBySlotID[sigil.SlotID]
 		if !ok {
-			return nil, fmt.Errorf("因子 %s 的存档槽引用 %d 已失效，无法导出", sigil.Name, sigil.SlotID)
+			share.Warnings = append(share.Warnings, fmt.Sprintf("因子槽位 %d 引用的 SlotID %d 已失效，未导出该因子", sigil.Index+1, sigil.SlotID))
+			continue
 		}
 		primaryHash, primaryLevel, secondaryHash, secondaryLevel := readSigilTraits(save, gemUnitID)
 		sigilHash, parseErr := ParseHashHex(sigil.Hash)
