@@ -31,8 +31,11 @@ type LoadoutShare struct {
 	Summons           []LoadoutShareSummon              `json:"summons,omitempty"`
 	Skills            []LoadoutShareSkill               `json:"skills"`
 	WeaponSkillHashes []string                          `json:"weaponSkillHashes,omitempty"`
-	MasteryHashes     []string                          `json:"masteryHashes"`
-	Character         *LoadoutShareCharacterProgression `json:"character,omitempty"`
+	MasteryHashes              []string                          `json:"masteryHashes"`
+	// LogsSkillboardEffectUIIDs are GBFR Logs EffectUiId values for read-only display.
+	// They are deliberately distinct from save-file MasteryHashes.
+	LogsSkillboardEffectUIIDs []uint32                          `json:"logsSkillboardEffectUiIds,omitempty"`
+	Character                 *LoadoutShareCharacterProgression `json:"character,omitempty"`
 	Weapon            *LoadoutShareWeaponState          `json:"weapon,omitempty"`
 	OverLimit         []LoadoutShareOverLimit           `json:"overLimit,omitempty"`
 	LogsSnapshot      *LoadoutLogsSnapshot              `json:"logsSnapshot,omitempty"`

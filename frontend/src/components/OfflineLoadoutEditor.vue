@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { LoadoutApply, LoadoutApplyWithResources, LoadoutCheckCompliance, LoadoutDetail, LoadoutEditContext, LoadoutExportJSON, LoadoutImportJSON, LoadoutList, MasteryNodePool, MasterySummarize } from '../../wailsjs/go/main/OfflineLoadoutService'
+import { LoadoutApply, LoadoutApplyWithResources, LoadoutCheckCompliance, LoadoutDetail, LoadoutEditContext, LoadoutExportJSON, LoadoutImportJSON, LoadoutList, LogsMasteryNodePool, MasteryNodePool, MasterySummarize } from '../../wailsjs/go/main/OfflineLoadoutService'
 import { SelectLogsSigilLoadouts } from '../../wailsjs/go/main/App'
 
 const emit = defineEmits(['status'])
@@ -20,6 +20,8 @@ const logsRecords = ref([])
 const selectedLogRecord = ref('')
 const selectedLogPlayer = ref('')
 const pendingLogImport = ref(null)
+const logsMasteryPools = ref([])
+const logsMasteryActive = ref([])
 const masteryPools = ref([])
 const masterySummary = ref(null)
 const masteryExpanded = ref({ SB_DEF: true, SB_ATK: true, SB_LIMIT: true })
@@ -54,7 +56,7 @@ function exportCurrent() {
     show('已导出当前槽位的完整配装', 'success')
   }).catch(error => show(`导出失败: ${String(error)}`, 'error'))
 }
-async function importPayload(payload) {
+async function importPayload(payload, logsEffectUIIds = []) {
   if (!context.value) return show('请先读取目标角色与槽位', 'error')
   busy.value = true
   try {
@@ -62,6 +64,9 @@ async function importPayload(payload) {
     const draft = await LoadoutImportJSON(savePath.value.trim(), context.value.charaHash, payload)
     importedDraft.value = draft
     importedShare.value = { ...share, masteryHashes: draft.masteryHashes || [] }
+    const sourceLogsEffectUIIds = logsEffectUIIds.length ? logsEffectUIIds : share.logsSkillboardEffectUiIds || []
+    logsMasteryActive.value = Array.from(new Set(sourceLogsEffectUIIds.map(Number).filter(Number.isFinite)))
+    logsMasteryPools.value = logsMasteryActive.value.length ? await LogsMasteryNodePool(context.value.ownerCode, logsMasteryActive.value) || [] : []
     const [pools, summary] = await Promise.all([
       MasteryNodePool(context.value.ownerCode),
       MasterySummarize(context.value.ownerCode, draft.masteryHashes || []),
@@ -78,9 +83,10 @@ async function importFileJSON(event) {
   try { await importPayload(await file.text()) } catch (error) { show(`读取文件失败: ${String(error)}`, 'error') }
 }
 async function loadLogs() {
-  try { logsRecords.value = await SelectLogsSigilLoadouts() || []; selectedLogRecord.value = '0'; selectedLogPlayer.value = '0'; show(`已读取 ${logsRecords.value.length} 场 Logs 记录`, 'success') } catch (error) { show(`读取 Logs 失败: ${String(error)}`, 'error') }
+  try { logsRecords.value = await SelectLogsSigilLoadouts() || []; selectedLogRecord.value = '0'; selectedLogPlayer.value = '0'; show(`已读取 ${logsRecords.value.length} 份 Logs 导出 JSON`, 'success') } catch (error) { show(`读取 Logs 导出 JSON 失败: ${String(error)}`, 'error') }
 }
 function logRecordLabel(record) {
+  if (!Number(record.logTime)) return record.questName || 'Logs 导出 JSON'
   const quest = record.questName && !String(record.questName).startsWith('未收录任务') ? ` · ${record.questName}` : ''
   return `${new Date(record.logTime).toLocaleString()}${quest}（${record.loadouts.length} 名玩家）`
 }
@@ -107,6 +113,8 @@ async function switchToLogPlayerCharacter(player) {
     detail.value = null
     masteryPools.value = []
     masterySummary.value = null
+    logsMasteryPools.value = []
+    logsMasteryActive.value = []
     return true
   }
   return false
@@ -117,14 +125,17 @@ async function importLogPlayer() {
   busy.value = true
   try {
     if (!await switchToLogPlayerCharacter(player)) throw new Error(`当前存档未找到 Logs 玩家对应角色（${player.loadout?.ownerCode || player.characterType || '未知'}）`)
+    for (const warning of player.warnings || []) show(warning, 'error')
     pendingLogImport.value = player.loadout
+    logsMasteryPools.value = []
+    logsMasteryActive.value = []
     show('已切换到对应角色；请选择目标槽位后导入该玩家配装', 'success')
   } catch (error) { show(`导入配装失败: ${String(error)}`, 'error') } finally { busy.value = false }
 }
 async function confirmLogImport() {
   if (!pendingLogImport.value) return
   if (!selected.value) return show('请先选择目标槽位', 'error')
-  await importPayload(JSON.stringify(pendingLogImport.value))
+  await importPayload(JSON.stringify(pendingLogImport.value), pendingLogImport.value.logsSkillboardEffectUiIds || [])
   pendingLogImport.value = null
 }
 async function loadMasteryLayout() {
@@ -252,6 +263,8 @@ async function selectSlot() {
   detail.value = null
   masteryPools.value = []
   masterySummary.value = null
+  logsMasteryPools.value = []
+  logsMasteryActive.value = []
   if (!savePath.value.trim()) return
   try {
     const value = await LoadoutDetail(savePath.value.trim(), Number(item.unitId))
@@ -292,6 +305,8 @@ async function apply(copy) {
     const written = request ? await LoadoutApplyWithResources(savePath.value.trim(), output, request) : await LoadoutApply(savePath.value.trim(), output, [form.value])
     importedDraft.value = null
     importedShare.value = null
+    logsMasteryPools.value = []
+    logsMasteryActive.value = []
     result.value = { kind: '写入完成', report: written }
     show(`写入并回读验证完成：${written.outputPath}`, 'success')
     await loadContext()
@@ -304,7 +319,7 @@ async function apply(copy) {
     <section class="section">
       <div class="section-title">完整离线配装 <span>仅操作存档，不连接游戏进程</span></div>
       <label class="field"><span>SaveData 路径</span><input v-model="savePath" placeholder="例如 C:\\...\\SaveData1.dat" @keyup.enter="load" /></label>
-      <div class="actions"><button class="btn primary" :disabled="busy" @click="load">读取配装</button><button class="btn" :disabled="busy || !context" @click="exportCurrent">导出当前槽位</button><button class="btn" :disabled="busy || !context" @click="importFile?.click()">导入 JSON</button><button class="btn" :disabled="busy || !context" @click="loadLogs">读取 GBFR Logs</button><input ref="importFile" class="file-input" type="file" accept="application/json,.json" @change="importFileJSON" /></div>
+      <div class="actions"><button class="btn primary" :disabled="busy" @click="load">读取配装</button><button class="btn" :disabled="busy || !context" @click="exportCurrent">导出当前槽位</button><button class="btn" :disabled="busy || !context" @click="importFile?.click()">导入 JSON</button><button class="btn" :disabled="busy || !context" @click="loadLogs">选择 Logs 导出 JSON</button><input ref="importFile" class="file-input" type="file" accept="application/json,.json" @change="importFileJSON" /></div>
       <div v-if="logsRecords.length" class="logs-import"><label class="field"><span>Logs 场次</span><select v-model="selectedLogRecord"><option v-for="(record,index) in logsRecords" :key="index" :value="String(index)">{{ logRecordLabel(record) }}</option></select></label><label class="field"><span>玩家</span><select v-model="selectedLogPlayer"><option v-for="(player,index) in (logsRecords[Number(selectedLogRecord)]?.loadouts || [])" :key="index" :value="String(index)">{{ player.playerName || '未命名玩家' }} / {{ logPlayerCharacter(player) }}</option></select></label><button class="btn" :disabled="busy" @click="importLogPlayer">导入该玩家完整配装</button></div>
       <p class="hint">写入会创建备份、修复 checksum 并回读验证。原地写入前必须关闭游戏；建议优先使用“写入副本”。</p>
     </section>
@@ -327,6 +342,18 @@ async function apply(copy) {
         </div>
         <div><b>召唤石：</b><ol v-if="displaySummons.length"><li v-for="(item,index) in displaySummons" :key="`${index}-${item.typeHash}`">{{ formatSummon(item, index) }}</li></ol><span v-else>—</span></div>
         <div><b>因子：</b><ol v-if="displaySigils.length"><li v-for="item in displaySigils" :key="`${item.index}-${item.slotId || item.hash}`">{{ formatSigil(item) }}</li></ol><span v-else>—</span></div>
+        <div class="logs-mastery-layout" v-if="logsMasteryPools.length">
+          <div class="mastery-tools"><b>Logs 战斗快照专精（仅展示，不写入存档）</b></div>
+          <div v-for="rank in logsMasteryPools" :key="rank.rank" class="mastery-rank">
+            <span class="mastery-rank-label">{{ rank.label || rank.rank }}</span>
+            <span class="mastery-node-list">
+              <span v-for="node in rank.nodes" :key="`${rank.rank}-${node.effectUIId}`" class="mastery-node" :class="{ active: node.active, unknown: node.unknown }" :title="node.effectUIId">
+                <b>{{ node.active ? '■' : '□' }}</b><span>{{ node.effectUIId }} · {{ node.catLabel || node.cat }} · {{ node.text }}</span>
+              </span>
+            </span>
+          </div>
+          <small>亮蓝色：Logs 快照中激活；灰色：未激活。此处 EffectUiId 不会进入存档 MasteryHashes。</small>
+        </div>
         <div class="mastery-layout" v-if="masteryPools.length">
           <div class="mastery-tools"><b>专精激活图：</b><button class="btn copy-mastery" @click="copyMasteryEffects">复制效果对照</button></div>
           <div v-for="category in masteryCategories" :key="category.cat" class="mastery-category">
@@ -354,8 +381,8 @@ async function apply(copy) {
     </section>
 
     <section v-if="context" class="section">
-      <div class="section-title">导入到当前目标槽位 <span>{{ importedDraft ? '已载入完整配装草稿' : '请导入 JSON 或 GBFR Logs 玩家配装' }}</span></div>
-      <p class="hint">流程：先读取目标存档并选择角色/槽位；再导入 JSON 或 Logs 玩家配装；最后预检并写入。导入内容会整体应用，不需要手动勾选武器、技能、因子或专精。</p>
+      <div class="section-title">导入到当前目标槽位 <span>{{ importedDraft ? '已载入完整配装草稿' : '请导入 JSON 或 Logs 导出 JSON 玩家配装' }}</span></div>
+      <p class="hint">流程：先读取目标存档并选择角色/槽位；再导入 JSON 或 Logs 导出 JSON 玩家配装；最后预检并写入。导入内容会整体应用，不需要手动勾选武器、技能、因子或专精。</p>
       <div class="actions"><button class="btn" :disabled="busy || !importedDraft" @click="preflight">预检</button><button class="btn" :disabled="busy || !importedDraft" @click="apply(true)">写入副本</button><button class="btn danger" :disabled="busy || !importedDraft" @click="apply(false)">原地写入</button></div>
     </section>
 

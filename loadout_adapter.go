@@ -16,6 +16,8 @@ type CharacterLoadouts = backend.CharacterLoadouts
 type LoadoutComplianceReport = backend.LoadoutComplianceReport
 type MasteryRankPool = backend.MasteryRankPool
 type MasteryBuildSummary = backend.MasteryBuildSummary
+type LogsMasteryRankPool = backend.LogsMasteryRankPool
+
 
 func NewOfflineLoadoutService() *OfflineLoadoutService {
 	return &OfflineLoadoutService{service: backend.NewApp()}
@@ -39,6 +41,10 @@ func (s *OfflineLoadoutService) MasteryNodePool(ownerCode string) ([]MasteryRank
 
 func (s *OfflineLoadoutService) MasterySummarize(ownerCode string, hashes []string) (*MasteryBuildSummary, error) {
 	return s.service.MasterySummarize(ownerCode, hashes)
+}
+
+func (s *OfflineLoadoutService) LogsMasteryNodePool(ownerCode string, effectUIIDs []uint32) ([]LogsMasteryRankPool, error) {
+	return s.service.LogsMasteryNodePool(ownerCode, effectUIIDs)
 }
 
 func (s *OfflineLoadoutService) LoadoutDetail(path string, unitID uint32) (*backend.LoadoutShare, error) {

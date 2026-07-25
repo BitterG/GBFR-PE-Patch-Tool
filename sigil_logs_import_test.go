@@ -1,73 +1,62 @@
 package main
 
 import (
-	"database/sql"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
-
-	"github.com/fxamacker/cbor/v2"
-	"github.com/klauspost/compress/zstd"
 )
 
-func TestReadLogsSigilLoadouts(t *testing.T) {
-	blob, err := cbor.Marshal(logsEncounter{QuestID: 0x40B301, PlayerData: [4]*logsPlayer{{
-		ActorIndex:    12,
-		DisplayName:   "Player",
-		CharacterName: "Player",
-		CharacterType: "PL2700",
-		WeaponKey:     "WEP_PL2700_02_01",
-		Abilities:     []uint32{11, 12},
-		Skillboard:    []uint32{0x00D553D5},
-		Summons:       []logsSummon{{SummonID: 31}, {SummonID: 32}, {SummonID: 33}, {SummonID: 34}},
-		WeaponState:   &logsWeaponState{WeaponID: 41, Exp: 42},
-		Stats:         &logsRecordStats{Level: 100, HP: 1000, Attack: 2000},
-		Sigils: []logsSigil{{
-			FirstTraitID: 1, FirstTraitLevel: 15,
-			SecondTraitID: 2, SecondTraitLevel: 15,
-			SigilID: 3, SigilLevel: 15,
-		}},
-	}}})
-	if err != nil {
+func TestReadLogsSigilLoadoutsJSONWithMasteryIndexes(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "logs-export.json")
+	json := `{
+		"displayName":"Player", "characterType":"Pl0400", "weaponKey":"WEP_PL0400_02_01",
+		"sigils":[{"firstTraitId":1,"firstTraitLevel":15,"secondTraitId":2,"secondTraitLevel":15,"sigilId":3,"sigilLevel":15}],
+		"summons":[{"summonId":31},{"summonId":32},{"summonId":33},{"summonId":34}],
+		"abilities":[11,12], "masterLevel":20, "skillboard":[10,11],
+		"stats":{"level":100,"hp":1000,"attack":2000},
+		"weaponState":{"weaponId":41,"exp":42}, "overmasteryInfo":{"overmasteries":[]}
+	}`
+	if err := os.WriteFile(path, []byte(json), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	encoder, err := zstd.NewWriter(nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	compressed := encoder.EncodeAll(blob, nil)
-	encoder.Close()
 
-	path := filepath.Join(t.TempDir(), "logs.sqlite")
-	db, err := sql.Open("sqlite", path)
+	result, err := readLogsSigilLoadoutsJSON(path)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = db.Exec(`CREATE TABLE logs (time INTEGER NOT NULL, data BLOB NOT NULL, version INTEGER NOT NULL)`)
-	if err == nil {
-		_, err = db.Exec(`INSERT INTO logs (time, data, version) VALUES (?, ?, 1), (?, ?, 1)`, 123, compressed, 456, compressed)
-	}
-	if closeErr := db.Close(); err == nil {
-		err = closeErr
-	}
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Remove(path)
-
-	result, err := readLogsSigilLoadouts(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(result) != 2 || result[0].LogTime != 456 || result[0].QuestID != 0x40B301 || result[0].QuestName != "世界临界" || len(result[0].Loadouts) != 1 || len(result[0].Loadouts[0].Entries) != 1 {
+	if len(result) != 1 || result[0].LogTime != 0 || result[0].QuestName != "Logs 导出 JSON" || len(result[0].Loadouts) != 1 {
 		t.Fatalf("unexpected import: %#v", result)
 	}
-	entry := result[0].Loadouts[0].Entries[0]
+	player := result[0].Loadouts[0]
+	if player.CharacterType != "PL0400" || len(player.Entries) != 1 {
+		t.Fatalf("unexpected player: %#v", player)
+	}
+	entry := player.Entries[0]
 	if entry.SigilHash != 3 || entry.PrimaryTraitHash != 1 || entry.SecondaryTraitHash != 2 {
 		t.Fatalf("unexpected entry: %#v", entry)
 	}
-	loadout := result[0].Loadouts[0].Loadout
-	if loadout == nil || loadout.OwnerCode != "PL2700" || loadout.WeaponHash != "00000029" || len(loadout.Summons) != 4 || len(loadout.Skills) != 2 || len(loadout.MasteryHashes) != 1 || loadout.MasteryHashes[0] != "00D553D5" || len(loadout.Weapon.Wrightstone.Traits) != 0 {
+	loadout := player.Loadout
+	if loadout == nil || loadout.WeaponHash != "00000029" || len(loadout.Summons) != 4 || len(loadout.Skills) != 2 || len(loadout.MasteryHashes) != 0 || len(loadout.LogsSkillboardEffectUIIDs) != 2 || loadout.LogsSkillboardEffectUIIDs[0] != 10 || loadout.LogsSkillboardEffectUIIDs[1] != 11 {
 		t.Fatalf("unexpected complete loadout draft: %#v", loadout)
+	}
+	if !strings.Contains(strings.Join(player.Warnings, "\n"), "只读高亮显示") || !strings.Contains(strings.Join(player.Warnings, "\n"), "不会写入存档") {
+		t.Fatalf("mastery-index warning missing: %#v", player.Warnings)
+	}
+}
+
+func TestReadLogsSigilLoadoutsJSONNeverTreatsEffectUIIDAsMasteryHash(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "logs-export.json")
+	if err := os.WriteFile(path, []byte(`[{"characterType":"PL2700","weaponKey":"WEP_PL2700_02_01","sigils":[{"sigilId":3}],"skillboard":[13980629]}]`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	result, err := readLogsSigilLoadoutsJSON(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	loadout := result[0].Loadouts[0].Loadout
+	if loadout == nil || len(loadout.MasteryHashes) != 0 || len(loadout.LogsSkillboardEffectUIIDs) != 1 || loadout.LogsSkillboardEffectUIIDs[0] != 13980629 {
+		t.Fatalf("Logs EffectUiId must remain display-only: %#v", loadout)
 	}
 }
