@@ -227,7 +227,13 @@ func logsPlayerLoadoutDraft(p *logsPlayer, entries []SigilLoadoutEntry) (*Loadou
 		}
 		checked := min(len(p.Skillboard), loadoutShareMaxMastery)
 		share.LogsSkillboardEffectUIIDs = append([]uint32(nil), p.Skillboard[:checked]...)
-		warnings = append(warnings, fmt.Sprintf("Logs 专精将按 %d 个 EffectUiId 只读高亮显示，不会写入存档。", checked))
+		mapping, err := backend.NewApp().MapLogsMasteryEffectUIIDs(characterType, share.LogsSkillboardEffectUIIDs)
+		if err != nil {
+			warnings = append(warnings, fmt.Sprintf("Logs 专精安全映射不可用，全部仅展示不会写入：%v", err))
+		} else {
+			share.MasteryHashes = append(share.MasteryHashes, mapping.Hashes...)
+			warnings = append(warnings, fmt.Sprintf("Logs 专精已安全映射 %d 个并会写入；%d 个因同类同阶重复文本随机分配不足、文本缺失或布局未收录仅展示不会写入。", len(mapping.Hashes), len(mapping.Unmapped)))
+		}
 	}
 	for _, id := range p.Abilities[:min(len(p.Abilities), loadoutShareMaxSkills)] {
 		share.Skills = append(share.Skills, LoadoutShareSkill{Hash: loadoutHex(id), Name: backend.ResolveLogsSkillName(id)})

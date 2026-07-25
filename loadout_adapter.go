@@ -17,6 +17,7 @@ type LoadoutComplianceReport = backend.LoadoutComplianceReport
 type MasteryRankPool = backend.MasteryRankPool
 type MasteryBuildSummary = backend.MasteryBuildSummary
 type LogsMasteryRankPool = backend.LogsMasteryRankPool
+type LogsMasteryMapping = backend.LogsMasteryMapping
 
 
 func NewOfflineLoadoutService() *OfflineLoadoutService {
@@ -41,6 +42,10 @@ func (s *OfflineLoadoutService) MasteryNodePool(ownerCode string) ([]MasteryRank
 
 func (s *OfflineLoadoutService) MasterySummarize(ownerCode string, hashes []string) (*MasteryBuildSummary, error) {
 	return s.service.MasterySummarize(ownerCode, hashes)
+}
+
+func (s *OfflineLoadoutService) MapLogsMasteryEffectUIIDs(ownerCode string, effectUIIDs []uint32) (*LogsMasteryMapping, error) {
+	return s.service.MapLogsMasteryEffectUIIDs(ownerCode, effectUIIDs)
 }
 
 func (s *OfflineLoadoutService) LogsMasteryNodePool(ownerCode string, effectUIIDs []uint32) ([]LogsMasteryRankPool, error) {

@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"gbfrPlayerInfoEdit/internal/backend"
 )
 
 func TestReadLogsSigilLoadoutsJSONWithMasteryIndexes(t *testing.T) {
@@ -37,10 +39,24 @@ func TestReadLogsSigilLoadoutsJSONWithMasteryIndexes(t *testing.T) {
 		t.Fatalf("unexpected entry: %#v", entry)
 	}
 	loadout := player.Loadout
-	if loadout == nil || loadout.WeaponHash != "00000029" || len(loadout.Summons) != 4 || len(loadout.Skills) != 2 || len(loadout.MasteryHashes) != 0 || len(loadout.LogsSkillboardEffectUIIDs) != 2 || loadout.LogsSkillboardEffectUIIDs[0] != 10 || loadout.LogsSkillboardEffectUIIDs[1] != 11 {
+	if loadout == nil || loadout.WeaponHash != "00000029" || len(loadout.Summons) != 4 || len(loadout.Skills) != 2 || len(loadout.LogsSkillboardEffectUIIDs) != 2 || loadout.LogsSkillboardEffectUIIDs[0] != 10 || loadout.LogsSkillboardEffectUIIDs[1] != 11 {
 		t.Fatalf("unexpected complete loadout draft: %#v", loadout)
 	}
-	if !strings.Contains(strings.Join(player.Warnings, "\n"), "只读高亮显示") || !strings.Contains(strings.Join(player.Warnings, "\n"), "不会写入存档") {
+	expected, err := backend.NewApp().MapLogsMasteryEffectUIIDs("PL0400", loadout.LogsSkillboardEffectUIIDs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(loadout.MasteryHashes) != len(expected.Hashes) {
+		t.Fatalf("converter mapped an unexpected number of safe hashes: got %#v, want %d", loadout.MasteryHashes, len(expected.Hashes))
+	}
+	seenHashes := make(map[string]struct{}, len(loadout.MasteryHashes))
+	for _, hash := range loadout.MasteryHashes {
+		if _, duplicate := seenHashes[hash]; duplicate {
+			t.Fatalf("converter must not write a hash twice: %#v", loadout.MasteryHashes)
+		}
+		seenHashes[hash] = struct{}{}
+	}
+	if !strings.Contains(strings.Join(player.Warnings, "\n"), "已安全映射") || !strings.Contains(strings.Join(player.Warnings, "\n"), "随机分配") || !strings.Contains(strings.Join(player.Warnings, "\n"), "仅展示不会写入") {
 		t.Fatalf("mastery-index warning missing: %#v", player.Warnings)
 	}
 }
