@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { LoadoutApply, LoadoutApplyWithResources, LoadoutCheckCompliance, LoadoutDetail, LoadoutEditContext, LoadoutExportJSON, LoadoutImportJSON, LoadoutList } from '../../wailsjs/go/main/OfflineLoadoutService'
+import { LoadoutApply, LoadoutApplyWithResources, LoadoutCheckCompliance, LoadoutDetail, LoadoutEditContext, LoadoutExportJSON, LoadoutImportJSON, LoadoutList, MasteryNodePool, MasterySummarize } from '../../wailsjs/go/main/OfflineLoadoutService'
 import { SelectLogsSigilLoadouts } from '../../wailsjs/go/main/App'
 
 const emit = defineEmits(['status'])
@@ -18,6 +18,8 @@ const importFile = ref(null)
 const logsRecords = ref([])
 const selectedLogRecord = ref('')
 const selectedLogPlayer = ref('')
+const masteryPools = ref([])
+const masterySummary = ref(null)
 
 function emptyForm() {
   return { unitId: 0, expectCharaHash: '', op: 'write', name: '', weaponSlotId: 0, sigilSlotIds: [], skillHashes: [], weaponSkillHashes: [], masteryHashes: [] }
@@ -67,10 +69,60 @@ async function importLogPlayer() {
   if (!player?.loadout) return show('该 Logs 玩家没有完整配装快照', 'error')
   await importPayload(JSON.stringify(player.loadout))
 }
-const character = computed(() => groups.value.find(item => item.charaHash === selectedCharacter.value))
+async function loadMasteryLayout() {
+  if (!context.value || !detail.value) return
+  try {
+    const [pools, summary] = await Promise.all([
+      MasteryNodePool(context.value.ownerCode),
+      MasterySummarize(context.value.ownerCode, detail.value.masteryHashes || []),
+    ])
+    masteryPools.value = pools || []
+    masterySummary.value = summary
+  } catch (error) {
+    masteryPools.value = []
+    masterySummary.value = null
+    show(`读取专精布局失败: ${String(error)}`, 'error')
+  }
+}
+function masteryNodeActive(hash) { return (detail.value?.masteryHashes || []).includes(hash) }
+function masteryCategoryActive(rank, cat) { return masterySummary.value?.ranks?.find(item => item.rank === rank)?.categories?.find(item => item.cat === cat)?.active || false }
+function masteryNodes(rank, cat) {
+  return rank.nodes.filter(item => item.cat === cat)
+}
+function masterySpecialization(cat) {
+  return masterySummary.value?.ranks?.[0]?.categories?.find(item => item.cat === cat)?.specialization || ''
+}
+const masteryCategories = [
+  { cat: 'SB_DEF', label: '觉醒' },
+  { cat: 'SB_ATK', label: '真谛' },
+  { cat: 'SB_LIMIT', label: '秘技' },
+]
+
+async function copyMasteryEffects() {
+  if (!masteryPools.value.length) return show('请先读取角色槽位', 'error')
+  const lines = []
+  for (const category of masteryCategories) {
+    lines.push(`${category.label}：${masterySpecialization(category.cat) || '—'}`)
+    for (const rank of masteryPools.value) {
+      const nodes = masteryNodes(rank, category.cat)
+      lines.push(`${rank.rank === 'EX' ? 'EX阶' : `${rank.rank.slice(1)}阶段`}`)
+      for (let index = 0; index < nodes.length; index += 2) {
+        const cell = node => `${masteryNodeActive(node.hash) ? '■' : '□'} ${node.hash} | ${node.desc || node.name || '未收录效果'}`
+        const left = cell(nodes[index])
+        const right = nodes[index + 1] ? cell(nodes[index + 1]) : ''
+        lines.push(`${left}\t|\t${right}`)
+      }
+    }
+    lines.push('')
+  }
+  try {
+    await navigator.clipboard.writeText(lines.join('\n'))
+    show('已按二维矩阵复制专精效果与 hash，可直接对照布局', 'success')
+  } catch (error) { show(`复制失败: ${String(error)}`, 'error') }
+}
+
 const slots = computed(() => context.value?.slots || [])
 const weapons = computed(() => context.value?.weapons || [])
-const sigils = computed(() => context.value?.sigils || [])
 const skills = computed(() => context.value?.skills || [])
 const selected = computed(() => slots.value.find(item => Number(item.unitId) === Number(selectedSlot.value)))
 const detailSigils = computed(() => detail.value?.sigils || [])
@@ -121,7 +173,7 @@ function selectSlot() {
   detail.value = null
   if (savePath.value.trim()) {
     LoadoutDetail(savePath.value.trim(), Number(item.unitId))
-      .then(value => { detail.value = value; for (const warning of value.warnings || []) show(warning, 'error') })
+      .then(async value => { detail.value = value; await loadMasteryLayout(); for (const warning of value.warnings || []) show(warning, 'error') })
       .catch(error => show(`读取槽位详情失败: ${String(error)}`, 'error'))
   }
 }
@@ -185,8 +237,23 @@ async function apply(copy) {
         <div><b>武器祝福：</b><template v-if="detail.weapon?.wrightstone">{{ text(detail.weapon.wrightstone.name) }}<ol v-if="detail.weapon.wrightstone.traits?.length"><li v-for="item in detail.weapon.wrightstone.traits" :key="`${item.index}-${item.hash}`">{{ item.index + 1 }}. {{ text(item.name || item.hash) }} Lv {{ item.level }}</li></ol></template><span v-else>—</span></div>
         <div><b>因子：</b><ol v-if="detailSigils.length"><li v-for="item in detailSigils" :key="`${item.index}-${item.slotId}`">{{ formatSigil(item) }}</li></ol><span v-else>—</span></div>
         <div><b>技能：</b><ul v-if="detailSkills.length"><li v-for="item in detailSkills" :key="item.hash">{{ text(item.name) }}（{{ item.hash }}）</li></ul><span v-else>—</span></div>
-        <div><b>专精：</b><ul v-if="detailMastery.length"><li v-for="item in detailMastery" :key="item">{{ item }}</li></ul><span v-else>—</span></div>
-        <div><b>上限突破：</b><ol><li v-for="(item,index) in detailOverLimit" :key="index">{{ index + 1 }}. {{ formatOverLimit(item) }}</li></ol></div>
+        <div class="mastery-layout" v-if="masteryPools.length">
+          <div class="mastery-tools"><b>专精激活图：</b><button class="btn copy-mastery" @click="copyMasteryEffects">复制效果对照</button></div>
+          <div v-for="category in masteryCategories" :key="category.cat" class="mastery-category">
+            <div class="mastery-heading">{{ category.label }}<template v-if="masterySpecialization(category.cat)">：{{ masterySpecialization(category.cat) }}</template></div>
+            <div v-for="rank in masteryPools" :key="rank.rank" class="mastery-rank">
+              <span class="mastery-rank-label" :class="{ active: masteryCategoryActive(rank.rank, category.cat) }">{{ rank.rank === 'EX' ? 'EX阶' : `${rank.rank.slice(1)}阶段` }}</span>
+              <span class="mastery-node-list">
+                <span v-for="node in masteryNodes(rank, category.cat)" :key="node.hash" class="mastery-node" :class="{ active: masteryNodeActive(node.hash) }" :title="node.name || node.desc">
+                  <b>{{ masteryNodeActive(node.hash) ? '■' : '□' }}</b>
+                  <span>{{ node.desc || node.name || '未收录效果' }}</span>
+                </span>
+                <span v-if="!masteryNodes(rank, category.cat).length" class="mastery-empty">—</span>
+              </span>
+            </div>
+          </div>
+          <small>亮蓝色：当前配装已激活；灰色：未激活。节点仅表示状态，不展示效果说明。</small>
+        </div>
         <p><b>角色强化：</b>{{ enhancementText() }}</p>
       </div>
       <label class="field"><span>配装名称</span><input v-model="form.name" maxlength="63" /></label>
@@ -203,5 +270,5 @@ async function apply(copy) {
 </template>
 
 <style scoped>
-.loadout-editor{display:flex;flex-direction:column;gap:14px}.section{padding:14px 16px;border:1px solid rgba(255,255,255,.08);border-radius:8px;background:rgba(255,255,255,.04)}.logs-import{margin-top:12px;padding:10px 12px;border:1px solid rgba(251,191,36,.25);border-radius:6px;background:rgba(251,191,36,.04)}.file-input{display:none}.summary{margin-top:12px;padding:12px;border:1px solid rgba(103,232,249,.22);border-radius:6px;background:rgba(103,232,249,.045);color:rgba(255,255,255,.7);font-size:.73rem;line-height:1.55}.summary p{margin:8px 0}.summary ol,.summary ul{margin:5px 0 8px;padding-left:22px}.summary li{margin:3px 0}.section-title{display:flex;justify-content:space-between;gap:8px;color:rgba(255,255,255,.78);font-size:.8rem;font-weight:600}.section-title span{color:rgba(255,255,255,.4);font-weight:400}.field{display:flex;flex-direction:column;gap:5px;margin-top:10px;color:rgba(255,255,255,.5);font-size:.72rem}.field input,.field select,.field textarea,.grid select{box-sizing:border-box;width:100%;padding:7px 9px;border:1px solid rgba(255,255,255,.13);border-radius:6px;background:#2a2a2a;color:rgba(255,255,255,.88);font:inherit;font-size:.75rem}.field textarea{resize:vertical;font-family:ui-monospace,Consolas,monospace}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.btn{padding:7px 12px;border:1px solid rgba(255,255,255,.15);border-radius:6px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.8);font:600 .75rem inherit;cursor:pointer}.btn:disabled{opacity:.4;cursor:not-allowed}.primary{border-color:rgba(103,232,249,.35);color:#67e8f9}.danger{border-color:rgba(248,113,113,.45);color:#f87171}.hint{margin:10px 0 0;color:rgba(255,255,255,.42);font-size:.72rem;line-height:1.5}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.check{display:block;margin-top:7px;color:rgba(255,255,255,.72);font-size:.72rem;word-break:break-all}.check input{margin-right:6px}.result pre{margin:10px 0 0;max-height:300px;overflow:auto;white-space:pre-wrap;word-break:break-word;color:rgba(255,255,255,.65);font-size:.7rem}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.loadout-editor{display:flex;flex-direction:column;gap:14px}.section{padding:14px 16px;border:1px solid rgba(255,255,255,.08);border-radius:8px;background:rgba(255,255,255,.04)}.mastery-layout{margin-top:10px}.mastery-tools{display:flex;align-items:center;justify-content:space-between;gap:10px}.copy-mastery{padding:4px 8px;font-size:.68rem}.mastery-category{margin:10px 0;padding:9px 10px;border-left:2px solid rgba(255,255,255,.14);background:rgba(255,255,255,.025)}.mastery-heading{margin-bottom:6px;color:rgba(255,255,255,.84);font-weight:600}.mastery-rank{display:flex;align-items:flex-start;gap:8px;min-height:25px}.mastery-rank-label{width:42px;flex:0 0 42px;padding-top:1px;color:rgba(255,255,255,.42);font-size:.7rem}.mastery-rank-label.active{color:#67e8f9}.mastery-node-list{display:flex;min-width:0;flex:1;flex-direction:column;gap:4px}.mastery-node{display:flex;gap:6px;color:rgba(255,255,255,.48);font-size:.72rem;line-height:1.4}.mastery-node b{flex:0 0 auto;color:rgba(255,255,255,.2);font-size:.86rem;line-height:1}.mastery-node.active{color:rgba(255,255,255,.82)}.mastery-node.active b{color:#38bdf8;text-shadow:0 0 7px rgba(56,189,248,.75)}.mastery-empty{color:rgba(255,255,255,.28);font-size:.72rem}.mastery-layout small{display:block;margin-top:5px;color:rgba(255,255,255,.4);font-size:.68rem}.logs-import{margin-top:12px;padding:10px 12px;border:1px solid rgba(251,191,36,.25);border-radius:6px;background:rgba(251,191,36,.04)}.file-input{display:none}.summary{margin-top:12px;padding:12px;border:1px solid rgba(103,232,249,.22);border-radius:6px;background:rgba(103,232,249,.045);color:rgba(255,255,255,.7);font-size:.73rem;line-height:1.55}.summary p{margin:8px 0}.summary ol,.summary ul{margin:5px 0 8px;padding-left:22px}.summary li{margin:3px 0}.section-title{display:flex;justify-content:space-between;gap:8px;color:rgba(255,255,255,.78);font-size:.8rem;font-weight:600}.section-title span{color:rgba(255,255,255,.4);font-weight:400}.field{display:flex;flex-direction:column;gap:5px;margin-top:10px;color:rgba(255,255,255,.5);font-size:.72rem}.field input,.field select,.field textarea,.grid select{box-sizing:border-box;width:100%;padding:7px 9px;border:1px solid rgba(255,255,255,.13);border-radius:6px;background:#2a2a2a;color:rgba(255,255,255,.88);font:inherit;font-size:.75rem}.field textarea{resize:vertical;font-family:ui-monospace,Consolas,monospace}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.btn{padding:7px 12px;border:1px solid rgba(255,255,255,.15);border-radius:6px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.8);font:600 .75rem inherit;cursor:pointer}.btn:disabled{opacity:.4;cursor:not-allowed}.primary{border-color:rgba(103,232,249,.35);color:#67e8f9}.danger{border-color:rgba(248,113,113,.45);color:#f87171}.hint{margin:10px 0 0;color:rgba(255,255,255,.42);font-size:.72rem;line-height:1.5}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.check{display:block;margin-top:7px;color:rgba(255,255,255,.72);font-size:.72rem;word-break:break-all}.check input{margin-right:6px}.result pre{margin:10px 0 0;max-height:300px;overflow:auto;white-space:pre-wrap;word-break:break-word;color:rgba(255,255,255,.65);font-size:.7rem}@media(max-width:760px){.grid{grid-template-columns:1fr}}
 </style>
