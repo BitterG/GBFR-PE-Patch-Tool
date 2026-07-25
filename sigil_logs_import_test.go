@@ -18,7 +18,7 @@ func TestReadLogsSigilLoadouts(t *testing.T) {
 		CharacterType: "PL2700",
 		WeaponKey:     "WEP_PL2700_02_01",
 		Abilities:     []uint32{11, 12},
-		Skillboard:    []uint32{21},
+		Skillboard:    []uint32{0x00D553D5},
 		Summons:       []logsSummon{{SummonID: 31}, {SummonID: 32}, {SummonID: 33}, {SummonID: 34}},
 		WeaponState:   &logsWeaponState{WeaponID: 41, Exp: 42},
 		Stats:         &logsRecordStats{Level: 100, HP: 1000, Attack: 2000},
@@ -67,7 +67,7 @@ func TestReadLogsSigilLoadouts(t *testing.T) {
 		t.Fatalf("unexpected entry: %#v", entry)
 	}
 	loadout := result[0].Loadouts[0].Loadout
-	if loadout == nil || loadout.OwnerCode != "PL2700" || loadout.WeaponHash != "00000029" || len(loadout.Summons) != 4 || len(loadout.Skills) != 2 || len(loadout.MasteryHashes) != 0 || len(loadout.Weapon.Wrightstone.Traits) != 0 {
+	if loadout == nil || loadout.OwnerCode != "PL2700" || loadout.WeaponHash != "00000029" || len(loadout.Summons) != 4 || len(loadout.Skills) != 2 || len(loadout.MasteryHashes) != 1 || loadout.MasteryHashes[0] != "00D553D5" || len(loadout.Weapon.Wrightstone.Traits) != 0 {
 		t.Fatalf("unexpected complete loadout draft: %#v", loadout)
 	}
 }

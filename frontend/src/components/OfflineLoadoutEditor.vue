@@ -61,8 +61,13 @@ async function importPayload(payload) {
     const share = JSON.parse(payload)
     const draft = await LoadoutImportJSON(savePath.value.trim(), context.value.charaHash, payload)
     importedDraft.value = draft
-    importedShare.value = share
-    masterySummary.value = await MasterySummarize(context.value.ownerCode, draft.masteryHashes || [])
+    importedShare.value = { ...share, masteryHashes: draft.masteryHashes || [] }
+    const [pools, summary] = await Promise.all([
+      MasteryNodePool(context.value.ownerCode),
+      MasterySummarize(context.value.ownerCode, draft.masteryHashes || []),
+    ])
+    masteryPools.value = pools || []
+    masterySummary.value = summary
     form.value = { ...emptyForm(), unitId: Number(selectedSlot.value), expectCharaHash: context.value.charaHash, op: 'write', name: draft.name || form.value.name, weaponSlotId: Number(draft.weaponSlotId || 0), sigilSlotIds: (draft.sigilSlotIds || []).map(Number), summonSlotIds: (draft.summonSlotIds || []).map(Number), skillHashes: draft.skillHashes || [], weaponSkillHashes: draft.weaponSkillHashes || [], masteryHashes: draft.masteryHashes || [] }
     show(`已导入草稿：${draft.name || '未命名配装'}；请选择目标槽位后预检/写入`, 'success')
   } catch (error) { show(`导入配装失败: ${String(error)}`, 'error') } finally { busy.value = false }
@@ -95,8 +100,13 @@ async function switchToLogPlayerCharacter(player) {
     if (ownerCode && normalizeOwnerCode(candidateContext?.ownerCode) !== ownerCode) continue
     selectedCharacter.value = group.charaHash
     context.value = candidateContext
-    selectedSlot.value = String(candidateContext?.slots?.[0]?.unitId || '')
-    await selectSlot()
+    selectedSlot.value = ''
+    clearImportedDraft()
+    form.value = emptyForm()
+    result.value = null
+    detail.value = null
+    masteryPools.value = []
+    masterySummary.value = null
     return true
   }
   return false
@@ -113,6 +123,7 @@ async function importLogPlayer() {
 }
 async function confirmLogImport() {
   if (!pendingLogImport.value) return
+  if (!selected.value) return show('请先选择目标槽位', 'error')
   await importPayload(JSON.stringify(pendingLogImport.value))
   pendingLogImport.value = null
 }
@@ -217,6 +228,7 @@ async function load() {
 }
 async function loadContext() {
   if (!selectedCharacter.value) return
+  clearImportedDraft()
   busy.value = true
   try {
     context.value = await LoadoutEditContext(savePath.value.trim(), selectedCharacter.value)
@@ -225,7 +237,6 @@ async function loadContext() {
   } catch (error) { show(`读取角色编辑资源失败: ${String(error)}`, 'error') } finally { busy.value = false }
 }
 async function selectSlot() {
-  clearImportedDraft()
   const item = selected.value
   if (!item) return
   if (importedDraft.value) {
@@ -301,7 +312,7 @@ async function apply(copy) {
     <section v-if="groups.length" class="section">
       <div class="section-title">角色与目标槽位</div>
       <label class="field"><span>角色</span><select v-model="selectedCharacter" :disabled="busy" @change="loadContext"><option v-for="item in groups" :key="item.charaHash" :value="item.charaHash">{{ text(item.charaName) }} / {{ item.charaHash }}（{{ item.loadouts.length }} 个已保存配装）</option></select></label>
-      <label class="field"><span>目标槽位</span><select v-model="selectedSlot" :disabled="busy" @change="selectSlot"><option v-for="item in slots" :key="item.unitId" :value="String(item.unitId)">{{ item.name || '空槽' }} · UnitID {{ item.unitId }}</option></select></label>
+      <label class="field"><span>目标槽位</span><select v-model="selectedSlot" :disabled="busy" @change="selectSlot"><option disabled value="">请选择目标槽位</option><option v-for="item in slots" :key="item.unitId" :value="String(item.unitId)">{{ item.name || '空槽' }} · UnitID {{ item.unitId }}</option></select></label>
       <div v-if="pendingLogImport" class="actions"><button class="btn primary" :disabled="busy" @click="confirmLogImport">导入到当前目标槽位</button></div>
       <div v-if="displayedDetail" class="summary">
         <div class="section-title">当前槽位配装摘要 <span>{{ importedShare ? '待写入草稿' : '只读存档原始内容' }}</span></div>

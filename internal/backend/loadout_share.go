@@ -750,8 +750,12 @@ func resolveLoadoutShare(path, expectCharaHash string, share *LoadoutShare) (*Lo
 	}
 	if share.Version >= 3 {
 		draft.ApplyPayload = &LoadoutImportApplyPayload{Character: share.Character, Weapon: share.Weapon}
+		if share.Weapon != nil && share.Weapon.Wrightstone != nil {
+			draft.ApplyPayload.ApplyWeaponWrightstone = true
+		}
 		if share.Version >= 4 {
 			draft.ApplyPayload.OverLimit = append([]LoadoutShareOverLimit(nil), share.OverLimit...)
+			draft.ApplyPayload.ApplyOverLimit = true
 		}
 	}
 	if share.Version < 7 && share.Weapon != nil && share.Weapon.Wrightstone != nil {
