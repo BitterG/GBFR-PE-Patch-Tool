@@ -43,16 +43,20 @@ type LoadoutShareSigil struct {
 	Name                string `json:"name"`
 	Level               int    `json:"level"`
 	PrimaryTraitHash    string `json:"primaryTraitHash"`
+	PrimaryTraitName    string `json:"primaryTraitName,omitempty"`
 	PrimaryTraitLevel   int    `json:"primaryTraitLevel"`
 	SecondaryTraitHash  string `json:"secondaryTraitHash,omitempty"`
+	SecondaryTraitName  string `json:"secondaryTraitName,omitempty"`
 	SecondaryTraitLevel int    `json:"secondaryTraitLevel,omitempty"`
 }
 type LoadoutShareSummon struct {
 	TypeHash       string `json:"typeHash"`
 	Name           string `json:"name"`
 	MainTraitHash  string `json:"mainTraitHash"`
+	MainTraitName  string `json:"mainTraitName,omitempty"`
 	MainTraitLevel int    `json:"mainTraitLevel"`
 	SubParamHash   string `json:"subParamHash"`
+	SubParamName   string `json:"subParamName,omitempty"`
 	SubParamLevel  int    `json:"subParamLevel"`
 	Rank           int    `json:"rank"`
 }
@@ -66,9 +70,12 @@ type LoadoutShareEnhancementNode struct {
 	Value int `json:"value"`
 }
 type LoadoutShareOverLimit struct {
-	Index         int    `json:"index"`
-	AttributeHash string `json:"attributeHash,omitempty"`
-	Level         int    `json:"level,omitempty"`
+	Index         int     `json:"index"`
+	AttributeHash string  `json:"attributeHash,omitempty"`
+	Name          string  `json:"name,omitempty"`
+	Level         int     `json:"level,omitempty"`
+	Value         float64 `json:"value,omitempty"`
+	Unit          string  `json:"unit,omitempty"`
 }
 type LoadoutShareWeaponWrightstoneTrait struct {
 	Index   int    `json:"index"`
@@ -110,6 +117,8 @@ type LoadoutShareWeaponState struct {
 	WrightstoneReference string                         `json:"wrightstoneReference,omitempty"`
 	State                int                            `json:"state,omitempty"`
 	SkillHashes          []string                       `json:"skillHashes"`
+	SkillNames           []string                       `json:"skillNames,omitempty"`
+	SkillLevels          []int                          `json:"skillLevels,omitempty"`
 	Wrightstone          *LoadoutShareWeaponWrightstone `json:"wrightstone,omitempty"`
 }
 type LoadoutShareCharacterProgression struct {

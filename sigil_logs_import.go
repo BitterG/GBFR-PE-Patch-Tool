@@ -4,6 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"path/filepath"
+	"strings"
+
+	"gbfrPlayerInfoEdit/internal/backend"
 
 	"github.com/fxamacker/cbor/v2"
 	"github.com/klauspost/compress/zstd"
@@ -25,8 +28,10 @@ type LogsSigilLoadout struct {
 }
 
 type LogsSigilLoadoutImport struct {
-	LogTime  int64              `json:"logTime"`
-	Loadouts []LogsSigilLoadout `json:"loadouts"`
+	LogTime   int64              `json:"logTime"`
+	QuestID   uint32             `json:"questId,omitempty"`
+	QuestName string             `json:"questName,omitempty"`
+	Loadouts  []LogsSigilLoadout `json:"loadouts"`
 }
 type SigilLoadoutEntry struct {
 	SigilHash           uint32 `json:"sigilHash"`
@@ -38,6 +43,7 @@ type SigilLoadoutEntry struct {
 }
 
 type logsEncounter struct {
+	QuestID    uint32         `cbor:"questId"`
 	PlayerData [4]*logsPlayer `cbor:"playerData"`
 }
 type logsPlayer struct {
@@ -145,7 +151,7 @@ func readLogsSigilLoadouts(path string) ([]LogsSigilLoadoutImport, error) {
 			continue
 		}
 		if loadouts := logsPlayerLoadouts(encounter); len(loadouts) != 0 {
-			imports = append(imports, LogsSigilLoadoutImport{LogTime: time, Loadouts: loadouts})
+			imports = append(imports, LogsSigilLoadoutImport{LogTime: time, QuestID: encounter.QuestID, QuestName: questIDToNameCN(encounter.QuestID), Loadouts: loadouts})
 		}
 	}
 	if err := rows.Err(); err != nil {
@@ -172,6 +178,41 @@ func decodeLogsEncounter(blob []byte) (logsEncounter, error) {
 	}
 	return encounter, nil
 }
+func normalizedLogsCharacter(value string) string {
+	return strings.TrimSpace(strings.TrimRight(value, "\x00"))
+}
+
+func normalizedLogsOwnerCode(value string) string {
+	value = strings.ToUpper(value)
+	for index := 0; index+6 <= len(value); index++ {
+		candidate := value[index : index+6]
+		if candidate[0] != 'P' || candidate[1] != 'L' {
+			continue
+		}
+		if candidate[2] >= '0' && candidate[2] <= '9' && candidate[3] >= '0' && candidate[3] <= '9' && candidate[4] >= '0' && candidate[4] <= '9' && candidate[5] >= '0' && candidate[5] <= '9' {
+			return candidate
+		}
+	}
+	return ""
+}
+
+func logsPlayerOwnerCode(p *logsPlayer) string {
+	if ownerCode := normalizedLogsOwnerCode(p.WeaponKey); ownerCode != "" {
+		return ownerCode
+	}
+	return normalizedLogsOwnerCode(p.CharacterType)
+}
+
+func logsCharacterName(ownerCode string) string {
+	known := map[string]string{
+		"PL0000": "古兰", "PL0100": "卡塔莉娜", "PL0200": "拉卡姆", "PL0300": "尤金", "PL0400": "伊欧", "PL0500": "萝赛塔",
+		"PL0700": "兰斯洛特", "PL0800": "巴恩", "PL0900": "珀西瓦尔", "PL1000": "菲莉", "PL1100": "齐格飞", "PL1200": "夏洛特",
+		"PL1300": "索恩", "PL1400": "尤达拉哈", "PL1500": "娜露梅", "PL1600": "冈达葛萨", "PL1700": "卡莉奥斯特萝", "PL1800": "巴萨拉卡",
+		"PL2000": "泽塔", "PL2100": "伊德", "PL2400": "伽兰查", "PL2700": "圣德芬", "PL2800": "希耶提", "PL2900": "贝阿朵丽丝",
+	}
+	return known[ownerCode]
+}
+
 func logsPlayerLoadouts(encounter logsEncounter) []LogsSigilLoadout {
 	result := make([]LogsSigilLoadout, 0, 4)
 	for _, p := range encounter.PlayerData {
@@ -187,8 +228,10 @@ func logsPlayerLoadouts(encounter logsEncounter) []LogsSigilLoadout {
 		if len(entries) == 0 || len(entries) > maxSigilLoadoutEntries {
 			continue
 		}
+		characterType := logsPlayerOwnerCode(p)
+		characterName := logsCharacterName(characterType)
 		draft, warnings := logsPlayerLoadoutDraft(p, entries)
-		result = append(result, LogsSigilLoadout{PlayerName: p.DisplayName, CharacterName: p.CharacterName, CharacterType: p.CharacterType, Entries: entries, Loadout: draft, Warnings: warnings})
+		result = append(result, LogsSigilLoadout{PlayerName: p.DisplayName, CharacterName: characterName, CharacterType: characterType, Entries: entries, Loadout: draft, Warnings: warnings})
 	}
 	return result
 }
@@ -196,24 +239,35 @@ func logsPlayerLoadouts(encounter logsEncounter) []LogsSigilLoadout {
 // logsPlayerLoadoutDraft is intentionally a read-only conversion. Fields whose
 // save layout is not validated in this project remain in the portable draft.
 func logsPlayerLoadoutDraft(p *logsPlayer, entries []SigilLoadoutEntry) (*LoadoutShare, []string) {
-	share := &LoadoutShare{Format: loadoutShareFormat, Version: loadoutShareLogsVersion, CharaName: p.CharacterName, OwnerCode: p.CharacterType, Name: loadoutName(p.DisplayName, p.CharacterName), WeaponName: p.WeaponKey, MasteryHashes: make([]string, 0, len(p.Skillboard))}
+	characterType := logsPlayerOwnerCode(p)
+	share := &LoadoutShare{Format: loadoutShareFormat, Version: loadoutShareLogsVersion, OwnerCode: characterType, Name: loadoutName(p.DisplayName, normalizedLogsCharacter(p.CharacterName)), WeaponName: p.WeaponKey, MasteryHashes: make([]string, 0, len(p.Skillboard))}
 	warnings := []string{"来源为 GBFR Logs 战斗快照；远程玩家的武器、祝福和数值可能不完整。当前项目仅支持将其作为草稿和因子写入来源。"}
 	for i, e := range entries {
 		index := i
-		share.Sigils = append(share.Sigils, LoadoutShareSigil{Index: &index, Hash: loadoutHex(e.SigilHash), Level: int(e.SigilLevel), PrimaryTraitHash: loadoutHex(e.PrimaryTraitHash), PrimaryTraitLevel: int(e.PrimaryTraitLevel), SecondaryTraitHash: loadoutHex(e.SecondaryTraitHash), SecondaryTraitLevel: int(e.SecondaryTraitLevel)})
+		share.Sigils = append(share.Sigils, LoadoutShareSigil{Index: &index, Hash: loadoutHex(e.SigilHash), Name: backend.ResolveLogsSigilName(e.SigilHash), Level: int(e.SigilLevel), PrimaryTraitHash: loadoutHex(e.PrimaryTraitHash), PrimaryTraitName: backend.ResolveLogsTraitName(e.PrimaryTraitHash), PrimaryTraitLevel: int(e.PrimaryTraitLevel), SecondaryTraitHash: loadoutHex(e.SecondaryTraitHash), SecondaryTraitName: backend.ResolveLogsTraitName(e.SecondaryTraitHash), SecondaryTraitLevel: int(e.SecondaryTraitLevel)})
 	}
-	if len(p.Abilities) > loadoutShareMaxSkills || len(p.Skillboard) > loadoutShareMaxMastery {
-		warnings = append(warnings, "日志中的技能或专精数量超过完整分享格式限制，已截断为可导出的数量。")
+	if len(p.Abilities) > loadoutShareMaxSkills {
+		warnings = append(warnings, "日志中的技能数量超过完整分享格式限制，已截断为可导出的数量。")
+	}
+	if len(p.Skillboard) > 0 {
+		for _, id := range p.Skillboard[:min(len(p.Skillboard), loadoutShareMaxMastery)] {
+			if !backend.IsKnownMasteryNode(characterType, id) {
+				continue
+			}
+			share.MasteryHashes = append(share.MasteryHashes, loadoutHex(id))
+		}
+		if len(share.MasteryHashes) == 0 {
+			warnings = append(warnings, "GBFR Logs 的专精节点未匹配到可写入存档的节点，未导入专精配置。")
+		}
 	}
 	for _, id := range p.Abilities[:min(len(p.Abilities), loadoutShareMaxSkills)] {
-		share.Skills = append(share.Skills, LoadoutShareSkill{Hash: loadoutHex(id)})
+		share.Skills = append(share.Skills, LoadoutShareSkill{Hash: loadoutHex(id), Name: backend.ResolveLogsSkillName(id)})
 	}
-	for _, id := range p.Skillboard[:min(len(p.Skillboard), loadoutShareMaxMastery)] {
-		share.MasteryHashes = append(share.MasteryHashes, loadoutHex(id))
-	}
+
 	if len(p.Summons) == 4 {
 		for _, s := range p.Summons {
-			share.Summons = append(share.Summons, LoadoutShareSummon{TypeHash: loadoutHex(s.SummonID), MainTraitHash: loadoutHex(s.MainTraitID), MainTraitLevel: int(s.MainTraitLevel), SubParamHash: loadoutHex(s.BonusID), SubParamLevel: int(s.BonusLevel)})
+			typeName, mainName, subName := backend.ResolveLogsSummonNames(s.SummonID, s.MainTraitID, s.BonusID)
+			share.Summons = append(share.Summons, LoadoutShareSummon{TypeHash: loadoutHex(s.SummonID), Name: typeName, MainTraitHash: loadoutHex(s.MainTraitID), MainTraitName: mainName, MainTraitLevel: int(s.MainTraitLevel), SubParamHash: loadoutHex(s.BonusID), SubParamName: subName, SubParamLevel: int(s.BonusLevel)})
 		}
 	} else if len(p.Summons) != 0 {
 		warnings = append(warnings, "日志中的召唤石数量不是 4，未写入完整分享草稿。")
@@ -221,13 +275,20 @@ func logsPlayerLoadoutDraft(p *logsPlayer, entries []SigilLoadoutEntry) (*Loadou
 	if p.WeaponState != nil {
 		w := p.WeaponState
 		share.WeaponHash = loadoutHex(w.WeaponID)
-		stone := &LoadoutShareWeaponWrightstone{Hash: loadoutHex(w.WrightstoneID)}
+		traitHashes := make([]uint32, len(w.WrightstoneTraits))
+		for index, trait := range w.WrightstoneTraits {
+			traitHashes[index] = trait.ID
+		}
+		stoneName, traitNames := backend.ResolveLogsWrightstoneNames(w.WrightstoneID, traitHashes)
+		stone := &LoadoutShareWeaponWrightstone{Hash: loadoutHex(w.WrightstoneID), Name: stoneName}
 		for i, trait := range w.WrightstoneTraits {
-			stone.Traits = append(stone.Traits, LoadoutShareWeaponWrightstoneTrait{Index: i, Hash: loadoutHex(trait.ID), Level: int(trait.Level)})
+			stone.Traits = append(stone.Traits, LoadoutShareWeaponWrightstoneTrait{Index: i, Hash: loadoutHex(trait.ID), Name: traitNames[i], Level: int(trait.Level)})
 		}
 		share.Weapon = &LoadoutShareWeaponState{StoredHash: loadoutHex(w.WeaponID), XP: w.Exp, Uncap: int(w.StarLevel), Mirage: int(w.PlusMarks), Awakening: int(w.AwakeningLevel), Wrightstone: stone}
 		for _, trait := range w.InnateTraits {
 			share.Weapon.SkillHashes = append(share.Weapon.SkillHashes, loadoutHex(trait.ID))
+			share.Weapon.SkillNames = append(share.Weapon.SkillNames, backend.ResolveLogsWeaponSkillName(trait.ID))
+			share.Weapon.SkillLevels = append(share.Weapon.SkillLevels, int(trait.Level))
 		}
 	}
 	if p.Stats != nil {
@@ -238,8 +299,15 @@ func logsPlayerLoadoutDraft(p *logsPlayer, entries []SigilLoadoutEntry) (*Loadou
 	}
 	if p.OvermasteryInfo != nil {
 		share.LogsSnapshot = &LoadoutLogsSnapshot{IsOnline: p.IsOnline, Overmasteries: make([]LoadoutLogsOvermastery, 0, len(p.OvermasteryInfo.Overmasteries))}
-		for _, item := range p.OvermasteryInfo.Overmasteries {
+		share.OverLimit = make([]LoadoutShareOverLimit, 0, len(p.OvermasteryInfo.Overmasteries))
+		for index, item := range p.OvermasteryInfo.Overmasteries {
 			share.LogsSnapshot.Overmasteries = append(share.LogsSnapshot.Overmasteries, LoadoutLogsOvermastery{ID: item.ID, Flags: item.Flags, Value: item.Value})
+			name, attributeHash, level, value, unit, ok := backend.ResolveLogsOvermastery(item.ID, item.Value)
+			if !ok {
+				warnings = append(warnings, fmt.Sprintf("Logs 上限突破 %08X 未收录，未展示", item.ID))
+				continue
+			}
+			share.OverLimit = append(share.OverLimit, LoadoutShareOverLimit{Index: index, AttributeHash: attributeHash, Name: name, Level: level, Value: value, Unit: unit})
 		}
 	}
 	return share, warnings

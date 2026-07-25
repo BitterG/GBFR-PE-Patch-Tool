@@ -311,6 +311,14 @@ func summarizeMasteryHashes(ownerCode string, hashes []uint32) (*MasteryBuildSum
 }
 
 // MasterySummarize 给前端返回真实分配下的三方向生效状态与官方 EX 阶信息。
+func IsKnownMasteryNode(ownerCode string, hash uint32) bool {
+	if hash == 0 || hash == EmptyHash {
+		return false
+	}
+	node, ok := skillboardNodeForHash(hash)
+	return ok && node.Char == ownerCode
+}
+
 func (a *App) MasterySummarize(ownerCode string, hexes []string) (*MasteryBuildSummary, error) {
 	hashes := make([]uint32, 0, len(hexes))
 	for _, value := range hexes {

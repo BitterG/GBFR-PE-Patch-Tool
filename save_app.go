@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-//go:embed data/quest_names_i18n.csv
+//go:embed internal/backend/data/quest_names_i18n.csv
 var questCSVData []byte
 
 // ── Exported types for Wails binding ──
@@ -74,38 +74,35 @@ func init() {
 	}
 	for _, row := range records[1:] { // skip header
 		if len(row) >= 2 {
-			if id, err := strconv.Atoi(row[0]); err == nil {
-				questNames[id] = row[1]
-				if len(row) >= 3 && row[2] != "" {
-					questNamesCN[id] = row[2]
+			id, err := strconv.Atoi(row[0])
+			if err != nil {
+				parsed, parseErr := strconv.ParseUint(row[0], 16, 32)
+				if parseErr != nil {
+					continue
 				}
+				id = int(parsed)
+			}
+			questNames[id] = row[1]
+			if len(row) >= 3 && row[2] != "" {
+				questNamesCN[id] = row[2]
 			}
 		}
 	}
 }
 
 func questIDToName(stored uint32) string {
-	hexStr := fmt.Sprintf("%06X", stored)
-	qid, _ := strconv.Atoi(hexStr)
-	if name, ok := questNames[qid]; ok {
+	if name, ok := questNames[int(stored)]; ok {
 		return name
 	}
-	return fmt.Sprintf("Unknown_%d", qid)
+	return fmt.Sprintf("Unknown_%06X", stored)
 }
 
 func questIDToNameCN(stored uint32) string {
-	hexStr := fmt.Sprintf("%06X", stored)
-	qid, _ := strconv.Atoi(hexStr)
-	if name, ok := questNamesCN[qid]; ok {
-		return name
-	}
-	return ""
+	return questNamesCN[int(stored)]
 }
 
 func storedToQuestID(stored uint32) uint32 {
-	hexStr := fmt.Sprintf("%06X", stored)
-	qid, _ := strconv.Atoi(hexStr)
-	return uint32(qid)
+	return stored
 }
 
 // ── App save methods (bound to Wails) ──

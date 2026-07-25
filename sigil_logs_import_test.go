@@ -11,7 +11,7 @@ import (
 )
 
 func TestReadLogsSigilLoadouts(t *testing.T) {
-	blob, err := cbor.Marshal(logsEncounter{PlayerData: [4]*logsPlayer{{
+	blob, err := cbor.Marshal(logsEncounter{QuestID: 0x40B301, PlayerData: [4]*logsPlayer{{
 		ActorIndex:    12,
 		DisplayName:   "Player",
 		CharacterName: "Player",
@@ -59,7 +59,7 @@ func TestReadLogsSigilLoadouts(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(result) != 2 || result[0].LogTime != 456 || len(result[0].Loadouts) != 1 || len(result[0].Loadouts[0].Entries) != 1 {
+	if len(result) != 2 || result[0].LogTime != 456 || result[0].QuestID != 0x40B301 || result[0].QuestName != "世界临界" || len(result[0].Loadouts) != 1 || len(result[0].Loadouts[0].Entries) != 1 {
 		t.Fatalf("unexpected import: %#v", result)
 	}
 	entry := result[0].Loadouts[0].Entries[0]
@@ -67,7 +67,7 @@ func TestReadLogsSigilLoadouts(t *testing.T) {
 		t.Fatalf("unexpected entry: %#v", entry)
 	}
 	loadout := result[0].Loadouts[0].Loadout
-	if loadout == nil || loadout.OwnerCode != "PL2700" || loadout.WeaponHash != "00000029" || len(loadout.Summons) != 4 || len(loadout.Skills) != 2 || len(loadout.MasteryHashes) != 1 || len(loadout.Weapon.Wrightstone.Traits) != 0 {
+	if loadout == nil || loadout.OwnerCode != "PL2700" || loadout.WeaponHash != "00000029" || len(loadout.Summons) != 4 || len(loadout.Skills) != 2 || len(loadout.MasteryHashes) != 0 || len(loadout.Weapon.Wrightstone.Traits) != 0 {
 		t.Fatalf("unexpected complete loadout draft: %#v", loadout)
 	}
 }

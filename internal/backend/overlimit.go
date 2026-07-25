@@ -140,6 +140,123 @@ var overLimitCatalog = func() map[uint32]overLimitCatalogEntry {
 	return entries
 }()
 
+func ResolveLogsTraitName(hash uint32) string {
+	catalog, err := LoadCatalog()
+	if err == nil {
+		if trait := catalog.LookupTraitByHash(hash); trait != nil {
+			if name := traitCN[trait.DisplayName]; name != "" {
+				return name
+			}
+		}
+	}
+	return runtimeNameCN[hash]
+}
+
+func ResolveLogsSigilName(hash uint32) string {
+	catalog, err := LoadCatalog()
+	if err == nil {
+		if sigil := catalog.LookupSigilByHash(hash); sigil != nil {
+			if name := sigilCN[sigil.DisplayName]; name != "" {
+				return name
+			}
+		}
+	}
+	return runtimeNameCN[hash]
+}
+
+var logsWeaponSkillNameCN = map[uint32]string{
+	0x1E1CECCE: "浩劫新星",
+}
+
+func ResolveLogsWeaponSkillName(hash uint32) string {
+	if name := logsWeaponSkillNameCN[hash]; name != "" {
+		return name
+	}
+	if name := runtimeNameCN[hash]; name != "" {
+		return name
+	}
+	if name, ok := weaponTranscendenceSkills[hash]; ok {
+		return name
+	}
+	return ResolveLogsTraitName(hash)
+}
+
+func ResolveLogsWrightstoneNames(wrightstoneHash uint32, traitHashes []uint32) (string, []string) {
+	catalog, err := LoadWrightstoneCatalog()
+	if err != nil {
+		return "", nil
+	}
+	name := ""
+	if stone := catalog.LookupWrightstoneByHash(wrightstoneHash); stone != nil {
+		name = wrightstoneCN[stone.DisplayName]
+		if name == "" {
+			name = stone.DisplayName
+		}
+	}
+	traits := make([]string, len(traitHashes))
+	for index, hash := range traitHashes {
+		if trait := catalog.LookupTraitByHash(hash); trait != nil {
+			traits[index] = wrightstoneTraitCN[trait.DisplayName]
+			if traits[index] == "" {
+				traits[index] = traitCN[trait.DisplayName]
+			}
+			if traits[index] == "" {
+				traits[index] = trait.DisplayName
+			}
+		}
+		if traits[index] == "" {
+			traits[index] = runtimeNameCN[hash]
+		}
+	}
+	return name, traits
+}
+
+func ResolveLogsSkillName(hash uint32) string {
+	return skillNameForHash(hash)
+}
+
+func ResolveLogsSummonNames(typeHash, mainHash, subHash uint32) (typeName, mainName, subName string) {
+	catalog, err := loadSummonStatCatalog()
+	if err != nil {
+		return "", "", ""
+	}
+	return catalog.types[typeHash].Name, catalog.main[mainHash].Name, catalog.sub[subHash].Name
+}
+
+// ResolveLogsOvermastery maps a Logs overmastery effect to the audited
+// save-file over-limit catalog for display. Logs does not expose the save slot.
+func ResolveLogsOvermastery(id uint32, rawValue float32) (name, attributeHash string, level int, value float64, unit string, ok bool) {
+	entry, found := overLimitCatalog[id]
+	if !found {
+		for _, candidate := range overLimitCatalog {
+			if candidate.effectID == id {
+				entry, found = candidate, true
+				break
+			}
+		}
+	}
+	if !found {
+		return "", "", 0, 0, "", false
+	}
+	value = float64(rawValue)
+	for index, candidate := range entry.values {
+		if candidate == value {
+			level = index + 1
+			break
+		}
+	}
+	if level == 0 && entry.scale != 0 {
+		for index, candidate := range entry.values {
+			if candidate*float64(entry.scale) == value {
+				level = index + 1
+				value = candidate
+				break
+			}
+		}
+	}
+	return entry.name, fmt.Sprintf("%08X", entry.canonical), level, value, entry.unit, true
+}
+
 var overLimitAttributeOptions = func() []OverLimitOption {
 	options := make([]OverLimitOption, 0, len(overLimitCatalogOrder))
 	for _, hash := range overLimitCatalogOrder {
