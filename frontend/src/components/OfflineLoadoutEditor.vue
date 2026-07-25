@@ -20,6 +20,7 @@ const selectedLogRecord = ref('')
 const selectedLogPlayer = ref('')
 const masteryPools = ref([])
 const masterySummary = ref(null)
+const masteryExpanded = ref({ SB_DEF: true, SB_ATK: true, SB_LIMIT: true })
 
 function emptyForm() {
   return { unitId: 0, expectCharaHash: '', op: 'write', name: '', weaponSlotId: 0, sigilSlotIds: [], skillHashes: [], weaponSkillHashes: [], masteryHashes: [] }
@@ -89,13 +90,19 @@ function masteryCategoryActive(rank, cat) { return masterySummary.value?.ranks?.
 function masteryNodes(rank, cat) {
   return rank.nodes.filter(item => item.cat === cat)
 }
+function masteryNodeDescription(node) {
+  return node.hash === '1F52146F' ? '昏厥+4' : node.desc || node.name || '未收录效果'
+}
+function toggleMasteryCategory(cat) {
+  masteryExpanded.value[cat] = !masteryExpanded.value[cat]
+}
 function masterySpecialization(cat) {
   return masterySummary.value?.ranks?.[0]?.categories?.find(item => item.cat === cat)?.specialization || ''
 }
 const masteryCategories = [
   { cat: 'SB_DEF', label: '觉醒' },
   { cat: 'SB_ATK', label: '真谛' },
-  { cat: 'SB_LIMIT', label: '秘技' },
+  { cat: 'SB_LIMIT', label: '秘义' },
 ]
 
 async function copyMasteryEffects() {
@@ -107,7 +114,7 @@ async function copyMasteryEffects() {
       const nodes = masteryNodes(rank, category.cat)
       lines.push(`${rank.rank === 'EX' ? 'EX阶' : `${rank.rank.slice(1)}阶段`}`)
       for (let index = 0; index < nodes.length; index += 2) {
-        const cell = node => `${masteryNodeActive(node.hash) ? '■' : '□'} ${node.hash} | ${node.desc || node.name || '未收录效果'}`
+        const cell = node => `${masteryNodeActive(node.hash) ? '■' : '□'} ${node.hash} | ${masteryNodeDescription(node)}`
         const left = cell(nodes[index])
         const right = nodes[index + 1] ? cell(nodes[index + 1]) : ''
         lines.push(`${left}\t|\t${right}`)
@@ -117,7 +124,7 @@ async function copyMasteryEffects() {
   }
   try {
     await navigator.clipboard.writeText(lines.join('\n'))
-    show('已按二维矩阵复制专精效果与 hash，可直接对照布局', 'success')
+    show('已复制专精效果与 hash', 'success')
   } catch (error) { show(`复制失败: ${String(error)}`, 'error') }
 }
 
@@ -233,26 +240,32 @@ async function apply(copy) {
         <p><b>角色：</b>{{ text(detail.charaName || character?.charaName) }}（{{ text(detail.charaHash || selectedCharacter) }}）</p>
         <div><b>武器：</b>{{ text(detail.weaponName) }}</div>
         <div v-if="detail.weapon"><b>武器强化：</b>Lv {{ detail.weapon.level || '—' }} / 上限突破 {{ detail.weapon.uncap }} / 幻晶 {{ detail.weapon.mirage }} / 觉醒 {{ detail.weapon.awakening }} / 超凡 {{ detail.weapon.transcendence }}</div>
-        <div><b>武器技能：</b><ol v-if="detail.weapon?.skills?.length"><li v-for="item in detail.weapon.skills" :key="`${item.slot}-${item.traitHash}`">{{ item.slot + 1 }}. {{ text(item.name || item.traitHash) }} Lv {{ item.level }}</li></ol><span v-else>—</span></div>
-        <div><b>武器祝福：</b><template v-if="detail.weapon?.wrightstone">{{ text(detail.weapon.wrightstone.name) }}<ol v-if="detail.weapon.wrightstone.traits?.length"><li v-for="item in detail.weapon.wrightstone.traits" :key="`${item.index}-${item.hash}`">{{ item.index + 1 }}. {{ text(item.name || item.hash) }} Lv {{ item.level }}</li></ol></template><span v-else>—</span></div>
+        <div class="equipment-skills-summary">
+          <div><b>武器技能：</b><ol v-if="detail.weapon?.skills?.length"><li v-for="item in detail.weapon.skills" :key="`${item.slot}-${item.traitHash}`">{{ item.slot + 1 }}. {{ text(item.name || item.traitHash) }} Lv {{ item.level }}</li></ol><span v-else>—</span></div>
+          <div><b>武器祝福：</b><template v-if="detail.weapon?.wrightstone">{{ text(detail.weapon.wrightstone.name) }}<ol v-if="detail.weapon.wrightstone.traits?.length"><li v-for="item in detail.weapon.wrightstone.traits" :key="`${item.index}-${item.hash}`">{{ item.index + 1 }}. {{ text(item.name || item.hash) }} Lv {{ item.level }}</li></ol></template><span v-else>—</span></div>
+          <div><b>技能：</b><ul v-if="detailSkills.length"><li v-for="item in detailSkills" :key="item.hash">{{ text(item.name) }}（{{ item.hash }}）</li></ul><span v-else>—</span></div>
+        </div>
         <div><b>因子：</b><ol v-if="detailSigils.length"><li v-for="item in detailSigils" :key="`${item.index}-${item.slotId}`">{{ formatSigil(item) }}</li></ol><span v-else>—</span></div>
-        <div><b>技能：</b><ul v-if="detailSkills.length"><li v-for="item in detailSkills" :key="item.hash">{{ text(item.name) }}（{{ item.hash }}）</li></ul><span v-else>—</span></div>
         <div class="mastery-layout" v-if="masteryPools.length">
           <div class="mastery-tools"><b>专精激活图：</b><button class="btn copy-mastery" @click="copyMasteryEffects">复制效果对照</button></div>
           <div v-for="category in masteryCategories" :key="category.cat" class="mastery-category">
-            <div class="mastery-heading">{{ category.label }}<template v-if="masterySpecialization(category.cat)">：{{ masterySpecialization(category.cat) }}</template></div>
+            <button class="mastery-heading" type="button" @click="toggleMasteryCategory(category.cat)">
+              <span>{{ masteryExpanded[category.cat] ? '▼' : '▶' }} {{ category.label }}<template v-if="masterySpecialization(category.cat)">：{{ masterySpecialization(category.cat) }}</template></span>
+            </button>
+            <template v-if="masteryExpanded[category.cat]">
             <div v-for="rank in masteryPools" :key="rank.rank" class="mastery-rank">
               <span class="mastery-rank-label" :class="{ active: masteryCategoryActive(rank.rank, category.cat) }">{{ rank.rank === 'EX' ? 'EX阶' : `${rank.rank.slice(1)}阶段` }}</span>
               <span class="mastery-node-list">
-                <span v-for="node in masteryNodes(rank, category.cat)" :key="node.hash" class="mastery-node" :class="{ active: masteryNodeActive(node.hash) }" :title="node.name || node.desc">
+                <span v-for="node in masteryNodes(rank, category.cat)" :key="node.hash" class="mastery-node" :class="{ active: masteryNodeActive(node.hash) }" :title="masteryNodeDescription(node)">
                   <b>{{ masteryNodeActive(node.hash) ? '■' : '□' }}</b>
-                  <span>{{ node.desc || node.name || '未收录效果' }}</span>
+                  <span>{{ masteryNodeDescription(node) }}</span>
                 </span>
                 <span v-if="!masteryNodes(rank, category.cat).length" class="mastery-empty">—</span>
               </span>
             </div>
+            </template>
           </div>
-          <small>亮蓝色：当前配装已激活；灰色：未激活。节点仅表示状态，不展示效果说明。</small>
+          <small>亮蓝色：当前配装已激活；灰色：未激活。</small>
         </div>
         <p><b>角色强化：</b>{{ enhancementText() }}</p>
       </div>
@@ -270,5 +283,5 @@ async function apply(copy) {
 </template>
 
 <style scoped>
-.loadout-editor{display:flex;flex-direction:column;gap:14px}.section{padding:14px 16px;border:1px solid rgba(255,255,255,.08);border-radius:8px;background:rgba(255,255,255,.04)}.mastery-layout{margin-top:10px}.mastery-tools{display:flex;align-items:center;justify-content:space-between;gap:10px}.copy-mastery{padding:4px 8px;font-size:.68rem}.mastery-category{margin:10px 0;padding:9px 10px;border-left:2px solid rgba(255,255,255,.14);background:rgba(255,255,255,.025)}.mastery-heading{margin-bottom:6px;color:rgba(255,255,255,.84);font-weight:600}.mastery-rank{display:flex;align-items:flex-start;gap:8px;min-height:25px}.mastery-rank-label{width:42px;flex:0 0 42px;padding-top:1px;color:rgba(255,255,255,.42);font-size:.7rem}.mastery-rank-label.active{color:#67e8f9}.mastery-node-list{display:flex;min-width:0;flex:1;flex-direction:column;gap:4px}.mastery-node{display:flex;gap:6px;color:rgba(255,255,255,.48);font-size:.72rem;line-height:1.4}.mastery-node b{flex:0 0 auto;color:rgba(255,255,255,.2);font-size:.86rem;line-height:1}.mastery-node.active{color:rgba(255,255,255,.82)}.mastery-node.active b{color:#38bdf8;text-shadow:0 0 7px rgba(56,189,248,.75)}.mastery-empty{color:rgba(255,255,255,.28);font-size:.72rem}.mastery-layout small{display:block;margin-top:5px;color:rgba(255,255,255,.4);font-size:.68rem}.logs-import{margin-top:12px;padding:10px 12px;border:1px solid rgba(251,191,36,.25);border-radius:6px;background:rgba(251,191,36,.04)}.file-input{display:none}.summary{margin-top:12px;padding:12px;border:1px solid rgba(103,232,249,.22);border-radius:6px;background:rgba(103,232,249,.045);color:rgba(255,255,255,.7);font-size:.73rem;line-height:1.55}.summary p{margin:8px 0}.summary ol,.summary ul{margin:5px 0 8px;padding-left:22px}.summary li{margin:3px 0}.section-title{display:flex;justify-content:space-between;gap:8px;color:rgba(255,255,255,.78);font-size:.8rem;font-weight:600}.section-title span{color:rgba(255,255,255,.4);font-weight:400}.field{display:flex;flex-direction:column;gap:5px;margin-top:10px;color:rgba(255,255,255,.5);font-size:.72rem}.field input,.field select,.field textarea,.grid select{box-sizing:border-box;width:100%;padding:7px 9px;border:1px solid rgba(255,255,255,.13);border-radius:6px;background:#2a2a2a;color:rgba(255,255,255,.88);font:inherit;font-size:.75rem}.field textarea{resize:vertical;font-family:ui-monospace,Consolas,monospace}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.btn{padding:7px 12px;border:1px solid rgba(255,255,255,.15);border-radius:6px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.8);font:600 .75rem inherit;cursor:pointer}.btn:disabled{opacity:.4;cursor:not-allowed}.primary{border-color:rgba(103,232,249,.35);color:#67e8f9}.danger{border-color:rgba(248,113,113,.45);color:#f87171}.hint{margin:10px 0 0;color:rgba(255,255,255,.42);font-size:.72rem;line-height:1.5}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.check{display:block;margin-top:7px;color:rgba(255,255,255,.72);font-size:.72rem;word-break:break-all}.check input{margin-right:6px}.result pre{margin:10px 0 0;max-height:300px;overflow:auto;white-space:pre-wrap;word-break:break-word;color:rgba(255,255,255,.65);font-size:.7rem}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.loadout-editor{display:flex;flex-direction:column;gap:14px}.section{padding:14px 16px;border:1px solid rgba(255,255,255,.08);border-radius:8px;background:rgba(255,255,255,.04)}.equipment-skills-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:8px}.mastery-layout{margin-top:10px}.mastery-tools{display:flex;align-items:center;justify-content:space-between;gap:10px}.copy-mastery{padding:4px 8px;font-size:.68rem}.mastery-category{margin:10px 0;padding:9px 10px;border-left:2px solid rgba(255,255,255,.14);background:rgba(255,255,255,.025)}.mastery-heading{display:block;width:100%;margin-bottom:6px;padding:0;border:0;background:transparent;color:rgba(255,255,255,.84);font:inherit;font-weight:600;text-align:left;cursor:pointer}.mastery-heading:hover{color:#67e8f9}.mastery-rank{display:flex;align-items:flex-start;gap:8px;min-height:25px}.mastery-rank-label{width:42px;flex:0 0 42px;padding-top:1px;color:rgba(255,255,255,.42);font-size:.7rem}.mastery-rank-label.active{color:#67e8f9}.mastery-node-list{display:flex;min-width:0;flex:1;flex-direction:column;gap:4px}.mastery-node{display:flex;gap:6px;color:rgba(255,255,255,.48);font-size:.72rem;line-height:1.4}.mastery-node b{flex:0 0 auto;color:rgba(255,255,255,.2);font-size:.86rem;line-height:1}.mastery-node.active{color:rgba(255,255,255,.82)}.mastery-node.active b{color:#38bdf8;text-shadow:0 0 7px rgba(56,189,248,.75)}.mastery-empty{color:rgba(255,255,255,.28);font-size:.72rem}.mastery-layout small{display:block;margin-top:5px;color:rgba(255,255,255,.4);font-size:.68rem}.logs-import{margin-top:12px;padding:10px 12px;border:1px solid rgba(251,191,36,.25);border-radius:6px;background:rgba(251,191,36,.04)}.file-input{display:none}.summary{margin-top:12px;padding:12px;border:1px solid rgba(103,232,249,.22);border-radius:6px;background:rgba(103,232,249,.045);color:rgba(255,255,255,.7);font-size:.73rem;line-height:1.55}.summary p{margin:8px 0}.summary ol,.summary ul{margin:5px 0 8px;padding-left:22px}.summary li{margin:3px 0}.section-title{display:flex;justify-content:space-between;gap:8px;color:rgba(255,255,255,.78);font-size:.8rem;font-weight:600}.section-title span{color:rgba(255,255,255,.4);font-weight:400}.field{display:flex;flex-direction:column;gap:5px;margin-top:10px;color:rgba(255,255,255,.5);font-size:.72rem}.field input,.field select,.field textarea,.grid select{box-sizing:border-box;width:100%;padding:7px 9px;border:1px solid rgba(255,255,255,.13);border-radius:6px;background:#2a2a2a;color:rgba(255,255,255,.88);font:inherit;font-size:.75rem}.field textarea{resize:vertical;font-family:ui-monospace,Consolas,monospace}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.btn{padding:7px 12px;border:1px solid rgba(255,255,255,.15);border-radius:6px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.8);font:600 .75rem inherit;cursor:pointer}.btn:disabled{opacity:.4;cursor:not-allowed}.primary{border-color:rgba(103,232,249,.35);color:#67e8f9}.danger{border-color:rgba(248,113,113,.45);color:#f87171}.hint{margin:10px 0 0;color:rgba(255,255,255,.42);font-size:.72rem;line-height:1.5}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.check{display:block;margin-top:7px;color:rgba(255,255,255,.72);font-size:.72rem;word-break:break-all}.check input{margin-right:6px}.result pre{margin:10px 0 0;max-height:300px;overflow:auto;white-space:pre-wrap;word-break:break-word;color:rgba(255,255,255,.65);font-size:.7rem}@media(max-width:760px){.grid,.equipment-skills-summary{grid-template-columns:1fr}}
 </style>
