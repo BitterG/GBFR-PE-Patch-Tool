@@ -15,9 +15,9 @@ func TestReadLogsSigilLoadoutsJSONWithMasteryIndexes(t *testing.T) {
 		"displayName":"Player", "characterType":"Pl0400", "weaponKey":"WEP_PL0400_02_01",
 		"sigils":[{"firstTraitId":1,"firstTraitLevel":15,"secondTraitId":2,"secondTraitLevel":15,"sigilId":3,"sigilLevel":15}],
 		"summons":[{"summonId":31},{"summonId":32},{"summonId":33},{"summonId":34}],
-		"abilities":[11,12], "masterLevel":20, "skillboard":[10,11],
+		"abilities":[11,12], "masterLevel":55, "skillboard":[10,11],
 		"stats":{"level":100,"hp":1000,"attack":2000},
-		"weaponState":{"weaponId":41,"exp":42}, "overmasteryInfo":{"overmasteries":[]}
+		"weaponState":{"weaponId":41,"exp":42,"transcendence":7}, "overmasteryInfo":{"overmasteries":[]}
 	}`
 	if err := os.WriteFile(path, []byte(json), 0o600); err != nil {
 		t.Fatal(err)
@@ -42,6 +42,15 @@ func TestReadLogsSigilLoadoutsJSONWithMasteryIndexes(t *testing.T) {
 	if loadout == nil || loadout.WeaponHash != "00000029" || len(loadout.Summons) != 4 || len(loadout.Skills) != 2 || len(loadout.LogsSkillboardEffectUIIDs) != 2 || loadout.LogsSkillboardEffectUIIDs[0] != 10 || loadout.LogsSkillboardEffectUIIDs[1] != 11 {
 		t.Fatalf("unexpected complete loadout draft: %#v", loadout)
 	}
+	if loadout.Character == nil || loadout.Character.MasterTotalMSP != 3309499 {
+		t.Fatalf("Logs MLv55 must use its minimum MSP threshold: %#v", loadout.Character)
+	}
+	if loadout.Weapon == nil || !loadout.Weapon.EnhancementCaptured || loadout.Weapon.Transcendence != 7 {
+		t.Fatalf("Logs transcendence must be preserved as a complete enhancement snapshot: %#v", loadout.Weapon)
+	}
+	if loadout.Weapon.Uncap != 0 || loadout.Weapon.Mirage != 0 || loadout.Weapon.Awakening != 0 {
+		t.Fatalf("Logs must preserve zero-valued enhancement fields when transcendence is present: %#v", loadout.Weapon)
+	}
 	expected, err := backend.NewApp().MapLogsMasteryEffectUIIDs("PL0400", loadout.LogsSkillboardEffectUIIDs)
 	if err != nil {
 		t.Fatal(err)
@@ -61,7 +70,54 @@ func TestReadLogsSigilLoadoutsJSONWithMasteryIndexes(t *testing.T) {
 	}
 }
 
-func TestReadLogsSigilLoadoutsJSONNeverTreatsEffectUIIDAsMasteryHash(t *testing.T) {
+
+func TestLogsMasterLevelUsesMinimumMSPForEverySupportedLevel(t *testing.T) {
+	for level := 1; level <= 55; level++ {
+		player := &logsPlayer{
+			CharacterType: "PL0400",
+			WeaponKey:     "WEP_PL0400_02_01",
+			MasterLevel:   uint32(level),
+			Sigils:        []logsSigil{{SigilID: 3}},
+			Stats:         &logsRecordStats{Level: 100},
+		}
+		loadouts := logsPlayerLoadouts([]*logsPlayer{player})
+		if len(loadouts) != 1 || loadouts[0].Loadout == nil || loadouts[0].Loadout.Character == nil {
+			t.Fatalf("MLv%d did not create a character draft: %#v", level, loadouts)
+		}
+		want, err := backend.MasterTotalMSPForProgress(0, level)
+		if err != nil {
+			t.Fatalf("MLv%d threshold: %v", level, err)
+		}
+		if got := loadouts[0].Loadout.Character.MasterTotalMSP; got != want {
+			t.Fatalf("MLv%d MSP = %d, want minimum threshold %d", level, got, want)
+		}
+		if got := loadouts[0].Loadout.Character.MasterProgressIndex; got != level || !loadouts[0].Loadout.Character.MasterProgressCaptured {
+			t.Fatalf("MLv%d progress capture = (%d, %t), want (%d, true)", level, got, loadouts[0].Loadout.Character.MasterProgressCaptured, level)
+		}
+	}
+}
+
+func TestLogsWeaponWithoutTranscendenceDoesNotCaptureEnhancement(t *testing.T) {
+	player := &logsPlayer{
+		CharacterType: "PL0400",
+		WeaponKey:     "WEP_PL0400_02_01",
+		Sigils:        []logsSigil{{SigilID: 3}},
+		WeaponState:   &logsWeaponState{WeaponID: 41, Exp: 42},
+	}
+	loadouts := logsPlayerLoadouts([]*logsPlayer{player})
+	if len(loadouts) != 1 || loadouts[0].Loadout == nil || loadouts[0].Loadout.Weapon == nil {
+		t.Fatalf("expected Logs weapon draft: %#v", loadouts)
+	}
+	weapon := loadouts[0].Loadout.Weapon
+	if weapon.EnhancementCaptured || weapon.Transcendence != 0 {
+		t.Fatalf("missing transcendence must not capture or overwrite enhancement: %#v", weapon)
+	}
+	if !strings.Contains(strings.Join(loadouts[0].Warnings, "\n"), "缺少 transcendence") {
+		t.Fatalf("missing transcendence warning absent: %#v", loadouts[0].Warnings)
+	}
+}
+
+func TestLogsUnknownMasteryEffectUIIDRemainsDisplayOnly(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "logs-export.json")
 	if err := os.WriteFile(path, []byte(`[{"characterType":"PL2700","weaponKey":"WEP_PL2700_02_01","sigils":[{"sigilId":3}],"skillboard":[13980629]}]`), 0o600); err != nil {
 		t.Fatal(err)

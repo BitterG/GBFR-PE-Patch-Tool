@@ -6,7 +6,64 @@ import (
 	"testing"
 )
 
-func TestLogsMasteryNodePoolUsesEffectUIIDsOnly(t *testing.T) {
+func TestBuildLoadoutShareSummonsPreservesTraitNames(t *testing.T) {
+	context := &LoadoutStatContext{
+		EquippedSummonSlotIDs: []uint32{11, 12, 13, 14},
+		Summons: []LoadoutSummon{
+			{SlotID: 11, TypeHash: "00000001", Name: "召唤石一", MainTraitHash: "00000011", MainTraitName: "主加护一", MainTraitLevel: 1, SubParamHash: "00000021", SubParamName: "副参数一", SubParamLevel: 2, Rank: 3},
+			{SlotID: 12, TypeHash: "00000002", Name: "召唤石二", MainTraitHash: "00000012", MainTraitName: "主加护二", MainTraitLevel: 2, SubParamHash: "00000022", SubParamName: "副参数二", SubParamLevel: 3, Rank: 4},
+			{SlotID: 13, TypeHash: "00000003", Name: "召唤石三", MainTraitHash: "00000013", MainTraitName: "主加护三", MainTraitLevel: 3, SubParamHash: "00000023", SubParamName: "副参数三", SubParamLevel: 4, Rank: 5},
+			{SlotID: 14, TypeHash: "00000004", Name: "召唤石四", MainTraitHash: "00000014", MainTraitName: "主加护四", MainTraitLevel: 4, SubParamHash: "00000024", SubParamName: "副参数四", SubParamLevel: 5, Rank: 6},
+		},
+	}
+
+	summons, err := buildLoadoutShareSummons(context)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(summons) != 4 {
+		t.Fatalf("summon count = %d, want 4", len(summons))
+	}
+	for index, summon := range summons {
+		wantMain := "主加护" + []string{"一", "二", "三", "四"}[index]
+		wantSub := "副参数" + []string{"一", "二", "三", "四"}[index]
+		if summon.MainTraitName != wantMain || summon.SubParamName != wantSub {
+			t.Fatalf("summon %d names = (%q, %q), want (%q, %q)", index+1, summon.MainTraitName, summon.SubParamName, wantMain, wantSub)
+		}
+	}
+}
+
+func TestConfigureLogsImportApplyPayloadCapturesMLv1AndMLv55(t *testing.T) {
+	for _, test := range []struct {
+		level int
+		msp   int
+	}{{level: 1, msp: 0}, {level: 55, msp: 3309499}} {
+		share := &LoadoutShare{
+			LogsImport: true,
+			Character: &LoadoutShareCharacterProgression{
+				MasterTotalMSP:         test.msp,
+				MasterProgressIndex:    test.level,
+				MasterProgressCaptured: true,
+			},
+		}
+		payload := &LoadoutImportApplyPayload{Character: share.Character}
+		configureLogsImportApplyPayload(share, payload)
+		if !payload.ApplyMasterProgress || payload.MasterProgressIndex != test.level {
+			t.Fatalf("MLv%d payload = %#v, want ApplyMasterProgress with index %d", test.level, payload, test.level)
+		}
+	}
+}
+
+func TestConfigureLogsImportApplyPayloadDoesNotEnableOrdinaryShare(t *testing.T) {
+	share := &LoadoutShare{LogsImport: true, Character: &LoadoutShareCharacterProgression{MasterTotalMSP: 3309499}}
+	payload := &LoadoutImportApplyPayload{Character: share.Character}
+	configureLogsImportApplyPayload(share, payload)
+	if payload.ApplyMasterProgress {
+		t.Fatalf("uncaptured progress must not enable application: %#v", payload)
+	}
+}
+
+func TestLogsMasteryNodePoolKeepsKnownAndUnknownNodes(t *testing.T) {
 	pools, err := NewApp().LogsMasteryNodePool("PL0400", []uint32{10, 11, 250, 9999})
 	if err != nil {
 		t.Fatal(err)

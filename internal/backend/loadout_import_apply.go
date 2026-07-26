@@ -131,6 +131,11 @@ func verifyPreparedWeaponWrightstone(save *SaveData, expected expectedWeaponWrig
 	return nil
 }
 
+// MasterTotalMSPForProgress returns the stored total MSP compatible with a requested progress index.
+func MasterTotalMSPForProgress(sourceTotal, progressIndex int) (int, error) {
+	return masterTotalMSPForProgress(sourceTotal, progressIndex)
+}
+
 func masterTotalMSPForProgress(sourceTotal, progressIndex int) (int, error) {
 	if progressIndex < 1 || progressIndex >= len(characterMasterExpThresholds) {
 		return 0, fmt.Errorf("专精进度必须为 1..%d，收到 %d", len(characterMasterExpThresholds)-1, progressIndex)

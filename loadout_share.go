@@ -35,6 +35,7 @@ type LoadoutShare struct {
 	// LogsSkillboardEffectUIIDs are GBFR Logs EffectUiId values for read-only display.
 	// They are deliberately distinct from save-file MasteryHashes.
 	LogsSkillboardEffectUIIDs []uint32                          `json:"logsSkillboardEffectUiIds,omitempty"`
+	LogsImport                bool                              `json:"logsImport,omitempty"`
 	Character                 *LoadoutShareCharacterProgression `json:"character,omitempty"`
 	Weapon            *LoadoutShareWeaponState          `json:"weapon,omitempty"`
 	OverLimit         []LoadoutShareOverLimit           `json:"overLimit,omitempty"`
@@ -115,6 +116,7 @@ type LoadoutShareWeaponState struct {
 	Mirage               int                            `json:"mirage"`
 	Awakening            int                            `json:"awakening"`
 	Transcendence        int                            `json:"transcendence"`
+	EnhancementCaptured  bool                           `json:"enhancementCaptured,omitempty"`
 	ExactState           bool                           `json:"exactState,omitempty"`
 	Flags                uint32                         `json:"flags,omitempty"`
 	WrightstoneReference string                         `json:"wrightstoneReference,omitempty"`
@@ -132,6 +134,10 @@ type LoadoutShareCharacterProgression struct {
 	BaseCritRate               int                             `json:"baseCritRate,omitempty"`
 	CharacterBaseCaptured      bool                            `json:"characterBaseCaptured,omitempty"`
 	MasterTotalMSP             int                             `json:"masterTotalMsp"`
+	// MasterProgressCaptured marks a validated Logs masterLevel observation.
+	// It remains false for ordinary loadout JSON, including zero-MSP states.
+	MasterProgressIndex        int                             `json:"masterProgressIndex,omitempty"`
+	MasterProgressCaptured     bool                            `json:"masterProgressCaptured,omitempty"`
 	LegacyProgress             int                             `json:"legacyProgress"`
 	EnhancementPanel           []int                           `json:"enhancementPanel,omitempty"`
 	EnhancementNodes           []LoadoutShareEnhancementNode   `json:"enhancementNodes,omitempty"`

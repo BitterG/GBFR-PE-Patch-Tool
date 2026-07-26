@@ -85,6 +85,7 @@ type logsWeaponState struct {
 	StarLevel         uint32          `cbor:"starLevel" json:"starLevel"`
 	PlusMarks         uint32          `cbor:"plusMarks" json:"plusMarks"`
 	AwakeningLevel    uint32          `cbor:"awakeningLevel" json:"awakeningLevel"`
+	Transcendence      *uint32         `cbor:"transcendence" json:"transcendence"`
 	WrightstoneID     uint32          `cbor:"wrightstoneId" json:"wrightstoneId"`
 	WrightstoneTraits []logsTraitPair `cbor:"wrightstoneTraits" json:"wrightstoneTraits"`
 	InnateTraits      []logsTraitPair `cbor:"innateTraits" json:"innateTraits"`
@@ -212,7 +213,7 @@ func logsPlayerLoadouts(players []*logsPlayer) []LogsSigilLoadout {
 // the save layout; all remaining captured data stays in the portable draft snapshot.
 func logsPlayerLoadoutDraft(p *logsPlayer, entries []SigilLoadoutEntry) (*LoadoutShare, []string) {
 	characterType := logsPlayerOwnerCode(p)
-	share := &LoadoutShare{Format: loadoutShareFormat, Version: loadoutShareLogsVersion, OwnerCode: characterType, Name: loadoutName(p.DisplayName, normalizedLogsCharacter(p.CharacterName)), WeaponName: p.WeaponKey, MasteryHashes: []string{}}
+	share := &LoadoutShare{Format: loadoutShareFormat, Version: loadoutShareLogsVersion, LogsImport: true, OwnerCode: characterType, Name: loadoutName(p.DisplayName, normalizedLogsCharacter(p.CharacterName)), WeaponName: p.WeaponKey, MasteryHashes: []string{}}
 	warnings := []string{"来源为 GBFR Logs 战斗快照；远程玩家的武器、祝福和数值可能不完整。当前项目仅支持将其作为草稿和因子写入来源。"}
 	for i, e := range entries {
 		index := i
@@ -259,7 +260,12 @@ func logsPlayerLoadoutDraft(p *logsPlayer, entries []SigilLoadoutEntry) (*Loadou
 		for i, trait := range w.WrightstoneTraits {
 			stone.Traits = append(stone.Traits, LoadoutShareWeaponWrightstoneTrait{Index: i, Hash: loadoutHex(trait.ID), Name: traitNames[i], Level: int(trait.Level)})
 		}
-		share.Weapon = &LoadoutShareWeaponState{StoredHash: loadoutHex(w.WeaponID), XP: w.Exp, Uncap: int(w.StarLevel), Mirage: int(w.PlusMarks), Awakening: int(w.AwakeningLevel), Wrightstone: stone}
+		share.Weapon = &LoadoutShareWeaponState{StoredHash: loadoutHex(w.WeaponID), XP: w.Exp, Uncap: int(w.StarLevel), Mirage: int(w.PlusMarks), Awakening: int(w.AwakeningLevel), EnhancementCaptured: w.Transcendence != nil, Wrightstone: stone}
+		if w.Transcendence != nil {
+			share.Weapon.Transcendence = int(*w.Transcendence)
+		} else {
+			warnings = append(warnings, "Logs 武器快照缺少 transcendence；仍可导入装备和祝福，但不会覆盖武器强化字段。")
+		}
 		for _, trait := range w.InnateTraits {
 			share.Weapon.SkillHashes = append(share.Weapon.SkillHashes, loadoutHex(trait.ID))
 			share.Weapon.SkillNames = append(share.Weapon.SkillNames, backend.ResolveLogsWeaponSkillName(trait.ID))
@@ -267,10 +273,21 @@ func logsPlayerLoadoutDraft(p *logsPlayer, entries []SigilLoadoutEntry) (*Loadou
 		}
 	}
 	if p.Stats != nil {
-		share.Character = &LoadoutShareCharacterProgression{CharacterLevel: int(p.Stats.Level), BaseHP: int(p.Stats.HP), BaseATK: int(p.Stats.Attack), CharacterBaseCaptured: true, MasterTotalMSP: int(p.MasterLevel)}
+		share.Character = &LoadoutShareCharacterProgression{CharacterLevel: int(p.Stats.Level), BaseHP: int(p.Stats.HP), BaseATK: int(p.Stats.Attack), CharacterBaseCaptured: true}
 	} else if p.PlayerStats != nil {
 		s := p.PlayerStats
-		share.Character = &LoadoutShareCharacterProgression{CharacterLevel: int(s.Level), BaseHP: int(s.TotalHP), BaseATK: int(s.TotalAttack), CharacterBaseCaptured: true, MasterTotalMSP: int(p.MasterLevel)}
+		share.Character = &LoadoutShareCharacterProgression{CharacterLevel: int(s.Level), BaseHP: int(s.TotalHP), BaseATK: int(s.TotalAttack), CharacterBaseCaptured: true}
+	}
+	if p.MasterLevel < 1 || p.MasterLevel > 55 {
+		warnings = append(warnings, fmt.Sprintf("Logs 专精等级 %d 不在支持范围 1..55，未写入专精进度。", p.MasterLevel))
+	} else if share.Character == nil {
+		warnings = append(warnings, "Logs 专精等级缺少角色快照，未写入专精进度。")
+	} else if total, err := backend.MasterTotalMSPForProgress(0, int(p.MasterLevel)); err != nil {
+		warnings = append(warnings, fmt.Sprintf("Logs 专精等级无法转换为 MSP，未写入：%v", err))
+	} else {
+		share.Character.MasterTotalMSP = total
+		share.Character.MasterProgressIndex = int(p.MasterLevel)
+		share.Character.MasterProgressCaptured = true
 	}
 	if p.OvermasteryInfo != nil {
 		overmasteries := p.OvermasteryInfo.Overmasteries
