@@ -9,6 +9,44 @@ import (
 	"gbfrPlayerInfoEdit/internal/backend"
 )
 
+func TestParseLogsSigilLoadoutsJSONAcceptsObjectAndArray(t *testing.T) {
+	const player = `{"displayName":"Player","characterType":"PL0400","weaponKey":"WEP_PL0400_02_01","sigils":[{"sigilId":3,"sigilLevel":15}]}`
+
+	for _, test := range []struct {
+		name    string
+		payload string
+	}{
+		{name: "single object", payload: player},
+		{name: "array", payload: "[" + player + "]"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			result, err := parseLogsSigilLoadoutsJSON([]byte(test.payload))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(result) != 1 || len(result[0].Loadouts) != 1 {
+				t.Fatalf("unexpected import: %#v", result)
+			}
+			loadout := result[0].Loadouts[0]
+			if loadout.PlayerName != "Player" || loadout.CharacterType != "PL0400" || len(loadout.Entries) != 1 || loadout.Entries[0].SigilHash != 3 {
+				t.Fatalf("unexpected loadout: %#v", loadout)
+			}
+		})
+	}
+}
+
+func TestParseLogsSigilLoadoutsJSONWailsBinding(t *testing.T) {
+	const payload = `{"displayName":"Player","characterType":"PL0400","weaponKey":"WEP_PL0400_02_01","sigils":[{"sigilId":3,"sigilLevel":15}]}`
+
+	result, err := NewApp().ParseLogsSigilLoadoutsJSON(payload)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result) != 1 || len(result[0].Loadouts) != 1 {
+		t.Fatalf("unexpected binding import: %#v", result)
+	}
+}
+
 func TestReadLogsSigilLoadoutsJSONWithMasteryIndexes(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "logs-export.json")
 	json := `{
@@ -70,6 +108,32 @@ func TestReadLogsSigilLoadoutsJSONWithMasteryIndexes(t *testing.T) {
 	}
 }
 
+
+func TestLogsPlayerLoadoutsUseAuthoritativeCharacterNames(t *testing.T) {
+	for _, test := range []struct {
+		ownerCode string
+		wantName  string
+	}{
+		{ownerCode: "PL0000", wantName: "古兰"},
+		{ownerCode: "PL0100", wantName: "姬塔"},
+		{ownerCode: "PL1900", wantName: "伊德"},
+		{ownerCode: "PL2900", wantName: "菲迪埃尔"},
+	} {
+		t.Run(test.ownerCode, func(t *testing.T) {
+			player := &logsPlayer{
+				CharacterType: test.ownerCode,
+				Sigils:        []logsSigil{{SigilID: 3}},
+			}
+			loadouts := logsPlayerLoadouts([]*logsPlayer{player})
+			if len(loadouts) != 1 {
+				t.Fatalf("loadouts = %#v, want one loadout", loadouts)
+			}
+			if got := loadouts[0].CharacterName; got != test.wantName {
+				t.Errorf("CharacterName = %q, want %q", got, test.wantName)
+			}
+		})
+	}
+}
 
 func TestLogsMasterLevelUsesMinimumMSPForEverySupportedLevel(t *testing.T) {
 	for level := 1; level <= 55; level++ {

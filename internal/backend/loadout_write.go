@@ -418,6 +418,20 @@ func parseExactLoadoutHash(value, field string) (uint32, error) {
 	return hash, nil
 }
 
+// isEmptyExactLoadoutSecondary accepts the empty encodings emitted by JSON and
+// Logs imports. They all represent an absent secondary trait on disk.
+func isEmptyExactLoadoutSecondary(value string) (bool, error) {
+	value = strings.TrimSpace(value)
+	if value == "" {
+		return true, nil
+	}
+	hash, err := ParseHashHex(value)
+	if err != nil {
+		return false, err
+	}
+	return hash == 0 || hash == EmptyHash, nil
+}
+
 func exactLoadoutTransportHashID(value string) (string, bool) {
 	sigilID := strings.TrimSpace(value)
 	if len(sigilID) != 13 || !strings.EqualFold(sigilID[:5], "HASH_") {
@@ -504,10 +518,11 @@ func prepareExactLoadoutSigil(cat *Catalog, draft LoadoutConstructedSigil) (*pre
 		primaryHash: primaryHash, secondaryHash: EmptyHash, flags: flags,
 	}
 	secondaryText := strings.TrimSpace(draft.ExactSecondaryTraitHash)
-	if secondaryText == "" {
-		if item.SecondaryLevel != 0 {
-			return nil, fmt.Errorf("精确副词条为空时副词条等级必须为 0")
-		}
+	emptySecondary, err := isEmptyExactLoadoutSecondary(secondaryText)
+	if err != nil {
+		return nil, fmt.Errorf("精确副词条哈希无效: %w", err)
+	}
+	if emptySecondary {
 		prepared.item.SecondaryLevel = 0
 		return prepared, nil
 	}
@@ -812,17 +827,11 @@ func validateLoadoutSigilDestination(save *SaveData, prepared *preparedLoadoutSi
 		{GemLevelIDType, gemUnitID, "因子等级"},
 		{TraitHashIDType, primaryTraitUnit, "主词条哈希"},
 		{TraitLevelIDType, primaryTraitUnit, "主词条等级"},
+		{TraitHashIDType, secondaryTraitUnit, "副词条哈希"},
+		{TraitLevelIDType, secondaryTraitUnit, "副词条等级"},
 	} {
 		if _, ok := save.findUnit(field.idType, uint32(field.unitID)); !ok {
 			return fmt.Errorf("因子空槽 %d 缺少%s字段", gemUnitID, field.name)
-		}
-	}
-	if prepared.hasSecondary {
-		if _, ok := save.findUnit(TraitHashIDType, uint32(secondaryTraitUnit)); !ok {
-			return fmt.Errorf("因子空槽 %d 缺少副词条哈希字段", gemUnitID)
-		}
-		if _, ok := save.findUnit(TraitLevelIDType, uint32(secondaryTraitUnit)); !ok {
-			return fmt.Errorf("因子空槽 %d 缺少副词条等级字段", gemUnitID)
 		}
 	}
 	return nil

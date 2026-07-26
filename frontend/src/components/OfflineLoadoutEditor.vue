@@ -1,10 +1,10 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { LoadoutApply, LoadoutApplyWithResources, LoadoutCheckCompliance, LoadoutDetail, LoadoutEditContext, LoadoutExportJSON, LoadoutImportJSON, LoadoutList, LogsMasteryNodePool, MasteryNodePool, MasterySummarize } from '../../wailsjs/go/main/OfflineLoadoutService'
-import { SelectLogsSigilLoadouts } from '../../wailsjs/go/main/App'
+import { GetLastSavePath, ParseLogsSigilLoadoutsJSON, SetLastSavePath } from '../../wailsjs/go/main/App'
 
 const emit = defineEmits(['status'])
-const savePath = ref('')
+const savePath = ref('C:\\Users\\用户名\\AppData\\Local\\GBFR\\Saved\\SaveGames\\SaveData1.dat')
 const groups = ref([])
 const selectedCharacter = ref('')
 const context = ref(null)
@@ -16,6 +16,7 @@ const form = ref(emptyForm())
 const importedDraft = ref(null)
 const importedShare = ref(null)
 const importFile = ref(null)
+const logsJSON = ref('')
 const logsRecords = ref([])
 const selectedLogRecord = ref('')
 const selectedLogPlayer = ref('')
@@ -83,7 +84,13 @@ async function importFileJSON(event) {
   try { await importPayload(await file.text()) } catch (error) { show(`读取文件失败: ${String(error)}`, 'error') }
 }
 async function loadLogs() {
-  try { logsRecords.value = await SelectLogsSigilLoadouts() || []; selectedLogRecord.value = '0'; selectedLogPlayer.value = '0'; show(`已读取 ${logsRecords.value.length} 份 Logs 导出 JSON`, 'success') } catch (error) { show(`读取 Logs 导出 JSON 失败: ${String(error)}`, 'error') }
+  if (!logsJSON.value.trim()) return show('请粘贴 Logs 导出 JSON', 'error')
+  try {
+    logsRecords.value = await ParseLogsSigilLoadoutsJSON(logsJSON.value) || []
+    selectedLogRecord.value = '0'
+    selectedLogPlayer.value = '0'
+    show(`已解析 ${logsRecords.value.length} 份 Logs 导出 JSON`, 'success')
+  } catch (error) { show(`解析 Logs 导出 JSON 失败: ${String(error)}`, 'error') }
 }
 function logRecordLabel(record) {
   if (!Number(record.logTime)) return record.questName || 'Logs 导出 JSON'
@@ -228,8 +235,10 @@ async function load() {
   if (!savePath.value.trim()) return show('请输入 SaveData 文件路径', 'error')
   busy.value = true
   try {
-    groups.value = await LoadoutList(savePath.value.trim()) || []
+    const path = savePath.value.trim()
+    groups.value = await LoadoutList(path) || []
     if (!groups.value.length) throw new Error('未找到已保存的角色配装')
+    await SetLastSavePath(path)
     selectedCharacter.value = groups.value[0].charaHash
     importedDraft.value = null
     importedShare.value = null
@@ -312,6 +321,14 @@ async function apply(copy) {
     await loadContext()
   } catch (error) { show(`写入失败: ${String(error)}`, 'error') } finally { busy.value = false }
 }
+onMounted(async () => {
+  try {
+    const lastPath = await GetLastSavePath()
+    if (lastPath?.trim()) savePath.value = lastPath.trim()
+  } catch (error) {
+    console.warn('读取上次 SaveData 路径失败:', error)
+  }
+})
 </script>
 
 <template>
@@ -319,7 +336,9 @@ async function apply(copy) {
     <section class="section">
       <div class="section-title">完整离线配装 <span>仅操作存档，不连接游戏进程</span></div>
       <label class="field"><span>SaveData 路径</span><input v-model="savePath" placeholder="例如 C:\\...\\SaveData1.dat" @keyup.enter="load" /></label>
-      <div class="actions"><button class="btn primary" :disabled="busy" @click="load">读取配装</button><button class="btn" :disabled="busy || !context" @click="exportCurrent">导出当前槽位</button><button class="btn" :disabled="busy || !context" @click="importFile?.click()">导入 JSON</button><button class="btn" :disabled="busy || !context" @click="loadLogs">选择 Logs 导出 JSON</button><input ref="importFile" class="file-input" type="file" accept="application/json,.json" @change="importFileJSON" /></div>
+      <div class="actions"><button class="btn primary" :disabled="busy" @click="load">读取配装</button><button class="btn" :disabled="busy || !context" @click="exportCurrent">导出当前槽位</button><button class="btn" :disabled="busy || !context" @click="importFile?.click()">导入 JSON</button><input ref="importFile" class="file-input" type="file" accept="application/json,.json" @change="importFileJSON" /></div>
+      <label class="field"><span>Logs 导出 JSON</span><textarea v-model="logsJSON" rows="6" placeholder="粘贴单个玩家对象或玩家对象数组" /></label>
+      <div class="actions"><button class="btn" :disabled="busy" @click="loadLogs">解析 Logs JSON</button></div>
       <div v-if="logsRecords.length" class="logs-import"><label class="field"><span>Logs 场次</span><select v-model="selectedLogRecord"><option v-for="(record,index) in logsRecords" :key="index" :value="String(index)">{{ logRecordLabel(record) }}</option></select></label><label class="field"><span>玩家</span><select v-model="selectedLogPlayer"><option v-for="(player,index) in (logsRecords[Number(selectedLogRecord)]?.loadouts || [])" :key="index" :value="String(index)">{{ player.playerName || '未命名玩家' }} / {{ logPlayerCharacter(player) }}</option></select></label><button class="btn" :disabled="busy" @click="importLogPlayer">导入该玩家完整配装</button></div>
       <p class="hint">写入会创建备份、修复 checksum 并回读验证。原地写入前必须关闭游戏；建议优先使用“写入副本”。</p>
     </section>

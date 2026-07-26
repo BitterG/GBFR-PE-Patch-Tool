@@ -404,12 +404,14 @@ func (s *SaveData) PatchSigilWithFlags(gemUnitID, newSlotID int, sigilHash uint3
 		func() error { return s.patchUint(TraitHashIDType, uint32(primaryTraitUnit), primaryTraitHash) },
 		func() error { return s.patchInt(TraitLevelIDType, uint32(primaryTraitUnit), primaryLevel) },
 	}
-	if hasSecondary {
-		writes = append(writes,
-			func() error { return s.patchUint(TraitHashIDType, uint32(secondaryTraitUnit), secondaryTraitHash) },
-			func() error { return s.patchInt(TraitLevelIDType, uint32(secondaryTraitUnit), secondaryLevel) },
-		)
+	if !hasSecondary {
+		secondaryTraitHash = EmptyHash
+		secondaryLevel = 0
 	}
+	writes = append(writes,
+		func() error { return s.patchUint(TraitHashIDType, uint32(secondaryTraitUnit), secondaryTraitHash) },
+		func() error { return s.patchInt(TraitLevelIDType, uint32(secondaryTraitUnit), secondaryLevel) },
+	)
 	for _, write := range writes {
 		if err := write(); err != nil {
 			return err
@@ -719,13 +721,15 @@ func (s *SaveData) VerifySigilWithFlags(gemUnitID int, expectedSlotID, sigilHash
 	if err := checkInt(TraitLevelIDType, uint32(primaryTraitUnit), primaryLevel, "主特性等级"); err != nil {
 		return err
 	}
-	if hasSecondary {
-		if err := check(TraitHashIDType, uint32(secondaryTraitUnit), secondaryHash, "副特性哈希"); err != nil {
-			return err
-		}
-		if err := checkInt(TraitLevelIDType, uint32(secondaryTraitUnit), secondaryLevel, "副特性等级"); err != nil {
-			return err
-		}
+	if !hasSecondary {
+		secondaryHash = EmptyHash
+		secondaryLevel = 0
+	}
+	if err := check(TraitHashIDType, uint32(secondaryTraitUnit), secondaryHash, "副特性哈希"); err != nil {
+		return err
+	}
+	if err := checkInt(TraitLevelIDType, uint32(secondaryTraitUnit), secondaryLevel, "副特性等级"); err != nil {
+		return err
 	}
 	return nil
 }

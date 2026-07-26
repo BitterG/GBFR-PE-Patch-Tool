@@ -126,12 +126,25 @@ func (a *App) SelectLogsSigilLoadouts() ([]LogsSigilLoadoutImport, error) {
 	return readLogsSigilLoadoutsJSON(path)
 }
 
-// readLogsSigilLoadoutsJSON accepts either one character object or an array of
-// character objects from a GBFR Logs JSON export and wraps them in one record.
+// readLogsSigilLoadoutsJSON reads a GBFR Logs JSON export from disk.
 func readLogsSigilLoadoutsJSON(path string) ([]LogsSigilLoadoutImport, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("读取 Logs 导出 JSON 失败: %w", err)
+	}
+	return parseLogsSigilLoadoutsJSON(raw)
+}
+
+// ParseLogsSigilLoadoutsJSON parses character snapshots pasted from a GBFR Logs JSON export.
+func (a *App) ParseLogsSigilLoadoutsJSON(payload string) ([]LogsSigilLoadoutImport, error) {
+	return parseLogsSigilLoadoutsJSON([]byte(payload))
+}
+
+// parseLogsSigilLoadoutsJSON accepts raw JSON for either one character object or
+// an array of character objects from a GBFR Logs JSON export and wraps them in one record.
+func parseLogsSigilLoadoutsJSON(raw []byte) ([]LogsSigilLoadoutImport, error) {
+	if len(strings.TrimSpace(string(raw))) == 0 {
+		return nil, fmt.Errorf("Logs 导出 JSON 不能为空")
 	}
 	var players []logsPlayer
 	if err := json.Unmarshal(raw, &players); err != nil {
@@ -139,7 +152,7 @@ func readLogsSigilLoadoutsJSON(path string) ([]LogsSigilLoadoutImport, error) {
 		if objectErr := json.Unmarshal(raw, &player); objectErr != nil {
 			return nil, fmt.Errorf("解析 Logs 导出 JSON 失败: %w", err)
 		}
-	players = []logsPlayer{player}
+		players = []logsPlayer{player}
 	}
 	playerPointers := make([]*logsPlayer, len(players))
 	for index := range players {
@@ -178,10 +191,12 @@ func logsPlayerOwnerCode(p *logsPlayer) string {
 
 func logsCharacterName(ownerCode string) string {
 	known := map[string]string{
-		"PL0000": "古兰", "PL0100": "卡塔莉娜", "PL0200": "拉卡姆", "PL0300": "尤金", "PL0400": "伊欧", "PL0500": "萝赛塔",
-		"PL0700": "兰斯洛特", "PL0800": "巴恩", "PL0900": "珀西瓦尔", "PL1000": "菲莉", "PL1100": "齐格飞", "PL1200": "夏洛特",
-		"PL1300": "索恩", "PL1400": "尤达拉哈", "PL1500": "娜露梅", "PL1600": "冈达葛萨", "PL1700": "卡莉奥斯特萝", "PL1800": "巴萨拉卡",
-		"PL2000": "泽塔", "PL2100": "伊德", "PL2400": "伽兰查", "PL2700": "圣德芬", "PL2800": "希耶提", "PL2900": "贝阿朵丽丝",
+		"PL0000": "古兰", "PL0100": "姬塔", "PL0200": "卡塔莉娜", "PL0300": "拉卡姆", "PL0400": "伊欧",
+		"PL0500": "欧根", "PL0600": "萝赛塔", "PL0700": "菲莉", "PL0800": "兰斯洛特", "PL0900": "巴恩",
+		"PL1000": "珀西瓦尔", "PL1100": "齐格飞", "PL1200": "夏洛特", "PL1300": "尤达拉哈", "PL1400": "娜露梅",
+		"PL1500": "冈达葛萨", "PL1600": "塞达", "PL1700": "巴萨拉卡", "PL1800": "卡莉奥丝特罗", "PL1900": "伊德",
+		"PL2100": "圣德芬", "PL2200": "希耶提", "PL2300": "索恩", "PL2400": "伽兰查", "PL2500": "玛琪拉菲菈",
+		"PL2600": "贝阿朵丽丝", "PL2700": "尤斯塔斯", "PL2800": "芙劳", "PL2900": "菲迪埃尔",
 	}
 	return known[ownerCode]
 }

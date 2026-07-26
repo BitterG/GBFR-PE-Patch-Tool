@@ -136,8 +136,9 @@ type LoadoutShareCharacterProgression struct {
 	BaseCritRate               int                             `json:"baseCritRate,omitempty"`
 	CharacterBaseCaptured      bool                            `json:"characterBaseCaptured,omitempty"`
 	MasterTotalMSP             int                             `json:"masterTotalMsp"`
-	// MasterProgressCaptured marks a validated Logs masterLevel observation.
-	// It remains false for ordinary loadout JSON, including zero-MSP states.
+	// MasterSystemCaptured marks an ordinary share whose 1323 entry exists and has one valid value.
+	// It remains distinct from MasterProgressCaptured, which is a Logs masterLevel observation.
+	MasterSystemCaptured       bool                            `json:"masterSystemCaptured,omitempty"`
 	MasterProgressIndex        int                             `json:"masterProgressIndex,omitempty"`
 	MasterProgressCaptured     bool                            `json:"masterProgressCaptured,omitempty"`
 	LegacyProgress             int                             `json:"legacyProgress"`

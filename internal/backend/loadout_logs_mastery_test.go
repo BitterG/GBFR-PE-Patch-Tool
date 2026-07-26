@@ -33,6 +33,39 @@ func TestBuildLoadoutShareSummonsPreservesTraitNames(t *testing.T) {
 	}
 }
 
+func TestConfigureOrdinaryMasterProgressApplyPayload(t *testing.T) {
+	for _, test := range []struct {
+		name  string
+		share *LoadoutShare
+		want  bool
+	}{
+		{name: "MLv1 zero MSP", share: &LoadoutShare{Version: 10, Character: &LoadoutShareCharacterProgression{MasterTotalMSP: 0, MasterSystemCaptured: true, MasterProgressIndex: 1}}, want: true},
+		{name: "MLv55 maximum MSP", share: &LoadoutShare{Version: 10, Character: &LoadoutShareCharacterProgression{MasterTotalMSP: 3309499, MasterSystemCaptured: true, MasterProgressIndex: 55}}, want: true},
+		{name: "non-threshold MSP", share: &LoadoutShare{Version: 10, Character: &LoadoutShareCharacterProgression{MasterTotalMSP: 3001, MasterSystemCaptured: true, MasterProgressIndex: deriveMasterGrowth(3001).ProgressIndex}}, want: true},
+		{name: "missing capture", share: &LoadoutShare{Version: 10, Character: &LoadoutShareCharacterProgression{MasterTotalMSP: 3001, MasterProgressIndex: deriveMasterGrowth(3001).ProgressIndex}}},
+		{name: "inconsistent index", share: &LoadoutShare{Version: 10, Character: &LoadoutShareCharacterProgression{MasterTotalMSP: 3001, MasterSystemCaptured: true, MasterProgressIndex: 55}}},
+		{name: "legacy version", share: &LoadoutShare{Version: 8, Character: &LoadoutShareCharacterProgression{MasterTotalMSP: 3001, MasterSystemCaptured: true, MasterProgressIndex: deriveMasterGrowth(3001).ProgressIndex}}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			payload := &LoadoutImportApplyPayload{Character: test.share.Character}
+			configureOrdinaryMasterProgressApplyPayload(test.share, payload)
+			if payload.ApplyMasterProgress != test.want {
+				t.Fatalf("ApplyMasterProgress = %t, want %t: %#v", payload.ApplyMasterProgress, test.want, payload)
+			}
+			if test.want {
+				if payload.MasterProgressIndex != test.share.Character.MasterProgressIndex || !payload.ApplyMasteryConfiguration {
+					t.Fatalf("ordinary master payload = %#v, want source index and mastery configuration", payload)
+				}
+				if payload.Character.MasterTotalMSP != test.share.Character.MasterTotalMSP {
+					t.Fatalf("MasterTotalMSP = %d, want exact %d", payload.Character.MasterTotalMSP, test.share.Character.MasterTotalMSP)
+				}
+			} else if payload.ApplyMasteryConfiguration {
+				t.Fatalf("unsafe ordinary share must not enable mastery configuration: %#v", payload)
+			}
+		})
+	}
+}
+
 func TestConfigureLogsImportApplyPayloadCapturesMLv1AndMLv55(t *testing.T) {
 	for _, test := range []struct {
 		level int

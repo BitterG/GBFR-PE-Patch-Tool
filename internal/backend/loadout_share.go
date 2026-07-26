@@ -56,8 +56,9 @@ type LoadoutShareCharacterProgression struct {
 	BaseCritRate               int                             `json:"baseCritRate,omitempty"`
 	CharacterBaseCaptured      bool                            `json:"characterBaseCaptured,omitempty"`
 	MasterTotalMSP             int                             `json:"masterTotalMsp"`
-	// MasterProgressCaptured marks a validated Logs masterLevel observation.
-	// It remains false for ordinary loadout JSON, including zero-MSP states.
+	// MasterSystemCaptured marks an ordinary share whose 1323 entry exists and has one valid value.
+	// It remains distinct from MasterProgressCaptured, which is a Logs masterLevel observation.
+	MasterSystemCaptured       bool                            `json:"masterSystemCaptured,omitempty"`
 	MasterProgressIndex        int                             `json:"masterProgressIndex,omitempty"`
 	MasterProgressCaptured     bool                            `json:"masterProgressCaptured,omitempty"`
 	LegacyProgress             int                             `json:"legacyProgress"`
@@ -410,6 +411,8 @@ func buildLoadoutShare(path string, unitID uint32) (*LoadoutShare, error) {
 	share.Character = &LoadoutShareCharacterProgression{
 		CharacterLevel:             statContext.Level,
 		MasterTotalMSP:             statContext.PermanentGrowth.MasterTotalMSP,
+		MasterSystemCaptured:       statContext.PermanentGrowth.MasterSystemAvailable,
+		MasterProgressIndex:        statContext.PermanentGrowth.MasterProgressIndex,
 		LegacyProgress:             statContext.PermanentGrowth.LegacyProgress,
 		WeaponWrightstonesCaptured: true,
 	}
@@ -607,22 +610,35 @@ func loadoutShareConstructedSigil(cat *Catalog, want LoadoutShareSigil, index in
 		Quantity: 1,
 	}
 	exactSecondaryHash := ""
-	if strings.TrimSpace(want.SecondaryTraitHash) != "" {
-		secondaryHash, parseErr := ParseHashHex(want.SecondaryTraitHash)
+	secondaryText := strings.TrimSpace(want.SecondaryTraitHash)
+	if secondaryText != "" {
+		secondaryHash, parseErr := ParseHashHex(secondaryText)
 		if parseErr != nil {
 			return LoadoutConstructedSigil{}, fmt.Errorf("因子 %s 的副词条哈希无效: %w", want.Name, parseErr)
 		}
-		if secondaryHash == 0 || secondaryHash == EmptyHash {
-			return LoadoutConstructedSigil{}, fmt.Errorf("因子 %s 的副词条哈希不能为空", want.Name)
+		if secondaryHash != 0 && secondaryHash != EmptyHash {
+			secondary := cat.LookupTraitByHash(secondaryHash)
+			if secondary == nil {
+				return LoadoutConstructedSigil{}, fmt.Errorf("因子 %s 的副词条 0x%08X 不在当前游戏目录中", want.Name, secondaryHash)
+			}
+			if want.SecondaryTraitLevel <= 0 {
+				return LoadoutConstructedSigil{}, fmt.Errorf("因子 %s 的副词条等级必须大于 0", want.Name)
+			}
+			secondaryLevels, levelErr := requireTraitLevels(secondary, "副特性")
+			if sigil != nil {
+				secondaryLevels, levelErr = cat.RequireSecondaryTraitLevels(sigil, secondary)
+			}
+			if levelErr != nil {
+				return LoadoutConstructedSigil{}, fmt.Errorf("因子 %s 的副词条等级无效: %w", want.Name, levelErr)
+			}
+			if !containsNaturalLevel(secondaryLevels, want.SecondaryTraitLevel) {
+				return LoadoutConstructedSigil{}, fmt.Errorf("因子 %s 的副词条等级 %d 不在已验证范围内", want.Name, want.SecondaryTraitLevel)
+			}
+			item.SecondaryTraitID = secondary.InternalID
+			item.SecondaryTraitName = cnTrait(secondary.DisplayName)
+			item.SecondaryLevel = want.SecondaryTraitLevel
+			exactSecondaryHash = hashText(secondaryHash)
 		}
-		secondary := cat.LookupTraitByHash(secondaryHash)
-		if secondary == nil {
-			return LoadoutConstructedSigil{}, fmt.Errorf("因子 %s 的副词条 0x%08X 不在当前游戏目录中", want.Name, secondaryHash)
-		}
-		item.SecondaryTraitID = secondary.InternalID
-		item.SecondaryTraitName = cnTrait(secondary.DisplayName)
-		item.SecondaryLevel = want.SecondaryTraitLevel
-		exactSecondaryHash = hashText(secondaryHash)
 	}
 	if item.SigilName == "" || opaqueName {
 		item.SigilName = loadoutSigilDisplayNameFromTraits(sigilHash, item.PrimaryTraitName, item.SecondaryTraitName)
@@ -764,6 +780,7 @@ func resolveLoadoutShare(path, expectCharaHash string, share *LoadoutShare) (*Lo
 	if share.Version >= 3 {
 		draft.ApplyPayload = &LoadoutImportApplyPayload{Character: share.Character, Weapon: share.Weapon}
 		configureLogsImportApplyPayload(share, draft.ApplyPayload)
+		configureOrdinaryMasterProgressApplyPayload(share, draft.ApplyPayload)
 		if shouldApplyOrdinaryWeaponEnhancement(share) {
 			draft.ApplyPayload.ApplyWeaponEnhancement = true
 		}
@@ -886,6 +903,22 @@ func resolveLoadoutShare(path, expectCharaHash string, share *LoadoutShare) (*Lo
 
 func shouldApplyOrdinaryWeaponEnhancement(share *LoadoutShare) bool {
 	return share != nil && !share.LogsImport && share.Version >= 5 && share.Weapon != nil && share.Weapon.ExactState && len(share.Weapon.SkillHashes) == 5
+}
+
+func configureOrdinaryMasterProgressApplyPayload(share *LoadoutShare, payload *LoadoutImportApplyPayload) {
+	if share == nil || payload == nil || share.LogsImport || share.Version < 9 {
+		return
+	}
+	character := share.Character
+	if character == nil || !character.MasterSystemCaptured || character.MasterProgressIndex < 1 || character.MasterProgressIndex > 55 {
+		return
+	}
+	if deriveMasterGrowth(character.MasterTotalMSP).ProgressIndex != character.MasterProgressIndex {
+		return
+	}
+	payload.ApplyMasterProgress = true
+	payload.MasterProgressIndex = character.MasterProgressIndex
+	payload.ApplyMasteryConfiguration = true
 }
 
 func configureLogsImportApplyPayload(share *LoadoutShare, payload *LoadoutImportApplyPayload) {
