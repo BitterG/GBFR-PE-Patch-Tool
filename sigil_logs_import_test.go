@@ -97,23 +97,38 @@ func TestLogsMasterLevelUsesMinimumMSPForEverySupportedLevel(t *testing.T) {
 	}
 }
 
-func TestLogsWeaponWithoutTranscendenceDoesNotCaptureEnhancement(t *testing.T) {
-	player := &logsPlayer{
-		CharacterType: "PL0400",
-		WeaponKey:     "WEP_PL0400_02_01",
-		Sigils:        []logsSigil{{SigilID: 3}},
-		WeaponState:   &logsWeaponState{WeaponID: 41, Exp: 42},
-	}
-	loadouts := logsPlayerLoadouts([]*logsPlayer{player})
-	if len(loadouts) != 1 || loadouts[0].Loadout == nil || loadouts[0].Loadout.Weapon == nil {
-		t.Fatalf("expected Logs weapon draft: %#v", loadouts)
-	}
-	weapon := loadouts[0].Loadout.Weapon
-	if weapon.EnhancementCaptured || weapon.Transcendence != 0 {
-		t.Fatalf("missing transcendence must not capture or overwrite enhancement: %#v", weapon)
-	}
-	if !strings.Contains(strings.Join(loadouts[0].Warnings, "\n"), "缺少 transcendence") {
-		t.Fatalf("missing transcendence warning absent: %#v", loadouts[0].Warnings)
+func TestLogsWeaponPlusMarksPresence(t *testing.T) {
+	zero := uint32(0)
+	nonZero := uint32(99)
+	for _, test := range []struct {
+		name           string
+		plusMarks      *uint32
+		wantCaptured   bool
+		wantMirage     int
+	}{
+		{name: "missing"},
+		{name: "explicit zero", plusMarks: &zero, wantCaptured: true},
+		{name: "non-zero", plusMarks: &nonZero, wantCaptured: true, wantMirage: 99},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			player := &logsPlayer{
+				CharacterType: "PL0400",
+				WeaponKey:     "WEP_PL0400_02_01",
+				Sigils:        []logsSigil{{SigilID: 3}},
+				WeaponState:   &logsWeaponState{WeaponID: 41, Exp: 42, PlusMarks: test.plusMarks},
+			}
+			loadouts := logsPlayerLoadouts([]*logsPlayer{player})
+			if len(loadouts) != 1 || loadouts[0].Loadout == nil || loadouts[0].Loadout.Weapon == nil {
+				t.Fatalf("expected Logs weapon draft: %#v", loadouts)
+			}
+			weapon := loadouts[0].Loadout.Weapon
+			if weapon.EnhancementCaptured || weapon.Transcendence != 0 || weapon.MirageCaptured != test.wantCaptured || weapon.Mirage != test.wantMirage {
+				t.Fatalf("plusMarks presence was not preserved safely: %#v", weapon)
+			}
+			if !strings.Contains(strings.Join(loadouts[0].Warnings, "\n"), "缺少 transcendence") {
+				t.Fatalf("missing transcendence warning absent: %#v", loadouts[0].Warnings)
+			}
+		})
 	}
 }
 

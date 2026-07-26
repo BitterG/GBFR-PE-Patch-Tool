@@ -135,6 +135,8 @@ type LoadoutShareWeaponState struct {
 	// EnhancementCaptured is set only when a Logs snapshot includes transcendence.
 	// It prevents a missing optional Logs field from being treated as zero.
 	EnhancementCaptured  bool                      `json:"enhancementCaptured,omitempty"`
+	// MirageCaptured marks a Logs snapshot where plusMarks was present, including zero.
+	MirageCaptured       bool                      `json:"mirageCaptured,omitempty"`
 	ExactState           bool                      `json:"exactState,omitempty"`
 	Flags                uint32                    `json:"flags,omitempty"`
 	WrightstoneReference string                    `json:"wrightstoneReference,omitempty"`
@@ -164,6 +166,7 @@ type LoadoutImportApplyPayload struct {
 	ApplyCharacterWeaponCollection   bool                              `json:"applyCharacterWeaponCollection,omitempty"`
 	ApplyCharacterWeaponWrightstones bool                              `json:"applyCharacterWeaponWrightstones,omitempty"`
 	ApplyWeaponEnhancement           bool                              `json:"applyWeaponEnhancement,omitempty"`
+	ApplyWeaponMirage                bool                              `json:"applyWeaponMirage,omitempty"`
 	ApplyWeaponWrightstone           bool                              `json:"applyWeaponWrightstone,omitempty"`
 	ApplyOverLimit                   bool                              `json:"applyOverLimit,omitempty"`
 }
@@ -888,6 +891,8 @@ func configureLogsImportApplyPayload(share *LoadoutShare, payload *LoadoutImport
 	}
 	if share.Weapon != nil && share.Weapon.EnhancementCaptured {
 		payload.ApplyWeaponEnhancement = true
+	} else if share.Weapon != nil && share.Weapon.MirageCaptured {
+		payload.ApplyWeaponMirage = true
 	}
 }
 

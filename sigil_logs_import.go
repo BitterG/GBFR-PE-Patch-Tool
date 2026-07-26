@@ -83,7 +83,7 @@ type logsWeaponState struct {
 	WeaponID          uint32          `cbor:"weaponId" json:"weaponId"`
 	Exp               uint32          `cbor:"exp" json:"exp"`
 	StarLevel         uint32          `cbor:"starLevel" json:"starLevel"`
-	PlusMarks         uint32          `cbor:"plusMarks" json:"plusMarks"`
+	PlusMarks         *uint32         `cbor:"plusMarks" json:"plusMarks"`
 	AwakeningLevel    uint32          `cbor:"awakeningLevel" json:"awakeningLevel"`
 	Transcendence      *uint32         `cbor:"transcendence" json:"transcendence"`
 	WrightstoneID     uint32          `cbor:"wrightstoneId" json:"wrightstoneId"`
@@ -260,7 +260,10 @@ func logsPlayerLoadoutDraft(p *logsPlayer, entries []SigilLoadoutEntry) (*Loadou
 		for i, trait := range w.WrightstoneTraits {
 			stone.Traits = append(stone.Traits, LoadoutShareWeaponWrightstoneTrait{Index: i, Hash: loadoutHex(trait.ID), Name: traitNames[i], Level: int(trait.Level)})
 		}
-		share.Weapon = &LoadoutShareWeaponState{StoredHash: loadoutHex(w.WeaponID), XP: w.Exp, Uncap: int(w.StarLevel), Mirage: int(w.PlusMarks), Awakening: int(w.AwakeningLevel), EnhancementCaptured: w.Transcendence != nil, Wrightstone: stone}
+		share.Weapon = &LoadoutShareWeaponState{StoredHash: loadoutHex(w.WeaponID), XP: w.Exp, Uncap: int(w.StarLevel), Awakening: int(w.AwakeningLevel), EnhancementCaptured: w.Transcendence != nil, MirageCaptured: w.PlusMarks != nil, Wrightstone: stone}
+		if w.PlusMarks != nil {
+			share.Weapon.Mirage = int(*w.PlusMarks)
+		}
 		if w.Transcendence != nil {
 			share.Weapon.Transcendence = int(*w.Transcendence)
 		} else {

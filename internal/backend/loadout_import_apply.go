@@ -24,6 +24,7 @@ type preparedLoadoutImport struct {
 	weaponUnitID                       uint32
 	weapon                             *LoadoutShareWeaponState
 	applyWeaponEnhancement             bool
+	applyWeaponMirage                  bool
 	applyWeaponWrightstone             bool
 	weaponWrightstone                  preparedWeaponWrightstone
 	characterWeaponChanges             []ProgressionWeaponChange
@@ -452,7 +453,7 @@ func prepareLoadoutImport(save *SaveData, changes []LoadoutWrite, payload *Loado
 			return nil, fmt.Errorf("复制武器收集强化需要 %d 个空武器槽，目标存档只有 %d 个", missingWeapons, inventory.EmptyWeapons)
 		}
 	}
-	if payload.ApplyWeaponEnhancement || payload.ApplyWeaponWrightstone {
+	if payload.ApplyWeaponEnhancement || payload.ApplyWeaponMirage || payload.ApplyWeaponWrightstone {
 		if payload.Weapon == nil {
 			return nil, fmt.Errorf("所选武器导入范围缺少源武器数据")
 		}
@@ -463,19 +464,26 @@ func prepareLoadoutImport(save *SaveData, changes []LoadoutWrite, payload *Loado
 		if unitErr != nil {
 			return nil, unitErr
 		}
-		if payload.Weapon.Uncap < 0 || payload.Weapon.Uncap > 6 || payload.Weapon.Mirage < 0 || payload.Weapon.Mirage > 99 ||
-			payload.Weapon.Awakening < 0 || payload.Weapon.Awakening > 10 || payload.Weapon.Transcendence < 0 || payload.Weapon.Transcendence > 7 {
+		if payload.ApplyWeaponMirage && !payload.ApplyWeaponEnhancement && (payload.Weapon.Mirage < 0 || payload.Weapon.Mirage > 99) {
+			return nil, fmt.Errorf("武器幻晶等级超出游戏字段范围 0..99")
+		}
+		if payload.ApplyWeaponEnhancement && (payload.Weapon.Uncap < 0 || payload.Weapon.Uncap > 6 || payload.Weapon.Mirage < 0 || payload.Weapon.Mirage > 99 ||
+			payload.Weapon.Awakening < 0 || payload.Weapon.Awakening > 10 || payload.Weapon.Transcendence < 0 || payload.Weapon.Transcendence > 7) {
 			return nil, fmt.Errorf("武器强化等级超出游戏字段范围")
 		}
-		_, parseErr := ParseHashHex(payload.Weapon.StoredHash)
-		if parseErr != nil {
-			return nil, fmt.Errorf("导入武器哈希无效: %w", parseErr)
+		if payload.ApplyWeaponEnhancement {
+			if _, parseErr := ParseHashHex(payload.Weapon.StoredHash); parseErr != nil {
+				return nil, fmt.Errorf("导入武器哈希无效: %w", parseErr)
+			}
 		}
 		currentHash, ok := save.findUnitExact(weaponIDType, unitID)
 		if !ok || currentHash.ValueCnt != 1 {
 			return nil, fmt.Errorf("目标武器缺少 2803 类型字段")
 		}
 		fields := make([]requiredField, 0, 8)
+		if payload.ApplyWeaponMirage && !payload.ApplyWeaponEnhancement {
+			fields = append(fields, requiredField{weaponMirageIDType, "幻晶"})
+		}
 		if payload.ApplyWeaponEnhancement {
 			fields = append(fields,
 				requiredField{weaponXPIDType, "经验"},
@@ -532,6 +540,7 @@ func prepareLoadoutImport(save *SaveData, changes []LoadoutWrite, payload *Loado
 		copyValue.SkillHashes = append([]string(nil), payload.Weapon.SkillHashes...)
 		prepared.weapon = &copyValue
 		prepared.applyWeaponEnhancement = payload.ApplyWeaponEnhancement
+		prepared.applyWeaponMirage = payload.ApplyWeaponMirage && !payload.ApplyWeaponEnhancement
 		prepared.applyWeaponWrightstone = payload.ApplyWeaponWrightstone
 		if payload.ApplyWeaponWrightstone {
 			wrightstone, prepareErr := prepareWeaponWrightstone(payload.Weapon.Wrightstone)
@@ -715,6 +724,11 @@ func applyPreparedLoadoutImport(save *SaveData, prepared *preparedLoadoutImport)
 				}
 			}
 		}
+		if prepared.applyWeaponMirage {
+			if err := save.patchInt(weaponMirageIDType, prepared.weaponUnitID, prepared.weapon.Mirage); err != nil {
+				return verified, err
+			}
+		}
 		if prepared.applyWeaponWrightstone {
 			if err := applyPreparedWeaponWrightstone(save, prepared.weaponUnitID, prepared.weaponWrightstone); err != nil {
 				return verified, err
@@ -858,6 +872,9 @@ func verifyPreparedLoadoutImport(save *SaveData, prepared *preparedLoadoutImport
 					return verified, fmt.Errorf("武器技能槽 %d 回读不一致", index+1)
 				}
 			}
+		}
+		if prepared.applyWeaponMirage && context.Mirage != prepared.weapon.Mirage {
+			return verified, fmt.Errorf("武器幻晶回读不一致")
 		}
 		if prepared.applyWeaponWrightstone {
 			if err := verifyPreparedWeaponWrightstone(save, expectedWeaponWrightstone{unitID: prepared.weaponUnitID, snapshot: prepared.weaponWrightstone}); err != nil {

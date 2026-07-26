@@ -58,8 +58,30 @@ func TestConfigureLogsImportApplyPayloadDoesNotEnableOrdinaryShare(t *testing.T)
 	share := &LoadoutShare{LogsImport: true, Character: &LoadoutShareCharacterProgression{MasterTotalMSP: 3309499}}
 	payload := &LoadoutImportApplyPayload{Character: share.Character}
 	configureLogsImportApplyPayload(share, payload)
-	if payload.ApplyMasterProgress {
-		t.Fatalf("uncaptured progress must not enable application: %#v", payload)
+	if payload.ApplyMasterProgress || payload.ApplyWeaponEnhancement || payload.ApplyWeaponMirage {
+		t.Fatalf("uncaptured ordinary fields must not enable application: %#v", payload)
+	}
+}
+
+func TestConfigureLogsImportApplyPayloadWeaponPresence(t *testing.T) {
+	for _, test := range []struct {
+		name                    string
+		weapon                  *LoadoutShareWeaponState
+		wantEnhancement, wantMirage bool
+	}{
+		{name: "plusMarks missing", weapon: &LoadoutShareWeaponState{}},
+		{name: "plusMarks explicit zero", weapon: &LoadoutShareWeaponState{MirageCaptured: true}, wantMirage: true},
+		{name: "plusMarks non-zero", weapon: &LoadoutShareWeaponState{Mirage: 99, MirageCaptured: true}, wantMirage: true},
+		{name: "complete enhancement", weapon: &LoadoutShareWeaponState{Mirage: 99, MirageCaptured: true, EnhancementCaptured: true}, wantEnhancement: true},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			share := &LoadoutShare{LogsImport: true, Weapon: test.weapon}
+			payload := &LoadoutImportApplyPayload{Weapon: test.weapon}
+			configureLogsImportApplyPayload(share, payload)
+			if payload.ApplyWeaponEnhancement != test.wantEnhancement || payload.ApplyWeaponMirage != test.wantMirage {
+				t.Fatalf("weapon apply flags = (%t, %t), want (%t, %t)", payload.ApplyWeaponEnhancement, payload.ApplyWeaponMirage, test.wantEnhancement, test.wantMirage)
+			}
+		})
 	}
 }
 

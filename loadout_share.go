@@ -116,7 +116,9 @@ type LoadoutShareWeaponState struct {
 	Mirage               int                            `json:"mirage"`
 	Awakening            int                            `json:"awakening"`
 	Transcendence        int                            `json:"transcendence"`
-	EnhancementCaptured  bool                           `json:"enhancementCaptured,omitempty"`
+	EnhancementCaptured bool `json:"enhancementCaptured,omitempty"`
+	// MirageCaptured marks a Logs snapshot where plusMarks was present, including zero.
+	MirageCaptured bool `json:"mirageCaptured,omitempty"`
 	ExactState           bool                           `json:"exactState,omitempty"`
 	Flags                uint32                         `json:"flags,omitempty"`
 	WrightstoneReference string                         `json:"wrightstoneReference,omitempty"`
