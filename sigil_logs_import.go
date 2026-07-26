@@ -260,14 +260,15 @@ func logsPlayerLoadoutDraft(p *logsPlayer, entries []SigilLoadoutEntry) (*Loadou
 		for i, trait := range w.WrightstoneTraits {
 			stone.Traits = append(stone.Traits, LoadoutShareWeaponWrightstoneTrait{Index: i, Hash: loadoutHex(trait.ID), Name: traitNames[i], Level: int(trait.Level)})
 		}
-		share.Weapon = &LoadoutShareWeaponState{StoredHash: loadoutHex(w.WeaponID), XP: w.Exp, Uncap: int(w.StarLevel), Awakening: int(w.AwakeningLevel), EnhancementCaptured: w.Transcendence != nil, MirageCaptured: w.PlusMarks != nil, Wrightstone: stone}
+		share.Weapon = &LoadoutShareWeaponState{StoredHash: loadoutHex(w.WeaponID), XP: w.Exp, Uncap: int(w.StarLevel), Awakening: int(w.AwakeningLevel), EnhancementCaptured: w.WeaponID != 0, MirageCaptured: w.PlusMarks != nil, Wrightstone: stone}
 		if w.PlusMarks != nil {
 			share.Weapon.Mirage = int(*w.PlusMarks)
 		}
 		if w.Transcendence != nil {
 			share.Weapon.Transcendence = int(*w.Transcendence)
-		} else {
-			warnings = append(warnings, "Logs 武器快照缺少 transcendence；仍可导入装备和祝福，但不会覆盖武器强化字段。")
+		} else if share.Weapon.EnhancementCaptured {
+			share.Weapon.Transcendence = 7
+			warnings = append(warnings, "Logs 未提供 transcendence，按用户选择默认写入满超凡 7。")
 		}
 		for _, trait := range w.InnateTraits {
 			share.Weapon.SkillHashes = append(share.Weapon.SkillHashes, loadoutHex(trait.ID))

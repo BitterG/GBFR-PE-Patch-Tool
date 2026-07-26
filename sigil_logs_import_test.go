@@ -115,18 +115,18 @@ func TestLogsWeaponPlusMarksPresence(t *testing.T) {
 				CharacterType: "PL0400",
 				WeaponKey:     "WEP_PL0400_02_01",
 				Sigils:        []logsSigil{{SigilID: 3}},
-				WeaponState:   &logsWeaponState{WeaponID: 41, Exp: 42, PlusMarks: test.plusMarks},
+				WeaponState:   &logsWeaponState{WeaponID: 41, Exp: 42, PlusMarks: test.plusMarks, AwakeningLevel: 4},
 			}
 			loadouts := logsPlayerLoadouts([]*logsPlayer{player})
 			if len(loadouts) != 1 || loadouts[0].Loadout == nil || loadouts[0].Loadout.Weapon == nil {
 				t.Fatalf("expected Logs weapon draft: %#v", loadouts)
 			}
 			weapon := loadouts[0].Loadout.Weapon
-			if weapon.EnhancementCaptured || weapon.Transcendence != 0 || weapon.MirageCaptured != test.wantCaptured || weapon.Mirage != test.wantMirage {
-				t.Fatalf("plusMarks presence was not preserved safely: %#v", weapon)
+			if weapon.EnhancementCaptured || weapon.Transcendence != 7 || weapon.Awakening != 4 || weapon.MirageCaptured != test.wantCaptured || weapon.Mirage != test.wantMirage {
+				t.Fatalf("missing-transcendence Logs weapon must use full transcendence 7 while preserving plusMarks: %#v", weapon)
 			}
-			if !strings.Contains(strings.Join(loadouts[0].Warnings, "\n"), "缺少 transcendence") {
-				t.Fatalf("missing transcendence warning absent: %#v", loadouts[0].Warnings)
+			if !strings.Contains(strings.Join(loadouts[0].Warnings, "\n"), "按用户选择默认写入满超凡 7") {
+				t.Fatalf("missing transcendence default warning absent: %#v", loadouts[0].Warnings)
 			}
 		})
 	}

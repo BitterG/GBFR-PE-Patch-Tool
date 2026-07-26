@@ -63,6 +63,27 @@ func TestConfigureLogsImportApplyPayloadDoesNotEnableOrdinaryShare(t *testing.T)
 	}
 }
 
+func TestShouldApplyOrdinaryWeaponEnhancement(t *testing.T) {
+	completeWeapon := &LoadoutShareWeaponState{ExactState: true, SkillHashes: []string{"00000001", "00000002", "00000003", "00000004", "00000005"}}
+	for _, test := range []struct {
+		name string
+		share *LoadoutShare
+		want  bool
+	}{
+		{name: "current complete ordinary share", share: &LoadoutShare{Version: 5, Weapon: completeWeapon}, want: true},
+		{name: "legacy share", share: &LoadoutShare{Version: 4, Weapon: completeWeapon}},
+		{name: "missing exact state", share: &LoadoutShare{Version: 5, Weapon: &LoadoutShareWeaponState{SkillHashes: completeWeapon.SkillHashes}}},
+		{name: "missing skill vector", share: &LoadoutShare{Version: 5, Weapon: &LoadoutShareWeaponState{ExactState: true, SkillHashes: completeWeapon.SkillHashes[:4]}}},
+		{name: "Logs share", share: &LoadoutShare{Version: 5, LogsImport: true, Weapon: completeWeapon}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			if got := shouldApplyOrdinaryWeaponEnhancement(test.share); got != test.want {
+				t.Fatalf("shouldApplyOrdinaryWeaponEnhancement() = %t, want %t", got, test.want)
+			}
+		})
+	}
+}
+
 func TestConfigureLogsImportApplyPayloadWeaponPresence(t *testing.T) {
 	for _, test := range []struct {
 		name                    string
@@ -73,6 +94,7 @@ func TestConfigureLogsImportApplyPayloadWeaponPresence(t *testing.T) {
 		{name: "plusMarks explicit zero", weapon: &LoadoutShareWeaponState{MirageCaptured: true}, wantMirage: true},
 		{name: "plusMarks non-zero", weapon: &LoadoutShareWeaponState{Mirage: 99, MirageCaptured: true}, wantMirage: true},
 		{name: "complete enhancement", weapon: &LoadoutShareWeaponState{Mirage: 99, MirageCaptured: true, EnhancementCaptured: true}, wantEnhancement: true},
+		{name: "defaulted transcendence enhancement", weapon: &LoadoutShareWeaponState{Mirage: 12, Awakening: 4, Transcendence: 7, MirageCaptured: true, EnhancementCaptured: true}, wantEnhancement: true},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			share := &LoadoutShare{LogsImport: true, Weapon: test.weapon}
@@ -80,6 +102,9 @@ func TestConfigureLogsImportApplyPayloadWeaponPresence(t *testing.T) {
 			configureLogsImportApplyPayload(share, payload)
 			if payload.ApplyWeaponEnhancement != test.wantEnhancement || payload.ApplyWeaponMirage != test.wantMirage {
 				t.Fatalf("weapon apply flags = (%t, %t), want (%t, %t)", payload.ApplyWeaponEnhancement, payload.ApplyWeaponMirage, test.wantEnhancement, test.wantMirage)
+			}
+			if test.name == "defaulted transcendence enhancement" && (payload.Weapon.Transcendence != 7 || payload.Weapon.Awakening != 4 || payload.Weapon.Mirage != 12) {
+				t.Fatalf("defaulted Logs enhancement payload must preserve values and use transcendence 7: %#v", payload.Weapon)
 			}
 		})
 	}

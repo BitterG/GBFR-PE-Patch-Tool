@@ -132,8 +132,8 @@ type LoadoutShareWeaponState struct {
 	Mirage               int                       `json:"mirage"`
 	Awakening            int                       `json:"awakening"`
 	Transcendence        int                       `json:"transcendence"`
-	// EnhancementCaptured is set only when a Logs snapshot includes transcendence.
-	// It prevents a missing optional Logs field from being treated as zero.
+	// EnhancementCaptured marks a Logs snapshot with a usable complete enhancement state.
+	// Logs snapshots lacking transcendence use the user-selected full-transcendence default.
 	EnhancementCaptured  bool                      `json:"enhancementCaptured,omitempty"`
 	// MirageCaptured marks a Logs snapshot where plusMarks was present, including zero.
 	MirageCaptured       bool                      `json:"mirageCaptured,omitempty"`
@@ -764,6 +764,9 @@ func resolveLoadoutShare(path, expectCharaHash string, share *LoadoutShare) (*Lo
 	if share.Version >= 3 {
 		draft.ApplyPayload = &LoadoutImportApplyPayload{Character: share.Character, Weapon: share.Weapon}
 		configureLogsImportApplyPayload(share, draft.ApplyPayload)
+		if shouldApplyOrdinaryWeaponEnhancement(share) {
+			draft.ApplyPayload.ApplyWeaponEnhancement = true
+		}
 		if share.Weapon != nil && share.Weapon.Wrightstone != nil {
 			draft.ApplyPayload.ApplyWeaponWrightstone = true
 		}
@@ -879,6 +882,10 @@ func resolveLoadoutShare(path, expectCharaHash string, share *LoadoutShare) (*Lo
 		draft.MasteryHashes = append(draft.MasteryHashes, fmt.Sprintf("%08X", hash))
 	}
 	return draft, nil
+}
+
+func shouldApplyOrdinaryWeaponEnhancement(share *LoadoutShare) bool {
+	return share != nil && !share.LogsImport && share.Version >= 5 && share.Weapon != nil && share.Weapon.ExactState && len(share.Weapon.SkillHashes) == 5
 }
 
 func configureLogsImportApplyPayload(share *LoadoutShare, payload *LoadoutImportApplyPayload) {
