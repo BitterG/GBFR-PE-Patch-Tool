@@ -389,9 +389,9 @@ onMounted(async () => {
           {{ templates.length ? t('sigil.memory.noMatch') : t('sigil.memory.noTemplates') }}
         </div>
         <ul v-else class="row-list">
-          <li v-for="t in filteredTemplates" :key="t.id" class="row-item" @click="applyEntry(t)">
+          <li v-for="template in filteredTemplates" :key="template.id" class="row-item" @click="applyEntry(template)">
             <span class="row-name">
-              <template v-if="renamingId === t.id">
+              <template v-if="renamingId === template.id">
                 <span class="rename-group" ref="renameEl">
                   <input v-model="renameBuffer" class="rename-input" @click.stop @keydown.enter="confirmRename" @keydown.escape="cancelRename" />
                   <button class="rename-confirm" :disabled="!renameBuffer.trim()" @click.stop="confirmRename" :title="t('sigil.memory.saveTitle')">✓</button>
@@ -399,25 +399,25 @@ onMounted(async () => {
                 </span>
               </template>
               <template v-else>
-                <span class="row-name-text">{{ t.name }}</span>
-                <span class="row-name-lv">{{ t('sigil.common.level', { level: t.sigilLevel }) }}</span>
+                <span class="row-name-text">{{ template.name }}</span>
+                <span class="row-name-lv">{{ t('sigil.common.level', { level: template.sigilLevel }) }}</span>
               </template>
             </span>
             <span class="row-chip">
               <span class="row-chip-tag">{{ t('sigil.common.primary') }}</span>
-              <span class="row-chip-name">{{ nameFor(traitByHash, t.primaryTraitHash, t('sigil.common.none')) }}</span>
-              <span class="row-chip-lv">{{ t('sigil.common.level', { level: t.primaryTraitLevel }) }}</span>
+              <span class="row-chip-name">{{ nameFor(traitByHash, template.primaryTraitHash, t('sigil.common.none')) }}</span>
+              <span class="row-chip-lv">{{ t('sigil.common.level', { level: template.primaryTraitLevel }) }}</span>
             </span>
-            <span class="row-chip" :class="{ 'empty-slot': !t.secondaryTraitHash }">
+            <span class="row-chip" :class="{ 'empty-slot': !template.secondaryTraitHash }">
               <span class="row-chip-tag">{{ t('sigil.common.secondary') }}</span>
-              <span class="row-chip-name">{{ t.secondaryTraitHash ? nameFor(traitByHash, t.secondaryTraitHash) : t('sigil.common.none') }}</span>
-              <span class="row-chip-lv">{{ t('sigil.common.level', { level: t.secondaryTraitLevel }) }}</span>
+              <span class="row-chip-name">{{ template.secondaryTraitHash ? nameFor(traitByHash, template.secondaryTraitHash) : t('sigil.common.none') }}</span>
+              <span class="row-chip-lv">{{ t('sigil.common.level', { level: template.secondaryTraitLevel }) }}</span>
             </span>
             <span class="row-tools" @click.stop>
-              <button class="row-tool" :title="t('sigil.memory.renameTitle')" @click="startRename(t.id, t.name)">✎</button>
-              <button class="row-tool" :title="t('sigil.memory.deleteTitle')" @click="deleteTemplate(t.id)">✕</button>
+              <button class="row-tool" :title="t('sigil.memory.renameTitle')" @click="startRename(template.id, template.name)">✎</button>
+              <button class="row-tool" :title="t('sigil.memory.deleteTitle')" @click="deleteTemplate(template.id)">✕</button>
             </span>
-            <button class="row-apply" :disabled="!status.selectedAddr || applying" @click.stop="applyAndWrite(t)" :title="t('sigil.memory.applyTitle')">{{ t('sigil.memory.apply') }}</button>
+            <button class="row-apply" :disabled="!status.selectedAddr || applying" @click.stop="applyAndWrite(template)" :title="t('sigil.memory.applyTitle')">{{ t('sigil.memory.apply') }}</button>
           </li>
         </ul>
       </div>
