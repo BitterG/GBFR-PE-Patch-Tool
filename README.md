@@ -1,60 +1,58 @@
 <p align="center">
-  <img src="build/appicon.png" width="128" />
+  <img src="build/appicon.png" width="128" alt="GBFR Save Editor icon" />
 </p>
 
 # GBFR 存档修改工具
 
 [English README](README_EN.md)
 
-Granblue Fantasy: Relink (碧蓝幻想：Relink) 存档与运行时修改工具，包含 PE 补丁、因子/祝福生成、副本次数查看、角色使用次数统计、杂项内存修改和怪物增强等功能。
-<img src="https://img.shields.io/github/downloads/BitterG/GBFR-PE-Patch-Tool/total"/>
+适用于 **Granblue Fantasy: Relink（碧蓝幻想：Relink）** 的 Windows 桌面工具，提供存档编辑、因子、召唤石、祝福、配装编辑、运行时修改、怪物增强等功能。
 
+> 工具默认使用英文。首次启动请在「语言」页选择 English 或 简体中文；选择会保存在本机，并在下次启动时恢复。
 
-## 功能
-### 支持DLC的因子生成功能已完成🔥（因子生成-新）
-##### 演示视频 https://www.bilibili.com/video/BV1zaNn6zELm/
+<img src="https://img.shields.io/github/downloads/BitterG/GBFR-PE-Patch-Tool/total" alt="GitHub downloads" />
 
-DLC 无尽黄昏更新后可能会有部分功能失效，我会抽时间尝试修复
+## 功能概览
 
-### 存档相关
+### 存档、因子与祝福
 
-- **因子生成** — 搜索选择因子，配置等级、主/副特性，写入输出存档
-- **祝福生成** — 搜索选择祝福，配置三个特性和等级，支持队列批量生成
-- **副本次数查看** — 自动扫描存档槽位，查看任务/副本通关次数与存档摘要
-- **原地修改** — 因子/祝福生成可选直接覆盖输入存档，建议先备份
-- **中文翻译** — 因子、祝福、特性、任务名均有简体中文显示
+- **因子生成** — 搜索因子，设置因子等级、主/副特性及等级；支持队列批量写入和删除已有因子。
+- **因子生成-新** — 读取游戏当前选中的因子，编辑因子、主/副特性和等级；包含 DLC / Endless Ragnarok 相关数据。
+- **因子配装恢复** — 从导出或分享数据恢复角色配装。
+- **离线配装编辑** — 在不连接游戏的情况下查看和编辑角色装备、因子、专精与祝福配置。（支持从villith/relink-logs导入玩家配装json）
+- **祝福生成** — 搜索祝福，配置三个特性及等级，使用队列批量生成。
+- **祝福生成-新** — 读取游戏当前选中的武器祝福并编辑其特性与等级。
+- **副本次数** — 扫描存档槽位，查看任务/副本通关次数和存档摘要。
+- **称号** — 查看与解锁称号相关内容。
+- **召唤石** — 编辑召唤石相关数据。
+- **原地修改** — 因子和祝福功能可以直接覆盖输入存档；务必先备份。
 
-### PE 补丁
+### 本地化
 
-- **挑战次数** — 修改任务挑战次数上限，不影响存档
-- **点赞数值** — 修改被点赞时获得的数值，被点赞后生效，影响存档
-- **自动识别** — 从 Steam 注册表和库目录自动定位游戏 exe
-- **备份/恢复** — 补丁前创建 `.bak` 备份，仅 exe，一键恢复
+- 支持 **English** 和 **简体中文** 界面切换。
+- 因子、特性、祝福及运行时内存目录名称会随语言切换显示。
+- 中文翻译和祝福特性翻译覆盖内置 JSON 数据，并有回归测试防止遗漏。
 
 ### 运行时功能
 
-- **角色使用次数** — 连接游戏进程，查看和修改角色使用次数
-- **任务结算倒计时/零帧开箱** — 修改结算倒计时，设置为 `0` 可零帧开箱
-- **脸部符文显示** — 隐藏或恢复紫色皮肤包脸部符文显示
-- **在其他皮肤显示紫色符文** — 允许紫色符文在其他皮肤上显示
-- **怪物增强** — 怪物多倍血、怪物伤害、昏厥条、Overdrive 状态、奥义接续计时、Link Time、蓝条/紫条控制等
-- **挑战次数** — 开启后无视十次连续挑战限制
-- **全称号解锁** — 开启后可解锁所有称号，可影响存档(目前持久化时机尚不明确)，
-可领取任务奖励、佩戴指定称号、称号选择界面出现多个“未设置”是正常现象)
-建议先备份一下存档再使用
-- **巴武掉落** — 开启后，每一把至少会从黄金宝箱中获得一把未拥有巴武
-- **全队伤害统计** — 根据怪物真实血量变动计算，没有溢出伤害，依赖怪物增强中的功能
-- **上限突破** — 先扫描再打开游戏内突破界面后点刷新，切换角色后需刷新，修改后要点保存
-- **检查更新** — 从 GitHub Releases 获取最新版本并打开发布页
+运行时功能需要游戏正在运行；部分功能可能要求以管理员身份启动工具。
 
-## 使用说明
+- **角色使用次数** — 查看和修改角色使用次数。
+- **杂项** — 包含货币、药水等内存编辑，以及部分便利功能。
+- **连续挑战** — 无视十次连续挑战限制。
+- **飞行模式** — 根据世界轴方向控制。
+- **称号解锁** — 编辑存档实现。
+- **巴武掉落** — 调整巴哈姆特武器掉落相关判定。
+- **全队伤害统计** — 根据怪物真实生命值变化统计伤害，不计入溢出伤害。
+- **上限突破** — 扫描、刷新、编辑并保存角色上限突破属性。
+- **怪物增强** — 调整怪物生命、伤害、昏厥条、Overdrive状态。
+- **检查更新** — 从 GitHub Releases 检查新版本。
 
-### 存档类功能
+## 使用前须知
 
-1. 切换到「因子生成」「祝福生成」或「副本次数」标签页
-2. 点击「浏览」选择存档文件，或使用自动扫描的存档槽位
-3. 配置需要生成或查看的内容
-4. 写入前建议先备份存档
+1. 写入存档或使用原地修改前，先备份存档。
+2. 运行时内存修改在多人游戏中可能影响其他玩家；使用前请告知队友。
+3. 游戏更新后，内存地址和部分数据功能可能失效；请以 Release 说明和实际测试结果为准。
 
 默认存档路径：
 
@@ -62,63 +60,76 @@ DLC 无尽黄昏更新后可能会有部分功能失效，我会抽时间尝试�
 C:\Users\<用户名>\AppData\Local\GBFR\Saved\SaveGames\
 ```
 
-### PE 补丁
+## 快速使用
 
-1. 关闭游戏
-2. 切换到「补丁修改」标签页
-3. 自动识别或手动选择 `granblue_fantasy_relink.exe`
-4. 点击「备份」创建 `.bak`
-5. 输入数值并点击「应用」
-6. 启动游戏验证效果
+### 因子、祝福和其他存档功能
+
+1. 打开相应标签页，例如「因子生成」「因子生成-新」「祝福生成」或「副本次数」。
+2. 点击「浏览」选择 `.dat` 存档，或使用自动扫描出的存档槽位。
+3. 选择或配置需要编辑的内容。
+4. 选择输出路径；默认建议写入新文件。确认无误后再使用「原地修改」。
 
 ### 运行时功能
 
-1. 启动游戏并进入存档
-2. 切换到「角色次数统计」「杂项」或「怪物增强」标签页
-3. 连接或刷新游戏进程状态
-4. 开启、应用或恢复需要的功能
-5. 重启游戏后需要重新连接并重新设置
+1. 启动游戏并进入存档。
+2. 打开「角色次数统计」「杂项」「上限突破」或「怪物增强」。
+3. 刷新/连接游戏进程，按界面提示读取、应用或恢复设置。
+4. 重启游戏后，大多数运行时设置需要重新连接并重新应用。
+
+### PE 补丁
+
+1. 关闭游戏。
+2. 打开补丁页，自动识别或手动选择 `granblue_fantasy_relink.exe`。
+3. 点击「备份」创建 `.bak`。
+4. 输入数值并点击「应用」，随后启动游戏验证。
 
 ### 怪物增强说明
 
-- 「怪物多倍血」和「鳄鱼多倍血」输入 `10` 表示等效 `10 倍血`
-- 「怪物 Overdrive 状态」支持 `1 满红条`、`4 满黄条` 和「自动OD」
-- 「锁定」会持续写入状态，「应用」只写入一次后恢复原始指令
-- 「自动OD」会在非红条时写入一次满黄条，红条中不重复触发
-- 「奥义接续计时」默认 `3 秒`，可输入自定义秒数并恢复默认
-- 部分怪物增强功能依赖内置 `patch_core.dll`
+- 「怪物多倍血」和「鳄鱼多倍血」输入 `10` 表示等效 `10 倍生命值`。
+- 「怪物 Overdrive 状态」支持 `1 满红条`、`4 满黄条` 和「自动OD」。
+- 「锁定」会持续写入状态；「应用」仅写入一次后恢复原始指令。
+- 「自动OD」会在非红条时写入一次满黄条，红条期间不重复触发。
+- 「奥义接续计时」默认 `3 秒`，可设置自定义秒数并恢复默认。
+- 部分怪物增强功能依赖内置 `patch_core.dll`。
 
-## 实现简述
+## 构建
 
-- PE 补丁直接修改 exe 中指定指令的立即数，并保留备份用于恢复
-- 存档功能基于 FlatBuffer 解析与 XXHash64 校验写回
-- 运行时功能通过打开游戏进程并读写内存实现
-- 怪物增强中简单功能由 Go 直接写内存，复杂功能通过 `patch_core.dll` 注入并写入跳板或补丁
-- `patch_core.dll` 仅输出调试信息，不弹出对话框
+### 环境要求
 
-## 恢复方法
-
-任选其一：
-
-- 工具内点击「恢复」从 `.bak` 还原
-- Steam → 游戏属性 → 本地文件 → 验证游戏文件完整性
-
-## 环境要求
-
-- Go 1.23+（必须 amd64 版本，游戏为 64 位进程）
-- Node.js 16+
+- Windows amd64
+- Go 1.23+
+- Node.js 与 npm
 - [Wails CLI v2](https://wails.io/docs/gettingstarted/installation)
-- Visual Studio / MSBuild（修改 `src_dll/patch_core` 后需要编译 DLL）
+- Microsoft Edge WebView2 Runtime
+- Visual Studio / MSBuild（仅在修改 `src_dll/patch_core` 后重新构建 DLL 时需要）
 
-```bash
+安装 Wails：
+
+```powershell
 go install github.com/wailsapp/wails/v2/cmd/wails@latest
 ```
 
-## 编译打包
+### Windows 一键构建
 
-```bash
+根目录的脚本会生成 Wails 绑定、安装缺失的前端依赖、构建前端并打包应用：
+
+```powershell
+.\build-windows.bat
+```
+
+构建产物：
+
+```text
+build\bin\GBFR PE Patch Tool.exe
+```
+
+### 手动构建
+
+```powershell
 # 安装前端依赖
-cd frontend && npm install && cd ..
+cd frontend
+npm install
+cd ..
 
 # 开发模式
 wails dev
@@ -130,111 +141,57 @@ wails build
 wails build -s
 ```
 
-如修改 `src_dll/patch_core`，先用 Visual Studio 构建 `Release x64`，确认输出覆盖：
+修改 `src_dll/patch_core` 后，请先在 Visual Studio 中构建 **Release x64**，并确认生成的 DLL 覆盖：
 
 ```text
-build/bin/patch_core.dll
+build\bin\patch_core.dll
 ```
 
-### Windows 一键编译
+## 数据与项目结构
 
-项目根目录提供 `build-windows.bat`：
+主要数据位于 `data/`，并嵌入最终二进制：
 
-```powershell
-.\build-windows.bat
-```
+| 路径 | 说明 |
+| --- | --- |
+| `data/sigils.json` | 因子定义 |
+| `data/traits.json` | 因子特性定义 |
+| `data/secondary-trait-rules.json` | 副特性兼容性规则 |
+| `data/wrightstones.json` | 祝福定义 |
+| `data/wrightstone_traits.json` | 祝福特性定义 |
+| `data/quest_names_i18n.csv` | 任务 ID 与名称映射 |
+| `sigil_locale.go` | 因子/特性本地化与运行时目录名称回退 |
+| `wrightstone_locale.go` | 祝福及祝福特性本地化 |
 
-如遇 `go: no such tool "compile"`，指定正确的 GOROOT：
-
-```powershell
-$env:GOROOT="D:\GO1.26.1"; wails build -s
-```
-
-构建产物：
-
-```text
-build/bin/GBFR PE Patch Tool.exe
-```
-
-## 数据说明
-
-因子、祝福和任务翻译数据位于 `data/` 目录，并嵌入最终二进制：
-
-| 文件 | 说明 |
-|------|------|
-| `sigils.json` | 因子定义 |
-| `traits.json` | 因子特性定义 |
-| `secondary-trait-rules.json` | 副特性兼容性规则 |
-| `wrightstones.json` | 祝福定义 |
-| `wrightstone_traits.json` | 祝福特性定义 |
-| `quest_names_i18n.csv` | 任务 ID 到中文名映射 |
-
-中文翻译主要位于：
-
-- `sigil_locale.go`
-- `wrightstone_locale.go`
-
-## 项目结构
+关键目录：
 
 ```text
 .
-├── app.go                         # PE 补丁、运行时内存修改、Steam 路径扫描、更新检测
-├── main.go                        # Wails 入口、窗口配置、祝福 CLI 模式
-├── save_app.go                    # 存档扫描、任务次数读取、中文任务名映射
-├── save_parse.go                  # 存档 FlatBuffer 解析、摘要提取
-├── sigil_data.go                  # 因子/特性数据加载
-├── sigil_ctdata.go                # 因子合成表数据
-├── sigil_gen.go                   # 因子生成业务逻辑
-├── sigil_locale.go                # 因子/特性中文翻译
-├── sigil_store.go                 # 因子槽位读写与校验
-├── wrightstone_data.go            # 祝福/祝福特性数据加载
-├── wrightstone_gen.go             # 祝福生成业务逻辑与 CLI 模式
-├── wrightstone_locale.go          # 祝福/特性中文翻译
-├── wrightstone_store.go           # 祝福槽位读写
-├── damage_overlay_windows.go      # 伤害统计悬浮窗
-├── data/                          # 嵌入式 JSON/CSV 数据
-├── build/                         # 图标、manifest、内置 DLL 与构建产物
-│   └── bin/
-│       └── patch_core.dll         # 怪物增强注入 DLL
-├── src_dll/
-│   ├── patch_core.slnx            # patch_core Visual Studio 解决方案
-│   ├── patch_core/                # patch_core DLL 源码
-│   └── thirdparty/libmem/         # DLL 使用的 libmem 依赖
-├── frontend/
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── wailsjs/                   # Wails 生成的前端绑定
-│   └── src/
-│       ├── main.js
-│       ├── App.vue
-│       ├── style.css
-│       └── components/
-│           ├── PatchTool.vue           # 主窗口与标签导航
-│           ├── SigilGenerator.vue      # 因子生成
-│           ├── WrightstoneGenerator.vue # 祝福生成
-│           ├── SaveEditor.vue          # 副本次数
-│           ├── CharaStats.vue          # 角色使用次数
-│           ├── MiscTools.vue           # 杂项运行时修改
-│           └── MonsterEnhance.vue      # 怪物增强
-├── build-windows.bat              # Windows 构建脚本
-├── wails.json                     # Wails 配置
-├── go.mod
-└── README.md
+├── main.go, app.go                 # Wails 入口、PE 补丁和运行时功能
+├── sigil_*.go                      # 因子、内存因子与配装相关逻辑
+├── wrightstone_*.go                # 祝福与武器祝福相关逻辑
+├── save_*.go                       # 存档扫描、解析和写回
+├── overlimit.go                    # 上限突破编辑
+├── summon_*.go                     # 召唤石编辑
+├── frontend/src/components/        # Vue 界面组件
+├── src_dll/patch_core/             # 怪物增强注入 DLL 源码
+├── data/                           # 嵌入式 JSON/CSV 数据
+└── build-windows.bat               # Windows 构建脚本
+└── internal/                       # 一键导入导出(json/logs json)配装相关               
 ```
 
 ## 支持
-如果本项目帮你省了时间或带来更多乐趣，欢迎请我喝杯咖啡。完全自愿，不是契约——捐赠不会影响功能优先级，也不会改变问题处理的顺序。
-— 微信支付（扫码）
+
+如果本项目帮你节省了时间或带来更多乐趣，欢迎请我喝杯咖啡。完全自愿，不影响功能优先级或问题处理顺序。
+
 <p align="center">
-  <img src="./QRcode.png" width="256" />
+  <img src="./QRcode.png" width="256" alt="微信支付二维码" />
 </p>
 
-## 免责声明
+## 免责声明与致谢
 
 本工具仅供学习研究使用。使用本工具修改游戏文件、存档或运行时内存所产生的一切后果由使用者自行承担。
 
-存档因子相关部分解析方法来自 [GBFR-Sigil-Generator](https://github.com/Xzire91x/GBFR-Sigil-Generator)。
-
-祝福添加相关部分解析方法来自 [GBFR-Wrightstone-Generator](https://github.com/Xzire91x/GBFR-Wrightstone-Generator)。
-
-存档解析基于 [GBFRDataTools.SaveFile](https://github.com/Nenkai/GBFRDataTools/tree/master/GBFRDataTools.SaveFile)。
+- 因子存档解析参考 [GBFR-Sigil-Generator](https://github.com/Xzire91x/GBFR-Sigil-Generator)。
+- 祝福添加解析参考 [GBFR-Wrightstone-Generator](https://github.com/Xzire91x/GBFR-Wrightstone-Generator)。
+- 存档解析基于 [GBFRDataTools.SaveFile](https://github.com/Nenkai/GBFRDataTools/tree/master/GBFRDataTools.SaveFile)。
+- 存档角色配装编 [Whitelinker574/GBFR-PE-Patch-Tool](https://github.com/Whitelinker574/GBFR-PE-Patch-Tool)。

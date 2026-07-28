@@ -1,57 +1,59 @@
+<p align="center">
+  <img src="build/appicon.png" width="128" alt="GBFR Save Editor icon" />
+</p>
+
+# GBFR Save Editor
+
 [简体中文](README.md)
 
-# GBFR PE Patch Tool v1.7.3 — English and Chinese
+A Windows desktop tool for **Granblue Fantasy: Relink**, providing save editing, sigil, summon, and wrightstone tools, loadout editing, runtime modifications, and monster enhancements.
 
-A bilingual English/Chinese version of BitterG's **GBFR PE Patch Tool** for **Granblue Fantasy: Relink** and **Endless Ragnarok**.
+> The application uses English by default. On first launch, choose English or Simplified Chinese from the **Language** tab. Your choice is stored locally and restored on the next launch.
 
-> English is the default language. Open the **Language** tab to switch between English and Simplified Chinese. The preference is stored locally and restored on the next launch.
+<img src="https://img.shields.io/github/downloads/BitterG/GBFR-PE-Patch-Tool/total" alt="GitHub downloads" />
 
-## Language support
+The English README has been translated from Chinese by AI, and its complete accuracy is not guaranteed.
+## Feature Overview
 
-- **English is the default language.**
-- Switch between **English** and **Simplified Chinese** from the Language tab.
-- Sigil, trait, wrightstone, and in-memory sigil names follow the selected language.
-- The selected language is saved locally and restored automatically.
+### Saves, Sigils, and Wrightstones
 
-## Features
+- **Sigil Generator** — Search sigils; set sigil levels, primary/secondary traits, and trait levels. Supports queued batch writes and removal of existing sigils.
+- **Sigil Generator (New)** — Reads the currently selected in-game sigil and edits its sigil, primary/secondary traits, and levels. Includes DLC / Endless Ragnarok data.
+- **Sigil Loadout Restore** — Restores character loadouts from exported or shared data.
+- **Offline Loadout Editor** — Views and edits character equipment, sigils, masteries, and wrightstone setups without connecting to the game. Supports importing player-loadout JSON from villith/relink-logs.
+- **Wrightstone Generator** — Search wrightstones; configure three traits and their levels; batch-generate with a queue.
+- **Wrightstone Generator (New)** — Reads the currently selected weapon wrightstone in-game and edits its traits and levels.
+- **Quest Clear Statistics** — Scans save slots and displays quest clear counts and save summaries.
+- **Badges** — View and unlock badge-related content.
+- **Summons** — Edit summon-related save data.
+- **In-place Editing** — Sigil and wrightstone tools can overwrite the input save directly. Always create a backup first.
 
-### Save data tools
+### Localization
 
-- **Sigil Generator** — Search for sigils, configure sigil and trait levels, and write them to an output save.
-- **New Sigil Memory Editor** — Read the sigil currently selected in-game and edit its sigil, primary trait, secondary trait, and levels.
-- **Wrightstone Generator** — Configure a wrightstone and its three traits, with queue support for batch generation.
-- **Quest Clear Statistics** — Scan save slots and display quest clear counts and save summaries.
-- **In-place Save Editing** — Optionally overwrite the selected input save directly. Back up the save first.
+- Switch the interface between **English** and **Simplified Chinese**.
+- Sigil, trait, wrightstone, and runtime memory-catalog names follow the selected language.
+- Chinese and wrightstone-trait translations cover the embedded JSON data and are protected by regression tests.
 
-### EXE patches
+### Runtime Tools
 
-- **Quest Clear Count** — Change the quest-clear count limit without editing the save.
-- **Commendation Count** — Change the value awarded when receiving a commendation; this can affect save data.
-- **Automatic Detection** — Locate the game executable from Steam registry and library paths.
-- **Backup and Restore** — Create and restore a `.bak` copy of the game executable.
+Runtime features require the game to be running; some may require launching the tool as administrator.
 
-### Runtime tools
-
-- **Character Usage Counts** — View and edit per-character quest usage counts.
-- **Quest Result Countdown** — Change the result-screen countdown; setting it to `0` allows immediate chest opening.
-- **Face Rune Display** — Hide or restore face runes on the purple skin, and show purple runes on other skins.
-- **Currency and Potion Editors** — Read and write supported currencies and potion counts through stable pointer paths.
-- **No Material Consumption** — Temporarily prevent upgrade, enhancement, and transmutation material quantities from decreasing.
+- **Character Usage Counts** — View and modify character usage counts.
+- **Miscellaneous Tools** — Memory editors for currencies, potions, and selected convenience features.
 - **Infinite Challenges** — Ignore the ten consecutive-quest limit.
-- **Unlock All Titles** — Temporarily make all titles available. Save persistence timing is not fully known; back up the save first.
-- **Guaranteed Terminus Weapon Drop** — Removes the 80% exclusion check for Terminus Weapon lots while preserving ownership and character-unlock checks.
-- **Team Damage Meter** — Track team damage from actual monster HP changes, without overkill damage.
-- **Over Mastery Editor** — Scan, refresh, edit, and save Over Mastery values.
-- **Monster Enhancements** — Controls for monster HP, damage, stun gauge, Overdrive state, SBA chain timing, Link Time, and related gauges. Some items are currently marked as not fixed.
+- **Flight Mode** — Movement control based on world-axis direction.
+- **Badge Unlocking** — Unlock badges by editing the save.
+- **Terminus Weapon Drops** — Adjust checks related to Bahamut weapon drops.
+- **Team Damage Meter** — Tracks damage from actual monster HP changes and excludes overkill damage.
+- **Over Mastery** — Scan, refresh, edit, and save character Over Mastery values.
+- **Monster Enhancements** — Adjust monster HP, damage, stun gauge, and Overdrive state.
 - **Update Check** — Check GitHub Releases for newer versions.
 
-## Safety notes
+## Before You Begin
 
-1. Back up your save files before writing changes.
-2. Back up `granblue_fantasy_relink.exe` before applying EXE patches.
-3. The in-place save option directly overwrites the selected save.
-4. Runtime-memory features require the game to be running and may require administrator privileges.
-5. Host-side runtime changes can affect other players. Tell teammates before using them in multiplayer.
+1. Back up your save before writing changes or using in-place editing.
+2. Runtime memory modifications can affect other players in multiplayer. Tell teammates before using them.
+3. Game updates can invalidate memory addresses and some data-driven features. Refer to release notes and verify behavior after an update.
 
 Default save location:
 
@@ -59,55 +61,129 @@ Default save location:
 C:\Users\YOUR_NAME\AppData\Local\GBFR\Saved\SaveGames\
 ```
 
-## Building on Windows
+## Quick Start
 
-Requirements:
+### Sigils, Wrightstones, and Other Save Features
 
-- Go 1.23 or newer, amd64
+1. Open the relevant tab, such as **Sigil Generator**, **Sigil Generator (New)**, **Wrightstone Generator**, or **Quest Clear Statistics**.
+2. Select a `.dat` save with **Browse**, or use an automatically discovered save slot.
+3. Select or configure the content you want to edit.
+4. Choose an output path. Writing a new file is recommended; only use in-place editing after confirming the configuration.
+
+### Runtime Features
+
+1. Start the game and load into a save.
+2. Open **Character Usage Counts**, **Miscellaneous Tools**, **Over Mastery**, or **Monster Enhancements**.
+3. Refresh/connect to the game process, then read, apply, or restore settings as prompted by the interface.
+4. After restarting the game, most runtime settings must be reconnected and reapplied.
+
+### PE Patches
+
+1. Close the game.
+2. Open the patch page and automatically detect or manually select `granblue_fantasy_relink.exe`.
+3. Click **Backup** to create a `.bak` file.
+4. Enter a value, click **Apply**, then start the game to verify the result.
+
+### Monster Enhancement Notes
+
+- Entering `10` for **Monster HP Multiplier** or **Crocodile HP Multiplier** produces the equivalent of `10× HP`.
+- **Monster Overdrive State** supports `1` for a full red gauge, `4` for a full yellow gauge, and **Auto OD**.
+- **Lock** continuously writes the selected state; **Apply** writes it once, then restores the original instruction.
+- **Auto OD** writes a full yellow gauge once when the monster is not in the red state, and does not repeat while it is red.
+- **SBA Chain Timer** defaults to `3 seconds`; you can set a custom duration or restore the default.
+- Some monster enhancements depend on the bundled `patch_core.dll`.
+
+## Building
+
+### Requirements
+
+- Windows amd64
+- Go 1.23+
 - Node.js and npm
-- Wails CLI v2.12.0
+- [Wails CLI v2](https://wails.io/docs/gettingstarted/installation)
 - Microsoft Edge WebView2 Runtime
-- Visual Studio / MSBuild only when rebuilding `src_dll/patch_core`
+- Visual Studio / MSBuild (only needed when rebuilding the DLL after changing `src_dll/patch_core`)
 
 Install Wails:
 
 ```powershell
-go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
+go install github.com/wailsapp/wails/v2/cmd/wails@latest
 ```
 
-Build the application:
+### One-Click Windows Build
+
+The root script generates Wails bindings, installs missing frontend dependencies, builds the frontend, and packages the application:
 
 ```powershell
 .\build-windows.bat
 ```
 
-The executable is generated at:
+Build output:
 
 ```text
 build\bin\GBFR PE Patch Tool.exe
 ```
 
-When `src_dll/patch_core` is modified, build the DLL as **Release x64** first and ensure the resulting `patch_core.dll` is copied to `build\bin`.
+### Manual Build
 
-## Translation scope
+```powershell
+# Install frontend dependencies
+cd frontend
+npm install
+cd ..
 
-The English localization includes:
+# Development mode
+wails dev
 
-- Main navigation and tabs
-- Sigil and Wrightstone generators
-- New selected-sigil memory editor
-- Save and quest statistics
-- Character usage statistics
-- Miscellaneous runtime tools
-- Monster enhancement controls
-- Over Mastery interface
-- User-facing status and error messages
-- Character, Sigil, Trait, and Wrightstone display names
-- New Endless Ragnarok sigils and character-specific traits used by the memory editor
+# Full build
+wails build
 
-The Chinese lookup tables remain in the source as reference data, but the English build returns the original English catalog names.
+# Build Go only; skip frontend compilation
+wails build -s
+```
 
-## Attribution
+After changing `src_dll/patch_core`, build **Release x64** in Visual Studio first and ensure the generated DLL replaces:
 
-- Original project and program logic: **BitterG**
-- English translation: **FionaAleksic**
+```text
+build\bin\patch_core.dll
+```
+
+## Data and Project Structure
+
+The main data files are in `data/` and embedded in the final binary:
+
+| Path | Description |
+| --- | --- |
+| `data/sigils.json` | Sigil definitions |
+| `data/traits.json` | Sigil trait definitions |
+| `data/secondary-trait-rules.json` | Secondary-trait compatibility rules |
+| `data/wrightstones.json` | Wrightstone definitions |
+| `data/wrightstone_traits.json` | Wrightstone trait definitions |
+| `data/quest_names_i18n.csv` | Quest ID-to-name mappings |
+| `sigil_locale.go` | Sigil/trait localization and runtime catalog-name fallback |
+| `wrightstone_locale.go` | Wrightstone and wrightstone-trait localization |
+
+Key paths:
+
+```text
+.
+├── main.go, app.go                 # Wails entry point, PE patches, and runtime features
+├── sigil_*.go                      # Sigils, in-memory sigils, and loadout logic
+├── wrightstone_*.go                # Wrightstones and weapon-wrightstone logic
+├── save_*.go                       # Save scanning, parsing, and writes
+├── overlimit.go                    # Over Mastery editor
+├── summon_*.go                     # Summon editor
+├── frontend/src/components/        # Vue UI components
+├── src_dll/patch_core/             # Monster-enhancement injection DLL source
+├── data/                           # Embedded JSON/CSV data
+└── build-windows.bat               # Windows build script
+```
+
+## Disclaimer and Credits
+
+This tool is provided for learning and research purposes only. You are solely responsible for any consequences of modifying game files, saves, or runtime memory.
+
+- Sigil save parsing references [GBFR-Sigil-Generator](https://github.com/Xzire91x/GBFR-Sigil-Generator).
+- Wrightstone addition parsing references [GBFR-Wrightstone-Generator](https://github.com/Xzire91x/GBFR-Wrightstone-Generator).
+- Save parsing is based on [GBFRDataTools.SaveFile](https://github.com/Nenkai/GBFRDataTools/tree/master/GBFRDataTools.SaveFile).
+- Character-loadout editing references [Whitelinker574/GBFR-PE-Patch-Tool](https://github.com/Whitelinker574/GBFR-PE-Patch-Tool).
