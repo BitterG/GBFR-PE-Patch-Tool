@@ -74,14 +74,13 @@ func init() {
 	}
 	for _, row := range records[1:] { // skip header
 		if len(row) >= 2 {
-			id, err := strconv.Atoi(row[0])
+			// Quest IDs in the source data are hexadecimal, including IDs that
+			// contain only decimal digits (for example, 401301 means 0x401301).
+			parsed, err := strconv.ParseUint(row[0], 16, 32)
 			if err != nil {
-				parsed, parseErr := strconv.ParseUint(row[0], 16, 32)
-				if parseErr != nil {
-					continue
-				}
-				id = int(parsed)
+				continue
 			}
+			id := int(parsed)
 			questNames[id] = row[1]
 			if len(row) >= 3 && row[2] != "" {
 				questNamesCN[id] = row[2]
@@ -261,7 +260,7 @@ func (a *App) UpdateSaveCounters(path string, likes, challenges uint32) (*SaveCo
 	if err != nil {
 		return nil, err
 	}
-	targetQuestOffset, err := questCounterOffset(slot, 401303)
+	targetQuestOffset, err := questCounterOffset(slot, 0x401303)
 	if err != nil {
 		return nil, err
 	}

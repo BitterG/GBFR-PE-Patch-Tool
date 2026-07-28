@@ -113,7 +113,7 @@ refreshStatus()
   <div class="root">
     <div class="section">
       <div class="header">
-        <span class="title">怪物增强（未修复）</span>
+        <span class="title">怪物增强</span>
         <span class="info-dot" title="开启时释放内置 patch_core.dll 到临时目录并注入；关闭时 Go 侧恢复原始字节。">!</span>
         <span class="hint">DLL 注入开启 · Go 恢复关闭</span>
       </div>
