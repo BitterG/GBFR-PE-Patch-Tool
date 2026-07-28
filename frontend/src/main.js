@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import { SetLanguage } from '../wailsjs/go/main/App'
-import { getStoredLanguage, installI18nObserver } from './i18n'
+import { getStoredLanguage } from './i18n'
 
 async function bootstrap() {
   const selectedLanguage = getStoredLanguage()
@@ -13,7 +13,6 @@ async function bootstrap() {
   }
 
   createApp(App).mount('#app')
-  installI18nObserver()
 }
 
 bootstrap()

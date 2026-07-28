@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { translate as t } from '../i18n'
 import { FindSaveFiles, GetQuests, LoadSave, GetSaveCounters, UpdateSaveCounters } from '../../wailsjs/go/main/App'
 
 const slots = ref([])
@@ -33,12 +34,12 @@ async function load(path) {
     likes.value = counters?.likes || 0
     challenges.value = counters?.challenges || total.value
     counterStatus.value = ''
-  } catch (err) { console.error(err); counterStatus.value = '读取存档失败' } finally { loading.value = false }
+  } catch (err) { console.error(err); counterStatus.value = t('saveEditor.error.readFailed') } finally { loading.value = false }
 }
 
 function requestSaveCounters() {
   if (!savePath.value || !Number.isInteger(likes.value) || !Number.isInteger(challenges.value) || likes.value < 0 || challenges.value < 0) {
-    counterStatus.value = '请输入有效的非负整数'
+    counterStatus.value = t('saveEditor.error.nonNegativeInteger')
     return
   }
   showConfirm.value = true
@@ -56,9 +57,9 @@ async function saveCounters() {
     const [summary, qs] = await Promise.all([LoadSave(savePath.value), GetQuests(savePath.value)])
     quests.value = qs || []
     total.value = summary?.questTotalClears || counters.challenges
-    counterStatus.value = '已写入。原存档已创建 .counters.*.bak 备份'
+    counterStatus.value = t('saveEditor.status.written')
   } catch (err) {
-    counterStatus.value = String(err || '写入失败')
+    counterStatus.value = String(err || t('saveEditor.error.writeFailed'))
   } finally {
     savingCounters.value = false
   }
@@ -75,42 +76,42 @@ scanSaves()
         :class="{ on: savePath === s.path }" @click="load(s.path)">
         {{ s.name }}
       </button>
-      <button class="refresh" @click="scanSaves">刷新</button>
+      <button class="refresh" @click="scanSaves">{{ t('common.refresh') }}</button>
     </div>
 
     <div v-if="savePath && !loading" class="counter-editor">
       <label>
-        <span>点赞数值</span>
+        <span>{{ t('saveEditor.likes') }}</span>
         <input v-model.number="likes" type="number" min="0" max="2147483647" />
       </label>
       <label>
-        <span>挑战次数</span>
+        <span>{{ t('saveEditor.challenges') }}</span>
         <input v-model.number="challenges" type="number" min="0" max="4294967295" />
       </label>
       <button class="apply-counters" @click="requestSaveCounters" :disabled="savingCounters">
-        {{ savingCounters ? '写入中...' : '应用存档数值' }}
+        {{ savingCounters ? t('common.writing') : t('saveEditor.applyCounters') }}
       </button>
       <span v-if="counterStatus" class="counter-status">{{ counterStatus }}</span>
     </div>
 
     <div v-if="showConfirm" class="confirm-backdrop" @click.self="showConfirm = false">
       <section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="counter-confirm-title">
-        <h2 id="counter-confirm-title">确认修改存档数值</h2>
-        <p>请务必备份存档，修改挑战次数会导致每个副本的次数受到影响，增加累计到“担心爸爸”;减少优先扣减“担心爸爸”;不足则按比例平均扣减所有任务次数，每任务最少为 1。</p>
+        <h2 id="counter-confirm-title">{{ t('saveEditor.confirm.title') }}</h2>
+        <p>{{ t('saveEditor.confirm.body') }}</p>
         <div class="confirm-actions">
-          <button class="confirm-cancel" @click="showConfirm = false">取消</button>
-          <button class="confirm-apply" @click="saveCounters">确认应用</button>
+          <button class="confirm-cancel" @click="showConfirm = false">{{ t('common.cancel') }}</button>
+          <button class="confirm-apply" @click="saveCounters">{{ t('saveEditor.confirm.apply') }}</button>
         </div>
       </section>
     </div>
 
-    <div v-if="loading" class="loading">解析中...</div>
+    <div v-if="loading" class="loading">{{ t('common.parsing') }}</div>
 
     <div v-else-if="quests.length" class="quests">
       <div class="head">
-        <span>{{ quests.length }} 个任务 · {{ total }} 次挑战</span>
-        <button class="refresh" @click="load(savePath)">刷新</button>
-        <button class="sort" @click="sortDesc = !sortDesc">{{ sortDesc ? '↓次数' : '↑默认' }}</button>
+        <span>{{ t('saveEditor.questSummary', { quests: quests.length, total }) }}</span>
+        <button class="refresh" @click="load(savePath)">{{ t('common.refresh') }}</button>
+        <button class="sort" @click="sortDesc = !sortDesc">{{ sortDesc ? t('saveEditor.sortByCount') : t('saveEditor.defaultOrder') }}</button>
       </div>
       <div class="list">
         <div v-for="q in sortedQuests" :key="q.questId" class="row">

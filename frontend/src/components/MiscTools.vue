@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '../i18n'
 import { onBeforeUnmount, reactive, ref } from 'vue'
 import { CharaAttach, CharaDetach,
          CurrencyGetAll, CurrencySetOne,
@@ -154,21 +155,21 @@ function loadCountdownStatus() {
 }
 
 function scanCountdown() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   countdownLoading.value = true
   CountdownScan()
-    .then((status) => { applyCountdownStatus(status); emit('status', '倒计时特征定位成功', 'success') })
+    .then((status) => { applyCountdownStatus(status); emit('status', t('runtimeTools.misc.countdown.scanSuccess'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { countdownLoading.value = false })
 }
 
 function setCountdown() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   const v = parseFloat(countdownValue.value)
-  if (isNaN(v) || v < 0 || v > 9999) { emit('status', '请输入 0 到 9999 之间的数值', 'error'); return }
+  if (isNaN(v) || v < 0 || v > 9999) { emit('status', t('runtimeTools.messages.numberRange', { min: 0, max: 9999 }), 'error'); return }
   countdownLoading.value = true
   CountdownSet(v)
-    .then((status) => { applyCountdownStatus(status); emit('status', '倒计时写入成功', 'success') })
+    .then((status) => { applyCountdownStatus(status); emit('status', t('runtimeTools.misc.countdown.setSuccess'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { countdownLoading.value = false })
 }
@@ -187,19 +188,19 @@ function loadFaceAccessoryStatus() {
 }
 
 function scanFaceAccessory() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   faceAccessoryLoading.value = true
   FaceAccessoryScan()
-    .then((status) => { applyFaceAccessoryStatus(status); emit('status', '脸部符文特征定位成功', 'success') })
+    .then((status) => { applyFaceAccessoryStatus(status); emit('status', t('runtimeTools.misc.face.scanSuccess'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { faceAccessoryLoading.value = false })
 }
 
 function setFaceAccessoryHidden(hidden) {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   faceAccessoryLoading.value = true
   FaceAccessorySetHidden(hidden)
-    .then((status) => { applyFaceAccessoryStatus(status); emit('status', hidden ? '已隐藏脸部符文' : '已恢复脸部符文显示', 'success') })
+    .then((status) => { applyFaceAccessoryStatus(status); emit('status', hidden ? t('runtimeTools.misc.face.hiddenSuccess') : t('runtimeTools.misc.face.visibleSuccess'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { faceAccessoryLoading.value = false })
 }
@@ -218,10 +219,10 @@ function loadInfiniteChallengeStatus() {
 }
 
 function setInfiniteChallengeEnabled(enabled) {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   infiniteChallengeLoading.value = true
   InfiniteChallengeSetEnabled(enabled)
-    .then((status) => { applyInfiniteChallengeStatus(status); emit('status', enabled ? '已开启无限挑战' : '已恢复挑战次数递增', 'success') })
+    .then((status) => { applyInfiniteChallengeStatus(status); emit('status', enabled ? t('runtimeTools.misc.challenge.enabled') : t('runtimeTools.misc.challenge.disabled'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { infiniteChallengeLoading.value = false })
 }
@@ -240,19 +241,19 @@ function loadMaterialConsumeStatus() {
 }
 
 function setMaterialConsumeEnabled(enabled) {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   materialConsumeLoading.value = true
   MaterialConsumeSetEnabled(enabled)
-    .then((status) => { applyMaterialConsumeStatus(status); emit('status', enabled ? '已开启升级/强化不材料消耗' : '已恢复升级/强化材料变化', 'success') })
+    .then((status) => { applyMaterialConsumeStatus(status); emit('status', enabled ? t('runtimeTools.misc.material.enabled') : t('runtimeTools.misc.material.disabled'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { materialConsumeLoading.value = false })
 }
 
 function completeCollectibleTask() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   collectibleTaskLoading.value = true
   CollectibleTaskComplete()
-    .then((status) => emit('status', `收集任务已完成 ${status.completed}/${status.total}`, 'success'))
+    .then((status) => emit('status', t('runtimeTools.misc.crab.completed', status), 'success'))
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { collectibleTaskLoading.value = false })
 }
@@ -275,7 +276,7 @@ function startInventorySet45Timer() {
 }
 
 function setInventorySet45Enabled(enabled, quantity = inventorySetQuantity.value, automatic = false) {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   if (!enabled) stopInventorySet45Timer()
   inventorySet45Loading.value = true
   MonsterEnhanceSetPatchValueEnabled('inventory_set_45', enabled, quantity)
@@ -285,7 +286,7 @@ function setInventorySet45Enabled(enabled, quantity = inventorySetQuantity.value
         inventorySetQuantity.value = quantity
         startInventorySet45Timer()
       }
-      emit('status', enabled ? `已开启背包物品数量设为 ${quantity}，10 秒后自动恢复` : (automatic ? '背包物品数量已自动恢复正常' : '已恢复背包物品正常添加'), 'success')
+      emit('status', enabled ? t('runtimeTools.misc.crab.enabled', { quantity }) : (automatic ? t('runtimeTools.misc.crab.automaticRestore') : t('runtimeTools.misc.crab.restoreSuccess')), 'success')
     })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { inventorySet45Loading.value = false })
@@ -305,19 +306,19 @@ function loadTerminusDropStatus() {
 }
 
 function scanTerminusDrop() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   terminusDropLoading.value = true
   TerminusDropScan()
-    .then((status) => { applyTerminusDropStatus(status); emit('status', '巴武掉落特征定位成功', 'success') })
+    .then((status) => { applyTerminusDropStatus(status); emit('status', t('runtimeTools.misc.terminus.scanSuccess'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { terminusDropLoading.value = false })
 }
 
 function setTerminusDropEnabled(enabled) {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   terminusDropLoading.value = true
   TerminusDropSetEnabled(enabled)
-    .then((status) => { applyTerminusDropStatus(status); emit('status', enabled ? '已开启巴武掉落 100%' : '已恢复巴武默认掉率', 'success') })
+    .then((status) => { applyTerminusDropStatus(status); emit('status', enabled ? t('runtimeTools.misc.terminus.enabled') : t('runtimeTools.misc.terminus.disabled'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { terminusDropLoading.value = false })
 }
@@ -336,16 +337,16 @@ function loadUnlockAllTrophyStatus() {
 }
 
 function scanUnlockAllTrophy() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   unlockAllTrophyLoading.value = true
   UnlockAllTrophyScan()
-    .then((status) => { applyUnlockAllTrophyStatus(status); emit('status', '全称号解锁特征定位成功', 'success') })
+    .then((status) => { applyUnlockAllTrophyStatus(status); emit('status', t('runtimeTools.misc.trophy.scanSuccess'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { unlockAllTrophyLoading.value = false })
 }
 
 function setUnlockAllTrophyEnabled(enabled) {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   if (enabled) { showUnlockAllTrophyConfirm.value = true; return }
   applyUnlockAllTrophyEnabled(false)
 }
@@ -358,7 +359,7 @@ function confirmUnlockAllTrophy() {
 function applyUnlockAllTrophyEnabled(enabled) {
   unlockAllTrophyLoading.value = true
   UnlockAllTrophySetEnabled(enabled)
-    .then((status) => { applyUnlockAllTrophyStatus(status); emit('status', enabled ? '已开启游戏内全称号解锁' : '已恢复称号默认判断', 'success') })
+    .then((status) => { applyUnlockAllTrophyStatus(status); emit('status', enabled ? t('runtimeTools.misc.trophy.enabled') : t('runtimeTools.misc.trophy.disabled'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { unlockAllTrophyLoading.value = false })
 }
@@ -377,10 +378,10 @@ function loadOtherSkinPurpleRuneStatus() {
 }
 
 function setOtherSkinPurpleRuneEnabled(enabled) {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   otherSkinPurpleRuneLoading.value = true
   OtherSkinPurpleRuneSetEnabled(enabled)
-    .then((status) => { applyOtherSkinPurpleRuneStatus(status); emit('status', enabled ? '已开启其他皮肤紫色符文显示' : '已恢复其他皮肤紫色符文判断', 'success') })
+    .then((status) => { applyOtherSkinPurpleRuneStatus(status); emit('status', enabled ? t('runtimeTools.misc.purpleRune.enabled') : t('runtimeTools.misc.purpleRune.disabled'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { otherSkinPurpleRuneLoading.value = false })
 }
@@ -391,6 +392,14 @@ function formatDamage(value) {
 
 function formatInt(value) {
   return Number(value || 0).toLocaleString()
+}
+
+function currencyName(item) {
+  return t(`runtimeTools.misc.currency.items.${item.id}`)
+}
+
+function potionName(item) {
+  return t(`runtimeTools.misc.potion.items.${item.id}`)
 }
 
 function applyCurrencyValues(items) {
@@ -410,16 +419,16 @@ function loadCurrencyValues() {
 }
 
 function setCurrency(item) {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   const value = Number(currencyInputs[item.id])
-  if (!Number.isInteger(value) || value < 0 || value > 2147483647) { emit('status', '请输入 0 到 2147483647 之间的整数', 'error'); return }
+  if (!Number.isInteger(value) || value < 0 || value > 2147483647) { emit('status', t('runtimeTools.messages.integerRange', { min: 0, max: 2147483647 }), 'error'); return }
   currencyLoading.value = true
   CurrencySetOne(item.id, value)
     .then((updated) => {
       const index = currencies.value.findIndex((entry) => entry.id === updated.id)
       if (index >= 0) currencies.value.splice(index, 1, updated)
       currencyInputs[updated.id] = String(updated.value)
-      emit('status', `${updated.name}写入成功`, 'success')
+      emit('status', t('runtimeTools.messages.writeSuccess', { name: currencyName(updated) }), 'success')
     })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { currencyLoading.value = false })
@@ -446,23 +455,23 @@ function loadPotionValues() {
 }
 
 function setPotion(item) {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   const value = Number(potionInputs[item.id])
-  if (!Number.isInteger(value) || value < 0 || value > 2147483647) { emit('status', '请输入 0 到 2147483647 之间的整数', 'error'); return }
+  if (!Number.isInteger(value) || value < 0 || value > 2147483647) { emit('status', t('runtimeTools.messages.integerRange', { min: 0, max: 2147483647 }), 'error'); return }
   potionLoading.value = true
   PotionSetOne(item.id, value)
     .then((updated) => {
       const index = potions.value.findIndex((entry) => entry.id === updated.id)
       if (index >= 0) potions.value.splice(index, 1, updated)
       potionInputs[updated.id] = String(updated.value)
-      emit('status', `${updated.name}写入成功`, 'success')
+      emit('status', t('runtimeTools.messages.writeSuccess', { name: potionName(updated) }), 'success')
     })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { potionLoading.value = false })
 }
 
 function loadPlayerPosition() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   playerPositionLoading.value = true
   PlayerPositionGet()
     .then((position) => {
@@ -478,12 +487,12 @@ function loadPlayerPosition() {
 }
 
 function setPlayerPosition() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   const x = Number(playerPositionInput.x)
   const y = Number(playerPositionInput.y)
   const z = Number(playerPositionInput.z)
   if (![x, y, z].every(Number.isFinite) || [x, y, z].some((value) => Math.abs(value) > 10000000)) {
-    emit('status', '请输入有效的 X、Y、Z 坐标（绝对值不超过 10000000）', 'error')
+    emit('status', t('runtimeTools.misc.position.invalid'), 'error')
     return
   }
   playerPositionLoading.value = true
@@ -492,21 +501,21 @@ function setPlayerPosition() {
       Object.assign(playerPosition, position)
       Object.assign(playerPositionInput, { x: String(position.x), y: String(position.y), z: String(position.z) })
       playerPositionLoaded.value = true
-      emit('status', '玩家坐标已设置', 'success')
+      emit('status', t('runtimeTools.misc.position.setSuccess'), 'success')
     })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { playerPositionLoading.value = false })
 }
 
 function toggleFlight() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   flightLoading.value = true
   const enabled = !flightStatus.enabled
   const speed = Number(flightStatus.speed)
   FlightSetEnabled(enabled, speed)
     .then((status) => {
       Object.assign(flightStatus, status)
-      emit('status', enabled ? '飞行模式已开启（仅游戏窗口在前台时响应按键）' : '飞行模式已关闭', 'success')
+      emit('status', enabled ? t('runtimeTools.misc.flight.enabled') : t('runtimeTools.misc.flight.disabled'), 'success')
     })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { flightLoading.value = false })
@@ -547,23 +556,23 @@ function loadDamageMeterStatus(silent = false) {
 }
 
 function enableDamageMeter() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   damageMeterLoading.value = true
   MonsterEnhanceSetPatchValueEnabled('monster_hp', true, getMonsterEnhanceMultiplier('monster_hp'))
     .then(() => DamageMeterGetStatus())
     .then((status) => {
       applyDamageMeterStatus(status)
-      emit('status', '伤害记录已开启，已自动开启怪物多倍血', 'success')
+      emit('status', t('runtimeTools.misc.damage.enabled'), 'success')
     })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { damageMeterLoading.value = false })
 }
 
 function resetDamageMeter() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   damageMeterLoading.value = true
   DamageMeterReset()
-    .then((status) => { applyDamageMeterStatus(status); emit('status', '团队伤害已清零', 'success') })
+    .then((status) => { applyDamageMeterStatus(status); emit('status', t('runtimeTools.misc.damage.resetSuccess'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { damageMeterLoading.value = false })
 }
@@ -579,14 +588,14 @@ function setDamageOverlayFontSize(value) {
 }
 
 function enableDamageOverlay() {
-  if (!connected.value) { emit('status', '请先连接游戏进程', 'error'); return }
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
   DamageOverlaySetFontSize(damageOverlayFontSize.value)
     .then(() => DamageOverlaySetValue(displayDamage()))
     .then(() => DamageOverlaySetEnabled(true))
     .then(() => {
       damageOverlayEnabled.value = true
       startDamageMeterTimer()
-      emit('status', '伤害悬浮窗已开启', 'success')
+      emit('status', t('runtimeTools.misc.damage.overlayEnabled'), 'success')
     })
     .catch((err) => emit('status', String(err), 'error'))
 }
@@ -594,7 +603,7 @@ function enableDamageOverlay() {
 function disableDamageOverlay() {
   DamageOverlaySetEnabled(false).catch(() => {})
   damageOverlayEnabled.value = false
-  emit('status', '伤害悬浮窗已关闭', 'success')
+  emit('status', t('runtimeTools.misc.damage.overlayDisabled'), 'success')
 }
 
 function toggleDamageOverlay() {
@@ -607,7 +616,7 @@ function checkUpdate() {
   CheckUpdate()
     .then((info) => {
       Object.assign(updateInfo, info)
-      emit('status', info.hasUpdate ? `发现新版本 ${info.latestVersion}` : '当前已是最新版本', info.hasUpdate ? 'success' : 'success')
+      emit('status', info.hasUpdate ? t('runtimeTools.misc.updates.found', { version: info.latestVersion }) : t('runtimeTools.misc.updates.alreadyLatest'), info.hasUpdate ? 'success' : 'success')
     })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { updateLoading.value = false })
@@ -629,279 +638,279 @@ onBeforeUnmount(() => {
   <div class="root">
     <div class="section">
       <div class="header">
-        <span class="title">杂项（隐藏了不可用功能/新增了一些新功能）</span>
-        <span class="info-dot" title="这些功能会修改游戏运行时内存，不写入存档；重启游戏或切换版本后需要重新连接并设置。">!</span>
-        <span class="hint">需游戏运行中使用 · 重启游戏后需重新设置</span>
+        <span class="title">{{ t('runtimeTools.misc.title') }}</span>
+        <span class="info-dot" :title="t('runtimeTools.misc.runtimeNotice')">!</span>
+        <span class="hint">{{ t('runtimeTools.misc.runtimeHint') }}</span>
       </div>
       <div class="connect-row">
         <button v-if="!connected" class="btn-connect" @click="connect" :disabled="loading">
-          {{ loading ? '连接中...' : '连接游戏进程' }}
+          {{ loading ? t('runtimeTools.common.connecting') : t('runtimeTools.common.connectGame') }}
         </button>
-        <button v-else class="btn-disconnect" @click="disconnect">断开连接</button>
-        <span v-if="connected" class="pid">PID: {{ info.pid }}</span>
+        <button v-else class="btn-disconnect" @click="disconnect">{{ t('runtimeTools.common.disconnect') }}</button>
+        <span v-if="connected" class="pid">{{ t('runtimeTools.common.pid') }}: {{ info.pid }}</span>
       </div>
 
       <div class="memory-card">
         <div class="memory-header">
-          <span class="memory-title">检查更新</span>
-          <span class="memory-hint">当前版本 {{ updateInfo.currentVersion }}</span>
+          <span class="memory-title">{{ t('runtimeTools.misc.updates.title') }}</span>
+          <span class="memory-hint">{{ t('runtimeTools.misc.updates.current', { version: updateInfo.currentVersion }) }}</span>
         </div>
         <div class="memory-info">
-          <span>最新版本: {{ updateInfo.latestVersion || '未检查' }}</span>
-          <span v-if="updateInfo.hasUpdate" class="update-new">有新版本</span>
-          <span v-else-if="updateInfo.latestVersion">已是最新</span>
+          <span>{{ t('runtimeTools.misc.updates.latest', { version: updateInfo.latestVersion || t('runtimeTools.misc.updates.unchecked') }) }}</span>
+          <span v-if="updateInfo.hasUpdate" class="update-new">{{ t('runtimeTools.misc.updates.available') }}</span>
+          <span v-else-if="updateInfo.latestVersion">{{ t('runtimeTools.misc.updates.upToDate') }}</span>
         </div>
         <div v-if="updateInfo.body" class="update-body">{{ updateInfo.body }}</div>
         <div class="memory-row">
-          <button class="btn-batch" @click="checkUpdate" :disabled="updateLoading">{{ updateLoading ? '检查中...' : '检查更新' }}</button>
-          <button class="btn-refresh" @click="openReleasePage">打开 Release 页面</button>
+          <button class="btn-batch" @click="checkUpdate" :disabled="updateLoading">{{ updateLoading ? t('runtimeTools.misc.updates.checking') : t('runtimeTools.misc.updates.check') }}</button>
+          <button class="btn-refresh" @click="openReleasePage">{{ t('runtimeTools.misc.updates.openRelease') }}</button>
         </div>
       </div>
 
       <template v-if="connected">
         <div class="memory-card" :class="{ active: currencies.length }">
           <div class="memory-header">
-            <span class="memory-title">货币编辑</span>
-            <span class="memory-hint">稳定指针读取/写入 int32</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.currency.title') }}</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.currency.hint') }}</span>
           </div>
           <div class="currency-grid">
             <div v-for="item in currencies" :key="item.id" class="currency-row">
-              <div class="currency-name">{{ item.name }}</div>
+              <div class="currency-name">{{ currencyName(item) }}</div>
               <div class="currency-meta">{{ formatInt(item.value) }} · {{ formatHex(item.rva) }} + {{ formatHex(item.offset) }}</div>
               <input v-model="currencyInputs[item.id]" type="number" min="0" max="2147483647" step="1" class="batch-input currency-input" />
-              <button class="btn-batch" @click="setCurrency(item)" :disabled="currencyLoading">写入</button>
+              <button class="btn-batch" @click="setCurrency(item)" :disabled="currencyLoading">{{ t('runtimeTools.common.write') }}</button>
             </div>
           </div>
           <div class="memory-row">
-            <button class="btn-refresh" @click="loadCurrencyValues" :disabled="currencyLoading">刷新货币</button>
+            <button class="btn-refresh" @click="loadCurrencyValues" :disabled="currencyLoading">{{ t('runtimeTools.misc.currency.refresh') }}</button>
           </div>
         </div>
 
         <div class="memory-card" :class="{ active: potions.length }">
           <div class="memory-header">
-            <span class="memory-title">药神（进入副本后点刷新看到药水数量正常后设置即可）</span>
-            <span class="memory-hint">稳定指针链读取/写入 int32</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.potion.title') }}</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.potion.hint') }}</span>
           </div>
           <div class="currency-grid">
             <div v-for="item in potions" :key="item.id" class="currency-row">
-              <div class="currency-name">{{ item.name }}</div>
+              <div class="currency-name">{{ potionName(item) }}</div>
               <div class="currency-meta">{{ formatInt(item.value) }} · {{ formatHex(item.rva) }} + {{ formatOffsets(item.offsets) }}</div>
               <input v-model="potionInputs[item.id]" type="number" min="0" max="2147483647" step="1" class="batch-input currency-input" />
-              <button class="btn-batch" @click="setPotion(item)" :disabled="potionLoading">写入</button>
+              <button class="btn-batch" @click="setPotion(item)" :disabled="potionLoading">{{ t('runtimeTools.common.write') }}</button>
             </div>
           </div>
           <div class="memory-row">
-            <button class="btn-refresh" @click="loadPotionValues" :disabled="potionLoading">刷新药水</button>
+            <button class="btn-refresh" @click="loadPotionValues" :disabled="potionLoading">{{ t('runtimeTools.misc.potion.refresh') }}</button>
           </div>
         </div>
 
         <div class="memory-card" :class="{ active: playerPositionLoaded }">
           <div class="memory-header">
-            <span class="memory-title">玩家坐标</span>
-            <span class="memory-hint">仅支持游戏 2.0.2 · 只读</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.position.title') }}</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.position.hint') }}</span>
           </div>
           <div class="memory-info">
-            <span>位置: X {{ formatFloat(playerPosition.x) }} · Y {{ formatFloat(playerPosition.y) }} · Z {{ formatFloat(playerPosition.z) }}</span>
-            <span>实体: {{ formatHex(playerPosition.address) }}</span>
+            <span>{{ t('runtimeTools.misc.position.location', { x: formatFloat(playerPosition.x), y: formatFloat(playerPosition.y), z: formatFloat(playerPosition.z) }) }}</span>
+            <span>{{ t('runtimeTools.misc.position.entity', { address: formatHex(playerPosition.address) }) }}</span>
           </div>
           <div class="memory-row">
-            <input v-model="playerPositionInput.x" type="number" step="any" class="batch-input coordinate-input" placeholder="X" />
-            <input v-model="playerPositionInput.y" type="number" step="any" class="batch-input coordinate-input" placeholder="Y" />
-            <input v-model="playerPositionInput.z" type="number" step="any" class="batch-input coordinate-input" placeholder="Z" />
-            <button class="btn-batch" @click="setPlayerPosition" :disabled="playerPositionLoading">设置坐标</button>
-            <button class="btn-refresh" @click="loadPlayerPosition" :disabled="playerPositionLoading">{{ playerPositionLoading ? '读取中...' : '刷新坐标' }}</button>
+            <input v-model="playerPositionInput.x" type="number" step="any" class="batch-input coordinate-input" :placeholder="t('runtimeTools.common.axisX')" />
+            <input v-model="playerPositionInput.y" type="number" step="any" class="batch-input coordinate-input" :placeholder="t('runtimeTools.common.axisY')" />
+            <input v-model="playerPositionInput.z" type="number" step="any" class="batch-input coordinate-input" :placeholder="t('runtimeTools.common.axisZ')" />
+            <button class="btn-batch" @click="setPlayerPosition" :disabled="playerPositionLoading">{{ t('runtimeTools.misc.position.set') }}</button>
+            <button class="btn-refresh" @click="loadPlayerPosition" :disabled="playerPositionLoading">{{ playerPositionLoading ? t('runtimeTools.misc.position.reading') : t('runtimeTools.misc.position.refresh') }}</button>
           </div>
         </div>
 
         <div class="memory-card" :class="{ active: flightStatus.enabled }">
           <div class="memory-header">
-            <span class="memory-title">飞行模式</span>
-            <span class="memory-hint">W/A/S/D 世界轴移动 · Space 上升 · Ctrl 下降</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.flight.title') }}</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.flight.hint') }}</span>
           </div>
           <div class="memory-info">
-            <span>状态: {{ flightStatus.enabled ? '开启' : '关闭' }}</span>
-            <span>速度: {{ formatFloat(flightStatus.speed) }}</span>
+            <span>{{ t('runtimeTools.common.status') }}: {{ flightStatus.enabled ? t('runtimeTools.common.enabled') : t('runtimeTools.common.disabled') }}</span>
+            <span>{{ t('runtimeTools.misc.flight.speed', { speed: formatFloat(flightStatus.speed) }) }}</span>
           </div>
           <div class="memory-row">
             <input v-model.number="flightStatus.speed" type="number" min="0.1" max="1000" step="0.5" class="batch-input coordinate-input" :disabled="flightStatus.enabled" />
-            <button class="btn-batch" @click="toggleFlight" :disabled="flightLoading">{{ flightStatus.enabled ? '关闭飞行' : '开启飞行' }}</button>
+            <button class="btn-batch" @click="toggleFlight" :disabled="flightLoading">{{ flightStatus.enabled ? t('runtimeTools.misc.flight.disable') : t('runtimeTools.misc.flight.enable') }}</button>
           </div>
         </div>
 
         <div class="memory-card" :class="{ active: damageMeterStatus.connected && damageMeterStatus.totalDamage > 0 }">
           <div class="memory-header">
-            <span class="memory-title">团队伤害记录</span>
-            <span class="memory-hint">依赖怪物多倍血，本功能自动开启当前倍率</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.damage.title') }}</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.damage.hint') }}</span>
           </div>
           <div class="memory-info damage-meter-info">
-            <span>状态: {{ damageMeterStatus.connected ? '记录中' : '等待共享内存' }}</span>
-            <span>原始扣血点会按怪物增强倍率折算显示</span>
+            <span>{{ t('runtimeTools.common.status') }}: {{ damageMeterStatus.connected ? t('runtimeTools.misc.damage.recording') : t('runtimeTools.misc.damage.waiting') }}</span>
+            <span>{{ t('runtimeTools.misc.damage.scaled') }}</span>
           </div>
           <div class="damage-meter-value">{{ formatDamage(displayDamage()) }}</div>
-          <div class="damage-meter-raw">原始: {{ formatDamage(damageMeterStatus.totalDamage) }}</div>
+          <div class="damage-meter-raw">{{ t('runtimeTools.misc.damage.raw', { value: formatDamage(damageMeterStatus.totalDamage) }) }}</div>
           <div class="memory-row">
-            <button class="btn-batch" @click="enableDamageMeter" :disabled="damageMeterLoading">开启记录</button>
-            <button class="btn-refresh" @click="toggleDamageOverlay" :disabled="damageMeterLoading || !damageMeterStatus.connected">{{ damageOverlayEnabled ? '关闭悬浮窗' : '开启悬浮窗' }}</button>
-            <button class="btn-refresh" @click="loadDamageMeterStatus" :disabled="damageMeterLoading">刷新</button>
-            <button class="btn-refresh" @click="resetDamageMeter" :disabled="damageMeterLoading">清零</button>
-            <button class="btn-sort" @click="setDamageOverlayFontSize(damageOverlayFontSize - 4)" :disabled="!damageOverlayEnabled">字号 -</button>
-            <button class="btn-sort" @click="setDamageOverlayFontSize(damageOverlayFontSize + 4)" :disabled="!damageOverlayEnabled">字号 +</button>
+            <button class="btn-batch" @click="enableDamageMeter" :disabled="damageMeterLoading">{{ t('runtimeTools.misc.damage.start') }}</button>
+            <button class="btn-refresh" @click="toggleDamageOverlay" :disabled="damageMeterLoading || !damageMeterStatus.connected">{{ damageOverlayEnabled ? t('runtimeTools.misc.damage.overlayOff') : t('runtimeTools.misc.damage.overlayOn') }}</button>
+            <button class="btn-refresh" @click="loadDamageMeterStatus" :disabled="damageMeterLoading">{{ t('runtimeTools.common.refresh') }}</button>
+            <button class="btn-refresh" @click="resetDamageMeter" :disabled="damageMeterLoading">{{ t('runtimeTools.misc.damage.reset') }}</button>
+            <button class="btn-sort" @click="setDamageOverlayFontSize(damageOverlayFontSize - 4)" :disabled="!damageOverlayEnabled">{{ t('runtimeTools.misc.damage.fontDown') }}</button>
+            <button class="btn-sort" @click="setDamageOverlayFontSize(damageOverlayFontSize + 4)" :disabled="!damageOverlayEnabled">{{ t('runtimeTools.misc.damage.fontUp') }}</button>
           </div>
         </div>
 
         <div v-if="showOutdatedFeatures" class="memory-card" :class="{ active: isCountdownActive() }">
           <div class="memory-header">
-            <span class="memory-title">任务结算倒计时/零帧开箱</span>
-            <span class="info-dot" title="任务结算倒计时超过30s会导致进度条消失，但计时正常；零帧开箱需设置为0s。">!</span>
-            <span class="memory-hint">AOB 定位后动态写入两个 float 值</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.countdown.title') }}</span>
+            <span class="info-dot" :title="t('runtimeTools.misc.countdown.notice')">!</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.countdown.hint') }}</span>
           </div>
           <div class="memory-info">
-            <span>RVA: {{ formatHex(countdownStatus.rva) }}</span>
-            <span>状态: {{ isCountdownActive() ? '开启' : '默认' }}</span>
-            <span>当前: {{ formatFloat(countdownStatus.value1) }} / {{ formatFloat(countdownStatus.value2) }}</span>
+            <span>{{ t('runtimeTools.common.rva') }}: {{ formatHex(countdownStatus.rva) }}</span>
+            <span>{{ t('runtimeTools.common.status') }}: {{ isCountdownActive() ? t('runtimeTools.common.enabled') : t('runtimeTools.common.default') }}</span>
+            <span>{{ t('runtimeTools.misc.countdown.current', { first: formatFloat(countdownStatus.value1), second: formatFloat(countdownStatus.value2) }) }}</span>
           </div>
           <div class="memory-row">
-            <input v-model="countdownValue" type="number" min="0" max="9999" step="0.1" class="batch-input countdown-input" placeholder="秒数" />
-            <button class="btn-batch" @click="setCountdown" :disabled="countdownLoading">设置倒计时</button>
-            <button class="btn-refresh" @click="loadCountdownStatus" :disabled="countdownLoading">刷新</button>
-            <button class="btn-sort" @click="scanCountdown" :disabled="countdownLoading">重新扫描</button>
+            <input v-model="countdownValue" type="number" min="0" max="9999" step="0.1" class="batch-input countdown-input" :placeholder="t('runtimeTools.misc.countdown.placeholder')" />
+            <button class="btn-batch" @click="setCountdown" :disabled="countdownLoading">{{ t('runtimeTools.misc.countdown.set') }}</button>
+            <button class="btn-refresh" @click="loadCountdownStatus" :disabled="countdownLoading">{{ t('runtimeTools.common.refresh') }}</button>
+            <button class="btn-sort" @click="scanCountdown" :disabled="countdownLoading">{{ t('runtimeTools.common.rescan') }}</button>
           </div>
-          <div class="memory-bytes">{{ countdownStatus.currentBytes || '未定位' }}</div>
+          <div class="memory-bytes">{{ countdownStatus.currentBytes || t('runtimeTools.common.notLocated') }}</div>
         </div>
 
         <div v-if="showOutdatedFeatures" class="memory-card" :class="{ active: faceAccessoryStatus.hidden }">
           <div class="memory-header">
-            <span class="memory-title">脸部符文显示(紫色皮肤包)</span>
-            <span class="memory-hint">切换 JE/JNE 控制渲染判断</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.face.title') }}</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.face.hint') }}</span>
           </div>
           <div class="memory-info">
-            <span>RVA: {{ formatHex(faceAccessoryStatus.rva) }}</span>
-            <span>状态: {{ faceAccessoryStatus.hidden ? '隐藏' : '显示' }}</span>
-            <span>跳转: {{ faceAccessoryStatus.jumpOpcode || '—' }}</span>
+            <span>{{ t('runtimeTools.common.rva') }}: {{ formatHex(faceAccessoryStatus.rva) }}</span>
+            <span>{{ t('runtimeTools.common.status') }}: {{ faceAccessoryStatus.hidden ? t('runtimeTools.misc.face.hidden') : t('runtimeTools.misc.face.visible') }}</span>
+            <span>{{ t('runtimeTools.misc.face.jump', { opcode: faceAccessoryStatus.jumpOpcode || '—' }) }}</span>
           </div>
           <div class="memory-row">
-            <button class="btn-batch" @click="setFaceAccessoryHidden(true)" :disabled="faceAccessoryLoading || faceAccessoryStatus.hidden">隐藏脸部符文</button>
-            <button class="btn-refresh" @click="setFaceAccessoryHidden(false)" :disabled="faceAccessoryLoading || !faceAccessoryStatus.hidden">恢复符文显示</button>
-            <button class="btn-refresh" @click="loadFaceAccessoryStatus" :disabled="faceAccessoryLoading">刷新</button>
-            <button class="btn-sort" @click="scanFaceAccessory" :disabled="faceAccessoryLoading">重新扫描</button>
+            <button class="btn-batch" @click="setFaceAccessoryHidden(true)" :disabled="faceAccessoryLoading || faceAccessoryStatus.hidden">{{ t('runtimeTools.misc.face.hide') }}</button>
+            <button class="btn-refresh" @click="setFaceAccessoryHidden(false)" :disabled="faceAccessoryLoading || !faceAccessoryStatus.hidden">{{ t('runtimeTools.misc.face.restore') }}</button>
+            <button class="btn-refresh" @click="loadFaceAccessoryStatus" :disabled="faceAccessoryLoading">{{ t('runtimeTools.common.refresh') }}</button>
+            <button class="btn-sort" @click="scanFaceAccessory" :disabled="faceAccessoryLoading">{{ t('runtimeTools.common.rescan') }}</button>
           </div>
-          <div class="memory-bytes">{{ faceAccessoryStatus.currentBytes || '未定位' }}</div>
+          <div class="memory-bytes">{{ faceAccessoryStatus.currentBytes || t('runtimeTools.common.notLocated') }}</div>
         </div>
 
         <div class="memory-card" :class="{ active: infiniteChallengeStatus.enabled }">
           <div class="memory-header">
-            <span class="memory-title">可连续挑战(>10次)</span>
-            <span class="memory-hint">NOP 挑战次数递增</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.challenge.title') }}</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.challenge.hint') }}</span>
           </div>
           <div class="memory-info">
-            <span>RVA: {{ formatHex(infiniteChallengeStatus.rva) }}</span>
-            <span>状态: {{ infiniteChallengeStatus.enabled ? '开启' : '默认' }}</span>
+            <span>{{ t('runtimeTools.common.rva') }}: {{ formatHex(infiniteChallengeStatus.rva) }}</span>
+            <span>{{ t('runtimeTools.common.status') }}: {{ infiniteChallengeStatus.enabled ? t('runtimeTools.common.enabled') : t('runtimeTools.common.default') }}</span>
           </div>
           <div class="memory-row">
-            <button class="btn-batch" @click="setInfiniteChallengeEnabled(true)" :disabled="infiniteChallengeLoading || infiniteChallengeStatus.enabled">开启连续挑战</button>
-            <button class="btn-refresh" @click="setInfiniteChallengeEnabled(false)" :disabled="infiniteChallengeLoading || !infiniteChallengeStatus.enabled">恢复默认</button>
-            <button class="btn-refresh" @click="loadInfiniteChallengeStatus" :disabled="infiniteChallengeLoading">刷新</button>
+            <button class="btn-batch" @click="setInfiniteChallengeEnabled(true)" :disabled="infiniteChallengeLoading || infiniteChallengeStatus.enabled">{{ t('runtimeTools.misc.challenge.enable') }}</button>
+            <button class="btn-refresh" @click="setInfiniteChallengeEnabled(false)" :disabled="infiniteChallengeLoading || !infiniteChallengeStatus.enabled">{{ t('runtimeTools.common.restoreDefault') }}</button>
+            <button class="btn-refresh" @click="loadInfiniteChallengeStatus" :disabled="infiniteChallengeLoading">{{ t('runtimeTools.common.refresh') }}</button>
           </div>
-          <div class="memory-bytes">{{ infiniteChallengeStatus.currentBytes || '未读取' }}</div>
+          <div class="memory-bytes">{{ infiniteChallengeStatus.currentBytes || t('runtimeTools.common.notRead') }}</div>
         </div>
 
         <div class="memory-card" :class="{ active: materialConsumeStatus.enabled }">
           <div class="memory-header">
-            <span class="memory-title">升级/强化/练成不材料消耗（及开及用，开启后进入副本会导致无药水/无法获得奖励材料等问题）</span>
-            <span class="info-dot" title="开启后材料数量不会减少；同一指令也会阻止材料增加。">!</span>
-            <span class="memory-hint">NOP add [r14+04],esi</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.material.title') }}</span>
+            <span class="info-dot" :title="t('runtimeTools.misc.material.notice')">!</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.material.hint') }}</span>
           </div>
           <div class="memory-info">
-            <span>RVA: {{ formatHex(materialConsumeStatus.rva) }}</span>
-            <span>状态: {{ materialConsumeStatus.enabled ? '开启' : '默认' }}</span>
+            <span>{{ t('runtimeTools.common.rva') }}: {{ formatHex(materialConsumeStatus.rva) }}</span>
+            <span>{{ t('runtimeTools.common.status') }}: {{ materialConsumeStatus.enabled ? t('runtimeTools.common.enabled') : t('runtimeTools.common.default') }}</span>
           </div>
           <div class="memory-row">
-            <button class="btn-batch" @click="setMaterialConsumeEnabled(true)" :disabled="materialConsumeLoading || materialConsumeStatus.enabled">开启不消耗</button>
-            <button class="btn-refresh" @click="setMaterialConsumeEnabled(false)" :disabled="materialConsumeLoading || !materialConsumeStatus.enabled">恢复默认</button>
-            <button class="btn-refresh" @click="loadMaterialConsumeStatus" :disabled="materialConsumeLoading">刷新</button>
+            <button class="btn-batch" @click="setMaterialConsumeEnabled(true)" :disabled="materialConsumeLoading || materialConsumeStatus.enabled">{{ t('runtimeTools.misc.material.enable') }}</button>
+            <button class="btn-refresh" @click="setMaterialConsumeEnabled(false)" :disabled="materialConsumeLoading || !materialConsumeStatus.enabled">{{ t('runtimeTools.common.restoreDefault') }}</button>
+            <button class="btn-refresh" @click="loadMaterialConsumeStatus" :disabled="materialConsumeLoading">{{ t('runtimeTools.common.refresh') }}</button>
           </div>
-          <div class="memory-bytes">{{ materialConsumeStatus.currentBytes || '未读取' }}</div>
+          <div class="memory-bytes">{{ materialConsumeStatus.currentBytes || t('runtimeTools.common.notRead') }}</div>
         </div>
 
         <div class="memory-card" :class="{ active: inventorySet45Enabled }">
           <div class="memory-header">
-            <span class="memory-title">小钳蟹相关</span>
-            <span class="info-dot" title="使用后需要拾取一次对应种类螃蟹，不要提前开，拾取之前开，记得用完关闭">!</span>
-            <span class="memory-hint">{{ inventorySet45Enabled ? `${inventorySet45Seconds} 秒后自动恢复` : '使用后需要拾取一次对应种类螃蟹，不要提前开，拾取之前开，记得用完关闭（黑蟹steam成就可能不触发，可用Watt Toolkit改）' }}</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.crab.title') }}</span>
+            <span class="info-dot" :title="t('runtimeTools.misc.crab.notice')">!</span>
+            <span class="memory-hint">{{ inventorySet45Enabled ? t('runtimeTools.misc.crab.timer', { seconds: inventorySet45Seconds }) : t('runtimeTools.misc.crab.hint') }}</span>
           </div>
           <div class="memory-row">
-            <button class="btn-batch" @click="setInventorySet45Enabled(true, 45)" :disabled="inventorySet45Loading || inventorySet45Enabled">小钳蟹背包数量</button>
-            <button class="btn-batch" @click="setInventorySet45Enabled(true, 20)" :disabled="inventorySet45Loading || inventorySet45Enabled">漆黑小钳蟹背包数量</button>
-            <button class="btn-refresh" @click="setInventorySet45Enabled(false)" :disabled="inventorySet45Loading || !inventorySet45Enabled">恢复正常</button>
-            <button class="btn-batch" @click="completeCollectibleTask" :disabled="collectibleTaskLoading">{{ collectibleTaskLoading ? '收集任务处理中...' : '小钳蟹成就' }}</button>
+            <button class="btn-batch" @click="setInventorySet45Enabled(true, 45)" :disabled="inventorySet45Loading || inventorySet45Enabled">{{ t('runtimeTools.misc.crab.normal') }}</button>
+            <button class="btn-batch" @click="setInventorySet45Enabled(true, 20)" :disabled="inventorySet45Loading || inventorySet45Enabled">{{ t('runtimeTools.misc.crab.black') }}</button>
+            <button class="btn-refresh" @click="setInventorySet45Enabled(false)" :disabled="inventorySet45Loading || !inventorySet45Enabled">{{ t('runtimeTools.misc.crab.restore') }}</button>
+            <button class="btn-batch" @click="completeCollectibleTask" :disabled="collectibleTaskLoading">{{ collectibleTaskLoading ? t('runtimeTools.misc.crab.processing') : t('runtimeTools.misc.crab.achievement') }}</button>
           </div>
         </div>
 
         <div class="memory-card" :class="{ active: terminusDropStatus.enabled }">
           <div class="memory-header">
-            <span class="memory-title">巴武掉落 100%</span>
-            <span class="info-dot" title="仅让原型巴哈姆特任务的巴武 lot 不再被 80% 排除；仍保留未拥有、角色已解锁等游戏原始检查。">!</span>
-            <span class="memory-hint">AOB 定位后 NOP 巴武 lot 排除跳转</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.terminus.title') }}</span>
+            <span class="info-dot" :title="t('runtimeTools.misc.terminus.notice')">!</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.terminus.hint') }}</span>
           </div>
           <div class="memory-info">
-            <span>RVA: {{ formatHex(terminusDropStatus.rva) }}</span>
-            <span>状态: {{ terminusDropStatus.enabled ? '开启' : '默认' }}</span>
+            <span>{{ t('runtimeTools.common.rva') }}: {{ formatHex(terminusDropStatus.rva) }}</span>
+            <span>{{ t('runtimeTools.common.status') }}: {{ terminusDropStatus.enabled ? t('runtimeTools.common.enabled') : t('runtimeTools.common.default') }}</span>
           </div>
           <div class="memory-row">
-            <button class="btn-batch" @click="setTerminusDropEnabled(true)" :disabled="terminusDropLoading || terminusDropStatus.enabled">开启巴武 100%</button>
-            <button class="btn-refresh" @click="setTerminusDropEnabled(false)" :disabled="terminusDropLoading || !terminusDropStatus.enabled">恢复默认</button>
-            <button class="btn-refresh" @click="loadTerminusDropStatus" :disabled="terminusDropLoading">刷新</button>
-            <button class="btn-sort" @click="scanTerminusDrop" :disabled="terminusDropLoading">重新扫描</button>
+            <button class="btn-batch" @click="setTerminusDropEnabled(true)" :disabled="terminusDropLoading || terminusDropStatus.enabled">{{ t('runtimeTools.misc.terminus.enable') }}</button>
+            <button class="btn-refresh" @click="setTerminusDropEnabled(false)" :disabled="terminusDropLoading || !terminusDropStatus.enabled">{{ t('runtimeTools.common.restoreDefault') }}</button>
+            <button class="btn-refresh" @click="loadTerminusDropStatus" :disabled="terminusDropLoading">{{ t('runtimeTools.common.refresh') }}</button>
+            <button class="btn-sort" @click="scanTerminusDrop" :disabled="terminusDropLoading">{{ t('runtimeTools.common.rescan') }}</button>
           </div>
-          <div class="memory-bytes">{{ terminusDropStatus.currentBytes || '未定位' }}</div>
+          <div class="memory-bytes">{{ terminusDropStatus.currentBytes || t('runtimeTools.common.notLocated') }}</div>
         </div>
 
         <div v-if="showOutdatedFeatures" class="memory-card" :class="{ active: unlockAllTrophyStatus.enabled }">
           <div class="memory-header">
-            <span class="memory-title">游戏内全称号解锁</span>
-            <span class="memory-hint">AOB 定位后切换 SETNE/SETNO</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.trophy.title') }}</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.trophy.hint') }}</span>
           </div>
           <div class="memory-info">
-            <span>RVA: {{ formatHex(unlockAllTrophyStatus.rva) }}</span>
-            <span>状态: {{ unlockAllTrophyStatus.enabled ? '开启' : '默认' }}</span>
+            <span>{{ t('runtimeTools.common.rva') }}: {{ formatHex(unlockAllTrophyStatus.rva) }}</span>
+            <span>{{ t('runtimeTools.common.status') }}: {{ unlockAllTrophyStatus.enabled ? t('runtimeTools.common.enabled') : t('runtimeTools.common.default') }}</span>
           </div>
           <div class="memory-row">
-            <button class="btn-batch" @click="setUnlockAllTrophyEnabled(true)" :disabled="unlockAllTrophyLoading || unlockAllTrophyStatus.enabled">开启全称号</button>
-            <button class="btn-refresh" @click="setUnlockAllTrophyEnabled(false)" :disabled="unlockAllTrophyLoading || !unlockAllTrophyStatus.enabled">恢复默认</button>
-            <button class="btn-refresh" @click="loadUnlockAllTrophyStatus" :disabled="unlockAllTrophyLoading">刷新</button>
-            <button class="btn-sort" @click="scanUnlockAllTrophy" :disabled="unlockAllTrophyLoading">重新扫描</button>
+            <button class="btn-batch" @click="setUnlockAllTrophyEnabled(true)" :disabled="unlockAllTrophyLoading || unlockAllTrophyStatus.enabled">{{ t('runtimeTools.misc.trophy.enable') }}</button>
+            <button class="btn-refresh" @click="setUnlockAllTrophyEnabled(false)" :disabled="unlockAllTrophyLoading || !unlockAllTrophyStatus.enabled">{{ t('runtimeTools.common.restoreDefault') }}</button>
+            <button class="btn-refresh" @click="loadUnlockAllTrophyStatus" :disabled="unlockAllTrophyLoading">{{ t('runtimeTools.common.refresh') }}</button>
+            <button class="btn-sort" @click="scanUnlockAllTrophy" :disabled="unlockAllTrophyLoading">{{ t('runtimeTools.common.rescan') }}</button>
           </div>
-          <div class="memory-bytes">{{ unlockAllTrophyStatus.currentBytes || '未定位' }}</div>
+          <div class="memory-bytes">{{ unlockAllTrophyStatus.currentBytes || t('runtimeTools.common.notLocated') }}</div>
         </div>
 
         <div v-if="showOutdatedFeatures" class="memory-card" :class="{ active: otherSkinPurpleRuneStatus.enabled }">
           <div class="memory-header">
-            <span class="memory-title">在其他皮肤显示紫色符文</span>
-            <span class="memory-hint">固定 RVA 切换 JNE/JE</span>
+            <span class="memory-title">{{ t('runtimeTools.misc.purpleRune.title') }}</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.purpleRune.hint') }}</span>
           </div>
           <div class="memory-info">
-            <span>RVA: {{ formatHex(otherSkinPurpleRuneStatus.rva) }}</span>
-            <span>状态: {{ otherSkinPurpleRuneStatus.enabled ? '开启' : '默认' }}</span>
-            <span>跳转: {{ otherSkinPurpleRuneStatus.jumpOpcode || '—' }}</span>
+            <span>{{ t('runtimeTools.common.rva') }}: {{ formatHex(otherSkinPurpleRuneStatus.rva) }}</span>
+            <span>{{ t('runtimeTools.common.status') }}: {{ otherSkinPurpleRuneStatus.enabled ? t('runtimeTools.common.enabled') : t('runtimeTools.common.default') }}</span>
+            <span>{{ t('runtimeTools.misc.purpleRune.jump', { opcode: otherSkinPurpleRuneStatus.jumpOpcode || '—' }) }}</span>
           </div>
           <div class="memory-row">
-            <button class="btn-batch" @click="setOtherSkinPurpleRuneEnabled(true)" :disabled="otherSkinPurpleRuneLoading || otherSkinPurpleRuneStatus.enabled">开启显示</button>
-            <button class="btn-refresh" @click="setOtherSkinPurpleRuneEnabled(false)" :disabled="otherSkinPurpleRuneLoading || !otherSkinPurpleRuneStatus.enabled">恢复默认</button>
-            <button class="btn-refresh" @click="loadOtherSkinPurpleRuneStatus" :disabled="otherSkinPurpleRuneLoading">刷新</button>
+            <button class="btn-batch" @click="setOtherSkinPurpleRuneEnabled(true)" :disabled="otherSkinPurpleRuneLoading || otherSkinPurpleRuneStatus.enabled">{{ t('runtimeTools.misc.purpleRune.enable') }}</button>
+            <button class="btn-refresh" @click="setOtherSkinPurpleRuneEnabled(false)" :disabled="otherSkinPurpleRuneLoading || !otherSkinPurpleRuneStatus.enabled">{{ t('runtimeTools.common.restoreDefault') }}</button>
+            <button class="btn-refresh" @click="loadOtherSkinPurpleRuneStatus" :disabled="otherSkinPurpleRuneLoading">{{ t('runtimeTools.common.refresh') }}</button>
           </div>
-          <div class="memory-bytes">{{ otherSkinPurpleRuneStatus.currentBytes || '未读取' }}</div>
+          <div class="memory-bytes">{{ otherSkinPurpleRuneStatus.currentBytes || t('runtimeTools.common.notRead') }}</div>
         </div>
 
       </template>
-      <div v-else class="empty">请先连接游戏进程</div>
+      <div v-else class="empty">{{ t('runtimeTools.messages.connectFirst') }}</div>
     </div>
     <div v-if="showUnlockAllTrophyConfirm" class="confirm-overlay" @click.self="showUnlockAllTrophyConfirm = false">
       <div class="confirm-dialog">
-        <div class="confirm-title">确认开启游戏内全称号解锁</div>
-        <div class="confirm-body">目前存档时机尚不明确，可以领取任务奖励、佩戴选定称号、选择佩戴界面有多个“未设置”是正常现象</div>
+        <div class="confirm-title">{{ t('runtimeTools.misc.trophy.confirmTitle') }}</div>
+        <div class="confirm-body">{{ t('runtimeTools.misc.trophy.confirmBody') }}</div>
         <div class="confirm-actions">
-          <button class="btn-refresh" @click="showUnlockAllTrophyConfirm = false">取消</button>
-          <button class="btn-warn" @click="confirmUnlockAllTrophy" :disabled="unlockAllTrophyLoading">确认开启</button>
+          <button class="btn-refresh" @click="showUnlockAllTrophyConfirm = false">{{ t('runtimeTools.common.cancel') }}</button>
+          <button class="btn-warn" @click="confirmUnlockAllTrophy" :disabled="unlockAllTrophyLoading">{{ t('runtimeTools.common.confirmEnable') }}</button>
         </div>
       </div>
     </div>

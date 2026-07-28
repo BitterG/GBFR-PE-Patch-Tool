@@ -2,9 +2,10 @@
 import { computed, onMounted, ref } from 'vue'
 import { LoadoutApply, LoadoutApplyWithResources, LoadoutCheckCompliance, LoadoutDetail, LoadoutEditContext, LoadoutExportJSON, LoadoutImportJSON, LoadoutList, LogsMasteryNodePool, MasteryNodePool, MasterySummarize } from '../../wailsjs/go/main/OfflineLoadoutService'
 import { GetLastSavePath, ParseLogsSigilLoadoutsJSON, SetLastSavePath } from '../../wailsjs/go/main/App'
+import { translate as t } from '../i18n'
 
 const emit = defineEmits(['status'])
-const savePath = ref('C:\\Users\\用户名\\AppData\\Local\\GBFR\\Saved\\SaveGames\\SaveData1.dat')
+const savePath = ref('C:\\Users\\Username\\AppData\\Local\\GBFR\\Saved\\SaveGames\\SaveData1.dat')
 const groups = ref([])
 const selectedCharacter = ref('')
 const context = ref(null)
@@ -32,33 +33,33 @@ function emptyForm() {
 }
 function show(message, type) { emit('status', message, type) }
 function hex(value) { return `0x${(Number(value) >>> 0).toString(16).toUpperCase().padStart(8, '0')}` }
-function text(value) { return value || '—' }
+function text(value) { return value || t('offlineLoadout.empty') }
 function formatSigil(item) {
-  const secondary = item.secondaryTraitHash ? ` / ${text(item.secondaryTraitName || item.secondaryTraitHash)} Lv ${item.secondaryTraitLevel}` : ''
-  return `${Number(item.index) + 1}. ${text(item.name || item.hash)} Lv ${item.level} · ${text(item.primaryTraitName || item.primaryTraitHash)} Lv ${item.primaryTraitLevel}${secondary}`
+  const secondary = item.secondaryTraitHash ? ` / ${text(item.secondaryTraitName || item.secondaryTraitHash)} ${t('offlineLoadout.level')} ${item.secondaryTraitLevel}` : ''
+  return `${Number(item.index) + 1}. ${text(item.name || item.hash)} ${t('offlineLoadout.level')} ${item.level} · ${text(item.primaryTraitName || item.primaryTraitHash)} ${t('offlineLoadout.level')} ${item.primaryTraitLevel}${secondary}`
 }
 function formatSummon(item, index) {
   const main = text(item.mainTraitName || item.mainTraitHash)
   const sub = text(item.subParamName || item.subParamHash)
-  return `${index + 1}. ${text(item.name || item.typeHash)} · 主加护 ${main} Lv ${item.mainTraitLevel} / 副参数 ${sub} Lv ${item.subParamLevel} · Rank ${item.rank}`
+  return `${index + 1}. ${text(item.name || item.typeHash)} · ${t('offlineLoadout.mainBlessing')} ${main} ${t('offlineLoadout.level')} ${item.mainTraitLevel} / ${t('offlineLoadout.subParameter')} ${sub} ${t('offlineLoadout.level')} ${item.subParamLevel} · ${t('offlineLoadout.rank')} ${item.rank}`
 }
 function enhancementText() {
   const value = detail.value?.character
-  if (!value) return '当前存档未提供角色强化数据'
-  const panel = (value.enhancementPanel || []).join('、') || '—'
+  if (!value) return t('offlineLoadout.enhancement.unavailable')
+  const panel = (value.enhancementPanel || []).join('、') || t('offlineLoadout.empty')
   const nodes = value.enhancementNodes || []
-  return `强化面板：${panel}；强化节点：${nodes.length ? nodes.map(item => `${item.index}:${item.value}`).join('、') : '—'}`
+  return t('offlineLoadout.enhancement.panel', { panel, nodes: nodes.length ? nodes.map(item => `${item.index}:${item.value}`).join('、') : t('offlineLoadout.empty') })
 }
 function exportCurrent() {
-  if (!selected.value) return show('请先选择配装槽位', 'error')
+  if (!selected.value) return show(t('offlineLoadout.error.selectSlot'), 'error')
   LoadoutExportJSON(savePath.value.trim(), Number(selected.value.unitId)).then(payload => {
     const url = URL.createObjectURL(new Blob([payload], { type: 'application/json' }))
     const link = document.createElement('a'); link.href = url; link.download = 'gbfr-loadout.json'; link.click(); URL.revokeObjectURL(url)
-    show('已导出当前槽位的完整配装', 'success')
-  }).catch(error => show(`导出失败: ${String(error)}`, 'error'))
+    show(t('offlineLoadout.status.exported'), 'success')
+  }).catch(error => show(t('offlineLoadout.status.exportFailed', { error: String(error) }), 'error'))
 }
 async function importPayload(payload, logsEffectUIIds = []) {
-  if (!context.value) return show('请先读取目标角色与槽位', 'error')
+  if (!context.value) return show(t('offlineLoadout.error.selectCharacterSlot'), 'error')
   busy.value = true
   try {
     const share = JSON.parse(payload)
@@ -75,29 +76,29 @@ async function importPayload(payload, logsEffectUIIds = []) {
     masteryPools.value = pools || []
     masterySummary.value = summary
     form.value = { ...emptyForm(), unitId: Number(selectedSlot.value), expectCharaHash: context.value.charaHash, op: 'write', name: draft.name || form.value.name, weaponSlotId: Number(draft.weaponSlotId || 0), sigilSlotIds: (draft.sigilSlotIds || []).map(Number), summonSlotIds: (draft.summonSlotIds || []).map(Number), skillHashes: draft.skillHashes || [], weaponSkillHashes: draft.weaponSkillHashes || [], masteryHashes: draft.masteryHashes || [] }
-    show(`已导入草稿：${draft.name || '未命名配装'}；请选择目标槽位后预检/写入`, 'success')
-  } catch (error) { show(`导入配装失败: ${String(error)}`, 'error') } finally { busy.value = false }
+    show(t('offlineLoadout.status.importedDraft', { name: draft.name || t('offlineLoadout.unnamedLoadout') }), 'success')
+  } catch (error) { show(t('offlineLoadout.error.importFailed', { error: String(error) }), 'error') } finally { busy.value = false }
 }
 async function importFileJSON(event) {
   const file = event.target.files?.[0]; event.target.value = ''
   if (!file) return
-  try { await importPayload(await file.text()) } catch (error) { show(`读取文件失败: ${String(error)}`, 'error') }
+  try { await importPayload(await file.text()) } catch (error) { show(t('offlineLoadout.error.readFileFailed', { error: String(error) }), 'error') }
 }
 async function loadLogs() {
-  if (!logsJSON.value.trim()) return show('请粘贴 Logs 导出 JSON', 'error')
+  if (!logsJSON.value.trim()) return show(t('offlineLoadout.error.pasteLogs'), 'error')
   try {
     logsRecords.value = await ParseLogsSigilLoadoutsJSON(logsJSON.value) || []
     selectedLogRecord.value = '0'
     selectedLogPlayer.value = '0'
-    show(`已解析 ${logsRecords.value.length} 份 Logs 导出 JSON`, 'success')
-  } catch (error) { show(`解析 Logs 导出 JSON 失败: ${String(error)}`, 'error') }
+    show(t('offlineLoadout.status.logsParsed', { count: logsRecords.value.length }), 'success')
+  } catch (error) { show(t('offlineLoadout.error.parseLogsFailed', { error: String(error) }), 'error') }
 }
 function logRecordLabel(record) {
-  if (!Number(record.logTime)) return record.questName || 'Logs 导出 JSON'
-  const quest = record.questName && !String(record.questName).startsWith('未收录任务') ? ` · ${record.questName}` : ''
-  return `${new Date(record.logTime).toLocaleString()}${quest}（${record.loadouts.length} 名玩家）`
+  if (!Number(record.logTime)) return record.questName || t('offlineLoadout.logsExport')
+  const quest = record.questName && !String(record.questName).startsWith(t('offlineLoadout.unknownQuest')) ? ` · ${record.questName}` : ''
+  return `${new Date(record.logTime).toLocaleString()}${quest} (${t('offlineLoadout.players', { count: record.loadouts.length })})`
 }
-function logPlayerCharacter(player) { return player?.characterName || player?.characterType || player?.loadout?.ownerCode || '未知角色' }
+function logPlayerCharacter(player) { return player?.characterName || player?.characterType || player?.loadout?.ownerCode || t('offlineLoadout.unknownCharacter') }
 function normalizeOwnerCode(value) { return String(value || '').trim().replace(/\0/g, '').toUpperCase() }
 function clearImportedDraft() {
   importedDraft.value = null
@@ -128,20 +129,20 @@ async function switchToLogPlayerCharacter(player) {
 }
 async function importLogPlayer() {
   const player = logsRecords.value[Number(selectedLogRecord.value)]?.loadouts?.[Number(selectedLogPlayer.value)]
-  if (!player?.loadout) return show('该 Logs 玩家没有完整配装快照', 'error')
+  if (!player?.loadout) return show(t('offlineLoadout.error.noLogLoadout'), 'error')
   busy.value = true
   try {
-    if (!await switchToLogPlayerCharacter(player)) throw new Error(`当前存档未找到 Logs 玩家对应角色（${player.loadout?.ownerCode || player.characterType || '未知'}）`)
+    if (!await switchToLogPlayerCharacter(player)) throw new Error(t('offlineLoadout.error.logCharacterNotFound', { owner: player.loadout?.ownerCode || player.characterType || t('offlineLoadout.unknownCharacter') }))
     for (const warning of player.warnings || []) show(warning, 'error')
     pendingLogImport.value = player.loadout
     logsMasteryPools.value = []
     logsMasteryActive.value = []
-    show('已切换到对应角色；请选择目标槽位后导入该玩家配装', 'success')
-  } catch (error) { show(`导入配装失败: ${String(error)}`, 'error') } finally { busy.value = false }
+    show(t('offlineLoadout.status.logCharacterSelected'), 'success')
+  } catch (error) { show(t('offlineLoadout.error.importFailed', { error: String(error) }), 'error') } finally { busy.value = false }
 }
 async function confirmLogImport() {
   if (!pendingLogImport.value) return
-  if (!selected.value) return show('请先选择目标槽位', 'error')
+  if (!selected.value) return show(t('offlineLoadout.error.selectTargetSlot'), 'error')
   await importPayload(JSON.stringify(pendingLogImport.value), pendingLogImport.value.logsSkillboardEffectUiIds || [])
   pendingLogImport.value = null
 }
@@ -157,7 +158,7 @@ async function loadMasteryLayout() {
   } catch (error) {
     masteryPools.value = []
     masterySummary.value = null
-    show(`读取专精布局失败: ${String(error)}`, 'error')
+    show(t('offlineLoadout.error.readMasteryFailed', { error: String(error) }), 'error')
   }
 }
 function masteryNodeActive(hash) { return displayMastery.value.includes(hash) }
@@ -166,7 +167,7 @@ function masteryNodes(rank, cat) {
   return rank.nodes.filter(item => item.cat === cat)
 }
 function masteryNodeDescription(node) {
-  return node.hash === '1F52146F' ? '昏厥+4' : node.desc || node.name || '未收录效果'
+  return node.hash === '1F52146F' ? t('offlineLoadout.mastery.stun') : node.desc || node.name || t('offlineLoadout.mastery.unknownEffect')
 }
 function toggleMasteryCategory(cat) {
   masteryExpanded.value[cat] = !masteryExpanded.value[cat]
@@ -175,19 +176,19 @@ function masterySpecialization(cat) {
   return masterySummary.value?.ranks?.[0]?.categories?.find(item => item.cat === cat)?.specialization || ''
 }
 const masteryCategories = [
-  { cat: 'SB_DEF', label: '觉醒' },
-  { cat: 'SB_ATK', label: '真谛' },
-  { cat: 'SB_LIMIT', label: '秘义' },
+  { cat: 'SB_DEF', label: t('offlineLoadout.mastery.awakening') },
+  { cat: 'SB_ATK', label: t('offlineLoadout.mastery.truth') },
+  { cat: 'SB_LIMIT', label: t('offlineLoadout.mastery.secret') },
 ]
 
 async function copyMasteryEffects() {
-  if (!masteryPools.value.length) return show('请先读取角色槽位', 'error')
+  if (!masteryPools.value.length) return show(t('offlineLoadout.error.readSlot'), 'error')
   const lines = []
   for (const category of masteryCategories) {
-    lines.push(`${category.label}：${masterySpecialization(category.cat) || '—'}`)
+    lines.push(`${category.label}: ${masterySpecialization(category.cat) || t('offlineLoadout.empty')}`)
     for (const rank of masteryPools.value) {
       const nodes = masteryNodes(rank, category.cat)
-      lines.push(`${rank.rank === 'EX' ? 'EX阶' : `${rank.rank.slice(1)}阶段`}`)
+      lines.push(rank.rank === 'EX' ? t('offlineLoadout.exStage') : t('offlineLoadout.stage', { rank: rank.rank.slice(1) }))
       for (let index = 0; index < nodes.length; index += 2) {
         const cell = node => `${masteryNodeActive(node.hash) ? '■' : '□'} ${node.hash} | ${masteryNodeDescription(node)}`
         const left = cell(nodes[index])
@@ -199,8 +200,8 @@ async function copyMasteryEffects() {
   }
   try {
     await navigator.clipboard.writeText(lines.join('\n'))
-    show('已复制专精效果与 hash', 'success')
-  } catch (error) { show(`复制失败: ${String(error)}`, 'error') }
+    show(t('offlineLoadout.status.copiedMastery'), 'success')
+  } catch (error) { show(t('offlineLoadout.error.copyFailed', { error: String(error) }), 'error') }
 }
 
 const slots = computed(() => context.value?.slots || [])
@@ -225,26 +226,26 @@ const displayWeaponSkills = computed(() => {
   return (weapon.skillHashes || []).map((hash, index) => ({ slot: index, traitHash: hash, name: weapon.skillNames?.[index] || hash, level: weapon.skillLevels?.[index] ?? '—' }))
 })
 function formatOverLimit(item) {
-  if (!item?.attributeHash) return '空槽'
+  if (!item?.attributeHash) return t('offlineLoadout.emptySlot')
   const value = Number(item.value || 0)
   const suffix = item.unit === 'pct' ? '%' : ''
-  return `${text(item.name || item.attributeHash)} Lv ${item.level}：+${value}${suffix}`
+  return `${text(item.name || item.attributeHash)} ${t('offlineLoadout.level')} ${item.level}: +${value}${suffix}`
 }
 
 async function load() {
-  if (!savePath.value.trim()) return show('请输入 SaveData 文件路径', 'error')
+  if (!savePath.value.trim()) return show(t('offlineLoadout.error.savePath'), 'error')
   busy.value = true
   try {
     const path = savePath.value.trim()
     groups.value = await LoadoutList(path) || []
-    if (!groups.value.length) throw new Error('未找到已保存的角色配装')
+    if (!groups.value.length) throw new Error(t('offlineLoadout.error.noLoadouts'))
     await SetLastSavePath(path)
     selectedCharacter.value = groups.value[0].charaHash
     importedDraft.value = null
     importedShare.value = null
     await loadContext()
-    show(`已读取 ${groups.value.length} 个角色的配装`, 'success')
-  } catch (error) { show(`读取配装失败: ${String(error)}`, 'error') } finally { busy.value = false }
+    show(t('offlineLoadout.status.loaded', { count: groups.value.length }), 'success')
+  } catch (error) { show(t('offlineLoadout.error.loadFailed', { error: String(error) }), 'error') } finally { busy.value = false }
 }
 async function loadContext() {
   if (!selectedCharacter.value) return
@@ -254,7 +255,7 @@ async function loadContext() {
     context.value = await LoadoutEditContext(savePath.value.trim(), selectedCharacter.value)
     selectedSlot.value = String(context.value?.slots?.[0]?.unitId || '')
     await selectSlot()
-  } catch (error) { show(`读取角色编辑资源失败: ${String(error)}`, 'error') } finally { busy.value = false }
+  } catch (error) { show(t('offlineLoadout.error.readResourcesFailed', { error: String(error) }), 'error') } finally { busy.value = false }
 }
 async function selectSlot() {
   const item = selected.value
@@ -280,7 +281,7 @@ async function selectSlot() {
     detail.value = value
     await loadMasteryLayout()
     for (const warning of value.warnings || []) show(warning, 'error')
-  } catch (error) { show(`读取槽位详情失败: ${String(error)}`, 'error') }
+  } catch (error) { show(t('offlineLoadout.error.readDetailFailed', { error: String(error) }), 'error') }
 }
 function toggleSigil(slotId) {
   slotId = Number(slotId)
@@ -288,25 +289,25 @@ function toggleSigil(slotId) {
   const index = values.indexOf(slotId)
   if (index >= 0) values.splice(index, 1)
   else if (values.length < 12) values.push(slotId)
-  else show('最多选择 12 个因子', 'error')
+  else show(t('offlineLoadout.error.maxSigils'), 'error')
 }
 function toggleSkill(hash) {
   const values = form.value.skillHashes
   const index = values.indexOf(hash)
   if (index >= 0) values.splice(index, 1)
   else if (values.length < 4) values.push(hash)
-  else show('最多选择 4 个技能', 'error')
+  else show(t('offlineLoadout.error.maxSkills'), 'error')
 }
 async function preflight() {
   busy.value = true
   try {
     const report = await LoadoutCheckCompliance(savePath.value.trim(), form.value)
-    result.value = { kind: '预检', report }
-    show(report.writable ? '预检通过，可以写入' : `预检未通过：${report.message}`, report.writable ? 'success' : 'error')
-  } catch (error) { show(`预检失败: ${String(error)}`, 'error') } finally { busy.value = false }
+    result.value = { kind: t('offlineLoadout.preflight'), report }
+    show(report.writable ? t('offlineLoadout.status.preflightPassed') : t('offlineLoadout.status.preflightRejected', { message: report.message }), report.writable ? 'success' : 'error')
+  } catch (error) { show(t('offlineLoadout.error.preflightFailed', { error: String(error) }), 'error') } finally { busy.value = false }
 }
 async function apply(copy) {
-  if (!confirm(copy ? '将写入副本存档，是否继续？' : '将原地写入存档。请确认游戏已关闭并已备份存档。是否继续？')) return
+  if (!confirm(copy ? t('offlineLoadout.confirm.copy') : t('offlineLoadout.confirm.overwrite'))) return
   busy.value = true
   try {
     const output = copy ? `${savePath.value.trim()}.loadout.dat` : ''
@@ -316,17 +317,17 @@ async function apply(copy) {
     importedShare.value = null
     logsMasteryPools.value = []
     logsMasteryActive.value = []
-    result.value = { kind: '写入完成', report: written }
-    show(`写入并回读验证完成：${written.outputPath}`, 'success')
+    result.value = { kind: t('offlineLoadout.writeCompleted'), report: written }
+    show(t('offlineLoadout.status.written', { path: written.outputPath }), 'success')
     await loadContext()
-  } catch (error) { show(`写入失败: ${String(error)}`, 'error') } finally { busy.value = false }
+  } catch (error) { show(t('offlineLoadout.error.writeFailed', { error: String(error) }), 'error') } finally { busy.value = false }
 }
 onMounted(async () => {
   try {
     const lastPath = await GetLastSavePath()
     if (lastPath?.trim()) savePath.value = lastPath.trim()
   } catch (error) {
-    console.warn('读取上次 SaveData 路径失败:', error)
+    console.warn(t('offlineLoadout.error.readLastSavePath'), error)
   }
 })
 </script>
@@ -334,77 +335,23 @@ onMounted(async () => {
 <template>
   <div class="loadout-editor">
     <section class="section">
-      <div class="section-title">完整离线配装 <span>仅操作存档，不连接游戏进程</span></div>
-      <label class="field"><span>SaveData 路径</span><input v-model="savePath" placeholder="例如 C:\\...\\SaveData1.dat" @keyup.enter="load" /></label>
-      <div class="actions"><button class="btn primary" :disabled="busy" @click="load">读取配装</button><button class="btn" :disabled="busy || !context" @click="exportCurrent">导出当前槽位</button><button class="btn" :disabled="busy || !context" @click="importFile?.click()">导入 JSON</button><input ref="importFile" class="file-input" type="file" accept="application/json,.json" @change="importFileJSON" /></div>
-      <label class="field"><span>Logs 导出 JSON</span><textarea v-model="logsJSON" rows="6" placeholder="粘贴单个玩家对象或玩家对象数组" /></label>
-      <div class="actions"><button class="btn" :disabled="busy" @click="loadLogs">解析 Logs JSON</button></div>
-      <div v-if="logsRecords.length" class="logs-import"><label class="field"><span>Logs 场次</span><select v-model="selectedLogRecord"><option v-for="(record,index) in logsRecords" :key="index" :value="String(index)">{{ logRecordLabel(record) }}</option></select></label><label class="field"><span>玩家</span><select v-model="selectedLogPlayer"><option v-for="(player,index) in (logsRecords[Number(selectedLogRecord)]?.loadouts || [])" :key="index" :value="String(index)">{{ player.playerName || '未命名玩家' }} / {{ logPlayerCharacter(player) }}</option></select></label><button class="btn" :disabled="busy" @click="importLogPlayer">导入该玩家完整配装</button></div>
-      <p class="hint">写入会创建备份、修复 checksum 并回读验证。原地写入前必须关闭游戏；建议优先使用“写入副本”。</p>
+      <div class="section-title">{{ t('offlineLoadout.ui.title') }} <span>{{ t('offlineLoadout.ui.subtitle') }}</span></div>
+      <label class="field"><span>{{ t('offlineLoadout.ui.savePath') }}</span><input v-model="savePath" :placeholder="t('offlineLoadout.ui.savePathPlaceholder')" @keyup.enter="load" /></label>
+      <div class="actions"><button class="btn primary" :disabled="busy" @click="load">{{ t('offlineLoadout.ui.load') }}</button><button class="btn" :disabled="busy || !context" @click="exportCurrent">{{ t('offlineLoadout.ui.export') }}</button><button class="btn" :disabled="busy || !context" @click="importFile?.click()">{{ t('offlineLoadout.ui.importJson') }}</button><input ref="importFile" class="file-input" type="file" accept="application/json,.json" @change="importFileJSON" /></div>
+      <label class="field"><span>{{ t('offlineLoadout.ui.logsJson') }}</span><textarea v-model="logsJSON" rows="6" :placeholder="t('offlineLoadout.ui.logsPlaceholder')" /></label>
+      <div class="actions"><button class="btn" :disabled="busy" @click="loadLogs">{{ t('offlineLoadout.ui.parseLogs') }}</button></div>
+      <div v-if="logsRecords.length" class="logs-import"><label class="field"><span>{{ t('offlineLoadout.ui.logSession') }}</span><select v-model="selectedLogRecord"><option v-for="(record,index) in logsRecords" :key="index" :value="String(index)">{{ logRecordLabel(record) }}</option></select></label><label class="field"><span>{{ t('offlineLoadout.ui.player') }}</span><select v-model="selectedLogPlayer"><option v-for="(player,index) in (logsRecords[Number(selectedLogRecord)]?.loadouts || [])" :key="index" :value="String(index)">{{ player.playerName || t('offlineLoadout.ui.unnamedPlayer') }} / {{ logPlayerCharacter(player) }}</option></select></label><button class="btn" :disabled="busy" @click="importLogPlayer">{{ t('offlineLoadout.ui.importPlayer') }}</button></div>
+      <p class="hint">{{ t('offlineLoadout.ui.writeHint') }}</p>
     </section>
-
     <section v-if="groups.length" class="section">
-      <div class="section-title">角色与目标槽位</div>
-      <label class="field"><span>角色</span><select v-model="selectedCharacter" :disabled="busy" @change="loadContext"><option v-for="item in groups" :key="item.charaHash" :value="item.charaHash">{{ text(item.charaName) }} / {{ item.charaHash }}（{{ item.loadouts.length }} 个已保存配装）</option></select></label>
-      <label class="field"><span>目标槽位</span><select v-model="selectedSlot" :disabled="busy" @change="selectSlot"><option disabled value="">请选择目标槽位</option><option v-for="item in slots" :key="item.unitId" :value="String(item.unitId)">{{ item.name || '空槽' }} · UnitID {{ item.unitId }}</option></select></label>
-      <div v-if="pendingLogImport" class="actions"><button class="btn primary" :disabled="busy" @click="confirmLogImport">导入到当前目标槽位</button></div>
-      <div v-if="displayedDetail" class="summary">
-        <div class="section-title">当前槽位配装摘要 <span>{{ importedShare ? '待写入草稿' : '只读存档原始内容' }}</span></div>
-        <p><b>角色：</b>{{ text(displayedDetail.charaName || selected?.charaName) }}（{{ text(displayedDetail.charaHash || selectedCharacter) }}）</p>
-        <div><b>武器：</b>{{ text(displayedDetail.weaponName || displayedDetail.weaponHash) }}</div>
-        <div v-if="displayedDetail.weapon"><b>武器强化：</b>Lv {{ displayedDetail.weapon.level || displayedDetail.weapon.xp || '—' }} / 上限突破 {{ displayedDetail.weapon.uncap }} / 幻晶 {{ displayedDetail.weapon.mirage }} / 觉醒 {{ displayedDetail.weapon.awakening }} / 超凡 {{ displayedDetail.weapon.transcendence }}</div>
-        <div class="equipment-skills-summary">
-          <div><b>角色上限突破：</b><ol v-if="displayOverLimit.length"><li v-for="item in displayOverLimit" :key="item.index">{{ formatOverLimit(item) }}</li></ol><span v-else>—</span></div>
-          <div><b>武器技能：</b><ol v-if="displayWeaponSkills.length"><li v-for="item in displayWeaponSkills" :key="`${item.slot}-${item.traitHash}`">{{ item.slot + 1 }}. {{ text(item.name || item.traitHash) }} Lv {{ item.level }}</li></ol><span v-else>—</span></div>
-          <div><b>武器祝福：</b><template v-if="displayedDetail.weapon?.wrightstone">{{ text(displayedDetail.weapon.wrightstone.name || displayedDetail.weapon.wrightstone.hash) }}<ol v-if="displayedDetail.weapon.wrightstone.traits?.length"><li v-for="item in displayedDetail.weapon.wrightstone.traits" :key="`${item.index}-${item.hash}`">{{ item.index + 1 }}. {{ text(item.name || item.hash) }} Lv {{ item.level }}</li></ol></template><span v-else>—</span></div>
-          <div><b>技能：</b><ul v-if="displaySkills.length"><li v-for="item in displaySkills" :key="item.hash">{{ text(item.name || item.hash) }}（{{ item.hash }}）</li></ul><span v-else>—</span></div>
-        </div>
-        <div><b>召唤石：</b><ol v-if="displaySummons.length"><li v-for="(item,index) in displaySummons" :key="`${index}-${item.typeHash}`">{{ formatSummon(item, index) }}</li></ol><span v-else>—</span></div>
-        <div><b>因子：</b><ol v-if="displaySigils.length"><li v-for="item in displaySigils" :key="`${item.index}-${item.slotId || item.hash}`">{{ formatSigil(item) }}</li></ol><span v-else>—</span></div>
-        <div class="logs-mastery-layout" v-if="logsMasteryPools.length">
-          <div class="mastery-tools"><b>Logs 战斗快照专精（仅展示，不写入存档）</b></div>
-          <div v-for="rank in logsMasteryPools" :key="rank.rank" class="mastery-rank">
-            <span class="mastery-rank-label">{{ rank.label || rank.rank }}</span>
-            <span class="mastery-node-list">
-              <span v-for="node in rank.nodes" :key="`${rank.rank}-${node.effectUIId}`" class="mastery-node" :class="{ active: node.active, unknown: node.unknown }" :title="node.effectUIId">
-                <b>{{ node.active ? '■' : '□' }}</b><span>{{ node.effectUIId }} · {{ node.catLabel || node.cat }} · {{ node.text }}</span>
-              </span>
-            </span>
-          </div>
-          <small>亮蓝色：Logs 快照中激活；灰色：未激活。此处 EffectUiId 不会进入存档 MasteryHashes。</small>
-        </div>
-        <div class="mastery-layout" v-if="masteryPools.length">
-          <div class="mastery-tools"><b>专精激活图：</b><button class="btn copy-mastery" @click="copyMasteryEffects">复制效果对照</button></div>
-          <div v-for="category in masteryCategories" :key="category.cat" class="mastery-category">
-            <button class="mastery-heading" type="button" @click="toggleMasteryCategory(category.cat)">
-              <span>{{ masteryExpanded[category.cat] ? '▼' : '▶' }} {{ category.label }}<template v-if="masterySpecialization(category.cat)">：{{ masterySpecialization(category.cat) }}</template></span>
-            </button>
-            <template v-if="masteryExpanded[category.cat]">
-            <div v-for="rank in masteryPools" :key="rank.rank" class="mastery-rank">
-              <span class="mastery-rank-label" :class="{ active: masteryCategoryActive(rank.rank, category.cat) }">{{ rank.rank === 'EX' ? 'EX阶' : `${rank.rank.slice(1)}阶段` }}</span>
-              <span class="mastery-node-list">
-                <span v-for="node in masteryNodes(rank, category.cat)" :key="node.hash" class="mastery-node" :class="{ active: masteryNodeActive(node.hash) }" :title="masteryNodeDescription(node)">
-                  <b>{{ masteryNodeActive(node.hash) ? '■' : '□' }}</b>
-                  <span>{{ masteryNodeDescription(node) }}</span>
-                </span>
-                <span v-if="!masteryNodes(rank, category.cat).length" class="mastery-empty">—</span>
-              </span>
-            </div>
-            </template>
-          </div>
-          <small>亮蓝色：当前配装已激活；灰色：未激活。</small>
-        </div>
-        <p><b>角色强化：</b>{{ enhancementText() }}</p>
-      </div>
-      <label class="field"><span>配装名称</span><input v-model="form.name" maxlength="63" /></label>
+      <div class="section-title">{{ t('offlineLoadout.ui.characterTarget') }}</div>
+      <label class="field"><span>{{ t('offlineLoadout.ui.character') }}</span><select v-model="selectedCharacter" :disabled="busy" @change="loadContext"><option v-for="item in groups" :key="item.charaHash" :value="item.charaHash">{{ text(item.charaName) }} / {{ item.charaHash }} ({{ t('offlineLoadout.ui.savedLoadouts', { count: item.loadouts.length }) }})</option></select></label>
+      <label class="field"><span>{{ t('offlineLoadout.ui.targetSlot') }}</span><select v-model="selectedSlot" :disabled="busy" @change="selectSlot"><option disabled value="">{{ t('offlineLoadout.ui.selectTargetSlot') }}</option><option v-for="item in slots" :key="item.unitId" :value="String(item.unitId)">{{ item.name || t('offlineLoadout.emptySlot') }} · {{ t('offlineLoadout.ui.unitId') }} {{ item.unitId }}</option></select></label>
+      <div v-if="pendingLogImport" class="actions"><button class="btn primary" :disabled="busy" @click="confirmLogImport">{{ t('offlineLoadout.ui.importTarget') }}</button></div>
+      <div v-if="displayedDetail" class="summary"><div class="section-title">{{ t('offlineLoadout.ui.summary') }} <span>{{ importedShare ? t('offlineLoadout.ui.pendingDraft') : t('offlineLoadout.ui.readOnly') }}</span></div><p><b>{{ t('offlineLoadout.ui.character') }}：</b>{{ text(displayedDetail.charaName || selected?.charaName) }} ({{ text(displayedDetail.charaHash || selectedCharacter) }})</p><div><b>{{ t('offlineLoadout.ui.weapon') }}</b>{{ text(displayedDetail.weaponName || displayedDetail.weaponHash) }}</div><div v-if="displayedDetail.weapon"><b>{{ t('offlineLoadout.ui.weaponEnhancement') }}</b>{{ t('offlineLoadout.level') }} {{ displayedDetail.weapon.level || displayedDetail.weapon.xp || t('offlineLoadout.empty') }} / {{ t('offlineLoadout.ui.uncap') }} {{ displayedDetail.weapon.uncap }} / {{ t('offlineLoadout.ui.mirage') }} {{ displayedDetail.weapon.mirage }} / {{ t('offlineLoadout.ui.awakening') }} {{ displayedDetail.weapon.awakening }} / {{ t('offlineLoadout.ui.transcendence') }} {{ displayedDetail.weapon.transcendence }}</div><div class="equipment-skills-summary"><div><b>{{ t('offlineLoadout.ui.characterOverlimit') }}</b><ol v-if="displayOverLimit.length"><li v-for="item in displayOverLimit" :key="item.index">{{ formatOverLimit(item) }}</li></ol><span v-else>{{ t('offlineLoadout.empty') }}</span></div><div><b>{{ t('offlineLoadout.ui.weaponSkills') }}</b><ol v-if="displayWeaponSkills.length"><li v-for="item in displayWeaponSkills" :key="`${item.slot}-${item.traitHash}`">{{ item.slot + 1 }}. {{ text(item.name || item.traitHash) }} {{ t('offlineLoadout.level') }} {{ item.level }}</li></ol><span v-else>{{ t('offlineLoadout.empty') }}</span></div><div><b>{{ t('offlineLoadout.ui.weaponBlessing') }}</b><template v-if="displayedDetail.weapon?.wrightstone">{{ text(displayedDetail.weapon.wrightstone.name || displayedDetail.weapon.wrightstone.hash) }}<ol v-if="displayedDetail.weapon.wrightstone.traits?.length"><li v-for="item in displayedDetail.weapon.wrightstone.traits" :key="`${item.index}-${item.hash}`">{{ item.index + 1 }}. {{ text(item.name || item.hash) }} {{ t('offlineLoadout.level') }} {{ item.level }}</li></ol></template><span v-else>{{ t('offlineLoadout.empty') }}</span></div><ul v-if="displaySkills.length"><li v-for="item in displaySkills" :key="item.hash">{{ text(item.name || item.hash) }} ({{ item.hash }})</li></ul><span v-else>{{ t('offlineLoadout.empty') }}</span></div><div><b>{{ t('offlineLoadout.ui.summons') }}</b><ol v-if="displaySummons.length"><li v-for="(item,index) in displaySummons" :key="`${index}-${item.typeHash}`">{{ formatSummon(item, index) }}</li></ol><span v-else>{{ t('offlineLoadout.empty') }}</span></div><div><b>{{ t('offlineLoadout.ui.sigils') }}</b><ol v-if="displaySigils.length"><li v-for="item in displaySigils" :key="`${item.index}-${item.slotId || item.hash}`">{{ formatSigil(item) }}</li></ol><span v-else>{{ t('offlineLoadout.empty') }}</span></div><div class="mastery-layout" v-if="masteryPools.length"><div class="mastery-tools"><b>{{ t('offlineLoadout.ui.masteryMap') }}</b><button class="btn copy-mastery" @click="copyMasteryEffects">{{ t('offlineLoadout.ui.copyMastery') }}</button></div><div v-for="category in masteryCategories" :key="category.cat" class="mastery-category"><button class="mastery-heading" type="button" @click="toggleMasteryCategory(category.cat)"><span>{{ masteryExpanded[category.cat] ? '▼' : '▶' }} {{ category.label }}</span></button><template v-if="masteryExpanded[category.cat]"><div v-for="rank in masteryPools" :key="rank.rank" class="mastery-rank"><span class="mastery-rank-label">{{ rank.rank === 'EX' ? t('offlineLoadout.exStage') : t('offlineLoadout.stage', { rank: rank.rank.slice(1) }) }}</span><span class="mastery-node-list"><span v-for="node in masteryNodes(rank, category.cat)" :key="node.hash" class="mastery-node" :class="{ active: masteryNodeActive(node.hash) }"><b>{{ masteryNodeActive(node.hash) ? '■' : '□' }}</b><span>{{ masteryNodeDescription(node) }}</span></span></span></div></template></div><small>{{ t('offlineLoadout.ui.masteryHint') }}</small></div><p><b>{{ t('offlineLoadout.ui.characterEnhancement') }}</b>{{ enhancementText() }}</p></div>
+      <label class="field"><span>{{ t('offlineLoadout.ui.loadoutName') }}</span><input v-model="form.name" maxlength="63" /></label>
     </section>
-
-    <section v-if="context" class="section">
-      <div class="section-title">导入到当前目标槽位 <span>{{ importedDraft ? '已载入完整配装草稿' : '请导入 JSON 或 Logs 导出 JSON 玩家配装' }}</span></div>
-      <p class="hint">流程：先读取目标存档并选择角色/槽位；再导入 JSON 或 Logs 导出 JSON 玩家配装；最后预检并写入。导入内容会整体应用，不需要手动勾选武器、技能、因子或专精。</p>
-      <div class="actions"><button class="btn" :disabled="busy || !importedDraft" @click="preflight">预检</button><button class="btn" :disabled="busy || !importedDraft" @click="apply(true)">写入副本</button><button class="btn danger" :disabled="busy || !importedDraft" @click="apply(false)">原地写入</button></div>
-    </section>
-
+    <section v-if="context" class="section"><div class="section-title">{{ t('offlineLoadout.ui.importTitle') }} <span>{{ importedDraft ? t('offlineLoadout.ui.draftLoaded') : t('offlineLoadout.ui.importPrompt') }}</span></div><p class="hint">{{ t('offlineLoadout.ui.importHint') }}</p><div class="actions"><button class="btn" :disabled="busy || !importedDraft" @click="preflight">{{ t('offlineLoadout.preflight') }}</button><button class="btn" :disabled="busy || !importedDraft" @click="apply(true)">{{ t('offlineLoadout.ui.writeCopy') }}</button><button class="btn danger" :disabled="busy || !importedDraft" @click="apply(false)">{{ t('offlineLoadout.ui.overwrite') }}</button></div></section>
     <section v-if="result" class="section result"><div class="section-title">{{ result.kind }}</div><pre>{{ JSON.stringify(result.report, null, 2) }}</pre></section>
   </div>
 </template>

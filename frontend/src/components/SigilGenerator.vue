@@ -8,6 +8,7 @@ import { GetSigilList, GetCompatibleSecondaryTraits, GetAllowedLevels,
          ApplyQueue, RemoveAllSigils,
          GetExistingSigils, DeleteSelectedSigils,
          SelectSigilInputSave, SelectSigilOutputSave } from '../../wailsjs/go/main/SigilGen'
+import { translate as t } from '../i18n'
 import { matchText } from '../utils/matchText.js'
 
 const emit = defineEmits(['status'])
@@ -75,7 +76,7 @@ onMounted(async () => {
   try {
     sigils.value = await GetSigilList()
     if (!sigils.value || !sigils.value.length) {
-      dataError.value = '因子数据为空'
+      dataError.value = t('sigil.generator.dataEmpty')
     }
     const lastPath = await GetLastSavePath()
     if (lastPath) {
@@ -83,7 +84,7 @@ onMounted(async () => {
       outputPath.value = defaultOutputPath(lastPath)
     }
   } catch (e) {
-    dataError.value = '加载因子数据失败: ' + String(e)
+    dataError.value = t('sigil.generator.dataLoadFailed', { error: String(e) })
   } finally {
     dataLoading.value = false
   }
@@ -123,7 +124,7 @@ async function browseOutput() {
 }
 
 async function loadSave() {
-  if (!inputPath.value.trim()) { showStatus('请输入存档路径', 'error'); return }
+  if (!inputPath.value.trim()) { showStatus(t('sigil.generator.enterSavePath'), 'error'); return }
   try {
     const info = await LoadSaveFile(inputPath.value.trim())
     Object.assign(saveInfo, info)
@@ -132,7 +133,7 @@ async function loadSave() {
     await SetLastSavePath(info.path)
     showExisting.value = true
     await refreshExisting()
-    showStatus(`已加载存档: ${info.occupiedSigils} 个因子`, 'success')
+    showStatus(t('sigil.generator.saveLoaded', { count: info.occupiedSigils }), 'success')
   } catch (e) {
     showExisting.value = false
     showStatus(String(e), 'error')
@@ -146,7 +147,7 @@ async function refreshExisting() {
     selectedForDelete.value = new Set()
   } catch (e) {
     existingSigils.value = []
-    showStatus('读取已有因子失败: ' + String(e), 'error')
+    showStatus(t('sigil.generator.existingReadFailed', { error: String(e) }), 'error')
   } finally {
     loadingExisting.value = false
   }
@@ -162,12 +163,12 @@ function toggleSelectAll() {
 
 async function deleteSelected() {
   if (selectedForDelete.value.size === 0) {
-    showStatus('未选中任何因子', 'error'); return
+    showStatus(t('sigil.generator.noneSelected'), 'error'); return
   }
   if (!outputPath.value.trim()) {
-    showStatus('请填写输出路径', 'error'); return
+    showStatus(t('sigil.generator.enterOutputPath'), 'error'); return
   }
-  if (!confirm(`确定要删除 ${selectedForDelete.value.size} 个因子吗？此操作不可撤销。`)) return
+  if (!confirm(t('sigil.generator.confirmDelete', { count: selectedForDelete.value.size }))) return
   isDeleting.value = true
   try {
     const ids = Array.from(selectedForDelete.value)
@@ -177,7 +178,7 @@ async function deleteSelected() {
     } else {
       await refreshExisting()
     }
-    showStatus(`已删除 ${result.createdCount} 个因子`, 'success')
+    showStatus(t('sigil.generator.deleted', { count: result.createdCount }), 'success')
   } catch (e) {
     showStatus(String(e), 'error')
   } finally {
@@ -248,7 +249,7 @@ watch(selectedSecondaryTraitID, async (id) => {
 
 // ── 队列操作 ──
 async function addToQueue() {
-  if (!selectedSigilID.value) { showStatus('请选择因子', 'error'); return }
+  if (!selectedSigilID.value) { showStatus(t('sigil.generator.selectSigil'), 'error'); return }
   try {
     await AddToQueue({
       sigilId: selectedSigilID.value,
@@ -263,7 +264,7 @@ async function addToQueue() {
       quantity: quantity.value,
     })
     queue.value = await GetQueue()
-    showStatus('已添加到队列', 'success')
+    showStatus(t('sigil.generator.added'), 'success')
   } catch (e) { showStatus(String(e), 'error') }
 }
 
@@ -289,29 +290,29 @@ function flashApplySuccess() {
 }
 
 async function applyQueueToSave() {
-  if (!outputPath.value.trim()) { showStatus('请输入输出路径', 'error'); return }
+  if (!outputPath.value.trim()) { showStatus(t('sigil.generator.enterOutput'), 'error'); return }
   isApplying.value = true
   try {
     const result = await ApplyQueue(outputPath.value.trim())
     queue.value = []
     if (inPlaceEdit.value) await loadSave()
     flashApplySuccess()
-    showStatus(`已写入 ${result.createdCount} 个因子 (验证 ${result.verifiedCount})`, 'success')
+    showStatus(t('sigil.generator.written', { count: result.createdCount, verified: result.verifiedCount }), 'success')
   } catch (e) { showStatus(String(e), 'error') }
   finally { isApplying.value = false }
 }
 
 async function removeAll() {
   if (!inputPath.value.trim() || !outputPath.value.trim()) {
-    showStatus('请先填写输入和输出路径', 'error'); return
+    showStatus(t('sigil.generator.enterPaths'), 'error'); return
   }
-  if (!confirm('这将清除输出存档中的所有因子，确定继续？')) return
+  if (!confirm(t('sigil.generator.confirmRemoveAll'))) return
   try {
     const result = await RemoveAllSigils(inputPath.value.trim(), outputPath.value.trim())
     if (inPlaceEdit.value) {
       await loadSave()
     }
-    showStatus(`已清除 ${result.createdCount} 个因子 (剩余 ${result.verifiedCount})`, 'success')
+    showStatus(t('sigil.generator.cleared', { count: result.createdCount, verified: result.verifiedCount }))
   } catch (e) { showStatus(String(e), 'error') }
 }
 
@@ -334,46 +335,46 @@ function onSecondaryTraitSelect() {
   <div class="sigil-container">
     <!-- 存档选择 -->
     <div class="section">
-      <div class="section-title">存档文件</div>
+      <div class="section-title">{{ t('sigil.generator.saveFile') }}</div>
       <div class="input-row">
         <input v-model="inputPath" type="text" class="text-input flex-1"
-          placeholder="GBFR 存档文件 (.dat | C:\Users\UserName\AppData\Local\GBFR\Saved\SaveGames\)" />
-        <button class="btn-action btn-cyan" @click="browseInput">浏览</button>
-        <button class="btn-action btn-green" @click="loadSave">加载</button>
+          :placeholder="t('sigil.generator.savePlaceholder')" />
+        <button class="btn-action btn-cyan" @click="browseInput">{{ t('sigil.common.browse') }}</button>
+        <button class="btn-action btn-green" @click="loadSave">{{ t('sigil.common.load') }}</button>
       </div>
       <div v-if="saveLoaded" class="save-info">
-        已加载 · {{ saveInfo.occupiedSigils }} 个因子 · 最大槽位 {{ saveInfo.maxSlotId }}
+        {{ t('sigil.generator.loadedInfo', { count: saveInfo.occupiedSigils, slot: saveInfo.maxSlotId }) }}
       </div>
     </div>
 
     <!-- 已有因子 -->
     <div v-if="showExisting" class="section">
       <div class="section-title">
-        已有因子 {{ loadingExisting ? '加载中...' : `(${existingSigils.length})` }}
+        {{ loadingExisting ? t('sigil.generator.existingLoading') : t('sigil.generator.existingCount', { count: existingSigils.length }) }}
         <div class="existing-actions">
           <button class="btn-link" @click="toggleSelectAll"
             :disabled="loadingExisting">
-            {{ selectedForDelete.size === existingSigils.length ? '取消全选' : '全选' }}
+            {{ selectedForDelete.size === existingSigils.length ? t('sigil.generator.deselectAll') : t('sigil.generator.selectAll') }}
           </button>
-          <button class="btn-link" @click="refreshExisting" :disabled="loadingExisting">刷新</button>
+          <button class="btn-link" @click="refreshExisting" :disabled="loadingExisting">{{ t('sigil.common.refresh') }}</button>
           <button class="btn-action btn-red btn-sm"
             @click="deleteSelected"
             :disabled="isDeleting || loadingExisting || selectedForDelete.size === 0">
-            {{ isDeleting ? '删除中...' : `删除选中 (${selectedForDelete.size})` }}
+            {{ isDeleting ? t('sigil.generator.deleting') : t('sigil.generator.deleteSelected', { count: selectedForDelete.size }) }}
           </button>
         </div>
       </div>
-      <div v-if="loadingExisting" class="loading-hint">正在读取已有因子，数量较多时请耐心等待...</div>
+      <div v-if="loadingExisting" class="loading-hint">{{ t('sigil.generator.readingExisting') }}</div>
       <div v-else-if="saveInfo.occupiedSigils > 500" class="warning-hint">
-        注意：当前存档有 {{ saveInfo.occupiedSigils }} 个因子，目前批量编辑处于测试阶段，不建议使用
+        {{ t('sigil.generator.manyWarning', { count: saveInfo.occupiedSigils }) }}
       </div>
-      <div v-if="!loadingExisting && existingSigils.length === 0" class="empty-hint">暂无已有因子或读取失败</div>
+      <div v-if="!loadingExisting && existingSigils.length === 0" class="empty-hint">{{ t('sigil.generator.noExisting') }}</div>
       <div v-else class="existing-table">
         <div class="existing-row existing-header">
           <span class="ex-col-cb"><input type="checkbox" :checked="selectedForDelete.size === existingSigils.length && existingSigils.length > 0" @change="toggleSelectAll" /></span>
-          <span class="ex-col-name">因子</span>
-          <span class="ex-col-level">等级</span>
-          <span class="ex-col-trait">特性</span>
+          <span class="ex-col-name">{{ t('sigil.generator.sigil') }}</span>
+          <span class="ex-col-level">{{ t('sigil.generator.sigilLevel') }}</span>
+          <span class="ex-col-trait">{{ t('sigil.generator.trait') }}</span>
         </div>
         <div v-for="s in existingSigils" :key="s.gemUnitId" class="existing-row">
           <span class="ex-col-cb">
@@ -381,10 +382,9 @@ function onSecondaryTraitSelect() {
               @change="selectedForDelete.has(s.gemUnitId) ? selectedForDelete.delete(s.gemUnitId) : selectedForDelete.add(s.gemUnitId)" />
           </span>
           <span class="ex-col-name">{{ s.sigilName }}</span>
-          <span class="ex-col-level">Lv {{ s.level }}</span>
+          <span class="ex-col-level">{{ t('sigil.common.level', { level: s.level }) }}</span>
           <span class="ex-col-trait">
-            {{ s.primaryTraitName }} Lv {{ s.primaryLevel }}
-            <template v-if="s.secondaryTraitName"> / {{ s.secondaryTraitName }} Lv {{ s.secondaryLevel }}</template>
+            {{ t('sigil.generator.traitDetails', { primary: s.primaryTraitName, primaryLevel: t('sigil.common.level', { level: s.primaryLevel }), secondary: s.secondaryTraitName, secondaryLevel: t('sigil.common.level', { level: s.secondaryLevel }) }) }}
           </span>
         </div>
       </div>
@@ -392,61 +392,61 @@ function onSecondaryTraitSelect() {
 
     <!-- 因子配置 -->
     <div class="section">
-      <div class="section-title">因子配置</div>
+      <div class="section-title">{{ t('sigil.generator.configuration') }}</div>
 
       <!-- 因子搜索 -->
       <div class="field">
-        <label>因子 {{ dataLoading ? '(加载中...)' : dataError ? '(加载失败)' : '' }}</label>
+        <label>{{ t('sigil.generator.sigil') }} {{ dataLoading ? t('sigil.generator.loadingStatus') : dataError ? t('sigil.generator.failedStatus') : '' }}</label>
         <div v-if="dataError" class="data-error">{{ dataError }}</div>
         <input v-model="sigilSearch" type="text" class="text-input"
-          placeholder="输入关键词过滤..." @input="showSigilDropdown = true" />
+          :placeholder="t('sigil.generator.filter')" @input="showSigilDropdown = true" />
         <select v-model="selectedSigilID" class="select-input sigil-select"
           size="6" @change="onSigilSelect">
-          <option value="">— 请先搜索并选择因子 —</option>
+          <option value="">{{ t('sigil.generator.selectSigilHint') }}</option>
           <option v-for="s in filteredSigils" :key="s.internalId" :value="s.internalId">
-            {{ s.displayName }}<template v-if="s.supportsSecondaryTrait"> [V+]</template>
+            {{ s.displayName }}<template v-if="s.supportsSecondaryTrait"> {{ t('sigil.generator.secondarySupported') }}</template>
           </option>
         </select>
       </div>
 
       <!-- 因子等级 -->
       <div class="field">
-        <label>因子等级</label>
-        <div class="readonly-field">Lv {{ selectedLevel || '—' }}</div>
+        <label>{{ t('sigil.generator.sigilLevel') }}</label>
+        <div class="readonly-field">{{ selectedLevel ? t('sigil.common.level', { level: selectedLevel }) : t('sigil.common.none') }}</div>
       </div>
 
       <!-- 主特性 -->
       <div class="field">
-        <label>主特性</label>
-        <div class="readonly-field">{{ primaryTraitName || '—' }}</div>
+        <label>{{ t('sigil.generator.primaryTrait') }}</label>
+        <div class="readonly-field">{{ primaryTraitName || t('sigil.common.none') }}</div>
       </div>
 
       <div class="field">
-        <label>主特性等级</label>
+        <label>{{ t('sigil.generator.primaryLevel') }}</label>
         <select v-model="selectedPrimaryLevel" class="select-input" :disabled="!primaryTraitLevels.length">
-          <option v-for="l in primaryTraitLevels" :key="l" :value="l">Lv {{ l }}</option>
+          <option v-for="l in primaryTraitLevels" :key="l" :value="l">{{ t('sigil.common.level', { level: l }) }}</option>
         </select>
       </div>
 
       <!-- 副特性 -->
       <template v-if="supportsSecondary">
         <div class="field">
-          <label>副特性</label>
+          <label>{{ t('sigil.generator.secondaryTrait') }}</label>
           <input v-model="secondaryTraitSearch" type="text" class="text-input"
-            placeholder="输入关键词过滤副特性..." />
+            :placeholder="t('sigil.generator.secondaryFilter')" />
           <select v-model="selectedSecondaryTraitID" class="select-input sigil-select"
             size="6" :disabled="!secondaryTraits.length" @change="onSecondaryTraitSelect">
-            <option v-if="optionalSecondary" value="">— 不选择 —</option>
+            <option v-if="optionalSecondary" value="">{{ t('sigil.generator.noSelection') }}</option>
             <option v-for="t in filteredSecondaryTraits" :key="t.internalId" :value="t.internalId">
               {{ t.displayName }}
             </option>
           </select>
         </div>
         <div class="field">
-          <label>副特性等级</label>
+          <label>{{ t('sigil.generator.secondaryLevel') }}</label>
           <select v-model="selectedSecondaryLevel" class="select-input"
             :disabled="!secondaryTraitLevels.length">
-            <option v-for="l in secondaryTraitLevels" :key="l" :value="l">Lv {{ l }}</option>
+            <option v-for="l in secondaryTraitLevels" :key="l" :value="l">{{ t('sigil.common.level', { level: l }) }}</option>
           </select>
         </div>
       </template>
@@ -454,12 +454,12 @@ function onSecondaryTraitSelect() {
       <!-- 数量 + 添加 -->
       <div class="input-row">
         <div class="field flex-1">
-          <label>数量</label>
+          <label>{{ t('sigil.generator.quantity') }}</label>
           <input v-model.number="quantity" type="number" min="1" max="999" class="text-input" />
         </div>
         <button class="btn-action btn-purple add-btn" @click="addToQueue"
           :disabled="!selectedSigilID">
-          添加到队列
+          {{ t('sigil.generator.addQueue') }}
         </button>
       </div>
     </div>
@@ -467,53 +467,49 @@ function onSecondaryTraitSelect() {
     <!-- 队列 -->
     <div class="section">
       <div class="section-title">
-        队列 ({{ queue.length }})
-        <button v-if="queue.length" class="btn-link" @click="clearQueueAll">清空</button>
+        {{ t('sigil.generator.queueCount', { count: queue.length }) }}
+        <button v-if="queue.length" class="btn-link" @click="clearQueueAll">{{ t('sigil.common.clear') }}</button>
       </div>
-      <div v-if="!queue.length" class="empty-hint">暂无待写入因子，请先添加</div>
+      <div v-if="!queue.length" class="empty-hint">{{ t('sigil.generator.queueEmpty') }}</div>
       <div v-else class="queue-list">
         <div v-for="(item, i) in queue" :key="i" class="queue-item">
           <div class="queue-info">
             <span class="queue-name">{{ item.sigilName }}</span>
             <span class="queue-detail">
-              Lv {{ item.level }} · {{ item.primaryTraitName }} Lv {{ item.primaryLevel }}
-              <template v-if="item.secondaryTraitId">
-                / {{ item.secondaryTraitName }} Lv {{ item.secondaryLevel }}
-              </template>
-              · x{{ item.quantity }}
+              {{ t('sigil.generator.queueDetails', { level: t('sigil.common.level', { level: item.level }), primary: item.primaryTraitName, primaryLevel: t('sigil.common.level', { level: item.primaryLevel }), secondary: item.secondaryTraitId ? t('sigil.generator.secondaryDetails', { name: item.secondaryTraitName, level: t('sigil.common.level', { level: item.secondaryLevel }) }) : '', quantity: t('sigil.generator.quantityValue', { count: item.quantity }) }) }}
             </span>
           </div>
-          <button class="btn-icon" @click="removeFromQueue(i)" title="移除">✕</button>
+          <button class="btn-icon" @click="removeFromQueue(i)" :title="t('sigil.generator.remove')">✕</button>
         </div>
       </div>
     </div>
 
     <!-- 输出 + 应用 -->
     <div class="section apply-section" :class="{ 'apply-flash': applyFlash }">
-      <div class="section-title">输出</div>
+      <div class="section-title">{{ t('sigil.generator.output') }}</div>
       <div class="input-row">
         <input v-model="outputPath" type="text" class="text-input flex-1"
           :class="{ 'danger-path': inPlaceEdit }" :readonly="inPlaceEdit"
-          placeholder="输出存档路径..." />
-        <button class="btn-action btn-cyan" @click="browseOutput" :disabled="inPlaceEdit">浏览</button>
+          :placeholder="t('sigil.generator.outputPlaceholder')" />
+        <button class="btn-action btn-cyan" @click="browseOutput" :disabled="inPlaceEdit">{{ t('sigil.common.browse') }}</button>
         <button class="btn-action btn-cyan" @click="applyQueueToSave"
           :disabled="isApplying || !queue.length">
-          {{ isApplying ? '写入中...' : '应用写入' }}
+          {{ isApplying ? t('sigil.common.writing') : t('sigil.generator.apply') }}
         </button>
       </div>
       <label class="toggle-row">
         <input v-model="inPlaceEdit" type="checkbox" />
-        <span>启用原地修改（直接覆盖输入存档）</span>
+        <span>{{ t('sigil.generator.inPlace') }}</span>
       </label>
-      <div v-if="inPlaceEdit" class="danger-hint">警告：启用后，应用写入将直接覆盖当前输入存档，建议先备份。</div>
+      <div v-if="inPlaceEdit" class="danger-hint">{{ t('sigil.generator.inPlaceWarning') }}</div>
     </div>
 
     <!-- 清除所有 -->
     <div class="section section-danger">
-      <div class="section-title">危险操作</div>
+      <div class="section-title">{{ t('sigil.generator.danger') }}</div>
       <button class="btn-action btn-red" @click="removeAll"
         :disabled="!inputPath.trim() || !outputPath.trim()">
-        清除输出存档中所有因子
+        {{ t('sigil.generator.removeAll') }}
       </button>
     </div>
   </div>

@@ -2,6 +2,7 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { CharaAttach, SummonGetAll, SummonGetOptions, SummonUpdate } from '../../wailsjs/go/main/App'
 import { matchText } from '../utils/matchText.js'
+import { translate as t } from '../i18n'
 
 const emit = defineEmits(['status'])
 const connected = ref(false)
@@ -31,7 +32,7 @@ function subParamValueLabel(level) {
   const idx = Number.parseInt(level, 10)
   if (!sp || !Array.isArray(sp.values) || idx < 0 || idx >= sp.values.length) return String(idx)
   const v = sp.values[idx]
-  return sp.isPercent ? `${idx} → +${v}%` : `${idx} → +${v}`
+  return t('wrightstone.summon.labels.subParamValue', { level: idx, value: v, suffix: sp.isPercent ? '%' : '' })
 }
 // 切换副参数后, 若当前档位超出新副参数上限则钳制, 避免下拉显示空值
 watch(subParamMaxLevel, (max) => {
@@ -53,8 +54,8 @@ const rarityLabelsByCost = { 3: 'I', 4: 'II', 5: 'III' }
 
 function hex(value) { return '0x' + Number(value || 0).toString(16).toUpperCase().padStart(8, '0') }
 function nameForType(hash) { return typeByHash.value.get(hash)?.name || hex(hash) }
-function nameForTrait(hash) { return traitByHash.value.get(hash)?.name || (hash ? hex(hash) : '无') }
-function nameForSubParam(hash) { return subParamByHash.value.get(hash)?.name || (hash ? hex(hash) : '无') }
+function nameForTrait(hash) { return traitByHash.value.get(hash)?.name || (hash ? hex(hash) : t('wrightstone.summon.none')) }
+function nameForSubParam(hash) { return subParamByHash.value.get(hash)?.name || (hash ? hex(hash) : t('wrightstone.summon.none')) }
 function optionLabel(item) { return `${item.name} · ${hex(item.hash)}` }
 function rarityLabel(item) {
   const cost = typeByHash.value.get(item.typeHash)?.cost
@@ -63,10 +64,10 @@ function rarityLabel(item) {
 function parseHash(value, label) {
   const text = String(value).trim()
   const parsed = /^0x/i.test(text) ? Number.parseInt(text, 16) : Number.parseInt(text, 10)
-  if (!Number.isInteger(parsed) || parsed < 0 || parsed > 0xFFFFFFFF) throw new Error(`${label}必须是 32 位无符号整数`)
+  if (!Number.isInteger(parsed) || parsed < 0 || parsed > 0xFFFFFFFF) throw new Error(t('wrightstone.summon.errors.unsignedInteger', { label }))
   return parsed >>> 0
 }
-function traitMax(hash) { return traitByHash.value.get(parseHash(hash, '因子'))?.maxLevel || 999 }
+function traitMax(hash) { return traitByHash.value.get(parseHash(hash, t('wrightstone.summon.fields.mainTrait')))?.maxLevel || 999 }
 
 function load() {
   loading.value = true
@@ -93,22 +94,22 @@ function select(item) {
 }
 
 function save() {
-  if (!selected.value) { emit('status', '请选择召唤石', 'error'); return }
+  if (!selected.value) { emit('status', t('wrightstone.summon.errors.selectSummon'), 'error'); return }
   let update
   try {
-    const mainTraitHash = parseHash(edit.mainTraitHash, '主因子')
-    const subParamHash = parseHash(edit.subParamHash, '副参数')
+    const mainTraitHash = parseHash(edit.mainTraitHash, t('wrightstone.summon.fields.mainTrait'))
+    const subParamHash = parseHash(edit.subParamHash, t('wrightstone.summon.fields.subParam'))
     update = {
       index: selected.value.index,
-      typeHash: parseHash(edit.typeHash, '种类'),
+      typeHash: parseHash(edit.typeHash, t('wrightstone.summon.fields.type')),
       mainTraitHash,
       subParamHash,
       mainTraitLevel: Number.parseInt(edit.mainTraitLevel, 10),
       subParamLevel: Number.parseInt(edit.subParamLevel, 10),
       rank: Number.parseInt(edit.rank, 10),
     }
-    if (!Number.isInteger(update.mainTraitLevel) || update.mainTraitLevel < 0 || update.mainTraitLevel > traitMax(mainTraitHash)) throw new Error(`主因子等级必须为 0 到 ${traitMax(mainTraitHash)}`)
-    if (!Number.isInteger(update.subParamLevel) || update.subParamLevel < 0 || update.subParamLevel > subParamMaxLevel.value) throw new Error(`副参数等级必须为 0 到 ${subParamMaxLevel.value}`)
+    if (!Number.isInteger(update.mainTraitLevel) || update.mainTraitLevel < 0 || update.mainTraitLevel > traitMax(mainTraitHash)) throw new Error(t('wrightstone.summon.errors.mainTraitLevelRange', { max: traitMax(mainTraitHash) }))
+    if (!Number.isInteger(update.subParamLevel) || update.subParamLevel < 0 || update.subParamLevel > subParamMaxLevel.value) throw new Error(t('wrightstone.summon.errors.subParamLevelRange', { max: subParamMaxLevel.value }))
   } catch (err) {
     emit('status', String(err.message || err), 'error')
     return
@@ -119,7 +120,7 @@ function save() {
       const index = summons.value.findIndex((item) => item.index === updated.index)
       if (index >= 0) summons.value.splice(index, 1, updated)
       select(updated)
-      emit('status', '召唤石已写入并保存', 'success')
+      emit('status', t('wrightstone.summon.status.written'), 'success')
     })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { saving.value = false })
@@ -130,35 +131,35 @@ function save() {
   <div class="root">
     <section class="section">
       <header class="header">
-        <div><h2>召唤石工坊</h2><p>打开游戏内召唤石背包后读取；写入会调用游戏保存函数。</p></div>
-        <span v-if="connected" class="pid">PID {{ pid }}</span>
+        <div><h2>{{ t('wrightstone.summon.title') }}</h2><p>{{ t('wrightstone.summon.description') }}</p></div>
+        <span v-if="connected" class="pid">{{ t('wrightstone.summon.processId', { pid }) }}</span>
       </header>
-      <div class="toolbar"><button class="primary" @click="load" :disabled="loading">{{ loading ? '读取中...' : connected ? '刷新背包' : '连接背包' }}</button><span v-if="connected" class="count">{{ summons.length }} 颗</span></div>
+      <div class="toolbar"><button class="primary" @click="load" :disabled="loading">{{ loading ? t('wrightstone.summon.actions.loading') : connected ? t('wrightstone.summon.actions.refreshInventory') : t('wrightstone.summon.actions.connectInventory') }}</button><span v-if="connected" class="count">{{ t('wrightstone.summon.count', { count: summons.length }) }}</span></div>
     </section>
 
     <section v-if="connected" class="workspace">
       <div class="list-panel">
-        <input v-model="filter" class="filter" placeholder="搜索名称或 Hash（更改类型无法写入存档）" />
+        <input v-model="filter" class="filter" :placeholder="t('wrightstone.summon.placeholders.searchSummons')" />
         <div class="list">
           <button v-for="item in filteredSummons" :key="item.index" class="summon-row" :class="{ selected: item.index === selectedIndex }" @click="select(item)">
             <span class="slot">#{{ item.index + 1 }}</span><span class="name">{{ nameForType(item.typeHash) }}</span><span class="rank">{{ rarityLabel(item) }}</span>
           </button>
-          <p v-if="!summons.length" class="empty">未读取到召唤石。请打开游戏内召唤石背包后刷新。</p>
+          <p v-if="!summons.length" class="empty">{{ t('wrightstone.summon.empty.noSummons') }}</p>
         </div>
       </div>
 
       <div class="editor-panel">
         <template v-if="selected">
           <div class="editor-head"><strong>{{ nameForType(selected.typeHash) }}</strong><span>#{{ selected.index + 1 }}</span></div>
-          <label>种类<select v-model="edit.typeHash" class="type-select" disabled><option v-for="item in options.types" :key="item.hash" :value="hex(item.hash)">{{ optionLabel(item) }}</option></select></label>
-          <label>主因子搜索<input v-model="traitFilter" placeholder="名称或 Hash" /></label>
-          <label>主因子<select v-model="edit.mainTraitHash"><option v-for="item in filteredTraits" :key="item.hash" :value="hex(item.hash)">{{ optionLabel(item) }}</option></select></label>
-          <label>主因子等级<input v-model="edit.mainTraitLevel" type="number" min="0" :max="traitMax(edit.mainTraitHash)" /></label>
-          <label>副参数<select v-model="edit.subParamHash"><option v-for="item in options.subParams" :key="item.hash" :value="hex(item.hash)">{{ optionLabel(item) }}</option></select></label>
-          <label>副参数等级<select v-model="edit.subParamLevel"><option v-for="level in (subParamMaxLevel + 1)" :key="level - 1" :value="String(level - 1)">{{ subParamValueLabel(level - 1) }}</option></select></label>
-          <button class="save" @click="save" :disabled="saving">{{ saving ? '写入中...' : '写入召唤石' }}</button>
+          <label>{{ t('wrightstone.summon.fields.type') }}<select v-model="edit.typeHash" class="type-select" disabled><option v-for="item in options.types" :key="item.hash" :value="hex(item.hash)">{{ optionLabel(item) }}</option></select></label>
+          <label>{{ t('wrightstone.summon.fields.mainTraitSearch') }}<input v-model="traitFilter" :placeholder="t('wrightstone.summon.placeholders.nameOrHash')" /></label>
+          <label>{{ t('wrightstone.summon.fields.mainTrait') }}<select v-model="edit.mainTraitHash"><option v-for="item in filteredTraits" :key="item.hash" :value="hex(item.hash)">{{ optionLabel(item) }}</option></select></label>
+          <label>{{ t('wrightstone.summon.fields.mainTraitLevel') }}<input v-model="edit.mainTraitLevel" type="number" min="0" :max="traitMax(edit.mainTraitHash)" /></label>
+          <label>{{ t('wrightstone.summon.fields.subParam') }}<select v-model="edit.subParamHash"><option v-for="item in options.subParams" :key="item.hash" :value="hex(item.hash)">{{ optionLabel(item) }}</option></select></label>
+          <label>{{ t('wrightstone.summon.fields.subParamLevel') }}<select v-model="edit.subParamLevel"><option v-for="level in (subParamMaxLevel + 1)" :key="level - 1" :value="String(level - 1)">{{ subParamValueLabel(level - 1) }}</option></select></label>
+          <button class="save" @click="save" :disabled="saving">{{ saving ? t('wrightstone.summon.actions.writing') : t('wrightstone.summon.actions.write') }}</button>
         </template>
-        <p v-else class="empty">从左侧选择召唤石。</p>
+        <p v-else class="empty">{{ t('wrightstone.summon.empty.selectFromList') }}</p>
       </div>
     </section>
   </div>

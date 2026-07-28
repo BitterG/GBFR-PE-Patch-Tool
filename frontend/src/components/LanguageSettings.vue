@@ -1,36 +1,10 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { SetLanguage } from '../../wailsjs/go/main/App'
-import { language, storeLanguage } from '../i18n'
+import { language, storeLanguage, translate as t } from '../i18n'
 
 const applying = ref(false)
 const current = computed(() => language.value)
-
-const text = computed(() => current.value === 'zh' ? {
-  title: '语言设置',
-  hint: '选择界面语言。更改后界面会自动重新加载。',
-  current: '当前语言',
-  english: 'English',
-  englishDescription: '使用完整英文界面（默认）',
-  chinese: '简体中文',
-  chineseDescription: '使用原始中文界面',
-  active: '已启用',
-  switch: '切换',
-  switching: '正在切换…',
-  defaultLabel: '默认',
-} : {
-  title: 'Language Settings',
-  hint: 'Choose the interface language. The interface reloads automatically after a change.',
-  current: 'Current language',
-  english: 'English',
-  englishDescription: 'Use the complete English interface (default)',
-  chinese: 'Simplified Chinese',
-  chineseDescription: 'Use the original Chinese interface',
-  active: 'Active',
-  switch: 'Switch',
-  switching: 'Switching…',
-  defaultLabel: 'Default',
-})
 
 async function selectLanguage(next) {
   if (applying.value || next === current.value) return
@@ -50,10 +24,10 @@ async function selectLanguage(next) {
   <section class="language-panel">
     <div class="section-header">
       <div>
-        <h2>{{ text.title }}</h2>
-        <p>{{ text.hint }}</p>
+        <h2>{{ t('language.title') }}</h2>
+        <p>{{ t('language.hint') }}</p>
       </div>
-      <span class="current-language">{{ text.current }}: {{ current === 'en' ? text.english : text.chinese }}</span>
+      <span class="current-language">{{ t('language.current') }}: {{ current === 'en' ? t('language.english') : t('language.chinese') }}</span>
     </div>
 
     <div class="language-grid">
@@ -61,13 +35,13 @@ async function selectLanguage(next) {
         <div class="language-icon">EN</div>
         <div class="language-copy">
           <div class="language-title-row">
-            <h3>{{ text.english }}</h3>
-            <span class="default-badge">{{ text.defaultLabel }}</span>
+            <h3>{{ t('language.english') }}</h3>
+            <span class="default-badge">{{ t('language.default') }}</span>
           </div>
-          <p>{{ text.englishDescription }}</p>
+          <p>{{ t('language.englishDescription') }}</p>
         </div>
         <button class="language-button" :disabled="applying || current === 'en'" @click="selectLanguage('en')">
-          {{ current === 'en' ? text.active : applying ? text.switching : text.switch }}
+          {{ current === 'en' ? t('language.active') : applying ? t('language.switching') : t('language.switch') }}
         </button>
       </article>
 
@@ -75,12 +49,12 @@ async function selectLanguage(next) {
         <div class="language-icon">中</div>
         <div class="language-copy">
           <div class="language-title-row">
-            <h3>{{ text.chinese }}</h3>
+            <h3>{{ t('language.chinese') }}</h3>
           </div>
-          <p>{{ text.chineseDescription }}</p>
+          <p>{{ t('language.chineseDescription') }}</p>
         </div>
         <button class="language-button" :disabled="applying || current === 'zh'" @click="selectLanguage('zh')">
-          {{ current === 'zh' ? text.active : applying ? text.switching : text.switch }}
+          {{ current === 'zh' ? t('language.active') : applying ? t('language.switching') : t('language.switch') }}
         </button>
       </article>
     </div>
@@ -108,62 +82,59 @@ h2 { margin: 0; color: rgba(255,255,255,0.9); font-size: 1.1rem; }
 .section-header p { margin: 7px 0 0; color: rgba(255,255,255,0.45); font-size: 0.8rem; line-height: 1.5; }
 .current-language {
   flex-shrink: 0;
-  padding: 5px 10px;
-  border-radius: 999px;
-  color: #67e8f9;
-  background: rgba(103,232,249,0.12);
-  border: 1px solid rgba(103,232,249,0.2);
+  padding: 6px 10px;
+  border: 1px solid rgba(103,232,249,0.18);
+  border-radius: 99px;
+  color: rgba(103,232,249,0.85);
+  background: rgba(103,232,249,0.06);
   font-size: 0.72rem;
-  font-weight: 700;
 }
 .language-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .language-card {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: 1fr auto;
+  display: flex;
+  align-items: center;
   gap: 12px;
-  padding: 18px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.08);
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px;
   background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025));
-  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+  transition: transform .2s, border-color .2s;
 }
 .language-card:hover { transform: translateY(-2px); border-color: rgba(103,232,249,0.22); }
 .language-card.active { border-color: rgba(103,232,249,0.5); background: linear-gradient(145deg, rgba(103,232,249,0.13), rgba(99,102,241,0.08)); }
 .language-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 14px;
-  background: rgba(103,232,249,0.12);
-  color: #67e8f9;
-  font-weight: 800;
-  font-size: 1rem;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 10px;
+  color: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.04);
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 .language-copy { min-width: 0; }
 .language-title-row { display: flex; align-items: center; gap: 8px; }
-h3 { margin: 2px 0 0; font-size: 0.92rem; color: rgba(255,255,255,0.84); }
+h3 { margin: 0; color: rgba(255,255,255,0.86); font-size: 0.86rem; }
 .language-copy p { margin: 7px 0 0; color: rgba(255,255,255,0.42); font-size: 0.76rem; line-height: 1.45; }
-.default-badge { font-size: 0.62rem; padding: 2px 7px; border-radius: 999px; color: #fbbf24; background: rgba(251,191,36,0.12); }
+.default-badge { padding: 2px 6px; border-radius: 99px; color: rgba(251,191,36,0.95); background: rgba(251,191,36,0.1); font-size: 0.62rem; }
 .language-button {
-  grid-column: 1 / -1;
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 10px;
+  margin-left: auto;
+  padding: 6px 9px;
   border: 1px solid rgba(103,232,249,0.28);
-  color: #67e8f9;
-  background: rgba(103,232,249,0.09);
-  font-size: 0.8rem;
-  font-weight: 700;
+  border-radius: 7px;
+  color: rgba(103,232,249,0.92);
+  background: rgba(103,232,249,0.07);
+  font: inherit;
+  font-size: 0.7rem;
   cursor: pointer;
 }
 .language-button:not(:disabled):hover { background: rgba(103,232,249,0.18); }
 .language-button:disabled { cursor: default; opacity: 0.55; }
 .language-card.active .language-button { color: #4ade80; border-color: rgba(74,222,128,0.25); background: rgba(74,222,128,0.09); }
-@media (max-width: 650px) {
+@media (max-width: 680px) {
   .language-grid { grid-template-columns: 1fr; }
-  .section-header { flex-direction: column; }
 }
 </style>

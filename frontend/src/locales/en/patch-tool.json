@@ -1,0 +1,12 @@
+{
+  "patchTool": {
+    "title": "GBFR Save Editor",
+    "window": { "minimize": "Minimize", "close": "Close" },
+    "tabs": {
+      "language": "Language", "sigil": "Sigil Generator", "sigilMemory": "Sigil Generator (New)", "sigilLoadout": "Sigil Loadout Restore", "offlineLoadout": "Offline Loadout", "wrightstone": "Wrightstone Generator", "wrightstoneMemory": "Wrightstone Generator (New)", "chara": "Character Statistics", "save": "Quest Clears", "badge": "Unlock Titles", "misc": "Miscellaneous", "summon": "Summons", "overlimit": "Over Mastery", "monster": "Monster Enhancement"
+    },
+    "path": { "scanning": "Scanning Steam installation paths...", "found": "Game file located", "prompt": "Enter the path to granblue_fantasy_relink.exe", "placeholder": "Paste the full path to the exe file...", "confirm": "Confirm", "notFound": "Game was not detected automatically. Enter the exe path manually.", "backupHint": "Back up the original file before applying patches." },
+    "patch": { "original": "Unpatched", "patched": "Patched", "unknown": "Unknown", "currentValue": "Current value: {value} (0x{hex})", "inputPlaceholder": "Enter a value", "writing": "Writing...", "apply": "Apply", "backup": "Back up", "restore": "Restore", "forceBackup": "Overwrite existing backup", "backupInfo": "Backup: {size} MB (exe only)", "missionHint": "This change does not affect save data", "likesHint": "Takes effect after receiving a Like (affects save data)" },
+    "status": { "fileLoaded": "File loaded successfully", "enterPath": "Enter a file path", "enterValidValue": "Enter a valid value", "patchWritten": "Patch applied successfully", "patchFailed": "Patch failed: {error}", "backupCreated": "Backup created successfully", "backupFailed": "Backup failed: {error}", "fileRestored": "File restored", "restoreFailed": "Restore failed: {error}", "unknownError": "Unknown error" }
+  }
+}

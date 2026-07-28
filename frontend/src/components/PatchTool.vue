@@ -16,7 +16,7 @@ import MonsterEnhance from './MonsterEnhance.vue'
 import OverLimit from './OverLimit.vue'
 import SummonEditor from './SummonEditor.vue'
 import LanguageSettings from './LanguageSettings.vue'
-import { hasStoredLanguage, language, translateText } from '../i18n'
+import { hasStoredLanguage, language, translate as t } from '../i18n'
 
 const state = reactive({
   exePath: '',
@@ -59,13 +59,13 @@ function loadFile(path) {
       else if (!patchValues[p.id]) patchValues[p.id] = ''
     })
     isLoaded.value = true
-    showStatus('文件加载成功', 'success')
+    showStatus(t('patchTool.status.fileLoaded'), 'success')
   })
 }
 
 function applyManualPath() {
   const p = manualPath.value.trim()
-  if (!p) { showStatus('请输入文件路径', 'error'); return }
+  if (!p) { showStatus(t('patchTool.status.enterPath'), 'error'); return }
   SetExePath(p)
     .then((info) => {
       Object.assign(state, info)
@@ -74,7 +74,7 @@ function applyManualPath() {
         else if (!patchValues[p.id]) patchValues[p.id] = ''
       })
       isLoaded.value = true
-      showStatus('文件加载成功', 'success')
+      showStatus(t('patchTool.status.fileLoaded'), 'success')
     })
     .catch((err) => showStatus(String(err), 'error'))
 }
@@ -90,26 +90,26 @@ function refreshStatus() {
 
 function applyPatch(patchID) {
   const v = parseInt(patchValues[patchID])
-  if (isNaN(v) || v < 0) { showStatus('请输入有效数值', 'error'); return }
+  if (isNaN(v) || v < 0) { showStatus(t('patchTool.status.enterValidValue'), 'error'); return }
   patchingID.value = patchID
   PatchFile(patchID, v)
     .then(() => refreshStatus())
-    .then(() => { patchingID.value = ''; showStatus('补丁写入成功', 'success') })
-    .catch((err) => { patchingID.value = ''; showStatus('补丁失败: ' + (err || '未知错误'), 'error') })
+    .then(() => { patchingID.value = ''; showStatus(t('patchTool.status.patchWritten'), 'success') })
+    .catch((err) => { patchingID.value = ''; showStatus(t('patchTool.status.patchFailed', { error: err || t('patchTool.status.unknownError') }), 'error') })
 }
 
 function backup() {
   BackupFile(forceBackup.value)
     .then(() => refreshStatus())
-    .then(() => showStatus('备份创建成功', 'success'))
-    .catch((err) => showStatus('备份失败: ' + (err || '未知错误'), 'error'))
+    .then(() => showStatus(t('patchTool.status.backupCreated'), 'success'))
+    .catch((err) => showStatus(t('patchTool.status.backupFailed', { error: err || t('patchTool.status.unknownError') }), 'error'))
 }
 
 function restore() {
   RestoreFile()
     .then(() => refreshStatus())
-    .then(() => showStatus('文件已恢复', 'success'))
-    .catch((err) => showStatus('恢复失败: ' + (err || '未知错误'), 'error'))
+    .then(() => showStatus(t('patchTool.status.fileRestored'), 'success'))
+    .catch((err) => showStatus(t('patchTool.status.restoreFailed', { error: err || t('patchTool.status.unknownError') }), 'error'))
 }
 
 const CARD_COLORS = {
@@ -118,12 +118,12 @@ const CARD_COLORS = {
 }
 
 const CARD_HINTS = {
-  mission: '此修改不影响存档',
-  likes: '被点赞后生效（影响存档）',
+  mission: t('patchTool.patch.missionHint'),
+  likes: t('patchTool.patch.likesHint'),
 }
 
 function showStatus(msg, type) {
-  saveStatus.value = translateText(String(msg)); statusType.value = type
+  saveStatus.value = String(msg); statusType.value = type
   setTimeout(() => { saveStatus.value = '' }, 3000)
 }
 
@@ -138,7 +138,7 @@ function showStatus(msg, type) {
     </div>
     <div class="titlebar" style="--wails-draggable:drag">
       <div class="titlebar-left">
-        <span class="titlebar-title">GBFR 存档修改工具</span>
+        <span class="titlebar-title">{{ t('patchTool.title') }}</span>
         <transition name="fade">
           <span v-if="saveStatus" class="titlebar-status" :class="statusType">
             {{ statusType === 'success' ? '●' : '✕' }} {{ saveStatus }}
@@ -146,10 +146,10 @@ function showStatus(msg, type) {
         </transition>
       </div>
       <div class="titlebar-controls" style="--wails-draggable:no-drag">
-        <button class="win-btn minimize" @click="WindowMinimise" title="最小化">
+        <button class="win-btn minimize" @click="WindowMinimise" :title="t('patchTool.window.minimize')">
           <svg width="10" height="1" viewBox="0 0 10 1"><rect width="10" height="1.5" rx="0.75" fill="currentColor"/></svg>
         </button>
-        <button class="win-btn close" @click="Quit" title="关闭">
+        <button class="win-btn close" @click="Quit" :title="t('patchTool.window.close')">
           <svg width="10" height="10" viewBox="0 0 10 10"><line x1="1" y1="1" x2="9" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="1" x2="1" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -157,60 +157,60 @@ function showStatus(msg, type) {
 
     <div class="tab-bar" style="--wails-draggable:no-drag">
       <button class="tab-btn language-tab" :class="{ active: activeTab === 'language' }" @click="activeTab = 'language'">
-        {{ language === 'zh' ? '语言/LANG' : 'Language' }}
+        {{ t('patchTool.tabs.language') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'sigil' }" @click="activeTab = 'sigil'">
-        因子生成
+        {{ t('patchTool.tabs.sigil') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'sigilMemory' }" @click="activeTab = 'sigilMemory'">
-        因子生成-新
+        {{ t('patchTool.tabs.sigilMemory') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'sigilLoadout' }" @click="activeTab = 'sigilLoadout'">
-        因子配装复出
+        {{ t('patchTool.tabs.sigilLoadout') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'offlineLoadout' }" @click="activeTab = 'offlineLoadout'">
-        完整离线配装
+        {{ t('patchTool.tabs.offlineLoadout') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'wrightstone' }" @click="activeTab = 'wrightstone'">
-        祝福生成
+        {{ t('patchTool.tabs.wrightstone') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'wrightstoneMemory' }" @click="activeTab = 'wrightstoneMemory'">
-        祝福生成-新
+        {{ t('patchTool.tabs.wrightstoneMemory') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'chara' }" @click="activeTab = 'chara'">
-        角色次数统计
+        {{ t('patchTool.tabs.chara') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'save' }" @click="activeTab = 'save'">
-        副本次数
+        {{ t('patchTool.tabs.save') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'badge' }" @click="activeTab = 'badge'">
-        解锁称号
+        {{ t('patchTool.tabs.badge') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'misc' }" @click="activeTab = 'misc'">
-        杂项
+        {{ t('patchTool.tabs.misc') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'summon' }" @click="activeTab = 'summon'">
-        召唤石
+        {{ t('patchTool.tabs.summon') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'overlimit' }" @click="activeTab = 'overlimit'">
-        上限突破
+        {{ t('patchTool.tabs.overlimit') }}
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'monster' }" @click="activeTab = 'monster'">
-        怪物增强
+        {{ t('patchTool.tabs.monster') }}
       </button>
     </div>
 
     <main v-if="activeTab === 'patch'" class="container" style="--wails-draggable:no-drag">
       <div class="path-section">
         <div class="path-label">
-          <span v-if="isDetecting">正在扫描 Steam 安装路径...</span>
-          <span v-else-if="isLoaded" class="path-found">已定位游戏文件</span>
-          <span v-else>输入 granblue_fantasy_relink.exe 路径</span>
+          <span v-if="isDetecting">{{ t('patchTool.path.scanning') }}</span>
+          <span v-else-if="isLoaded" class="path-found">{{ t('patchTool.path.found') }}</span>
+          <span v-else>{{ t('patchTool.path.prompt') }}</span>
         </div>
         <div class="path-input-row">
           <input v-model="manualPath" type="text" class="path-input"
-            placeholder="粘贴 exe 文件完整路径..." @keyup.enter="applyManualPath" />
-          <button class="btn-path-confirm" @click="applyManualPath" :disabled="!manualPath.trim()">确定</button>
+            :placeholder="t('patchTool.path.placeholder')" @keyup.enter="applyManualPath" />
+          <button class="btn-path-confirm" @click="applyManualPath" :disabled="!manualPath.trim()">{{ t('patchTool.path.confirm') }}</button>
         </div>
       </div>
 
@@ -227,18 +227,18 @@ function showStatus(msg, type) {
             <div class="card-header">
               <span class="card-label">{{ p.name }}</span>
               <span v-if="CARD_HINTS[p.id]" class="card-hint">{{ CARD_HINTS[p.id] }}</span>
-              <span v-if="p.state==='original'" class="state-badge original">未补丁</span>
-              <span v-else-if="p.state==='patched'" class="state-badge patched">已补丁</span>
-              <span v-else class="state-badge unknown">未知</span>
+              <span v-if="p.state==='original'" class="state-badge original">{{ t('patchTool.patch.original') }}</span>
+              <span v-else-if="p.state==='patched'" class="state-badge patched">{{ t('patchTool.patch.patched') }}</span>
+              <span v-else class="state-badge unknown">{{ t('patchTool.patch.unknown') }}</span>
             </div>
             <div v-if="p.state==='patched'" class="card-detail">
-              当前值: {{ p.currentValue }} (0x{{ p.currentValue.toString(16).toUpperCase() }})
+              {{ t('patchTool.patch.currentValue', { value: p.currentValue, hex: p.currentValue.toString(16).toUpperCase() }) }}
             </div>
             <div class="card-edit-row">
-              <input v-model="patchValues[p.id]" type="number" min="0" class="edit-input" placeholder="输入数值" />
+              <input v-model="patchValues[p.id]" type="number" min="0" class="edit-input" :placeholder="t('patchTool.patch.inputPlaceholder')" />
               <button class="btn-patch" @click="applyPatch(p.id)"
                 :disabled="patchingID === p.id || !patchValues[p.id] || isNaN(parseInt(patchValues[p.id]))">
-                {{ patchingID === p.id ? '写入中...' : '应用' }}
+                {{ patchingID === p.id ? t('patchTool.patch.writing') : t('patchTool.patch.apply') }}
               </button>
             </div>
           </div>
@@ -246,22 +246,22 @@ function showStatus(msg, type) {
           <!-- 备份/恢复 -->
           <div class="backup-section">
             <div class="backup-row">
-              <button class="btn-secondary" @click="backup">备份</button>
-              <button class="btn-secondary restore" @click="restore" :disabled="!state.backupExists">恢复</button>
+              <button class="btn-secondary" @click="backup">{{ t('patchTool.patch.backup') }}</button>
+              <button class="btn-secondary restore" @click="restore" :disabled="!state.backupExists">{{ t('patchTool.patch.restore') }}</button>
             </div>
             <label class="force-label">
               <input type="checkbox" v-model="forceBackup" />
-              <span>强制覆盖已有备份</span>
+              <span>{{ t('patchTool.patch.forceBackup') }}</span>
             </label>
-            <div v-if="state.backupExists" class="backup-info">备份: {{ (state.backupSize / 1024 / 1024).toFixed(1) }} MB (仅 exe)</div>
+            <div v-if="state.backupExists" class="backup-info">{{ t('patchTool.patch.backupInfo', { size: (state.backupSize / 1024 / 1024).toFixed(1) }) }}</div>
           </div>
         </div>
       </transition>
 
             <transition name="fade">
         <div v-if="!isLoaded && !isDetecting" class="placeholder">
-          <p>未自动检测到游戏，请手动输入 exe 路径</p>
-          <p class="placeholder-tip">建议先备份原始文件再进行补丁操作</p>
+          <p>{{ t('patchTool.path.notFound') }}</p>
+          <p class="placeholder-tip">{{ t('patchTool.path.backupHint') }}</p>
         </div>
       </transition>
       <div class="footer-hint"><a href="https://github.com/BitterG/GBFR-PE-Patch-Tool" target="_blank" class="footer-link">github.com/BitterG/GBFR-PE-Patch-Tool</a></div>

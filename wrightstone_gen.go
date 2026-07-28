@@ -92,7 +92,7 @@ func (wg *WrightstoneGen) GetWrightstoneList() ([]WrightstoneInfo, error) {
 	for i, w := range sorted {
 		defaultName := ""
 		if t, err := wg.catalog.RequireTrait(w.DefaultTraitID); err == nil {
-			defaultName = cnTrait(t.DisplayName)
+			defaultName = cnWrightstoneTrait(t.DisplayName)
 		}
 		result[i] = WrightstoneInfo{
 			InternalID:       w.InternalID,
@@ -116,7 +116,7 @@ func (wg *WrightstoneGen) GetTraitList() ([]WrightstoneTraitInfo, error) {
 		result[i] = WrightstoneTraitInfo{
 			InternalID:    t.InternalID,
 			Hash:          t.Hash,
-			DisplayName:   cnTrait(t.DisplayName),
+			DisplayName:   cnWrightstoneTrait(t.DisplayName),
 			MaxLevel:      derefInt(t.MaxLevel),
 			AllowedLevels: levels,
 		}
@@ -151,7 +151,7 @@ func (wg *WrightstoneGen) GetDefaultTrait(wrightstoneID string) (*WrightstoneTra
 	return &WrightstoneTraitInfo{
 		InternalID:    t.InternalID,
 		Hash:          t.Hash,
-		DisplayName:   cnTrait(t.DisplayName),
+		DisplayName:   cnWrightstoneTrait(t.DisplayName),
 		MaxLevel:      derefInt(t.MaxLevel),
 		AllowedLevels: levels,
 	}, nil

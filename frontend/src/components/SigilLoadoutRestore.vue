@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { translate as t } from '../i18n'
 import { SigilMemoryEnable, SigilMemoryGetOptions, SigilMemoryGetStatus, SigilMemoryUpdate, SelectLogsSigilLoadouts } from '../../wailsjs/go/main/App'
 
 const emit = defineEmits(['status'])
@@ -71,16 +72,19 @@ function validCompleteLoadout(data) {
 const sigilNames = computed(() => new Map(options.sigils.map(item => [item.hash >>> 0, item.displayName])))
 const traitNames = computed(() => new Map(options.traits.map(item => [item.hash >>> 0, item.displayName])))
 const modeText = computed(() => ({
-  idle: '未开始',
-  record: `录制中 ${entries.value.length}/${MAX_ENTRIES}`,
-  write: `写入中 ${writeIndex.value}/${entries.value.length}`,
+  idle: t('sigil.loadout.idle'),
+  record: t('sigil.loadout.recording', { count: entries.value.length, max: MAX_ENTRIES }),
+  write: t('sigil.loadout.writing', { count: writeIndex.value, total: entries.value.length }),
 }[mode.value]))
-function nameFor(map, value) { return map.get(value >>> 0) || `未知 ${hex(value)}` }
+function nameFor(map, value) { return map.get(value >>> 0) || t('sigil.loadout.unknown', { hash: hex(value) }) }
 function detail(entry) {
-  const secondary = entry.secondaryTraitHash
-    ? ` / ${nameFor(traitNames.value, entry.secondaryTraitHash)} Lv ${entry.secondaryTraitLevel}`
-    : ''
-  return `${nameFor(sigilNames.value, entry.sigilHash)} Lv ${entry.sigilLevel} · ${nameFor(traitNames.value, entry.primaryTraitHash)} Lv ${entry.primaryTraitLevel}${secondary}`
+  return t('sigil.loadout.entryDetails', {
+    sigil: nameFor(sigilNames.value, entry.sigilHash),
+    sigilLevel: t('sigil.common.level', { level: entry.sigilLevel }),
+    primary: nameFor(traitNames.value, entry.primaryTraitHash),
+    primaryLevel: t('sigil.common.level', { level: entry.primaryTraitLevel }),
+    secondary: entry.secondaryTraitHash ? t('sigil.loadout.secondaryDetails', { name: nameFor(traitNames.value, entry.secondaryTraitHash), level: t('sigil.common.level', { level: entry.secondaryTraitLevel }) }) : '',
+  })
 }
 
 async function enableReader() { await SigilMemoryEnable() }
@@ -104,10 +108,10 @@ async function poll() {
 
     if (mode.value === 'record') {
       entries.value = [...entries.value, current]
-      show(`已录制 ${entries.value.length}/${MAX_ENTRIES}: ${nameFor(sigilNames.value, current.sigilHash)}`, 'success')
+      show(t('sigil.loadout.recorded', { count: entries.value.length, max: MAX_ENTRIES, name: nameFor(sigilNames.value, current.sigilHash) }), 'success')
       if (entries.value.length === MAX_ENTRIES) {
         stop()
-        show('录制完成，已达到 12 条', 'success')
+        show(t('sigil.loadout.recordComplete'), 'success')
       }
       return
     }
@@ -116,11 +120,11 @@ async function poll() {
       const target = entries.value[writeIndex.value]
       await SigilMemoryUpdate(target)
       writeIndex.value++
-      show(`已写入 ${writeIndex.value}/${entries.value.length}: ${nameFor(sigilNames.value, target.sigilHash)}`, 'success')
+      show(t('sigil.loadout.writingNamed', { count: writeIndex.value, total: entries.value.length, name: nameFor(sigilNames.value, target.sigilHash) }), 'success')
       lastSeen = ''
       if (writeIndex.value === entries.value.length) {
         stop()
-        show('配装写入完成', 'success')
+        show(t('sigil.loadout.writeComplete'), 'success')
       }
     }
   } catch (error) {
@@ -143,20 +147,20 @@ async function startRecord() {
     mode.value = 'record'
     await poll()
     timer = window.setInterval(poll, 50)
-    show('录制已开始：游戏内选中首个因子后自动记录，切换因子继续记录', 'success')
+    show(t('sigil.loadout.startRecord'), 'success')
   } catch (error) { show(String(error), 'error') }
 }
 
 async function startWrite() {
   if (mode.value !== 'idle') return
-  if (!entries.value.length) { show('请先录制或导入配装', 'error'); return }
+  if (!entries.value.length) { show(t('sigil.loadout.needLoadout'), 'error'); return }
   try {
     await enableReader()
     writeIndex.value = 0
     lastSeen = ''
     mode.value = 'write'
     timer = window.setInterval(poll, 50)
-    show('写入已开始：游戏内选中第一个因子后自动写入；每切换一次因子写入下一条', 'success')
+    show(t('sigil.loadout.startWrite'), 'success')
   } catch (error) { show(String(error), 'error') }
 }
 
@@ -184,29 +188,29 @@ function selectLogsLoadout() {
   importedVersion.value = sharedLoadout.value ? `GBFR Logs / gbfr-loadout v${sharedLoadout.value.version}` : 'GBFR Logs'
   importedComment.value = [loadout.playerName, loadout.characterName].filter(Boolean).join(' / ')
   writeIndex.value = 0
-  show(`已选择 ${importedComment.value || '玩家'} 的 ${entries.value.length} 条配装`, 'success')
+  show(t('sigil.loadout.selected', { player: importedComment.value || t('sigil.loadout.player'), count: entries.value.length }), 'success')
 }
 
 async function importLogs() {
   if (mode.value !== 'idle') return
   try {
     logsRecords.value = await SelectLogsSigilLoadouts() || []
-    if (!logsRecords.value.length) throw new Error('日志未包含可用玩家配装')
+    if (!logsRecords.value.length) throw new Error(t('sigil.loadout.logsEmpty'))
     selectedLogsRecord.value = '0'
     logsDialogOpen.value = true
-  } catch (error) { show(`GBFR Logs 导入失败: ${String(error)}`, 'error') }
+  } catch (error) { show(t('sigil.loadout.logsFailed', { error: String(error) }), 'error') }
 }
 
 function confirmLogsRecord() {
   selectLogsRecord()
   logsDialogOpen.value = false
-  show(`已读取第 ${Number(selectedLogsRecord.value) + 1} 条记录，含 ${logsLoadouts.value.length} 名玩家；可切换团队玩家`, 'success')
+  show(t('sigil.loadout.logsRead', { index: Number(selectedLogsRecord.value) + 1, count: logsLoadouts.value.length }), 'success')
 }
 
 function closeLogsDialog() { logsDialogOpen.value = false }
 
 function exportJSON() {
-  if (!entries.value.length) { show('没有可导出的配装', 'error'); return }
+  if (!entries.value.length) { show(t('sigil.loadout.nothingExport'), 'error'); return }
   const payload = sharedLoadout.value
     ? sharedLoadout.value
     : { format: FORMAT, version: VERSION, loadoutVersion: exportVersion.value.trim(), comment: exportComment.value.trim(), entries: entries.value }
@@ -231,10 +235,10 @@ async function importJSON(event) {
       ? data.sigils.map(item => ({ sigilHash: parseInt(item.hash, 16), sigilLevel: item.level, primaryTraitHash: parseInt(item.primaryTraitHash, 16), primaryTraitLevel: item.primaryTraitLevel, secondaryTraitHash: parseInt(item.secondaryTraitHash || '0', 16), secondaryTraitLevel: item.secondaryTraitLevel || 0 }))
       : data?.entries
     if ((!complete && (data?.format !== FORMAT || data?.version !== VERSION)) || !Array.isArray(sourceEntries)) {
-      throw new Error('不是支持的因子或完整配装 JSON 文件')
+      throw new Error(t('sigil.loadout.invalidFile'))
     }
     if (!sourceEntries.length || sourceEntries.length > MAX_ENTRIES || !sourceEntries.every(validEntry)) {
-      throw new Error('配装因子条目无效，数量必须为 1 到 12 条')
+      throw new Error(t('sigil.loadout.invalidEntries'))
     }
     entries.value = sourceEntries.map(snapshot)
     sharedLoadout.value = complete ? data : null
@@ -244,8 +248,8 @@ async function importJSON(event) {
     importedVersion.value = exportVersion.value
     importedComment.value = exportComment.value
     writeIndex.value = 0
-    show(`已导入 ${entries.value.length} 条配装`, 'success')
-  } catch (error) { show(`导入失败: ${String(error)}`, 'error') }
+    show(t('sigil.loadout.imported', { count: entries.value.length }), 'success')
+  } catch (error) { show(t('sigil.loadout.importFailed', { error: String(error) }), 'error') }
 }
 
 onMounted(async () => {
@@ -253,7 +257,7 @@ onMounted(async () => {
     const result = await SigilMemoryGetOptions()
     options.sigils = result.sigils || []
     options.traits = result.traits || []
-  } catch (error) { show(`读取因子数据失败: ${String(error)}`, 'error') }
+  } catch (error) { show(t('sigil.memory.optionsFailed', { error: String(error) }), 'error') }
 })
 onBeforeUnmount(stop)
 </script>
@@ -262,69 +266,66 @@ onBeforeUnmount(stop)
   <div class="loadout">
     <div v-if="logsDialogOpen" class="logs-dialog-mask" @click.self="closeLogsDialog">
       <section class="logs-dialog" role="dialog" aria-modal="true" aria-labelledby="logs-dialog-title">
-        <div id="logs-dialog-title" class="section-title">选择 GBFR Logs 记录 <span>{{ logsRecords.length }} 条可用</span></div>
+        <div id="logs-dialog-title" class="section-title">{{ t('sigil.loadout.logsTitle') }} <span>{{ t('sigil.loadout.available', { count: logsRecords.length }) }}</span></div>
         <div class="logs-records">
           <label v-for="(record, index) in logsRecords" :key="index" class="logs-record" :class="{ selected: selectedLogsRecord === String(index) }">
             <input v-model="selectedLogsRecord" type="radio" name="logs-record" :value="String(index)" />
             <span>{{ new Date(record.logTime).toLocaleString() }}</span>
-            <small>{{ record.loadouts.length }} 名玩家</small>
+            <small>{{ t('sigil.loadout.players', { count: record.loadouts.length }) }}</small>
           </label>
         </div>
         <div class="actions">
-          <button class="btn" @click="closeLogsDialog">取消</button>
-          <button class="btn btn-logs" @click="confirmLogsRecord">确认导入</button>
+          <button class="btn" @click="closeLogsDialog">{{ t('sigil.common.cancel') }}</button>
+          <button class="btn btn-logs" @click="confirmLogsRecord">{{ t('sigil.loadout.confirmImport') }}</button>
         </div>
       </section>
     </div>
     <section class="section">
-      <div class="section-title">因子配装复出 <span>{{ modeText }}</span></div>
+      <div class="section-title">{{ t('sigil.loadout.title') }} <span>{{ modeText }}</span></div>
       <div class="actions">
-        <button class="btn btn-record" :disabled="mode !== 'idle'" @click="startRecord">开始录制</button>
-        <button class="btn btn-write" :disabled="mode !== 'idle' || !entries.length" @click="startWrite">开始写入</button>
-        <button class="btn" :disabled="mode === 'idle'" @click="stop">停止</button>
-        <button class="btn" :disabled="mode !== 'idle' || !entries.length" @click="exportJSON">导出 JSON</button>
-        <button class="btn" :disabled="mode !== 'idle'" @click="chooseImport">导入 JSON</button>
-        <button class="btn btn-logs" :disabled="mode !== 'idle'" @click="importLogs">导入 GBFR Logs</button>
-        <button class="btn btn-danger" :disabled="mode !== 'idle' || !entries.length" @click="clearEntries">清空</button>
+        <button class="btn btn-record" :disabled="mode !== 'idle'" @click="startRecord">{{ t('sigil.loadout.startRecording') }}</button>
+        <button class="btn btn-write" :disabled="mode !== 'idle' || !entries.length" @click="startWrite">{{ t('sigil.loadout.startWriting') }}</button>
+        <button class="btn" :disabled="mode === 'idle'" @click="stop">{{ t('sigil.loadout.stop') }}</button>
+        <button class="btn" :disabled="mode !== 'idle' || !entries.length" @click="exportJSON">{{ t('sigil.loadout.export') }}</button>
+        <button class="btn" :disabled="mode !== 'idle'" @click="chooseImport">{{ t('sigil.loadout.import') }}</button>
+        <button class="btn btn-logs" :disabled="mode !== 'idle'" @click="importLogs">{{ t('sigil.loadout.importLogs') }}</button>
+        <button class="btn btn-danger" :disabled="mode !== 'idle' || !entries.length" @click="clearEntries">{{ t('sigil.common.clear') }}</button>
         <input ref="fileInput" class="file-input" type="file" accept="application/json,.json" @change="importJSON" />
       </div>
       <div v-if="logsLoadouts.length" class="logs-picker">
         <label>
-          <span>GBFR Logs 团队玩家</span>
+          <span>{{ t('sigil.loadout.logsTeamPlayer') }}</span>
           <select v-model="selectedLogsLoadout" :disabled="mode !== 'idle'" @change="selectLogsLoadout">
             <option v-for="(loadout, index) in logsLoadouts" :key="index" :value="String(index)">
-              {{ loadout.playerName || '未命名玩家' }}<template v-if="loadout.characterName"> / {{ loadout.characterName }}</template>（{{ loadout.entries.length }} 条）
+              {{ loadout.playerName || t('sigil.loadout.unnamedPlayer') }}<template v-if="loadout.characterName">{{ t('sigil.loadout.playerCharacter', { name: loadout.characterName }) }}</template>{{ t('sigil.loadout.availableWrap', { count: loadout.entries.length }) }}
             </option>
           </select>
         </label>
       </div>
       <div class="export-fields">
         <label>
-          <span>配装版本号</span>
-          <input v-model="exportVersion" :disabled="mode !== 'idle'" maxlength="80" placeholder="例如 1.0.0" />
+          <span>{{ t('sigil.loadout.version') }}</span>
+          <input v-model="exportVersion" :disabled="mode !== 'idle'" maxlength="80" :placeholder="t('sigil.loadout.versionPlaceholder')" />
         </label>
         <label>
-          <span>注释</span>
-          <textarea v-model="exportComment" :disabled="mode !== 'idle'" maxlength="500" rows="2" placeholder="配装用途、角色或说明..." />
+          <span>{{ t('sigil.loadout.comment') }}</span>
+          <textarea v-model="exportComment" :disabled="mode !== 'idle'" maxlength="500" rows="2" :placeholder="t('sigil.loadout.commentPlaceholder')" />
         </label>
       </div>
       <div v-if="importedVersion || importedComment" class="imported-meta">
-        <span v-if="importedVersion">导入版本：{{ importedVersion }}</span>
-        <span v-if="importedComment">导入注释：{{ importedComment }}</span>
+        <span v-if="importedVersion">{{ t('sigil.loadout.importVersion', { version: importedVersion }) }}</span>
+        <span v-if="importedComment">{{ t('sigil.loadout.importComment', { comment: importedComment }) }}</span>
       </div>
       <div v-if="importWarnings.length" class="import-warnings">
-        <strong>导入警告</strong>
+        <strong>{{ t('sigil.loadout.importWarnings') }}</strong>
         <span v-for="(warning, index) in importWarnings" :key="index">{{ warning }}</span>
       </div>
-      <p class="hint">录制：被录制角色装好12个因子进入 持有物>因子 按角色筛选，焦点第1行点录制后焦点依次向下滑动到第12行完成。
-        写入：与录制同理，被写入角色佩戴12个未使用的任意因子，持有物>因子 按角色筛选，从第1行点击写入滑到12行。
-      注意事项：不要装备两个及以上个完全相同的因子，不要滑太快，会导致遗漏。完整 `gbfr-loadout` 文件和 GBFR Logs 快照会保留武器、技能、召唤石、专精、上限突破等草稿数据；本模块当前只会实际写入因子，其他字段不会直接写入未经验证的存档布局。
-      </p>
+      <p class="hint">{{ t('sigil.loadout.hint') }}</p>
     </section>
 
     <section class="section">
-      <div class="section-title">配装内容 <span>{{ entries.length }}/{{ MAX_ENTRIES }}</span></div>
-      <div v-if="!entries.length" class="empty">尚无配装</div>
+      <div class="section-title">{{ t('sigil.loadout.contents') }} <span>{{ entries.length }}/{{ MAX_ENTRIES }}</span></div>
+      <div v-if="!entries.length" class="empty">{{ t('sigil.loadout.empty') }}</div>
       <ol v-else class="entries">
         <li v-for="(entry, index) in entries" :key="index" :class="{ active: mode === 'write' && index === writeIndex }">
           <span class="entry-index">{{ index + 1 }}</span>

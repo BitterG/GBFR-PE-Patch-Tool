@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '../i18n'
 import { reactive, ref } from 'vue'
 import { MonsterEnhanceGetStatus, MonsterEnhanceSetPatchValueEnabled, DamageMeterGetStatus } from '../../wailsjs/go/main/App'
 
@@ -56,11 +57,15 @@ function needsSbaTimer(item) {
   return item.id === 'sba_chain_timer'
 }
 
+function itemName(item) {
+  return t(`runtimeTools.monsterEnhance.items.${item.id}`)
+}
+
 function multiplierHint(item) {
-  if (item.id === 'monster_hp') return '输入 10 = 怪物10倍血'
-  if (item.id === 'monster_stun') return '输入 10 = 怪物10倍昏厥条'
-  if (item.id === 'monster_damage') return '输入 32 = 怪物伤害32倍'
-  if (item.id === 'sba_chain_timer') return '游戏默认 3 秒'
+  if (item.id === 'monster_hp') return t('runtimeTools.monsterEnhance.hintHp')
+  if (item.id === 'monster_stun') return t('runtimeTools.monsterEnhance.hintStun')
+  if (item.id === 'monster_damage') return t('runtimeTools.monsterEnhance.hintDamage')
+  if (item.id === 'sba_chain_timer') return t('runtimeTools.monsterEnhance.hintSba')
   return ''
 }
 
@@ -77,17 +82,17 @@ function startsDamageMeter(item) {
 }
 
 function ensureDamageMeter() {
-  return DamageMeterGetStatus().catch((err) => emit('status', `伤害记录开启失败: ${String(err)}`, 'error'))
+  return DamageMeterGetStatus().catch((err) => emit('status', t('runtimeTools.monsterEnhance.damageMeterFailed', { error: String(err) }), 'error'))
 }
 
 function setOne(item, enabled, id = item.id) {
   if (enabled && needsMultiplier(item)) {
     const v = getMultiplier(item)
-    if (isNaN(v) || v <= 0 || v > 9999) { emit('status', '倍率请输入 0 到 9999 之间的数值', 'error'); return }
+    if (isNaN(v) || v <= 0 || v > 9999) { emit('status', t('runtimeTools.monsterEnhance.multiplierInvalid'), 'error'); return }
   }
   if (enabled && needsOverdriveState(item)) {
     const v = patchValue(item)
-    if (![0, 3, 9].includes(v)) { emit('status', 'Overdrive 状态请选择 空条、满黄条或自动OD', 'error'); return }
+    if (![0, 3, 9].includes(v)) { emit('status', t('runtimeTools.monsterEnhance.overdriveInvalid'), 'error'); return }
   }
   const previous = item.enabled
   item.enabled = enabled
@@ -96,8 +101,8 @@ function setOne(item, enabled, id = item.id) {
     .then((res) => {
       if (enabled && startsDamageMeter(item)) ensureDamageMeter()
       applyResult(res)
-      const verb = id === 'overdrive_state_apply' || (item.id === 'sba_chain_timer' && enabled) ? '已应用' : (enabled ? '已开启' : '已关闭')
-      emit('status', `${item.name}${verb}`, 'success')
+      const verb = id === 'overdrive_state_apply' || (item.id === 'sba_chain_timer' && enabled) ? t('runtimeTools.monsterEnhance.applied') : (enabled ? t('runtimeTools.monsterEnhance.started') : t('runtimeTools.monsterEnhance.stopped'))
+      emit('status', t('runtimeTools.monsterEnhance.status', { name: itemName(item), verb }), 'success')
     })
     .catch((err) => {
       item.enabled = previous
@@ -113,67 +118,65 @@ refreshStatus()
   <div class="root">
     <div class="section">
       <div class="header">
-        <span class="title">怪物增强</span>
-        <span class="info-dot" title="开启时释放内置 patch_core.dll 到临时目录并注入；关闭时 Go 侧恢复原始字节。">!</span>
-        <span class="hint">DLL 注入开启 · Go 恢复关闭</span>
+        <span class="title">{{ t('runtimeTools.monsterEnhance.title') }}</span>
+        <span class="info-dot" :title="t('runtimeTools.monsterEnhance.notice')">!</span>
+        <span class="hint">{{ t('runtimeTools.monsterEnhance.hint') }}</span>
       </div>
 
       <div class="process-card">
         <div class="memory-info">
-          <span>目标进程: granblue_fantasy_relink.exe</span>
-          <span v-if="result.pid">PID: {{ result.pid }}</span>
-          <button class="btn-refresh compact" @click="refreshStatus" :disabled="loading">刷新</button>
+          <span>{{ t('runtimeTools.monsterEnhance.process') }}</span>
+          <span v-if="result.pid">{{ t('runtimeTools.common.pid') }}: {{ result.pid }}</span>
+          <button class="btn-refresh compact" @click="refreshStatus" :disabled="loading">{{ t('runtimeTools.common.refresh') }}</button>
         </div>
       </div>
 
       <div class="card-grid">
         <div v-for="item in result.items" :key="item.id" class="memory-card" :class="{ active: item.enabled }">
         <div class="memory-header">
-          <span class="memory-title">{{ item.name }}</span>
-          <span class="state" :class="{ on: item.enabled }">{{ item.enabled ? '开启' : '关闭' }}</span>
-          <span class="memory-hint">RVA: 0x{{ Number(item.rva).toString(16).toUpperCase() }}</span>
+          <span class="memory-title">{{ itemName(item) }}</span>
+          <span class="state" :class="{ on: item.enabled }">{{ item.enabled ? t('runtimeTools.common.enabled') : t('runtimeTools.common.disabled') }}</span>
+          <span class="memory-hint">{{ t('runtimeTools.common.rva') }}: 0x{{ Number(item.rva).toString(16).toUpperCase() }}</span>
         </div>
         <div v-if="needsMultiplier(item)" class="memory-row">
-          <input v-model="multipliers[item.id]" type="number" min="0.1" max="9999" step="0.1" class="batch-input" placeholder="倍率" />
+          <input v-model="multipliers[item.id]" type="number" min="0.1" max="9999" step="0.1" class="batch-input" :placeholder="t('runtimeTools.monsterEnhance.multiplier')" />
           <span class="memory-hint">{{ multiplierHint(item) }}</span>
         </div>
         <div v-if="needsOverdriveState(item)" class="memory-row">
           <select v-model="overdriveState" class="batch-input od-select">
-            <option value="0">空条</option>
-            <option value="3">满黄条</option>
-            <option value="9">自动OD</option>
+            <option value="0">{{ t('runtimeTools.monsterEnhance.overdrive.empty') }}</option>
+            <option value="3">{{ t('runtimeTools.monsterEnhance.overdrive.full') }}</option>
+            <option value="9">{{ t('runtimeTools.monsterEnhance.overdrive.auto') }}</option>
           </select>
-          <span class="memory-hint">空条/满黄条=立即写一次；自动OD=检测到退出OD后自动补满</span>
+          <span class="memory-hint">{{ t('runtimeTools.monsterEnhance.overdrive.hint') }}</span>
         </div>
         <div class="memory-row" v-if="needsOverdriveState(item)">
-          <button class="btn-batch" @click="setOne(item, true, 'overdrive_state_apply')" :disabled="loading || overdriveState === '9'">应用一次</button>
-          <button class="btn-batch" @click="setOne(item, true)" :disabled="loading || item.enabled || overdriveState !== '9'">自动OD</button>
-          <button class="btn-refresh" @click="setOne(item, false)" :disabled="loading || !item.enabled">关闭</button>
+          <button class="btn-batch" @click="setOne(item, true, 'overdrive_state_apply')" :disabled="loading || overdriveState === '9'">{{ t('runtimeTools.monsterEnhance.overdrive.applyOnce') }}</button>
+          <button class="btn-batch" @click="setOne(item, true)" :disabled="loading || item.enabled || overdriveState !== '9'">{{ t('runtimeTools.monsterEnhance.overdrive.auto') }}</button>
+          <button class="btn-refresh" @click="setOne(item, false)" :disabled="loading || !item.enabled">{{ t('runtimeTools.common.disable') }}</button>
         </div>
         <div class="memory-row" v-else-if="needsSbaTimer(item)">
-          <button class="btn-batch" @click="setOne(item, true)" :disabled="loading">应用</button>
-          <button class="btn-refresh" @click="setOne(item, false)" :disabled="loading || !item.enabled">恢复默认</button>
+          <button class="btn-batch" @click="setOne(item, true)" :disabled="loading">{{ t('runtimeTools.common.apply') }}</button>
+          <button class="btn-refresh" @click="setOne(item, false)" :disabled="loading || !item.enabled">{{ t('runtimeTools.common.restoreDefault') }}</button>
         </div>
         <div class="memory-row" v-else>
-          <button class="btn-batch" @click="setOne(item, true)" :disabled="loading || item.enabled">开启</button>
-          <button class="btn-refresh" @click="setOne(item, false)" :disabled="loading || !item.enabled">关闭</button>
+          <button class="btn-batch" @click="setOne(item, true)" :disabled="loading || item.enabled">{{ t('runtimeTools.common.enable') }}</button>
+          <button class="btn-refresh" @click="setOne(item, false)" :disabled="loading || !item.enabled">{{ t('runtimeTools.common.disable') }}</button>
         </div>
         <div class="memory-bytes">{{ item.currentBytes }}</div>
         </div>
         <div class="memory-card custom-note-card">
           <div class="memory-header">
-            <span class="memory-title">作者的废话 : )</span>
+            <span class="memory-title">{{ t('runtimeTools.monsterEnhance.noteTitle') }}</span>
           </div>
           <div class="custom-note-text">
-            <strong class="note-warn">本页功能需要在主机下使用生效,开启也请告知队友</strong>，
-            做这个功能是因为我感觉原版的打多了很多无聊每次都差不多&发现了libmem库想来试试&我之前每次都是用自己写的ce脚本打开修改都要点好多下很烦，遂做了这个页面的功能。
-            我逆向水平一般也并非熟练的c++开发者，作这页功能最失败的决定就是之前用纯go来内存hook，没啥好用的库。
-            最后能来仓库点个star⭐就更好了。
+            <strong class="note-warn">{{ t('runtimeTools.monsterEnhance.noteWarn') }}</strong>，
+            {{ t('runtimeTools.monsterEnhance.note') }}
           </div>
         </div>
       </div>
 
-      <div v-if="!result.items.length" class="empty">请启动游戏后刷新状态</div>
+      <div v-if="!result.items.length" class="empty">{{ t('runtimeTools.monsterEnhance.empty') }}</div>
     </div>
   </div>
 </template>

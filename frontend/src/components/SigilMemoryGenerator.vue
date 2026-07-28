@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { SigilMemoryGetOptions, SigilMemoryGetStatus, SigilMemoryEnable, SigilMemoryUpdate } from '../../wailsjs/go/main/App'
+import { translate as t } from '../i18n'
 import { matchText } from '../utils/matchText.js'
 import { clearHistory, deleteTemplate, history, pushHistory, renameTemplate, saveTemplate, templates } from '../utils/sigilMemoryStore.js'
 import SigilMemoryPicker from './SigilMemoryPicker.vue'
@@ -26,7 +27,7 @@ const runtimeOptions = reactive({ sigils: new Map(), traits: new Map() })
 const allSigilOptions = computed(() => [...backendOptions.sigils, ...runtimeOptions.sigils.values()])
 const allTraitOptions = computed(() => [...backendOptions.traits, ...runtimeOptions.traits.values()])
 const secondaryTraitOptions = computed(() => [
-  { hash: 0x887AE0B0, displayName: '不选择 0x887AE0B0', source: 'empty' },
+  { hash: 0x887AE0B0, displayName: t('sigil.memory.emptySecondary', { hash: '0x887AE0B0' }), source: 'empty' },
   ...allTraitOptions.value,
 ])
 
@@ -53,7 +54,7 @@ function ensureRuntimeOption(bucket, hash, name) {
   if (backendList.some(o => (o.hash >>> 0) === h)) return
   bucket.set(h, {
     hash: h,
-    displayName: name && !isRawHexName(name) ? name : `未知 · ${hex(h)}`,
+    displayName: name && !isRawHexName(name) ? name : t('sigil.memory.unknown', { hash: hex(h) }),
     source: 'runtime',
   })
 }
@@ -79,7 +80,7 @@ async function loadOptions() {
     const res = await SigilMemoryGetOptions()
     backendOptions.sigils = res.sigils || []
     backendOptions.traits = res.traits || []
-  } catch (e) { show('读取因子数据失败: ' + String(e), 'error') }
+  } catch (e) { show(t('sigil.memory.optionsFailed', { error: String(e) }), 'error') }
 }
 
 async function refresh(syncForm = false) {
@@ -87,9 +88,9 @@ async function refresh(syncForm = false) {
   try {
     applyStatus(await SigilMemoryGetStatus())
     if (syncForm) syncFormFromStatus()
-    if (!status.hooked) show('已就绪。启用读取后，在游戏内选中因子。', 'success')
-    else if (!status.selectedAddr) show('等待游戏内因子选择。', 'success')
-    else show(`已读取: ${status.sigilName}`, 'success')
+    if (!status.hooked) show(t('sigil.memory.ready'), 'success')
+    else if (!status.selectedAddr) show(t('sigil.memory.waiting'), 'success')
+    else show(t('sigil.memory.read', { name: status.sigilName }), 'success')
   } catch (e) { show(String(e), 'error') }
   finally { loading.value = false }
 }
@@ -99,26 +100,26 @@ async function enable() {
   try {
     applyStatus(await SigilMemoryEnable())
     syncFormFromStatus()
-    show('已启用。请在游戏内选择一个因子。', 'success')
+    show(t('sigil.memory.enabled'), 'success')
   } catch (e) { show(String(e), 'error') }
   finally { loading.value = false }
 }
 
 async function performWrite() {
-  if (!status.hooked || !status.selectedAddr) { show('请先启用读取，并在游戏内选中一个因子', 'error'); return }
+  if (!status.hooked || !status.selectedAddr) { show(t('sigil.memory.mustSelect'), 'error'); return }
   applying.value = true
   try {
     const snapshot = { ...form }
     applyStatus(await SigilMemoryUpdate({ ...form }))
     pushHistory(snapshot)
-    show(`已写入: ${status.sigilName}`, 'success')
+    show(t('sigil.memory.written', { name: status.sigilName }), 'success')
   } catch (e) { show(String(e), 'error') }
   finally { applying.value = false }
 }
 async function write() { await performWrite() }
 
 async function oneClickMax() {
-  if (!status.hooked || !status.selectedAddr) { show('请先启用读取，并在游戏内选中一个因子', 'error'); return }
+  if (!status.hooked || !status.selectedAddr) { show(t('sigil.memory.mustSelect'), 'error'); return }
   if (sigilMax.value != null) form.sigilLevel = sigilMax.value
   if (primaryMax.value != null) form.primaryTraitLevel = primaryMax.value
   if (secondaryMax.value != null && form.secondaryTraitHash) form.secondaryTraitLevel = secondaryMax.value
@@ -158,17 +159,17 @@ const canOneClickMax = computed(() => !!status.selectedAddr && (sigilMax.value !
 const warnings = computed(() => {
   const out = []
   const sigil = sigilByHash.value.get(form.sigilHash)
-  if (sigilMax.value != null && form.sigilLevel > sigilMax.value) out.push(`因子等级超过上限 ${sigilMax.value}`)
-  if (primaryMax.value != null && form.primaryTraitLevel > primaryMax.value) out.push(`主词条等级超过上限 ${primaryMax.value}`)
-  if (secondaryMax.value != null && form.secondaryTraitLevel > secondaryMax.value) out.push(`副词条等级超过上限 ${secondaryMax.value}`)
+  if (sigilMax.value != null && form.sigilLevel > sigilMax.value) out.push(t('sigil.memory.overSigil', { max: sigilMax.value }))
+  if (primaryMax.value != null && form.primaryTraitLevel > primaryMax.value) out.push(t('sigil.memory.overPrimary', { max: primaryMax.value }))
+  if (secondaryMax.value != null && form.secondaryTraitLevel > secondaryMax.value) out.push(t('sigil.memory.overSecondary', { max: secondaryMax.value }))
   if (form.secondaryTraitHash && sigil && sigil.supportsSecondaryTrait === false) {
-    out.push('该因子不支持副词条')
+    out.push(t('sigil.memory.noSecondary'))
   } else if (
     form.secondaryTraitHash && sigil &&
     Array.isArray(sigil.allowedSecondaryTraitHashes) && sigil.allowedSecondaryTraitHashes.length > 0 &&
     !sigil.allowedSecondaryTraitHashes.map(h => h >>> 0).includes(form.secondaryTraitHash >>> 0)
   ) {
-    out.push('副词条不在该因子允许名单中')
+    out.push(t('sigil.memory.secondaryNotAllowed'))
   }
   return out
 })
@@ -201,20 +202,20 @@ async function applyAndWrite(entry) {
 function nameFor(map, hash, fallback = '?') {
   const opt = map.get(hash >>> 0)
   if (opt && !isRawHexName(opt.displayName)) return opt.displayName
-  return hash ? `未知 · ${hex(hash)}` : fallback
+  return hash ? t('sigil.memory.unknown', { hash: hex(hash) }) : fallback
 }
 
 function autoTemplateName() {
-  return nameFor(sigilByHash.value, form.sigilHash, '空模板')
+  return nameFor(sigilByHash.value, form.sigilHash, t('sigil.memory.emptyTemplate'))
 }
 function saveCurrentAsTemplate() {
   const saved = saveTemplate(autoTemplateName(), form)
-  if (saved) show(`模板已保存: ${saved.name}`, 'success')
+  if (saved) show(t('sigil.memory.templateSaved', { name: saved.name }), 'success')
 }
 
 function readDisplay(name, hash) {
-  if (!hash) return { text: '— 未设置', dim: true }
-  if (isRawHexName(name)) return { text: '未知条目', dim: true }
+  if (!hash) return { text: t('sigil.memory.notSet'), dim: true }
+  if (isRawHexName(name)) return { text: t('sigil.memory.unknownEntry'), dim: true }
   return { text: name, dim: false }
 }
 const sigilRead = computed(() => readDisplay(status.sigilName, status.sigilHash))
@@ -222,10 +223,10 @@ const primaryRead = computed(() => readDisplay(status.primaryTraitName, status.p
 const secondaryRead = computed(() => readDisplay(status.secondaryTraitName, status.secondaryTraitHash))
 
 function entrySubtitle(entry) {
-  const s = nameFor(sigilByHash.value, entry.sigilHash, '—')
-  const p = nameFor(traitByHash.value, entry.primaryTraitHash, '—')
-  const sec = entry.secondaryTraitHash ? nameFor(traitByHash.value, entry.secondaryTraitHash) : '无'
-  return `${s} · 主 ${p} · 副 ${sec}`
+  const s = nameFor(sigilByHash.value, entry.sigilHash, t('sigil.common.none'))
+  const p = nameFor(traitByHash.value, entry.primaryTraitHash, t('sigil.common.none'))
+  const sec = entry.secondaryTraitHash ? nameFor(traitByHash.value, entry.secondaryTraitHash) : t('sigil.common.none')
+  return t('sigil.memory.entrySubtitle', { sigil: s, primary: p, secondary: sec })
 }
 
 const filteredTemplates = computed(() => {
@@ -251,9 +252,9 @@ function cancelRename() {
 }
 
 function clearWriteHistory() {
-  if (!history.value.length || !window.confirm('清空全部最近写入记录？')) return
+  if (!history.value.length || !window.confirm(t('sigil.memory.recentClearConfirm'))) return
   clearHistory()
-  show('最近写入已清空', 'success')
+  show(t('sigil.memory.recentCleared'), 'success')
 }
 
 function onRenameOutsideClick(e) {
@@ -267,16 +268,16 @@ watch(renamingId, (v) => {
 onBeforeUnmount(() => document.removeEventListener('mousedown', onRenameOutsideClick))
 function fmtRelTime(ts) {
   const diffSec = Math.floor((Date.now() - ts) / 1000)
-  if (diffSec < 60) return '刚刚'
-  if (diffSec < 3600) return `${Math.floor(diffSec / 60)} 分钟前`
-  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)} 小时前`
-  return `${Math.floor(diffSec / 86400)} 天前`
+  if (diffSec < 60) return t('sigil.memory.justNow')
+  if (diffSec < 3600) return t('sigil.memory.minutesAgo', { count: Math.floor(diffSec / 60) })
+  if (diffSec < 86400) return t('sigil.memory.hoursAgo', { count: Math.floor(diffSec / 3600) })
+  return t('sigil.memory.daysAgo', { count: Math.floor(diffSec / 86400) })
 }
 
 const statusLabel = computed(() => {
-  if (status.hooked) return '已启用'
-  if (status.found) return '就绪'
-  return '未连接'
+  if (status.hooked) return t('sigil.memory.enabledLabel')
+  if (status.found) return t('sigil.memory.readyLabel')
+  return t('sigil.memory.disconnected')
 })
 
 onMounted(async () => {
@@ -292,12 +293,12 @@ onMounted(async () => {
       <div class="conn-row">
         <div class="conn-left">
           <span class="chip" :class="{ state: status.hooked, dim: !status.hooked }">● {{ statusLabel }}</span>
-          <span v-if="!status.hooked && status.found" class="hint-inline">点击启用读取，然后在游戏内选择因子</span>
-          <span v-else-if="status.hooked && !status.selectedAddr" class="hint-inline">等待游戏内因子选择</span>
+          <span v-if="!status.hooked && status.found" class="hint-inline">{{ t('sigil.memory.enableHint') }}</span>
+          <span v-else-if="status.hooked && !status.selectedAddr" class="hint-inline">{{ t('sigil.memory.waitHint') }}</span>
         </div>
         <div class="conn-right">
-          <button v-if="status.hooked" class="btn tiny" :disabled="loading" @click="refresh(true)">{{ loading ? '刷新中…' : '刷新' }}</button>
-          <button class="btn tiny btn-cyan" :disabled="loading" @click="enable">{{ status.hooked ? '重新连接' : '启用读取' }}</button>
+          <button v-if="status.hooked" class="btn tiny" :disabled="loading" @click="refresh(true)">{{ loading ? t('sigil.memory.refreshing') : t('sigil.memory.refresh') }}</button>
+          <button class="btn tiny btn-cyan" :disabled="loading" @click="enable">{{ status.hooked ? t('sigil.memory.reconnect') : t('sigil.memory.enable') }}</button>
         </div>
       </div>
     </div>
@@ -305,56 +306,56 @@ onMounted(async () => {
     <!-- Editor -->
     <div class="section" :class="{ muted: !status.selectedAddr }">
       <div class="editor-header">
-        <span class="section-title">因子编辑</span>
+        <span class="section-title">{{ t('sigil.memory.editor') }}</span>
         <div class="editor-actions">
-          <button class="ed-link" :disabled="!status.selectedAddr" @click="saveCurrentAsTemplate" title="保存当前目标为模板 (稍后可重命名)">＋ 保存为模板</button>
-          <button class="ed-link" :disabled="!status.selectedAddr || changedCount === 0" @click="revertToRead" title="放弃修改，恢复为游戏内当前值">↺ 还原</button>
+          <button class="ed-link" :disabled="!status.selectedAddr" @click="saveCurrentAsTemplate" :title="t('sigil.memory.saveTemplateTitle')">{{ t('sigil.memory.saveTemplate') }}</button>
+          <button class="ed-link" :disabled="!status.selectedAddr || changedCount === 0" @click="revertToRead" :title="t('sigil.memory.revertTitle')">{{ t('sigil.memory.revert') }}</button>
         </div>
       </div>
 
       <div class="ed-row">
-        <span class="ed-label">因子</span>
+        <span class="ed-label">{{ t('sigil.generator.sigil') }}</span>
         <div class="ed-current">
           <span class="ed-current-name" :class="{ dim: sigilRead.dim }">{{ sigilRead.text }}</span>
-          <span v-if="status.sigilHash" class="ed-current-lv">Lv {{ status.sigilLevel }}</span>
+          <span v-if="status.sigilHash" class="ed-current-lv">{{ t('sigil.common.level', { level: status.sigilLevel }) }}</span>
         </div>
         <span class="ed-arrow">→</span>
-        <SigilMemoryPicker v-model="form.sigilHash" :options="allSigilOptions" @pick="onPickSigil" placeholder="选择因子" />
+        <SigilMemoryPicker v-model="form.sigilHash" :options="allSigilOptions" @pick="onPickSigil" :placeholder="t('sigil.memory.selectSigil')" />
         <div class="ed-level" :class="{ maxed: sigilAtMax }">
           <input v-model.number="form.sigilLevel" type="number" min="0" max="999" />
           <span v-if="sigilMax != null" class="ed-level-hint">/ {{ sigilMax }}</span>
         </div>
-        <button class="ed-max-btn" :disabled="sigilMax == null || sigilAtMax" @click="maxSigil" :title="sigilMax != null ? `上限 ${sigilMax}` : '无等级元数据'">最大</button>
+        <button class="ed-max-btn" :disabled="sigilMax == null || sigilAtMax" @click="maxSigil" :title="sigilMax != null ? t('sigil.memory.levelCap', { max: sigilMax }) : t('sigil.memory.noLevelMetadata')">{{ t('sigil.common.max') }}</button>
       </div>
 
       <div class="ed-row">
-        <span class="ed-label">主</span>
+        <span class="ed-label">{{ t('sigil.common.primary') }}</span>
         <div class="ed-current">
           <span class="ed-current-name" :class="{ dim: primaryRead.dim }">{{ primaryRead.text }}</span>
-          <span v-if="status.primaryTraitHash" class="ed-current-lv">Lv {{ status.primaryTraitLevel }}</span>
+          <span v-if="status.primaryTraitHash" class="ed-current-lv">{{ t('sigil.common.level', { level: status.primaryTraitLevel }) }}</span>
         </div>
         <span class="ed-arrow">→</span>
-        <SigilMemoryPicker v-model="form.primaryTraitHash" :options="allTraitOptions" @pick="onPickPrimary" placeholder="选择主词条" />
+        <SigilMemoryPicker v-model="form.primaryTraitHash" :options="allTraitOptions" @pick="onPickPrimary" :placeholder="t('sigil.memory.selectPrimary')" />
         <div class="ed-level" :class="{ maxed: primaryAtMax }">
           <input v-model.number="form.primaryTraitLevel" type="number" min="0" max="999" />
           <span v-if="primaryMax != null" class="ed-level-hint">/ {{ primaryMax }}</span>
         </div>
-        <button class="ed-max-btn" :disabled="primaryMax == null || primaryAtMax" @click="maxPrimary" :title="primaryMax != null ? `上限 ${primaryMax}` : '无等级元数据'">最大</button>
+        <button class="ed-max-btn" :disabled="primaryMax == null || primaryAtMax" @click="maxPrimary" :title="primaryMax != null ? t('sigil.memory.levelCap', { max: primaryMax }) : t('sigil.memory.noLevelMetadata')">{{ t('sigil.common.max') }}</button>
       </div>
 
       <div class="ed-row">
-        <span class="ed-label">副</span>
+        <span class="ed-label">{{ t('sigil.common.secondary') }}</span>
         <div class="ed-current">
           <span class="ed-current-name" :class="{ dim: secondaryRead.dim }">{{ secondaryRead.text }}</span>
-          <span v-if="status.secondaryTraitHash" class="ed-current-lv">Lv {{ status.secondaryTraitLevel }}</span>
+          <span v-if="status.secondaryTraitHash" class="ed-current-lv">{{ t('sigil.common.level', { level: status.secondaryTraitLevel }) }}</span>
         </div>
         <span class="ed-arrow">→</span>
-        <SigilMemoryPicker v-model="form.secondaryTraitHash" :options="secondaryTraitOptions" @pick="onPickSecondary" optional placeholder="未选择 (可选)" />
+        <SigilMemoryPicker v-model="form.secondaryTraitHash" :options="secondaryTraitOptions" @pick="onPickSecondary" optional :placeholder="t('sigil.memory.selectOptional')" />
         <div class="ed-level" :class="{ maxed: secondaryAtMax }">
           <input v-model.number="form.secondaryTraitLevel" type="number" min="0" max="999" />
           <span v-if="secondaryMax != null" class="ed-level-hint">/ {{ secondaryMax }}</span>
         </div>
-        <button class="ed-max-btn" :disabled="secondaryMax == null || secondaryAtMax" @click="maxSecondary" :title="secondaryMax != null ? `上限 ${secondaryMax}` : '无等级元数据'">最大</button>
+        <button class="ed-max-btn" :disabled="secondaryMax == null || secondaryAtMax" @click="maxSecondary" :title="secondaryMax != null ? t('sigil.memory.levelCap', { max: secondaryMax }) : t('sigil.memory.noLevelMetadata')">{{ t('sigil.common.max') }}</button>
       </div>
 
       <div class="warn-slot">
@@ -364,9 +365,9 @@ onMounted(async () => {
       </div>
 
       <div class="ed-bar">
-        <span class="ed-changed">{{ changedCount }} 处变更{{ changedCount ? ' · 未写入' : '' }}</span>
-        <button class="ed-max-all" :disabled="applying || !canOneClickMax" @click="oneClickMax" title="将所有等级设为上限并立即写入">一键最大</button>
-        <button class="ed-write" :disabled="applying || !status.selectedAddr" @click="write">{{ applying ? '写入中…' : '写入' }}</button>
+        <span class="ed-changed">{{ t('sigil.memory.changes', { count: changedCount }) }}{{ changedCount ? t('sigil.memory.notWritten') : '' }}</span>
+        <button class="ed-max-all" :disabled="applying || !canOneClickMax" @click="oneClickMax" :title="t('sigil.memory.maxAllTitle')">{{ t('sigil.memory.maxAll') }}</button>
+        <button class="ed-write" :disabled="applying || !status.selectedAddr" @click="write">{{ applying ? t('sigil.common.writing') : t('sigil.common.write') }}</button>
       </div>
     </div>
 
@@ -374,18 +375,18 @@ onMounted(async () => {
     <div class="section">
       <div class="tabs-head">
         <div class="tabs">
-          <span class="tab" :class="{ active: tab === 'templates' }" @click="tab = 'templates'">模板 <span class="tab-count">{{ templates.length }}</span></span>
-          <span class="tab" :class="{ active: tab === 'history' }" @click="tab = 'history'">最近写入 <span class="tab-count">{{ history.length }}</span></span>
+          <span class="tab" :class="{ active: tab === 'templates' }" @click="tab = 'templates'">{{ t('sigil.memory.templates') }} <span class="tab-count">{{ templates.length }}</span></span>
+          <span class="tab" :class="{ active: tab === 'history' }" @click="tab = 'history'">{{ t('sigil.memory.recent') }} <span class="tab-count">{{ history.length }}</span></span>
         </div>
         <div v-if="tab === 'templates'">
-          <input v-model="templateSearch" class="search-input" placeholder="搜索模板..." />
+          <input v-model="templateSearch" class="search-input" :placeholder="t('sigil.memory.searchTemplates')" />
         </div>
-        <button v-else-if="history.length" class="row-tool" title="清空最近写入" @click="clearWriteHistory">清空</button>
+        <button v-else-if="history.length" class="row-tool" :title="t('sigil.memory.clearRecentTitle')" @click="clearWriteHistory">{{ t('sigil.common.clear') }}</button>
       </div>
 
       <div v-if="tab === 'templates'">
         <div v-if="!filteredTemplates.length" class="tpl-empty">
-          {{ templates.length ? '无匹配模板' : '尚无模板 · 在编辑器点击 "＋ 保存为模板"' }}
+          {{ templates.length ? t('sigil.memory.noMatch') : t('sigil.memory.noTemplates') }}
         </div>
         <ul v-else class="row-list">
           <li v-for="t in filteredTemplates" :key="t.id" class="row-item" @click="applyEntry(t)">
@@ -393,54 +394,54 @@ onMounted(async () => {
               <template v-if="renamingId === t.id">
                 <span class="rename-group" ref="renameEl">
                   <input v-model="renameBuffer" class="rename-input" @click.stop @keydown.enter="confirmRename" @keydown.escape="cancelRename" />
-                  <button class="rename-confirm" :disabled="!renameBuffer.trim()" @click.stop="confirmRename" title="保存 (Enter)">✓</button>
-                  <button class="rename-cancel" @click.stop="cancelRename" title="取消 (Esc)">✕</button>
+                  <button class="rename-confirm" :disabled="!renameBuffer.trim()" @click.stop="confirmRename" :title="t('sigil.memory.saveTitle')">✓</button>
+                  <button class="rename-cancel" @click.stop="cancelRename" :title="t('sigil.memory.cancelTitle')">✕</button>
                 </span>
               </template>
               <template v-else>
                 <span class="row-name-text">{{ t.name }}</span>
-                <span class="row-name-lv">Lv {{ t.sigilLevel }}</span>
+                <span class="row-name-lv">{{ t('sigil.common.level', { level: t.sigilLevel }) }}</span>
               </template>
             </span>
             <span class="row-chip">
-              <span class="row-chip-tag">主</span>
-              <span class="row-chip-name">{{ nameFor(traitByHash, t.primaryTraitHash, '—') }}</span>
-              <span class="row-chip-lv">Lv {{ t.primaryTraitLevel }}</span>
+              <span class="row-chip-tag">{{ t('sigil.common.primary') }}</span>
+              <span class="row-chip-name">{{ nameFor(traitByHash, t.primaryTraitHash, t('sigil.common.none')) }}</span>
+              <span class="row-chip-lv">{{ t('sigil.common.level', { level: t.primaryTraitLevel }) }}</span>
             </span>
             <span class="row-chip" :class="{ 'empty-slot': !t.secondaryTraitHash }">
-              <span class="row-chip-tag">副</span>
-              <span class="row-chip-name">{{ t.secondaryTraitHash ? nameFor(traitByHash, t.secondaryTraitHash) : '—' }}</span>
-              <span class="row-chip-lv">Lv {{ t.secondaryTraitLevel }}</span>
+              <span class="row-chip-tag">{{ t('sigil.common.secondary') }}</span>
+              <span class="row-chip-name">{{ t.secondaryTraitHash ? nameFor(traitByHash, t.secondaryTraitHash) : t('sigil.common.none') }}</span>
+              <span class="row-chip-lv">{{ t('sigil.common.level', { level: t.secondaryTraitLevel }) }}</span>
             </span>
             <span class="row-tools" @click.stop>
-              <button class="row-tool" title="重命名" @click="startRename(t.id, t.name)">✎</button>
-              <button class="row-tool" title="删除" @click="deleteTemplate(t.id)">✕</button>
+              <button class="row-tool" :title="t('sigil.memory.renameTitle')" @click="startRename(t.id, t.name)">✎</button>
+              <button class="row-tool" :title="t('sigil.memory.deleteTitle')" @click="deleteTemplate(t.id)">✕</button>
             </span>
-            <button class="row-apply" :disabled="!status.selectedAddr || applying" @click.stop="applyAndWrite(t)" title="立即应用并写入">一键应用</button>
+            <button class="row-apply" :disabled="!status.selectedAddr || applying" @click.stop="applyAndWrite(t)" :title="t('sigil.memory.applyTitle')">{{ t('sigil.memory.apply') }}</button>
           </li>
         </ul>
       </div>
 
       <div v-else>
-        <div v-if="!history.length" class="tpl-empty">尚无历史</div>
+        <div v-if="!history.length" class="tpl-empty">{{ t('sigil.memory.noHistory') }}</div>
         <ul v-else class="row-list">
           <li v-for="h in history" :key="h.id" class="row-item" @click="applyEntry(h)">
             <span class="row-name">
-              <span class="row-name-text">{{ nameFor(sigilByHash, h.sigilHash, '—') }}</span>
-              <span class="row-name-lv">Lv {{ h.sigilLevel }}</span>
+              <span class="row-name-text">{{ nameFor(sigilByHash, h.sigilHash, t('sigil.common.none')) }}</span>
+              <span class="row-name-lv">{{ t('sigil.common.level', { level: h.sigilLevel }) }}</span>
             </span>
             <span class="row-chip">
-              <span class="row-chip-tag">主</span>
-              <span class="row-chip-name">{{ nameFor(traitByHash, h.primaryTraitHash, '—') }}</span>
-              <span class="row-chip-lv">Lv {{ h.primaryTraitLevel }}</span>
+              <span class="row-chip-tag">{{ t('sigil.common.primary') }}</span>
+              <span class="row-chip-name">{{ nameFor(traitByHash, h.primaryTraitHash, t('sigil.common.none')) }}</span>
+              <span class="row-chip-lv">{{ t('sigil.common.level', { level: h.primaryTraitLevel }) }}</span>
             </span>
             <span class="row-chip" :class="{ 'empty-slot': !h.secondaryTraitHash }">
-              <span class="row-chip-tag">副</span>
-              <span class="row-chip-name">{{ h.secondaryTraitHash ? nameFor(traitByHash, h.secondaryTraitHash) : '—' }}</span>
-              <span class="row-chip-lv">Lv {{ h.secondaryTraitLevel }}</span>
+              <span class="row-chip-tag">{{ t('sigil.common.secondary') }}</span>
+              <span class="row-chip-name">{{ h.secondaryTraitHash ? nameFor(traitByHash, h.secondaryTraitHash) : t('sigil.common.none') }}</span>
+              <span class="row-chip-lv">{{ t('sigil.common.level', { level: h.secondaryTraitLevel }) }}</span>
             </span>
             <span class="row-meta">{{ fmtRelTime(h.createdAt) }}</span>
-            <button class="row-apply" :disabled="!status.selectedAddr || applying" @click.stop="applyAndWrite(h)" title="立即应用并写入">一键应用</button>
+            <button class="row-apply" :disabled="!status.selectedAddr || applying" @click.stop="applyAndWrite(h)" :title="t('sigil.memory.applyTitle')">{{ t('sigil.memory.apply') }}</button>
           </li>
         </ul>
       </div>
@@ -525,7 +526,7 @@ onMounted(async () => {
 .search-input { padding:5px 10px; border:1px solid rgba(255,255,255,.12); border-radius:6px; background:rgba(255,255,255,.05); color:#fff; font:inherit; font-size:.72rem; width:170px; font-family:inherit; }
 
 /* Shared list rows — subgrid.
-   Columns: name · 主 chip · 副 chip · meta/tools (right) · apply (right edge).
+   Columns: name · primary chip · secondary chip · meta/tools (right) · apply (right edge).
    The `1fr` filler pushes meta/tools + apply to the right edge. */
 .row-list { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:auto auto auto 1fr auto auto; column-gap:14px; row-gap:2px; }
 .row-item { display:grid; grid-template-columns:subgrid; grid-column:1 / -1; align-items:center; padding:7px 10px; border-radius:5px; cursor:pointer; }

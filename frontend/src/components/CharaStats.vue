@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { translate as t } from '../i18n'
 import { FindSaveFiles, GetCharacterStats, UpdateCharacterStat } from '../../wailsjs/go/main/App'
 
 const slots = ref([])
@@ -76,7 +77,7 @@ function cancelEdit() {
 
 async function saveEdit(character) {
   if (!Number.isInteger(editValue.value) || editValue.value < 0) {
-    error.value = '请输入有效的非负整数'
+    error.value = t('characterStats.error.nonNegativeInteger')
     return
   }
   savingSlot.value = character.slot
@@ -86,7 +87,7 @@ async function saveEdit(character) {
     character.count = editValue.value
     editingSlot.value = null
   } catch (err) {
-    error.value = String(err || '写入失败')
+    error.value = String(err || t('characterStats.error.writeFailed'))
   } finally {
     savingSlot.value = null
   }
@@ -99,62 +100,62 @@ onMounted(scanSaves)
   <div class="root">
     <div class="section">
       <div class="header">
-        <span class="title">角色次数统计</span>
-        <span class="hint">显示存档角色任务次数(新-DLC更新后创建的存档/旧-DLC更新前创建并转换过来的存档)</span>
+        <span class="title">{{ t('characterStats.title') }}</span>
+        <span class="hint">{{ t('characterStats.hint') }}</span>
       </div>
       <div class="slots">
         <button v-for="s in slots" :key="s.index" class="slot-btn"
           :class="{ on: savePath === s.path }" @click="load(s.path)">
           {{ s.name }}
         </button>
-        <button class="btn-refresh" @click="refresh">刷新</button>
+        <button class="btn-refresh" @click="refresh">{{ t('common.refresh') }}</button>
       </div>
       <div class="version-row">
-        <span class="version-label">存档版本</span>
+        <span class="version-label">{{ t('characterStats.saveVersion') }}</span>
         <div class="version-switch">
-          <button :class="{ on: !newSave }" @click="switchVersion(false)">旧版转换存档</button>
-          <button :class="{ on: newSave }" @click="switchVersion(true)">DLC更新后新建存档</button>
+          <button :class="{ on: !newSave }" @click="switchVersion(false)">{{ t('characterStats.legacySave') }}</button>
+          <button :class="{ on: newSave }" @click="switchVersion(true)">{{ t('characterStats.newSave') }}</button>
         </div>
         <button v-if="list.length" class="btn-sort" @click="sortDesc = !sortDesc">
-          {{ sortDesc ? '恢复原序' : '按次数排序' }}
+          {{ sortDesc ? t('characterStats.restoreOrder') : t('characterStats.sortByCount') }}
         </button>
         <button v-if="list.length" class="btn-sort" :class="{ on: editMode }" @click="toggleEditMode">
-          {{ editMode ? '退出编辑' : '编辑模式' }}
+          {{ editMode ? t('characterStats.exitEdit') : t('characterStats.editMode') }}
         </button>
       </div>
 
       <div v-if="showEditConfirm" class="confirm-backdrop" @click.self="showEditConfirm = false">
         <section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="character-edit-confirm-title">
-          <h2 id="character-edit-confirm-title">确认进入编辑模式</h2>
-          <p>编辑前务必备份你的存档，注意你存档版本是否选择正确，并不能保证编辑结果是一定正确的。</p>
+          <h2 id="character-edit-confirm-title">{{ t('characterStats.confirm.title') }}</h2>
+          <p>{{ t('characterStats.confirm.body') }}</p>
           <div class="confirm-actions">
-            <button class="confirm-cancel" @click="showEditConfirm = false">取消</button>
-            <button class="confirm-apply" @click="confirmEditMode">确认进入</button>
+            <button class="confirm-cancel" @click="showEditConfirm = false">{{ t('common.cancel') }}</button>
+            <button class="confirm-apply" @click="confirmEditMode">{{ t('characterStats.confirm.apply') }}</button>
           </div>
         </section>
       </div>
 
-      <div v-if="loading" class="empty">解析中...</div>
+      <div v-if="loading" class="empty">{{ t('common.parsing') }}</div>
       <div v-else-if="error" class="empty">{{ error }}</div>
       <template v-else-if="list.length">
         <div class="table">
           <div class="row row-head">
-            <span class="col-name">角色</span>
-            <span class="col-count">次数</span>
+            <span class="col-name">{{ t('characterStats.character') }}</span>
+            <span class="col-count">{{ t('characterStats.count') }}</span>
           </div>
           <div v-for="c in sorted" :key="c.name" class="row">
             <span class="col-name">{{ c.name }}</span>
             <span v-if="!editMode || editingSlot !== c.slot" class="col-count">{{ c.count }}</span>
             <div v-else class="count-edit">
               <input v-model.number="editValue" type="number" min="0" :disabled="savingSlot === c.slot" @keyup.enter="saveEdit(c)" />
-              <button class="edit-action save" @click="saveEdit(c)" :disabled="savingSlot === c.slot">{{ savingSlot === c.slot ? '...' : '保存' }}</button>
-              <button class="edit-action" @click="cancelEdit" :disabled="savingSlot === c.slot">取消</button>
+              <button class="edit-action save" @click="saveEdit(c)" :disabled="savingSlot === c.slot">{{ savingSlot === c.slot ? t('common.processing') : t('common.save') }}</button>
+              <button class="edit-action" @click="cancelEdit" :disabled="savingSlot === c.slot">{{ t('common.cancel') }}</button>
             </div>
-            <button v-if="editMode && editingSlot !== c.slot" class="edit-action" @click="startEdit(c)">编辑</button>
+            <button v-if="editMode && editingSlot !== c.slot" class="edit-action" @click="startEdit(c)">{{ t('common.edit') }}</button>
           </div>
         </div>
       </template>
-      <div v-else-if="savePath" class="empty">未找到当前档案角色次数</div>
+      <div v-else-if="savePath" class="empty">{{ t('characterStats.noData') }}</div>
     </div>
   </div>
 </template>

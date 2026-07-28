@@ -1,0 +1,15 @@
+{
+  "language": {
+    "title": "Language Settings",
+    "hint": "Choose the interface language. The interface reloads automatically after a change.",
+    "current": "Current language",
+    "english": "English",
+    "englishDescription": "Use the complete English interface (default)",
+    "chinese": "Simplified Chinese",
+    "chineseDescription": "Use the original Chinese interface",
+    "active": "Active",
+    "switch": "Switch",
+    "switching": "Switching...",
+    "default": "Default"
+  }
+}

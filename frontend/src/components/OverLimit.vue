@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '../i18n'
 import { onMounted, reactive, ref } from 'vue'
 import {
   OverLimitCommit,
@@ -35,9 +36,14 @@ function formatHex(value) {
   return '0x' + Number(value).toString(16).toUpperCase()
 }
 
-function optionName(list, id) {
-  const found = list.find(x => Number(x.id) === Number(id))
-  return found ? found.name : formatHex(id)
+function attributeName(id) {
+  const option = attributeOption(id)
+  return option ? t(`runtimeTools.overLimit.attributes.${option.hex}`) : formatHex(id)
+}
+
+function levelName(id) {
+  const option = options.levels.find(x => Number(x.id) === Number(id))
+  return option ? t(`runtimeTools.overLimit.levels.${option.hex}`) : formatHex(id)
 }
 
 function attributeOption(id) {
@@ -73,11 +79,11 @@ function run(action, success) {
 }
 
 function scan() {
-  run(() => OverLimitScan(), '上限突破特征定位成功')
+  run(() => OverLimitScan(), t('runtimeTools.overLimit.scanSuccess'))
 }
 
 function enable() {
-  run(() => OverLimitEnable(), '上限突破读取已开启，请在突破界面加载角色')
+  run(() => OverLimitEnable(), t('runtimeTools.overLimit.enableSuccess'))
 }
 
 function refresh() {
@@ -85,7 +91,7 @@ function refresh() {
   OverLimitGetStatus()
     .then((res) => {
       applyStatus(res)
-      emit('status', res?.selectedAddr ? '上限突破角色数据已刷新' : '已刷新，尚未读取到角色数据；请在突破界面切换一次角色或重新打开突破界面', res?.selectedAddr ? 'success' : 'error')
+      emit('status', res?.selectedAddr ? t('runtimeTools.overLimit.refreshSuccess') : t('runtimeTools.overLimit.refreshMissing'), res?.selectedAddr ? 'success' : 'error')
     })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { loading.value = false })
@@ -94,7 +100,7 @@ function refresh() {
 function writeSaveAll() {
   run(
     () => edits.reduce((p, edit, index) => p.then(() => OverLimitSetSlot({ index, attribute: Number(edit.attribute), level: Number(edit.level), value: Number(edit.value) })), Promise.resolve()).then(() => OverLimitCommit()),
-    '四个上限突破槽位已写入，请返回游戏确认保存'
+    t('runtimeTools.overLimit.writeSuccess')
   )
 }
 </script>
@@ -103,66 +109,66 @@ function writeSaveAll() {
   <div class="root">
     <div class="section">
       <div class="header">
-        <span class="title">上限突破</span>
-        <span class="info-dot" title="需游戏运行中使用；先开启读取，再进入角色上限突破界面加载角色。">!</span>
-        <span class="hint">读取当前突破界面四个能力槽</span>
+        <span class="title">{{ t('runtimeTools.overLimit.title') }}</span>
+        <span class="info-dot" :title="t('runtimeTools.overLimit.notice')">!</span>
+        <span class="hint">{{ t('runtimeTools.overLimit.hint') }}</span>
       </div>
 
       <div class="memory-card guide-card">
         <div class="memory-header">
-          <span class="memory-title">使用提示</span>
-          <span class="memory-hint">按顺序操作</span>
+          <span class="memory-title">{{ t('runtimeTools.overLimit.guideTitle') }}</span>
+          <span class="memory-hint">{{ t('runtimeTools.overLimit.guideHint') }}</span>
         </div>
         <ol class="guide-list">
-          <li>启动游戏后开启读取，确保角色任意突破过一次否则无法识别</li>
-          <li>先进行一次 3 级突破，停在 “Over the limit!” 界面。</li>
-          <li>点击刷新，设置词条后写入，回到游戏确认。</li>
-          <li>再次进行 3 级突破，但不确认替换之前突破，直接取消。</li>
-          <li>以上操作完成后存档即可持久保存。</li>
+          <li>{{ t('runtimeTools.overLimit.guide1') }}</li>
+          <li>{{ t('runtimeTools.overLimit.guide2') }}</li>
+          <li>{{ t('runtimeTools.overLimit.guide3') }}</li>
+          <li>{{ t('runtimeTools.overLimit.guide4') }}</li>
+          <li>{{ t('runtimeTools.overLimit.guide5') }}</li>
         </ol>
       </div>
 
       <div class="memory-card" :class="{ active: status.hooked }">
         <div class="memory-header">
-          <span class="memory-title">突破界面读取</span>
+          <span class="memory-title">{{ t('runtimeTools.overLimit.reader') }}</span>
         </div>
         <div class="memory-info">
-          <span>RVA: {{ formatHex(status.rva) }}</span>
-          <span>状态: {{ status.hooked ? '已开启' : '未开启' }}</span>
-          <span>角色数据: {{ formatHex(status.selectedAddr) }}</span>
+          <span>{{ t('runtimeTools.common.rva') }}: {{ formatHex(status.rva) }}</span>
+          <span>{{ t('runtimeTools.common.status') }}: {{ status.hooked ? t('runtimeTools.common.enabled') : t('runtimeTools.common.disabled') }}</span>
+          <span>{{ t('runtimeTools.overLimit.characterData', { address: formatHex(status.selectedAddr) }) }}</span>
         </div>
         <div class="memory-row">
-          <button class="btn-batch" @click="enable" :disabled="loading || status.hooked">开启读取</button>
-          <button class="btn-refresh" @click="refresh" :disabled="loading">刷新</button>
-          <button class="btn-sort" @click="scan" :disabled="loading">重新扫描</button>
-          <button class="btn-batch" @click="writeSaveAll" :disabled="loading || !status.selectedAddr">写入结果</button>
+          <button class="btn-batch" @click="enable" :disabled="loading || status.hooked">{{ t('runtimeTools.overLimit.enableRead') }}</button>
+          <button class="btn-refresh" @click="refresh" :disabled="loading">{{ t('runtimeTools.common.refresh') }}</button>
+          <button class="btn-sort" @click="scan" :disabled="loading">{{ t('runtimeTools.common.rescan') }}</button>
+          <button class="btn-batch" @click="writeSaveAll" :disabled="loading || !status.selectedAddr">{{ t('runtimeTools.overLimit.writeResults') }}</button>
         </div>
-        <div class="memory-bytes">{{ status.currentBytes || '未定位' }}</div>
+        <div class="memory-bytes">{{ status.currentBytes || t('runtimeTools.common.notLocated') }}</div>
       </div>
 
-      <div v-if="!status.selectedAddr" class="empty">开启读取后，在游戏上限突破界面加载角色</div>
+      <div v-if="!status.selectedAddr" class="empty">{{ t('runtimeTools.overLimit.empty') }}</div>
 
       <div v-else class="slot-list">
         <div v-for="slot in status.slots" :key="slot.index" class="memory-card slot-card">
           <div class="memory-header">
-            <span class="memory-title">能力 {{ slot.index + 1 }}</span>
-            <span class="memory-hint">当前 {{ optionName(options.attributes, slot.attribute) }} / {{ optionName(options.levels, slot.level) }}</span>
+            <span class="memory-title">{{ t('runtimeTools.overLimit.ability', { index: slot.index + 1 }) }}</span>
+            <span class="memory-hint">{{ t('runtimeTools.overLimit.current', { attribute: attributeName(slot.attribute), level: levelName(slot.level) }) }}</span>
           </div>
           <div class="slot-grid">
             <label>
-              <span>词条</span>
+              <span>{{ t('runtimeTools.overLimit.attribute') }}</span>
               <select v-model.number="edits[slot.index].attribute" class="od-select" @change="applyMaxValue(slot.index)">
-                <option v-for="opt in options.attributes" :key="opt.id" :value="opt.id">{{ opt.name }} ({{ opt.hex }})</option>
+                <option v-for="opt in options.attributes" :key="opt.id" :value="opt.id">{{ attributeName(opt.id) }} ({{ opt.hex }})</option>
               </select>
             </label>
             <label>
-              <span>等级</span>
+              <span>{{ t('runtimeTools.overLimit.level') }}</span>
               <select v-model.number="edits[slot.index].level" class="od-select level-select">
-                <option v-for="opt in options.levels" :key="opt.id" :value="opt.id">{{ opt.name }}</option>
+                <option v-for="opt in options.levels" :key="opt.id" :value="opt.id">{{ levelName(opt.id) }}</option>
               </select>
             </label>
             <label class="value-edit">
-              <span>数值</span>
+              <span>{{ t('runtimeTools.overLimit.value') }}</span>
               <input v-model.number="edits[slot.index].value" type="number" min="0" :max="maxValue(edits[slot.index].attribute)" step="1" class="value-input" />
             </label>
           </div>

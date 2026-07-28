@@ -1,12 +1,13 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { translate as t } from '../i18n'
 import { matchText } from '../utils/matchText.js'
 
 const props = defineProps({
   modelValue: { type: Number, default: 0 },
   options: { type: Array, default: () => [] },
   optional: { type: Boolean, default: false },
-  placeholder: { type: String, default: '未选择' },
+  placeholder: { type: String, default: () => t('picker.noSelection') },
   disabled: { type: Boolean, default: false },
 })
 
@@ -93,15 +94,15 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onDocClick))
     <button type="button" class="picker-selected" @click="open ? closeDropdown() : openDropdown()" :disabled="disabled">
       <span v-if="selected" class="picker-label">{{ selected.displayName }}</span>
       <span v-else class="picker-placeholder">{{ placeholder }}</span>
-      <button v-if="optional && selected" type="button" class="picker-inline-clear" @click.stop="clearSelection" title="移除">✕</button>
+      <button v-if="optional && selected" type="button" class="picker-inline-clear" @click.stop="clearSelection" :title="t('picker.remove')">✕</button>
       <span class="cheveron">{{ open ? '▴' : '▾' }}</span>
     </button>
     <div v-if="open" class="picker-dropdown">
       <div class="picker-search">
-        <input ref="searchEl" v-model="query" @keydown="onKey" placeholder="搜索名称 / 拼音 / hex" />
+        <input ref="searchEl" v-model="query" @keydown="onKey" :placeholder="t('picker.searchPlaceholder')" />
       </div>
       <div class="picker-list" ref="listEl">
-        <div v-if="!filtered.length" class="picker-none">无匹配</div>
+        <div v-if="!filtered.length" class="picker-none">{{ t('picker.noMatch') }}</div>
         <div
           v-for="(opt, i) in filtered"
           :key="opt.hash"
@@ -113,9 +114,9 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onDocClick))
         >
           <span class="opt-name">
             {{ opt.displayName }}
-            <span v-if="opt.source === 'memory-only'" class="opt-tag">补</span>
+            <span v-if="opt.source === 'memory-only'" class="opt-tag">{{ t('picker.supplement') }}</span>
           </span>
-          <span v-if="opt.maxLevel != null" class="opt-max">Lv {{ opt.maxLevel }}</span>
+          <span v-if="opt.maxLevel != null" class="opt-max">{{ t('sigil.common.level', { level: opt.maxLevel }) }}</span>
         </div>
       </div>
     </div>

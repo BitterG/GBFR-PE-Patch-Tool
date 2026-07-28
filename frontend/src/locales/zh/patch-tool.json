@@ -1,0 +1,12 @@
+{
+  "patchTool": {
+    "title": "GBFR 存档修改工具",
+    "window": { "minimize": "最小化", "close": "关闭" },
+    "tabs": {
+      "language": "语言", "sigil": "因子生成", "sigilMemory": "因子生成-新", "sigilLoadout": "因子配装复出", "offlineLoadout": "完整离线配装", "wrightstone": "祝福生成", "wrightstoneMemory": "祝福生成-新", "chara": "角色次数统计", "save": "副本次数", "badge": "解锁称号", "misc": "杂项", "summon": "召唤石", "overlimit": "上限突破", "monster": "怪物增强"
+    },
+    "path": { "scanning": "正在扫描 Steam 安装路径...", "found": "已定位游戏文件", "prompt": "输入 granblue_fantasy_relink.exe 路径", "placeholder": "粘贴 exe 文件完整路径...", "confirm": "确定", "notFound": "未自动检测到游戏，请手动输入 exe 路径", "backupHint": "建议先备份原始文件再进行补丁操作" },
+    "patch": { "original": "未补丁", "patched": "已补丁", "unknown": "未知", "currentValue": "当前值: {value} (0x{hex})", "inputPlaceholder": "输入数值", "writing": "写入中...", "apply": "应用", "backup": "备份", "restore": "恢复", "forceBackup": "强制覆盖已有备份", "backupInfo": "备份: {size} MB (仅 exe)", "missionHint": "此修改不影响存档", "likesHint": "被点赞后生效（影响存档）" },
+    "status": { "fileLoaded": "文件加载成功", "enterPath": "请输入文件路径", "enterValidValue": "请输入有效数值", "patchWritten": "补丁写入成功", "patchFailed": "补丁失败: {error}", "backupCreated": "备份创建成功", "backupFailed": "备份失败: {error}", "fileRestored": "文件已恢复", "restoreFailed": "恢复失败: {error}", "unknownError": "未知错误" }
+  }
+}

@@ -6,6 +6,7 @@ import { GetWrightstoneList, GetTraitList, GetTraitLevels, GetDefaultTrait,
          ApplyQueue, ApplyItems, FileExists, SelectWrightstoneInputSave,
          SelectWrightstoneOutputSave } from '../../wailsjs/go/main/WrightstoneGen'
 import { matchText } from '../utils/matchText.js'
+import { translate as t } from '../i18n'
 
 const emit = defineEmits(['status'])
 function showStatus(msg, type) { emit('status', msg, type) }
@@ -57,7 +58,7 @@ onMounted(async () => {
     wrightstones.value = await GetWrightstoneList()
     traits.value = await GetTraitList()
     if (!wrightstones.value.length || !traits.value.length) {
-      dataError.value = '祝福或特性数据为空'
+      dataError.value = t('wrightstone.generator.errors.emptyData')
     }
     const lastPath = await GetLastSavePath()
     if (lastPath) {
@@ -65,7 +66,7 @@ onMounted(async () => {
       outputPath.value = defaultOutputPath(lastPath)
     }
   } catch (e) {
-    dataError.value = '加载祝福数据失败: ' + String(e)
+    dataError.value = t('wrightstone.generator.errors.loadData', { error: String(e) })
   } finally {
     dataLoading.value = false
   }
@@ -102,14 +103,14 @@ async function browseOutput() {
 }
 
 async function loadSave() {
-  if (!inputPath.value.trim()) { showStatus('请输入存档路径', 'error'); return }
+  if (!inputPath.value.trim()) { showStatus(t('wrightstone.generator.errors.enterSavePath'), 'error'); return }
   try {
     const info = await LoadSaveFile(inputPath.value.trim())
     Object.assign(saveInfo, info)
     saveLoaded.value = true
     outputPath.value = inPlaceEdit.value ? info.path : defaultOutputPath(info.path)
     await SetLastSavePath(info.path)
-    showStatus(`已加载存档: ${info.occupiedWrightstones} 个祝福`, 'success')
+    showStatus(t('wrightstone.generator.status.saveLoaded', { count: info.occupiedWrightstones }), 'success')
   } catch (e) {
     showStatus(String(e), 'error')
   }
@@ -150,7 +151,7 @@ async function loadTraitLevels(slot) {
 }
 
 function traitLabel(slot) {
-  return ['第一特性', '第二特性', '第三特性'][slot]
+  return t(`wrightstone.generator.traits.slot.${['first', 'second', 'third'][slot]}`)
 }
 
 function buildCurrentItem() {
@@ -171,14 +172,14 @@ function buildCurrentItem() {
 }
 
 function validateCurrentSelection() {
-  if (!selectedWrightstoneID.value) { showStatus('请选择祝福', 'error'); return false }
+  if (!selectedWrightstoneID.value) { showStatus(t('wrightstone.generator.errors.selectWrightstone'), 'error'); return false }
   for (let i = 0; i < 3; i++) {
     if (!selectedTraits[i].id || !selectedTraits[i].level) {
-      showStatus(`请选择${traitLabel(i)}及等级`, 'error')
+      showStatus(t('wrightstone.generator.errors.selectTraitAndLevel', { trait: traitLabel(i) }), 'error')
       return false
     }
   }
-  if (!quantity.value || quantity.value < 1) { showStatus('数量至少为 1', 'error'); return false }
+  if (!quantity.value || quantity.value < 1) { showStatus(t('wrightstone.generator.errors.quantityMinimum'), 'error'); return false }
   return true
 }
 
@@ -187,7 +188,7 @@ async function addToQueue() {
   try {
     await AddToQueue(buildCurrentItem())
     queue.value = await GetQueue()
-    showStatus('已添加到队列', 'success')
+    showStatus(t('wrightstone.generator.status.addedToQueue'), 'success')
   } catch (e) { showStatus(String(e), 'error') }
 }
 
@@ -213,15 +214,15 @@ function flashApplySuccess() {
 }
 
 async function applyQueueToSave() {
-  if (!saveLoaded.value) { showStatus('请先加载存档', 'error'); return }
-  if (!outputPath.value.trim()) { showStatus('请输入输出路径', 'error'); return }
+  if (!saveLoaded.value) { showStatus(t('wrightstone.generator.errors.loadSaveFirst'), 'error'); return }
+  if (!outputPath.value.trim()) { showStatus(t('wrightstone.generator.errors.enterOutputPath'), 'error'); return }
   if (!queue.value.length && !validateCurrentSelection()) return
 
   isApplying.value = true
   try {
     const output = outputPath.value.trim()
     const exists = await FileExists(output)
-    if (exists && !window.confirm(`输出文件已存在，是否覆盖？\n${output}`)) return
+    if (exists && !window.confirm(t('wrightstone.generator.confirm.overwriteOutput', { path: output }))) return
 
     const result = queue.value.length
       ? await ApplyQueue(output)
@@ -229,7 +230,7 @@ async function applyQueueToSave() {
     queue.value = []
     if (inPlaceEdit.value) await loadSave()
     flashApplySuccess()
-    showStatus(`已写入 ${result.createdCount} 个祝福 (验证 ${result.verifiedCount})`, 'success')
+    showStatus(t('wrightstone.generator.status.written', { created: result.createdCount, verified: result.verifiedCount }), 'success')
   } catch (e) { showStatus(String(e), 'error') }
   finally { isApplying.value = false }
 }
@@ -238,30 +239,30 @@ async function applyQueueToSave() {
 <template>
   <div class="wrightstone-container">
     <div class="section">
-      <div class="section-title">存档文件</div>
+      <div class="section-title">{{ t('wrightstone.generator.saveFile.title') }}</div>
       <div class="input-row">
-        <input v-model="inputPath" type="text" class="text-input flex-1" placeholder="GBFR 存档文件 (.dat | C:\Users\UserName\AppData\Local\GBFR\Saved\SaveGames\)" />
-        <button class="btn-action btn-cyan" @click="browseInput">浏览</button>
-        <button class="btn-action btn-green" @click="loadSave">加载</button>
+        <input v-model="inputPath" type="text" class="text-input flex-1" :placeholder="t('wrightstone.generator.saveFile.inputPlaceholder')" />
+        <button class="btn-action btn-cyan" @click="browseInput">{{ t('wrightstone.generator.actions.browse') }}</button>
+        <button class="btn-action btn-green" @click="loadSave">{{ t('wrightstone.generator.actions.load') }}</button>
       </div>
       <div v-if="saveLoaded" class="save-info">
-        已加载 · {{ saveInfo.occupiedWrightstones }} 个祝福 · 最大槽位 {{ saveInfo.maxSlotId }}
+        {{ t('wrightstone.generator.saveFile.loadedInfo', { count: saveInfo.occupiedWrightstones, slot: saveInfo.maxSlotId }) }}
       </div>
     </div>
 
     <div class="section">
       <div class="section-title">
-        祝福配置
-        <span class="info-dot" title="选择祝福后配置三个词条与等级；不加入队列时，直接点击应用会写入当前选择。">!</span>
+        {{ t('wrightstone.generator.configuration.title') }}
+        <span class="info-dot" :title="t('wrightstone.generator.configuration.help')">!</span>
       </div>
       <div v-if="dataError" class="data-error">{{ dataError }}</div>
       <div class="field">
-        <label>祝福 {{ dataLoading ? '(加载中...)' : '' }}</label>
-        <input v-model="wrightstoneSearch" type="text" class="text-input" placeholder="输入关键词过滤..." />
+        <label>{{ t('wrightstone.generator.fields.wrightstone') }} {{ dataLoading ? t('wrightstone.generator.loadingSuffix') : '' }}</label>
+        <input v-model="wrightstoneSearch" type="text" class="text-input" :placeholder="t('wrightstone.generator.placeholders.filter')" />
         <select v-model="selectedWrightstoneID" class="select-input" size="5">
-          <option value="">— 请选择祝福 —</option>
+          <option value="">{{ t('wrightstone.generator.options.selectWrightstone') }}</option>
           <option v-for="w in filteredWrightstones" :key="w.internalId" :value="w.internalId">
-            {{ w.displayName }}<template v-if="w.defaultTraitName"> · 默认 {{ w.defaultTraitName }}</template>
+            {{ w.displayName }}<template v-if="w.defaultTraitName">{{ t('wrightstone.generator.options.defaultTrait', { trait: w.defaultTraitName }) }}</template>
           </option>
         </select>
       </div>
@@ -269,70 +270,68 @@ async function applyQueueToSave() {
       <div v-for="(_, i) in selectedTraits" :key="i" class="trait-card">
         <div class="field flex-1">
           <label>{{ traitLabel(i) }}</label>
-          <input v-model="traitSearches[i]" type="text" class="text-input" placeholder="输入关键词过滤特性..." />
+          <input v-model="traitSearches[i]" type="text" class="text-input" :placeholder="t('wrightstone.generator.placeholders.filterTraits')" />
           <select v-model="selectedTraits[i].id" class="select-input" size="4" @change="loadTraitLevels(i)">
-            <option value="">— 请选择特性 —</option>
-            <option v-for="t in filteredTraits(i)" :key="t.internalId" :value="t.internalId">
-              {{ t.displayName }} · Max {{ t.maxLevel }}
+            <option value="">{{ t('wrightstone.generator.options.selectTrait') }}</option>
+            <option v-for="trait in filteredTraits(i)" :key="trait.internalId" :value="trait.internalId">
+              {{ t('wrightstone.generator.options.traitMaxLevel', { trait: trait.displayName, level: trait.maxLevel }) }}
             </option>
           </select>
         </div>
         <div class="field level-field">
-          <label>等级</label>
+          <label>{{ t('wrightstone.generator.fields.level') }}</label>
           <select v-model="selectedTraits[i].level" class="select-input" :disabled="!selectedTraits[i].levels.length">
-            <option v-for="l in selectedTraits[i].levels" :key="l" :value="l">Lv {{ l }}</option>
+            <option v-for="l in selectedTraits[i].levels" :key="l" :value="l">{{ t('wrightstone.generator.level', { level: l }) }}</option>
           </select>
         </div>
       </div>
 
       <div class="input-row">
         <div class="field flex-1">
-          <label>数量</label>
+          <label>{{ t('wrightstone.generator.fields.quantity') }}</label>
           <input v-model.number="quantity" type="number" min="1" max="999" class="text-input" />
         </div>
         <button class="btn-action btn-purple add-btn" @click="addToQueue" :disabled="!selectedWrightstoneID">
-          添加到队列
+          {{ t('wrightstone.generator.actions.addToQueue') }}
         </button>
       </div>
     </div>
 
     <div class="section">
       <div class="section-title">
-        队列 ({{ queue.length }})
-        <button v-if="queue.length" class="btn-link" @click="clearQueueAll">清空</button>
+        {{ t('wrightstone.generator.queue.title', { count: queue.length }) }}
+        <button v-if="queue.length" class="btn-link" @click="clearQueueAll">{{ t('wrightstone.generator.actions.clear') }}</button>
       </div>
-      <div v-if="!queue.length" class="empty-hint">暂无队列；直接点击应用时会写入当前选择</div>
+      <div v-if="!queue.length" class="empty-hint">{{ t('wrightstone.generator.queue.empty') }}</div>
       <div v-else class="queue-list">
         <div v-for="(item, i) in queue" :key="i" class="queue-item">
           <div class="queue-info">
             <span class="queue-name">{{ item.wrightstoneName }}</span>
             <span class="queue-detail">
-              {{ item.firstTraitName }} Lv {{ item.firstLevel }} /
-              {{ item.secondTraitName }} Lv {{ item.secondLevel }} /
-              {{ item.thirdTraitName }} Lv {{ item.thirdLevel }} · x{{ item.quantity }}
+              {{ t('wrightstone.generator.queue.itemDetail', { firstTrait: item.firstTraitName, firstLevel: item.firstLevel, secondTrait: item.secondTraitName, secondLevel: item.secondLevel, thirdTrait: item.thirdTraitName, thirdLevel: item.thirdLevel, quantity: item.quantity }) }}
             </span>
           </div>
-          <button class="btn-icon" @click="removeFromQueue(i)" title="移除">✕</button>
+          <button class="btn-icon" @click="removeFromQueue(i)" :title="t('wrightstone.generator.actions.remove')">✕</button>
         </div>
       </div>
     </div>
 
     <div class="section apply-section" :class="{ 'apply-flash': applyFlash }">
-      <div class="section-title">输出</div>
+      <div class="section-title">{{ t('wrightstone.generator.output.title') }}</div>
       <div class="input-row">
         <input v-model="outputPath" type="text" class="text-input flex-1" :class="{ 'danger-path': inPlaceEdit }"
-          :readonly="inPlaceEdit" placeholder="输出存档路径..." />
-        <button class="btn-action btn-cyan" @click="browseOutput" :disabled="inPlaceEdit">浏览</button>
+          :readonly="inPlaceEdit" :placeholder="t('wrightstone.generator.output.placeholder')" />
+        <button class="btn-action btn-cyan" @click="browseOutput" :disabled="inPlaceEdit">{{ t('wrightstone.generator.actions.browse') }}</button>
         <button class="btn-action btn-cyan" @click="applyQueueToSave" :disabled="isApplying || !canApply">
-          {{ isApplying ? '写入中...' : '应用写入' }}
+          {{ isApplying ? t('wrightstone.generator.actions.writing') : t('wrightstone.generator.actions.apply') }}
         </button>
       </div>
       <label class="toggle-row">
         <input v-model="inPlaceEdit" type="checkbox" />
-        <span>启用原地修改（直接覆盖输入存档）</span>
+        <span>{{ t('wrightstone.generator.output.inPlaceEdit') }}</span>
       </label>
-      <div v-if="inPlaceEdit" class="danger-hint">警告：启用后，应用写入将直接覆盖当前输入存档，建议先备份。</div>
-      <div v-else class="warning-hint">安全提示：只写入输出存档，不会覆盖原始输入存档；已有输出文件会先确认。</div>
+      <div v-if="inPlaceEdit" class="danger-hint">{{ t('wrightstone.generator.output.inPlaceWarning') }}</div>
+      <div v-else class="warning-hint">{{ t('wrightstone.generator.output.safeWriteHint') }}</div>
     </div>
   </div>
 </template>

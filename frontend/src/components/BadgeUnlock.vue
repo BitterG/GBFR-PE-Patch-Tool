@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import OpenCC from 'opencc-js'
 import { pinyin } from 'pinyin-pro'
 import { FindSaveFiles, GetBadgeList, UnlockAllBadges, SetBadge } from '../../wailsjs/go/main/App'
-import { language } from '../i18n'
+import { language, translate as t } from '../i18n'
 
 const toSimplified = OpenCC.Converter({ from: 'tw', to: 'cn' })
 
@@ -83,7 +83,7 @@ async function load(path) {
     badges.value = prepareBadges(await GetBadgeList(path) || [])
   } catch (err) {
     badges.value = []
-    emit('status', String(err || '读取存档失败'), 'error')
+    emit('status', String(err || t('badgeUnlock.error.readFailed')), 'error')
   } finally {
     loading.value = false
   }
@@ -92,7 +92,7 @@ async function load(path) {
 function applyResult(result) {
   // 后端只回 status，不回完整列表；本地按刚才的写入意图刷新，再重载确保一致
   if (result && result.backupPath) {
-    emit('status', `已写入，备份：${result.backupPath}`, 'success')
+    emit('status', t('badgeUnlock.status.written', { path: result.backupPath }), 'success')
   }
 }
 
@@ -106,14 +106,14 @@ async function toggleOne(b) {
     if (next && markViewed.value) b.viewed = true
     applyResult(result)
   } catch (err) {
-    emit('status', String(err || '操作失败'), 'error')
+    emit('status', String(err || t('badgeUnlock.error.operationFailed')), 'error')
   } finally {
     working.value = false
   }
 }
 
 function requestUnlockAll() {
-  if (!savePath.value) { emit('status', '请先选择存档', 'error'); return }
+  if (!savePath.value) { emit('status', t('badgeUnlock.error.selectSave'), 'error'); return }
   showConfirm.value = true
 }
 
@@ -125,12 +125,12 @@ async function unlockAll() {
     const result = await UnlockAllBadges(savePath.value, markViewed.value)
     badges.value = await GetBadgeList(savePath.value) || []
     if (result && result.changed === 0) {
-      emit('status', '全部称号已经解锁', 'success')
+      emit('status', t('badgeUnlock.status.allUnlocked'), 'success')
     } else {
       applyResult(result)
     }
   } catch (err) {
-    emit('status', String(err || '解锁失败'), 'error')
+    emit('status', String(err || t('badgeUnlock.error.unlockFailed')), 'error')
   } finally {
     working.value = false
   }
@@ -147,42 +147,42 @@ scanSaves()
         :class="{ on: savePath === s.path }" @click="load(s.path)">
         {{ s.name }}
       </button>
-      <button class="refresh" @click="scanSaves">刷新</button>
+      <button class="refresh" @click="scanSaves">{{ t('common.refresh') }}</button>
     </div>
 
-    <div v-if="loading" class="loading">解析中...</div>
+    <div v-if="loading" class="loading">{{ t('common.parsing') }}</div>
 
     <template v-else-if="savePath && badges.length">
       <!-- 总计 + 操作 -->
       <div class="summary">
-        <div class="stat"><strong>{{ stats.unlocked }} / {{ stats.total }}</strong><span>已解锁称号</span></div>
-        <label class="viewed-opt"><input v-model="markViewed" type="checkbox"> 同时标记已查看</label>
+        <div class="stat"><strong>{{ stats.unlocked }} / {{ stats.total }}</strong><span>{{ t('badgeUnlock.unlockedTitles') }}</span></div>
+        <label class="viewed-opt"><input v-model="markViewed" type="checkbox"> {{ t('badgeUnlock.markViewed') }}</label>
         <button class="unlock-all" :disabled="working || stats.locked === 0" @click="requestUnlockAll">
-          {{ working ? '处理中…' : stats.locked === 0 ? '已全部解锁' : '一键全解锁' }}
+          {{ working ? t('common.processing') : stats.locked === 0 ? t('badgeUnlock.allUnlocked') : t('badgeUnlock.unlockAll') }}
         </button>
       </div>
 
       <!-- 标签页 + 搜索 -->
       <div class="toolbar">
         <div class="tabs">
-          <button class="tab" :class="{ on: tab === 'all' }" @click="tab = 'all'; scrollTop = 0">全部 {{ stats.total }}</button>
-          <button class="tab" :class="{ on: tab === 'unlocked' }" @click="tab = 'unlocked'; scrollTop = 0">已解锁 {{ stats.unlocked }}</button>
-          <button class="tab" :class="{ on: tab === 'locked' }" @click="tab = 'locked'; scrollTop = 0">未解锁 {{ stats.locked }}</button>
+          <button class="tab" :class="{ on: tab === 'all' }" @click="tab = 'all'; scrollTop = 0">{{ t('badgeUnlock.tabs.all', { count: stats.total }) }}</button>
+          <button class="tab" :class="{ on: tab === 'unlocked' }" @click="tab = 'unlocked'; scrollTop = 0">{{ t('badgeUnlock.tabs.unlocked', { count: stats.unlocked }) }}</button>
+          <button class="tab" :class="{ on: tab === 'locked' }" @click="tab = 'locked'; scrollTop = 0">{{ t('badgeUnlock.tabs.locked', { count: stats.locked }) }}</button>
         </div>
-        <input v-model="search" class="search" type="text" placeholder="搜索称号名称或 ID" @input="scrollTop = 0" />
+        <input v-model="search" class="search" type="text" :placeholder="t('badgeUnlock.searchPlaceholder')" @input="scrollTop = 0" />
       </div>
 
       <!-- 虚拟滚动列表 -->
       <div class="list" :style="{ height: VIEW_H + 'px' }" @scroll="onScroll">
-        <div v-if="!filtered.length" class="empty">没有匹配的称号</div>
+        <div v-if="!filtered.length" class="empty">{{ t('badgeUnlock.noMatch') }}</div>
         <div v-else class="spacer" :style="{ height: totalHeight + 'px' }">
           <div class="rows" :style="{ transform: 'translateY(' + offsetY + 'px)' }">
             <div v-for="b in visible" :key="b.id" class="row" :class="{ unlocked: b.unlocked }" :style="{ height: ROW_H + 'px' }">
               <span class="id">{{ b.id }}</span>
               <span class="name" :title="badgeName(b)">{{ badgeName(b) }}</span>
-              <span class="badge-state" :class="{ on: b.unlocked }">{{ b.unlocked ? '已解锁' : '未解锁' }}</span>
+              <span class="badge-state" :class="{ on: b.unlocked }">{{ b.unlocked ? t('badgeUnlock.unlocked') : t('badgeUnlock.locked') }}</span>
               <button class="toggle" :class="{ locked: !b.unlocked }" :disabled="working" @click="toggleOne(b)">
-                {{ b.unlocked ? '取消' : '解锁' }}
+                {{ b.unlocked ? t('common.cancel') : t('badgeUnlock.unlock') }}
               </button>
             </div>
           </div>
@@ -190,16 +190,16 @@ scanSaves()
       </div>
     </template>
 
-    <div v-else-if="savePath && !loading" class="loading">该存档未读到称号数据</div>
+    <div v-else-if="savePath && !loading" class="loading">{{ t('badgeUnlock.noBadgeData') }}</div>
 
     <!-- 一键全解锁确认 -->
     <div v-if="showConfirm" class="confirm-backdrop" @click.self="showConfirm = false">
       <section class="confirm-dialog" role="dialog" aria-modal="true">
-        <h2>确认解锁全部称号</h2>
-        <p>请先完全退出游戏。将解锁全部 {{ stats.total }} 个有效称号，并自动备份当前存档。不会修改称号奖励领取状态。确认继续吗？</p>
+        <h2>{{ t('badgeUnlock.confirm.title') }}</h2>
+        <p>{{ t('badgeUnlock.confirm.body', { count: stats.total }) }}</p>
         <div class="confirm-actions">
-          <button class="confirm-cancel" @click="showConfirm = false">取消</button>
-          <button class="confirm-apply" @click="unlockAll">确认解锁</button>
+          <button class="confirm-cancel" @click="showConfirm = false">{{ t('common.cancel') }}</button>
+          <button class="confirm-apply" @click="unlockAll">{{ t('badgeUnlock.confirm.apply') }}</button>
         </div>
       </section>
     </div>
