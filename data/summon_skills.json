@@ -181,19 +181,9 @@
       "maxLevel": 30
     },
     {
-      "hash": "0x6085DA25",
-      "displayName": "自愈",
-      "maxLevel": 45
-    },
-    {
       "hash": "0x7CCFF74F",
       "displayName": "HP吸收",
       "maxLevel": 45
-    },
-    {
-      "hash": "0x95F3FA86",
-      "displayName": "自动复活",
-      "maxLevel": 20
     },
     {
       "hash": "0x318D12E9",
@@ -209,11 +199,6 @@
       "hash": "0xB5FF9FD3",
       "displayName": "激昂",
       "maxLevel": 45
-    },
-    {
-      "hash": "0x24883AF3",
-      "displayName": "药水携带数",
-      "maxLevel": 15
     },
     {
       "hash": "0xDC607D75",
@@ -372,7 +357,7 @@
     },
     {
       "hash": "0x11AAE5F5",
-      "displayName": "魔法师的伶俐",
+      "displayName": "魔法师的伶利",
       "maxLevel": 15
     },
     {
@@ -412,12 +397,12 @@
     },
     {
       "hash": "0xD908223D",
-      "displayName": "幽幻之应",
+      "displayName": "幽幻之谊",
       "maxLevel": 15
     },
     {
       "hash": "0x7351D602",
-      "displayName": "幽幻之谊",
+      "displayName": "幽幻之应",
       "maxLevel": 15
     },
     {
@@ -447,7 +432,7 @@
     },
     {
       "hash": "0x16EFF868",
-      "displayName": "勇士的意志",
+      "displayName": "勇士的毅力",
       "maxLevel": 15
     },
     {
@@ -502,12 +487,12 @@
     },
     {
       "hash": "0x0CD6C625",
-      "displayName": "变换自如的迅刃",
+      "displayName": "变幻自如的迅刃",
       "maxLevel": 15
     },
     {
       "hash": "0xA3B49220",
-      "displayName": "变换自如的妖剑士",
+      "displayName": "变幻自如的妖剑士",
       "maxLevel": 15
     },
     {
@@ -547,7 +532,7 @@
     },
     {
       "hash": "0xEC3CF174",
-      "displayName": "极致的谋略",
+      "displayName": "极致谋略",
       "maxLevel": 15
     },
     {
@@ -592,7 +577,7 @@
     },
     {
       "hash": "0x7440E869",
-      "displayName": "冥暗钢刃",
+      "displayName": "冥暗刚刃",
       "maxLevel": 15
     },
     {
@@ -642,7 +627,7 @@
     },
     {
       "hash": "0x082033CB",
-      "displayName": "螃蟹共鸣",
+      "displayName": "钳蟹共鸣",
       "maxLevel": 45
     },
     {
@@ -677,7 +662,7 @@
     },
     {
       "hash": "0xAF794A87",
-      "displayName": "闪避距离",
+      "displayName": "躲避距离",
       "maxLevel": 15
     },
     {
@@ -737,7 +722,7 @@
     },
     {
       "hash": "0xD3B8C21F",
-      "displayName": "终极蟹钳因子",
+      "displayName": "终极钳蟹因子",
       "maxLevel": 45
     },
     {
@@ -757,7 +742,7 @@
     },
     {
       "hash": "0x77C809F5",
-      "displayName": "剑圣的练气",
+      "displayName": "剑圣的炼气",
       "maxLevel": 15
     },
     {
@@ -792,7 +777,7 @@
     },
     {
       "hash": "0x281214AB",
-      "displayName": "王之二涯",
+      "displayName": "涯之二王",
       "maxLevel": 15
     },
     {
@@ -827,42 +812,12 @@
     },
     {
       "hash": "0x51C115D2",
-      "displayName": "超终极精准闪避",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x73220725",
-      "displayName": "天星之止息",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x9232DC17",
-      "displayName": "天星之界",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x3EB345D7",
-      "displayName": "雷狼的战气",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x0DE887A0",
-      "displayName": "天星之炼",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0xA898E283",
-      "displayName": "天星之雪",
+      "displayName": "超终极精准躲避",
       "maxLevel": 15
     },
     {
       "hash": "0xF26BAEA5",
       "displayName": "分歧",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x36E3848D",
-      "displayName": "天星之焰",
       "maxLevel": 15
     },
     {
@@ -881,23 +836,8 @@
       "maxLevel": 15
     },
     {
-      "hash": "0x461A8E07",
-      "displayName": "群青的逆境",
-      "maxLevel": 15
-    },
-    {
       "hash": "0x9ACE140B",
-      "displayName": "刃姬的圆舞曲",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x7D75D904",
-      "displayName": "雷狼的弹匣",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x5559232F",
-      "displayName": "黑龙的战气",
+      "displayName": "刃姬的轮舞曲",
       "maxLevel": 15
     },
     {
@@ -908,11 +848,6 @@
     {
       "hash": "0xB953CC1E",
       "displayName": "群青的战气",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x7B5B081D",
-      "displayName": "刃姬的小夜曲",
       "maxLevel": 15
     },
     {
@@ -931,33 +866,23 @@
       "maxLevel": 15
     },
     {
-      "hash": "0x79266456",
-      "displayName": "刃姬的战气",
-      "maxLevel": 15
-    },
-    {
       "hash": "0x1DE14C65",
       "displayName": "狼王之觉醒",
       "maxLevel": 15
     },
     {
       "hash": "0x26956F25",
-      "displayName": "狼王的大轮转",
+      "displayName": "狼王的大转轮",
       "maxLevel": 15
     },
     {
-      "hash": "0xD176D262",
+      "hash": "0x1DE14C65",
       "displayName": "狼王的激昂",
       "maxLevel": 15
     },
     {
-      "hash": "0x30773197",
-      "displayName": "转世的跃动",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x47384248",
-      "displayName": "转世的恩宠",
+      "hash": "0xD176D262",
+      "displayName": "群青的剑光",
       "maxLevel": 15
     },
     {
@@ -976,33 +901,8 @@
       "maxLevel": 15
     },
     {
-      "hash": "0x3BA37635",
-      "displayName": "HP吸收",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x2679A4F0",
-      "displayName": "明镜止水",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x08DA7279",
-      "displayName": "攻击力",
-      "maxLevel": 15
-    },
-    {
       "hash": "0x837B3D64",
       "displayName": "自愈",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x04AC2281",
-      "displayName": "激昂",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0xB5B23F02",
-      "displayName": "体力",
       "maxLevel": 15
     },
     {
@@ -1026,28 +926,8 @@
       "maxLevel": 15
     },
     {
-      "hash": "0x7B4AAB30",
-      "displayName": "分歧",
-      "maxLevel": 15
-    },
-    {
       "hash": "0x74061B0C",
       "displayName": "天星之焰",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x5BF84FD1",
-      "displayName": "浪迹天涯",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x20492635",
-      "displayName": "天星之煌",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x0523A202",
-      "displayName": "黑龙的咒印",
       "maxLevel": 15
     },
     {
@@ -1071,38 +951,13 @@
       "maxLevel": 15
     },
     {
-      "hash": "0x0723F7EC",
-      "displayName": "黑龙的折跃",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x51E98A7C",
-      "displayName": "群青的战气",
-      "maxLevel": 15
-    },
-    {
       "hash": "0xEC9FFE77",
       "displayName": "刃姬的小夜曲",
       "maxLevel": 15
     },
     {
-      "hash": "0x1A359B67",
-      "displayName": "雷狼的慧眼",
-      "maxLevel": 15
-    },
-    {
       "hash": "0xA8A0CBFF",
       "displayName": "黑龙之觉醒",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x2D70C37D",
-      "displayName": "转世的战气",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x41AC1082",
-      "displayName": "狼王的战气",
       "maxLevel": 15
     },
     {
@@ -1118,11 +973,6 @@
     {
       "hash": "0xF21404B1",
       "displayName": "狼王的大轮转",
-      "maxLevel": 15
-    },
-    {
-      "hash": "0x9EC6C56D",
-      "displayName": "狼王的激昂",
       "maxLevel": 15
     },
     {
@@ -1148,6 +998,71 @@
     {
       "hash": "0x64301E91",
       "displayName": "转世的恩宠",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x0151CF9E",
+      "displayName": "伤害上限·红天",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x020DB733",
+      "displayName": "超凡技艺",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x1E1CECCE",
+      "displayName": "浩劫新星",
+      "maxLevel": 35
+    },
+    {
+      "hash": "0x235D86EF",
+      "displayName": "超新星",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x3B71AF12",
+      "displayName": "伤害上限·轰天",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x3F682593",
+      "displayName": "超凡奥秘",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x46EE3116",
+      "displayName": "漆黑之谊",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0x79027FC8",
+      "displayName": "超凡破限",
+      "maxLevel": 55
+    },
+    {
+      "hash": "0x89C66ACB",
+      "displayName": "相扑斗力",
+      "maxLevel": 5
+    },
+    {
+      "hash": "0xAEFEB1BC",
+      "displayName": "伤害上限·苍天",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xBBD77C33",
+      "displayName": "超凡强击",
+      "maxLevel": 15
+    },
+    {
+      "hash": "0xBF78FBFC",
+      "displayName": "可怕的漆黑钳蟹因子",
+      "maxLevel": 20
+    },
+    {
+      "hash": "0xFFF8CF64",
+      "displayName": "伤害上限·疾天",
       "maxLevel": 15
     }
   ]
