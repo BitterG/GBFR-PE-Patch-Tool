@@ -6624,12 +6624,12 @@
             "confidence": "medium"
         },
         {
-            "internalId": "GEEN_109_04",
-            "hash": "0x46ABA3C0",
-            "displayName": "Precise Wrath V",
+            "internalId": "GEEN_109_24",
+            "hash": "0xCE6C62CF",
+            "displayName": "Precise Wrath V+",
             "category": null,
-            "isPlusSigil": null,
-            "supportsSecondaryTrait": false,
+            "isPlusSigil": true,
+            "supportsSecondaryTrait": true,
             "allowedSigilLevels": [
                 15
             ],
@@ -6645,9 +6645,9 @@
             "disallowedSecondaryTraitIds": [],
             "secondaryTraitLevelOverrides": {},
             "compatibilityRuleIds": [],
-            "notes": "Added by missing-sigil completion using highest-tier-only policy. Primary trait inferred from matching SKILL family ID; exact strict legality still needs gem/lot table verification.",
-            "source": "GBFRDataTools/GBFRQuestClearChecker/csv_data/item_id.csv; GBFRDataTools.Database/Data/ids.txt",
-            "confidence": "medium",
+            "notes": "Verified Precise Wrath V+ sigil hash. The prior 0x46ABA3C0 entry was an incorrect non-plus mapping.",
+            "source": "verified game hash",
+            "confidence": "high",
             "defaultSecondaryTraitId": null,
             "defaultSecondaryTraitName": null
         },

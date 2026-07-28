@@ -1907,7 +1907,7 @@ const translations = {
   "怪物倍率请输入 0 到 9999 之间的数值": "Enter a monster multiplier between 0 and 9999",
   "怪物增强 Hook 未写入目标地址": "The monster-enhancement hook was not written to the target address",
   "怪物增强项目为空": "Monster enhancement item is empty",
-  "怪物增强（未修复）": "Monster Enhancements (Not Fixed)",
+  "怪物增强": "Monster Enhancements",
   "怪物多倍昏厥条": "Monster Stun Gauge Multiplier",
   "怪物多倍血": "Monster HP Multiplier",
   "恢复": "Restore",

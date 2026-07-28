@@ -217,6 +217,7 @@ var sigilCN = map[string]string{
 	"Supplements V":                   "弱化效果延长 V",
 	"Natural Defenses":                "全弱化效果抗性",
 	"Precise Wrath V":                 "怒发冲冠 V",
+	"Precise Wrath V+":                "怒发冲冠V+",
 	"Window of Opportunity V":         "攻击机会 V",
 	"Sigil Booster V":                 "因子强化 V",
 	"Held Under Resistance V":         "水牢抗性 V",

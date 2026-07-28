@@ -196,7 +196,7 @@ function showStatus(msg, type) {
         上限突破
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'monster' }" @click="activeTab = 'monster'">
-        怪物增强（未修复）
+        怪物增强
       </button>
     </div>
 
