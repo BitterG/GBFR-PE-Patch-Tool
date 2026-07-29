@@ -136,6 +136,7 @@ type App struct {
 	playerDamageView           uintptr
 	monsterDamageHookInstalled bool
 	monsterDamageEnabled       bool
+	materialConsumeCaveAddr    uintptr
 	flyingEnabled              bool
 	flightSpeed                float32
 	flightStop                 chan struct{}
@@ -1206,6 +1207,7 @@ func (a *App) CharaDetach() {
 	// jump installed makes a later tool instance mistake it for an unsupported
 	// game build and can also leave the game executing tool-owned code.
 	_ = a.releaseSigilMemoryHook()
+	_ = a.releaseMaterialConsumeHook()
 	// Stop the input loop before closing the target handle.
 	a.FlightSetEnabled(false, 0)
 	if a.hProcess != 0 {
@@ -1228,6 +1230,7 @@ func (a *App) CharaDetach() {
 	a.collectibleTaskBase = 0
 	a.monsterDamageHookInstalled = false
 	a.monsterDamageEnabled = false
+	a.materialConsumeCaveAddr = 0
 	a.sigilMemoryHookAddr = 0
 	a.sigilMemoryCaveAddr = 0
 	a.sigilMemoryOriginal = nil
@@ -1657,8 +1660,8 @@ type MaterialConsumeStatus struct {
 const materialConsumeRVA = uintptr(0x356621)
 
 var (
-	materialConsumeOrig  = []byte{0x41, 0x01, 0x76, 0x04}
-	materialConsumePatch = []byte{0x90, 0x90, 0x90, 0x90}
+	materialConsumeOrig        = []byte{0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1}
+	materialConsumeLegacyPatch = []byte{0x90, 0x90, 0x90, 0x90, 0x4C, 0x89, 0xE1}
 )
 
 func (a *App) MaterialConsumeGetStatus() (MaterialConsumeStatus, error) {
@@ -1672,15 +1675,96 @@ func (a *App) MaterialConsumeSetEnabled(enabled bool) (MaterialConsumeStatus, er
 	if err := a.ensureGameProcess(); err != nil {
 		return MaterialConsumeStatus{}, err
 	}
-	patch := materialConsumeOrig
 	if enabled {
-		patch = materialConsumePatch
-	}
-	addr := a.moduleBase + materialConsumeRVA
-	if err := writeCodeMemory(a.hProcess, addr, patch); err != nil {
-		return MaterialConsumeStatus{}, fmt.Errorf("写入升级/强化材料消耗失败: %w", err)
+		if err := a.installMaterialConsumeHook(); err != nil {
+			return MaterialConsumeStatus{}, err
+		}
+	} else if err := a.releaseMaterialConsumeHook(); err != nil {
+		return MaterialConsumeStatus{}, err
 	}
 	return a.readMaterialConsumeStatus()
+}
+
+func (a *App) installMaterialConsumeHook() error {
+	addr := a.moduleBase + materialConsumeRVA
+	current := make([]byte, len(materialConsumeOrig))
+	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
+		return fmt.Errorf("读取升级/强化材料消耗指令失败: %w", err)
+	}
+	if isMaterialConsumeHook(current) {
+		return nil
+	}
+	if !bytesEqual(current, materialConsumeOrig) && !bytesEqual(current, materialConsumeLegacyPatch) {
+		return fmt.Errorf("升级/强化材料消耗指令字节异常: %s", bytesToHex(current))
+	}
+
+	const caveSize = 25
+	caveAddr, err := virtualAllocRemoteNear(a.hProcess, addr, caveSize)
+	if err != nil {
+		return fmt.Errorf("分配升级/强化材料消耗代码洞失败: %w", err)
+	}
+	cleanup := true
+	defer func() {
+		if cleanup {
+			_ = virtualFreeRemote(a.hProcess, caveAddr)
+		}
+	}()
+
+	// 仅在 esi 为负数时跳过 add；药水、奖励等正数增量保留原逻辑。
+	cave := []byte{
+		0x85, 0xF6,
+		0x0F, 0x89, 0x05, 0x00, 0x00, 0x00,
+		0xE9, 0x00, 0x00, 0x00, 0x00,
+		0x41, 0x01, 0x76, 0x04,
+		0x4C, 0x89, 0xE1,
+		0xE9, 0x00, 0x00, 0x00, 0x00,
+	}
+	returnAddr := addr + uintptr(len(materialConsumeOrig))
+	binary.LittleEndian.PutUint32(cave[9:13], uint32(int64(returnAddr)-int64(caveAddr+13)))
+	binary.LittleEndian.PutUint32(cave[21:25], uint32(int64(returnAddr)-int64(caveAddr+25)))
+	if err := writeCodeMemory(a.hProcess, caveAddr, cave); err != nil {
+		return fmt.Errorf("写入升级/强化材料消耗代码洞失败: %w", err)
+	}
+
+	patch := []byte{0xE9, 0, 0, 0, 0, 0x90, 0x90}
+	binary.LittleEndian.PutUint32(patch[1:5], uint32(int64(caveAddr)-int64(addr+5)))
+	if err := writeCodeMemory(a.hProcess, addr, patch); err != nil {
+		return fmt.Errorf("写入升级/强化材料消耗跳转失败: %w", err)
+	}
+	a.materialConsumeCaveAddr = caveAddr
+	cleanup = false
+	return nil
+}
+
+func (a *App) releaseMaterialConsumeHook() error {
+	if a.hProcess == 0 || a.moduleBase == 0 {
+		return nil
+	}
+	addr := a.moduleBase + materialConsumeRVA
+	current := make([]byte, len(materialConsumeOrig))
+	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
+		return fmt.Errorf("读取升级/强化材料消耗指令失败: %w", err)
+	}
+	if bytesEqual(current, materialConsumeOrig) {
+		return nil
+	}
+	if !isMaterialConsumeHook(current) && !bytesEqual(current, materialConsumeLegacyPatch) {
+		return fmt.Errorf("升级/强化材料消耗指令字节异常: %s", bytesToHex(current))
+	}
+	if err := writeCodeMemory(a.hProcess, addr, materialConsumeOrig); err != nil {
+		return fmt.Errorf("恢复升级/强化材料消耗指令失败: %w", err)
+	}
+	if a.materialConsumeCaveAddr != 0 {
+		if err := virtualFreeRemote(a.hProcess, a.materialConsumeCaveAddr); err != nil {
+			return fmt.Errorf("释放升级/强化材料消耗代码洞失败: %w", err)
+		}
+		a.materialConsumeCaveAddr = 0
+	}
+	return nil
+}
+
+func isMaterialConsumeHook(buf []byte) bool {
+	return len(buf) == len(materialConsumeOrig) && buf[0] == 0xE9 && buf[5] == 0x90 && buf[6] == 0x90
 }
 
 func (a *App) readMaterialConsumeStatus() (MaterialConsumeStatus, error) {
@@ -1689,12 +1773,12 @@ func (a *App) readMaterialConsumeStatus() (MaterialConsumeStatus, error) {
 	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&buf[0]), uintptr(len(buf))); err != nil {
 		return MaterialConsumeStatus{}, fmt.Errorf("读取升级/强化材料消耗指令失败: %w", err)
 	}
-	if !bytesEqual(buf, materialConsumeOrig) && !bytesEqual(buf, materialConsumePatch) {
+	if !bytesEqual(buf, materialConsumeOrig) && !bytesEqual(buf, materialConsumeLegacyPatch) && !isMaterialConsumeHook(buf) {
 		return MaterialConsumeStatus{}, fmt.Errorf("升级/强化材料消耗指令字节异常: %s", bytesToHex(buf))
 	}
 	return MaterialConsumeStatus{
 		RVA:          uint64(materialConsumeRVA),
-		Enabled:      bytesEqual(buf, materialConsumePatch),
+		Enabled:      !bytesEqual(buf, materialConsumeOrig),
 		CurrentBytes: bytesToHex(buf),
 	}, nil
 }
