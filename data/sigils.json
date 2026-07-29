@@ -3640,9 +3640,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_047_04",
-            "hash": "0xAC7822A4",
-            "displayName": "Burn Resistance V",
+            "internalId": "GEEN_047_24",
+            "hash": "0x27F0408A",
+            "displayName": "Burn Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -3668,9 +3668,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_051_04",
-            "hash": "0x72CBA710",
-            "displayName": "Sandtomb Resistance V",
+            "internalId": "GEEN_051_24",
+            "hash": "0x614FB550",
+            "displayName": "Sandtomb Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -3696,9 +3696,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_052_04",
-            "hash": "0xC1A3F47E",
-            "displayName": "Glaciate Resistance V",
+            "internalId": "GEEN_052_24",
+            "hash": "0xEF70CA76",
+            "displayName": "Glaciate Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -3724,9 +3724,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_054_04",
-            "hash": "0x2BDFBA94",
-            "displayName": "Dizzy Resistance V",
+            "internalId": "GEEN_054_24",
+            "hash": "0x20BCDB1B",
+            "displayName": "Dizzy Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -3752,9 +3752,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_055_04",
-            "hash": "0xFB9BC6C9",
-            "displayName": "Paralysis Resistance V",
+            "internalId": "GEEN_055_24",
+            "hash": "0x6AC327A2",
+            "displayName": "Paralysis Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -3780,9 +3780,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_057_04",
-            "hash": "0x3332E18D",
-            "displayName": "Skill Sealed Resistance V",
+            "internalId": "GEEN_057_24",
+            "hash": "0x19CB4EB",
+            "displayName": "Skill Sealed Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -3808,9 +3808,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_058_04",
-            "hash": "0xDF4A666E",
-            "displayName": "SBA Sealed Resistance V",
+            "internalId": "GEEN_058_24",
+            "hash": "0x464099CD",
+            "displayName": "SBA Sealed Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -5372,9 +5372,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_077_04",
-            "hash": "0x50B05700",
-            "displayName": "Low Profile V",
+            "internalId": "GEEN_077_24",
+            "hash": "0xFF2CBCD0",
+            "displayName": "Low Profile V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -5400,9 +5400,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_078_04",
-            "hash": "0x4E4911FA",
-            "displayName": "Provoke V",
+            "internalId": "GEEN_078_24",
+            "hash": "0xC63C8DDF",
+            "displayName": "Provoke V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -5428,9 +5428,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_079_04",
-            "hash": "0xE19DE7AE",
-            "displayName": "Fast Learner V",
+            "internalId": "GEEN_079_24",
+            "hash": "0xD7ABBDCA",
+            "displayName": "Fast Learner V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -5456,9 +5456,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_080_04",
-            "hash": "0xB8A811ED",
-            "displayName": "Rupie Tycoon V",
+            "internalId": "GEEN_080_24",
+            "hash": "0x9E62759D",
+            "displayName": "Rupie Tycoon V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -5808,9 +5808,9 @@
             "confidence": "medium"
         },
         {
-            "internalId": "GEEN_086_04",
-            "hash": "0xCCD29B2B",
-            "displayName": "Slow Resistance V",
+            "internalId": "GEEN_086_24",
+            "hash": "0x22115F71",
+            "displayName": "Slow Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -5836,7 +5836,7 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_087_04",
+            "internalId": "GEEN_087_24",
             "hash": "0xB1CCC211",
             "displayName": "Firm Stance V+",
             "category": null,
@@ -5864,9 +5864,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_088_04",
-            "hash": "0x1727E6B7",
-            "displayName": "Blight Resistance V",
+            "internalId": "GEEN_088_24",
+            "hash": "0xAA45CD2D",
+            "displayName": "Blight Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -5892,9 +5892,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_094_04",
-            "hash": "0xECD324C7",
-            "displayName": "Steady Focus V",
+            "internalId": "GEEN_094_24",
+            "hash": "0x0B456DEF",
+            "displayName": "Steady Focus V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -21702,9 +21702,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_136_04",
-            "hash": "0xCD4B83C7",
-            "displayName": "Held Under Resistance V",
+            "internalId": "GEEN_136_24",
+            "hash": "0xEF5D0D16",
+            "displayName": "Held Under Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -21730,9 +21730,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_137_04",
-            "hash": "0x4CC5031D",
-            "displayName": "Darkflame Resistance V",
+            "internalId": "GEEN_137_24",
+            "hash": "0xD3071D85",
+            "displayName": "Darkflame Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -21758,9 +21758,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_138_04",
-            "hash": "0xE8B8A474",
-            "displayName": "Attack Down Resistance V",
+            "internalId": "GEEN_138_24",
+            "hash": "0x7291A3F9",
+            "displayName": "Attack Down Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -21786,9 +21786,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_139_04",
-            "hash": "0x82677AAA",
-            "displayName": "Defense Down Resistance V",
+            "internalId": "GEEN_139_24",
+            "hash": "0x5048C546",
+            "displayName": "Defense Down Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -22244,9 +22244,9 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_147_04",
-            "hash": "0x82B300F5",
-            "displayName": "Path to Mastery V",
+            "internalId": "GEEN_147_24",
+            "hash": "0x2E3351E3",
+            "displayName": "Path to Mastery V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -22272,8 +22272,8 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_150_24",
-            "hash": "0x49745934",
+            "internalId": "GEEN_150_34",
+            "hash": "0x49EBEBEB",
             "displayName": "Untouchable+",
             "category": "special_sigil",
             "isPlusSigil": true,
@@ -22946,7 +22946,7 @@
             "confidence": "medium"
         },
         {
-            "internalId": "GEEN_156_24",
+            "internalId": "GEEN_156_34",
             "hash": "0x9A60FBF0",
             "displayName": "Potent Greens+",
             "category": null,
@@ -22972,8 +22972,8 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_157_24",
-            "hash": "0xB1D40170",
+            "internalId": "GEEN_157_34",
+            "hash": "0x6DB307D5",
             "displayName": "Roll of the Die+",
             "category": null,
             "isPlusSigil": null,
@@ -23162,8 +23162,8 @@
             "confidence": "medium"
         },
         {
-            "internalId": "GEEN_159_24",
-            "hash": "0x0A4651BB",
+            "internalId": "GEEN_159_34",
+            "hash": "0x8E20B20C",
             "displayName": "Flight over Fight+",
             "category": null,
             "isPlusSigil": null,
@@ -23454,9 +23454,9 @@
             "confidence": "medium"
         },
         {
-            "internalId": "GEEN_167_04",
-            "hash": "0xFB5092F2",
-            "displayName": "Auto Potion",
+            "internalId": "GEEN_167_34",
+            "hash": "0x3C0F5461",
+            "displayName": "Auto Potion+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -26360,8 +26360,8 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_233_24",
-            "hash": "0x332E9B30",
+            "internalId": "GEEN_233_34",
+            "hash": "0x99E8B892",
             "displayName": "Berserker Echo+",
             "category": null,
             "isPlusSigil": null,
@@ -26386,8 +26386,8 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_234_24",
-            "hash": "0x938DB625",
+            "internalId": "GEEN_234_34",
+            "hash": "0x4AE72C9E",
             "displayName": "Spartan Echo+",
             "category": null,
             "isPlusSigil": null,
@@ -26412,8 +26412,8 @@
             "defaultSecondaryTraitName": null
         },
         {
-            "internalId": "GEEN_235_24",
-            "hash": "0xBBE831B2",
+            "internalId": "GEEN_235_34",
+            "hash": "0x113035D8",
             "displayName": "Super Ultimate Perfect Dodge+",
             "category": null,
             "isPlusSigil": null,
