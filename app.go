@@ -24,7 +24,7 @@ const (
 	steamAppID  = "881020"
 	gameExeName = "granblue_fantasy_relink.exe"
 	gameFolder  = "Granblue Fantasy Relink"
-	appVersion  = "v1.9.1"
+	appVersion  = "v1.9.2"
 	repoOwner   = "BitterG"
 	repoName    = "GBFR-PE-Patch-Tool"
 )

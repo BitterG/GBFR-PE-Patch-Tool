@@ -878,7 +878,7 @@ var runtimeNameEN = map[uint32]string{
 	0x99E8B892: "Berserker Echo+",
 	0x3EA4134B: "Supreme Primarch's Awe+",
 	0x43F26A91: "Mage's Warpath+",
-	0x4AA48417: "Potent Greens+",
+	0x9A60FBF0: "Potent Greens+",
 	0x97CF485D: "Potent Greens+",
 	0x4C28585A: "Holy Knight's Warpath+",
 	0x4CDCE25B: "Lord's Warpath+",
