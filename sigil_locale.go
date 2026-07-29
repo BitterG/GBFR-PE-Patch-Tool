@@ -194,10 +194,11 @@ var sigilCN = map[string]string{
 	"Supreme Primarch's Nimbus+":    "天司长的风雅+",
 	"Supreme Primarch's Warpath+":   "天司长的战气+",
 	//伽豪 请输入文本
-	"Gladiator's Frenzy+":     "狼王的激昂",
-	"Gladiator's Top+":        "狼王的大转轮",
-	"Gladiator's Awakening+":  "狼王之觉醒",
-	"Gladiator's Warpath+":    "狼王的战气",
+	"Gladiator's Frenzy+":    "狼王的激昂",
+	"Gladiator's Top+":       "狼王的大转轮",
+	"Gladiator's Awakening+": "狼王之觉醒",
+	"Gladiator's Warpath+":   "狼王的战气",
+	//玛琪拉菲拉
 	"Bladequeen's Serenade+":  "刃姬的小夜曲+",
 	"Bladequeen's Circuit+":   "刃姬的轮舞曲+",
 	"Bladequeen's Awakening+": "刃姬之觉醒+",

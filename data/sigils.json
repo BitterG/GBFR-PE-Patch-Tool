@@ -3612,9 +3612,9 @@
             "confidence": "high"
         },
         {
-            "internalId": "GEEN_046_04",
-            "hash": "0x5C19BBB0",
-            "displayName": "Poison Resistance V",
+            "internalId": "GEEN_046_24",
+            "hash": "0x176FE02C",
+            "displayName": "Poison Resistance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -5838,7 +5838,7 @@
         {
             "internalId": "GEEN_087_04",
             "hash": "0xB1CCC211",
-            "displayName": "Firm Stance V",
+            "displayName": "Firm Stance V+",
             "category": null,
             "isPlusSigil": null,
             "supportsSecondaryTrait": false,
@@ -11834,7 +11834,7 @@
         {
             "internalId": "GEEN_120_91",
             "hash": "0xE073EA65",
-            "displayName": "Phantasm's Harmony+",
+            "displayName": "Phantasm's Concord+",
             "category": "character_sigil",
             "isPlusSigil": true,
             "supportsSecondaryTrait": true,
@@ -11844,7 +11844,7 @@
             "defaultSigilLevel": 15,
             "maxSigilLevel": 15,
             "primaryTraitId": "SKILL_120_00",
-            "primaryTraitName": "Phantasm's Harmony",
+            "primaryTraitName": "Phantasm's Concord",
             "firstTraitMaxLevel": 15,
             "allowedFirstTraitLevels": null,
             "allowedSecondaryTraitIds": [
@@ -12026,7 +12026,7 @@
         {
             "internalId": "GEEN_120_92",
             "hash": "0xBF714A8A",
-            "displayName": "Phantasm's Concord+",
+            "displayName": "Phantasm's Harmony+",
             "category": "character_sigil",
             "isPlusSigil": true,
             "supportsSecondaryTrait": true,
@@ -12036,7 +12036,7 @@
             "defaultSigilLevel": 15,
             "maxSigilLevel": 15,
             "primaryTraitId": "SKILL_120_01",
-            "primaryTraitName": "Phantasm's Concord",
+            "primaryTraitName": "Phantasm's Harmony",
             "firstTraitMaxLevel": 15,
             "allowedFirstTraitLevels": null,
             "allowedSecondaryTraitIds": [
