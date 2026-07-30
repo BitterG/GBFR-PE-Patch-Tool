@@ -2,7 +2,7 @@ package main
 
 import "testing"
 
-func TestSigilGeneratorUsesEnglishMemoryCatalogNames(t *testing.T) {
+func TestSigilGeneratorUsesEnglishRuntimeCatalogNames(t *testing.T) {
 	setCurrentLanguage("en")
 	t.Cleanup(func() { setCurrentLanguage("en") })
 
@@ -13,8 +13,8 @@ func TestSigilGeneratorUsesEnglishMemoryCatalogNames(t *testing.T) {
 	}
 
 	want := map[string]string{
-		"MEMORY_SIGIL_EB766D87": "Bladequeen's Warpath V+",
-		"MEMORY_SIGIL_7B4AAB30": "Divergence V+",
+		"RUNTIME_SIGIL_EB766D87": "Bladequeen's Warpath+",
+		"RUNTIME_SIGIL_7B4AAB30": "Divergence+",
 	}
 	for id, displayName := range want {
 		found := false

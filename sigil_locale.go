@@ -196,6 +196,7 @@ var sigilCN = map[string]string{
 	"Supreme Primarch's Warpath+":   "天司长的战气+",
 	//伽豪 请输入文本
 	"Gladiator's Frenzy+":    "狼王的激昂",
+	"Gladiator's Uplift+":    "狼王的激昂+",
 	"Gladiator's Top+":       "狼王的大转轮",
 	"Gladiator's Awakening+": "狼王之觉醒",
 	"Gladiator's Warpath+":   "狼王的战气",
@@ -299,6 +300,9 @@ var sigilCN = map[string]string{
 	"Roll of the Die+":                "骰子剑+",
 	"Flight over Fight":               "摇曳步",
 	"Greater Aegis":                   "金刚",
+	"Dread Black Pincer Crab Sigil":   "可怕的漆黑钳蟹因子",
+	"Blackened Bond":                  "漆黑之谊",
+	"Sumo Power":                      "相扑斗力",
 }
 
 // traitCN 特性中文名映射
@@ -351,6 +355,16 @@ var traitCN = map[string]string{
 	"Untouchable":                  "躲避距离",
 	"Supplementary DMG":            "追击",
 	"Catastrophe":                  "浩劫",
+	"DMG Cap Ecru":                 "伤害上限·轰天",
+	"DMG Cap Sage":                 "伤害上限·疾天",
+	"DMG Cap Cobalt":               "伤害上限·苍天",
+	"DMG Cap Cardinal":             "伤害上限·红天",
+	"Supernova":                    "超新星",
+	"Unbound Strike":               "超凡强击",
+	"Unbound Technique":            "超凡技艺",
+	"Unbound Exertion":             "超凡奥秘",
+	"Unbound Master":               "超凡破限",
+	"Catastrophe Nova":             "浩劫新星",
 	"Less Is More":                 "身无长技",
 	"Head Start":                   "先发制人",
 	"Berserker":                    "穷寇心",
@@ -535,7 +549,7 @@ var traitCN = map[string]string{
 
 func cnName(en string) string {
 	if !useChinese() {
-		return localizedSigilMemoryName(en)
+		return en
 	}
 	if s, ok := sigilCN[en]; ok {
 		return s

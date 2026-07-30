@@ -94,9 +94,6 @@ func LoadCatalog() (*Catalog, error) {
 		return nil, fmt.Errorf("加载特性数据失败: %w", err)
 	}
 	c.Traits = traits.Traits
-	memorySigils, memoryTraits := memoryCatalogDefs()
-	c.Sigils = append(c.Sigils, memorySigils...)
-	c.Traits = append(c.Traits, memoryTraits...)
 
 	rules, err := loadJSON[RuleFile]("data/secondary-trait-rules.json")
 	if err != nil {

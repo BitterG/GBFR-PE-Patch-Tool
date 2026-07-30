@@ -921,7 +921,7 @@ var runtimeNameCN = map[uint32]string{
 	0xEB4AD96D: "魔眼的万箭+",
 	0xF1267035: "无态+",
 	0xB1CCC211: "不动V+",
-	// —— DLC 因子：镜像自 sigil_memory_names.go（工具游戏内存提取，高可信）——
+	// —— DLC 因子 ——
 	0x04AC2281: "激昂",
 	0x0523A202: "黑龙的咒印+",
 	0x06719232: "黑龙的咒印",

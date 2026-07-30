@@ -2687,7 +2687,268 @@
                        "notes": "Wrightstone max level 20 verified by user.",
                        "source": "User in-game verification",
                        "confidence": "high"
-                   }
+                   },
+{
+    "internalId": "SKILL_326_00",
+    "hash": "0x73220725",
+    "displayName": "Celestial Ventus",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_322_00",
+    "hash": "0x9232DC17",
+    "displayName": "Celestial Terra",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_176_02",
+    "hash": "0x3EB345D7",
+    "displayName": "Thunderwolf's Warpath",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_320_00",
+    "hash": "0x0DE887A0",
+    "displayName": "Celestial Nyx",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_324_00",
+    "hash": "0xA898E283",
+    "displayName": "Celestial Aqua",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_327_00",
+    "hash": "0xF26BAEA5",
+    "displayName": "Divergence",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_323_00",
+    "hash": "0x36E3848D",
+    "displayName": "Celestial Incendo",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_325_00",
+    "hash": "0xD029FE08",
+    "displayName": "Fatebreaker",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_321_00",
+    "hash": "0xA7726190",
+    "displayName": "Celestial Lumen",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_178_00",
+    "hash": "0x06719232",
+    "displayName": "The Black's Mark",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_175_01",
+    "hash": "0x461A8E07",
+    "displayName": "Ultramarine's Adversity",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_174_01",
+    "hash": "0x9ACE140B",
+    "displayName": "Bladequeen's Circuit",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_176_00",
+    "hash": "0x7D75D904",
+    "displayName": "Thunderwolf's Recharge",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_178_02",
+    "hash": "0x5559232F",
+    "displayName": "The Black's Warpath",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_178_01",
+    "hash": "0xED8D8AD8",
+    "displayName": "The Black's Impulse",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_175_02",
+    "hash": "0xB953CC1E",
+    "displayName": "Ultramarine's Warpath",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_174_00",
+    "hash": "0x7B5B081D",
+    "displayName": "Bladequeen's Serenade",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_176_01",
+    "hash": "0xBE3404B9",
+    "displayName": "Thunderwolf's Acuity",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_177_02",
+    "hash": "0x807B6684",
+    "displayName": "Enchantress's Warpath",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_173_02",
+    "hash": "0xDBA19768",
+    "displayName": "Gladiator's Warpath",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_174_02",
+    "hash": "0x79266456",
+    "displayName": "Bladequeen's Warpath",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_173_00",
+    "hash": "0x1DE14C65",
+    "displayName": "Gladiator's Frenzy",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_173_01",
+    "hash": "0x26956F25",
+    "displayName": "Gladiator's Top",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_175_00",
+    "hash": "0xD176D262",
+    "displayName": "Ultramarine's Flash",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_177_01",
+    "hash": "0x30773197",
+    "displayName": "Enchantress's Rhythm",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_177_00",
+    "hash": "0x47384248",
+    "displayName": "Enchantress's Blessing",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_301_00",
+    "hash": "0xBF78FBFC",
+    "displayName": "Immortal Shell",
+    "category": null,
+    "maxLevel": 20,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_302_00",
+    "hash": "0x46EE3116",
+    "displayName": "In a Pinch",
+    "category": null,
+    "maxLevel": 15,
+    "allowedLevels": null,
+    "observedLevels": []
+},
+{
+    "internalId": "SKILL_303_00",
+    "hash": "0x89C66ACB",
+    "displayName": "Sumo Force",
+    "category": null,
+    "maxLevel": 5,
+    "allowedLevels": null,
+    "observedLevels": []
+}
                ],
     "todos":  [
                   "If future game patches add new sigils or traits, rerun the ID/hash/max-level audit before publishing a new build.",

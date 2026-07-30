@@ -60,7 +60,6 @@ func LoadWrightstoneCatalog() (*WrightstoneCatalog, error) {
 		}
 		c.Traits = append(c.Traits, trait)
 	}
-	c.Traits = append(c.Traits, memoryWrightstoneTraits()...)
 
 	c.wrightstoneByID = make(map[string]*WrightstoneDef, len(c.Wrightstones))
 	c.wrightstoneByHash = make(map[uint32]*WrightstoneDef, len(c.Wrightstones))
