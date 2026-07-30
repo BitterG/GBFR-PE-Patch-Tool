@@ -2877,6 +2877,14 @@ var monsterPatchPoints = []monsterPatchPoint{
 		Available: true,
 	},
 	{
+		ID:        "monster_damage_new",
+		Name:      "怪物伤害-新",
+		RVA:       0x1F7A810,
+		Original:  []byte{0x48, 0x89, 0x51, 0x10, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC},
+		Hook:      true,
+		Available: true,
+	},
+	{
 		ID:        "monster_damage",
 		Name:      "怪物伤害",
 		RVA:       0x1FBDEB4,
@@ -3137,7 +3145,7 @@ func (a *App) monsterEnhanceSetPatchValueEnabledLocked(ownerToken, id string, en
 			return MonsterEnhanceResult{}, err
 		}
 		var auxiliary *monsterEnhanceAuxPreflight
-		if point != nil && point.ID == "monster_damage" {
+		if point != nil && (point.ID == "monster_damage" || point.ID == "monster_damage_new") {
 			auxiliary, err = a.prepareMonsterDamageAuxiliaryHook()
 			if err != nil {
 				return MonsterEnhanceResult{}, err
@@ -3325,7 +3333,7 @@ func (a *App) setSBAChainTimer(point *monsterPatchPoint, value float64) error {
 }
 
 func needsMonsterValue(id string) bool {
-	return id == "monster_hp" || id == "monster_stun" || id == "monster_damage" || id == "crocodile_damage" || id == "overdrive_state"
+	return id == "monster_hp" || id == "monster_stun" || id == "monster_damage" || id == "monster_damage_new" || id == "crocodile_damage" || id == "overdrive_state"
 }
 
 func findMonsterPatchPoint(id string) *monsterPatchPoint {

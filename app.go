@@ -135,6 +135,7 @@ type App struct {
 	playerDamageMapping        windows.Handle
 	playerDamageView           uintptr
 	monsterDamageHookInstalled bool
+	monsterDamageHookID        string
 	monsterDamageEnabled       bool
 	materialConsumeCaveAddr    uintptr
 	flyingEnabled              bool
@@ -1229,6 +1230,7 @@ func (a *App) CharaDetach() {
 	a.terminusDropOrig = nil
 	a.collectibleTaskBase = 0
 	a.monsterDamageHookInstalled = false
+	a.monsterDamageHookID = ""
 	a.monsterDamageEnabled = false
 	a.materialConsumeCaveAddr = 0
 	a.sigilMemoryHookAddr = 0
@@ -2257,6 +2259,13 @@ var monsterPatchPoints = []monsterPatchPoint{
 		Hook:     true,
 	},
 	{
+		ID:       "monster_damage_new",
+		Name:     "怪物伤害-新",
+		RVA:      0x1F7A810,
+		Original: []byte{0x48, 0x89, 0x51, 0x10, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC},
+		Hook:     true,
+	},
+	{
 		ID:       "monster_damage",
 		Name:     "怪物伤害",
 		RVA:      0x1FBDEB4,
@@ -2468,7 +2477,10 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 		return MonsterEnhanceResult{}, fmt.Errorf("Overdrive 状态请选择 空条、满黄条或自动OD")
 	}
 
-	if pointID == "monster_damage" && a.monsterDamageHookInstalled {
+	if (pointID == "monster_damage" || pointID == "monster_damage_new") && a.monsterDamageHookInstalled {
+		if a.monsterDamageHookID != pointID {
+			return MonsterEnhanceResult{}, fmt.Errorf("%s与%s共用玩家伤害 Hook，请先重启游戏后再切换", point.Name, a.monsterDamageHookID)
+		}
 		if err := a.setPlayerDamageEnabled(enabled, hpMultiplier); err != nil {
 			return MonsterEnhanceResult{}, err
 		}
@@ -2522,18 +2534,25 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 		if err != nil {
 			return MonsterEnhanceResult{}, err
 		}
-		if pointID == "monster_damage" {
+		if pointID == "monster_damage" || pointID == "monster_damage_new" {
+			if a.monsterDamageHookInstalled && a.monsterDamageHookID != pointID {
+				return MonsterEnhanceResult{}, fmt.Errorf("%s与%s共用玩家伤害 Hook，请先重启游戏后再切换", point.Name, a.monsterDamageHookID)
+			}
 			if err := a.setPlayerDamageEnabled(true, hpMultiplier); err != nil {
 				return MonsterEnhanceResult{}, err
 			}
 			a.monsterDamageHookInstalled = true
+			a.monsterDamageHookID = pointID
 			a.monsterDamageEnabled = true
 		}
 		status.Injected = true
 		return status, nil
 	}
 
-	if id == "monster_damage" && !enabled {
+	if (id == "monster_damage" || id == "monster_damage_new") && !enabled {
+		if !a.monsterDamageHookInstalled || a.monsterDamageHookID != id {
+			return a.readMonsterEnhanceStatus("")
+		}
 		if err := a.setPlayerDamageEnabled(false, 0); err != nil {
 			return MonsterEnhanceResult{}, err
 		}
@@ -2614,7 +2633,7 @@ func (a *App) readMonsterEnhanceStatus(dllPath string) (MonsterEnhanceResult, er
 		currentHex := bytesToHex(current)
 		parts = append(parts, fmt.Sprintf("%s:%s", point.Name, currentHex))
 		enabled := false
-		if point.ID == "monster_damage" && a.monsterDamageHookInstalled {
+		if point.ID == a.monsterDamageHookID && a.monsterDamageHookInstalled {
 			enabled = a.monsterDamageEnabled
 		} else if point.ID == "sba_chain_timer" {
 			enabled = !bytesEqual(current, point.Original)
@@ -2720,7 +2739,7 @@ func isMonsterPatchBytesAtRVA(rva uintptr, data []byte) bool {
 }
 
 func needsMonsterValue(id string) bool {
-	return id == "monster_hp" || id == "monster_stun" || id == "monster_damage" || id == "overdrive_state"
+	return id == "monster_hp" || id == "monster_stun" || id == "monster_damage" || id == "monster_damage_new" || id == "overdrive_state"
 }
 
 func findMonsterPatchPoint(id string) *monsterPatchPoint {

@@ -43,6 +43,8 @@ type monsterEnhanceAuxPreflight struct {
 
 func monsterEnhanceCaveSize(id string) uintptr {
 	switch id {
+	case "monster_damage_new":
+		return 512
 	case "monster_damage":
 		return 192
 	case "overdrive_state":
