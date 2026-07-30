@@ -2463,6 +2463,9 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 		pointID = "overdrive_state"
 		applyOnce = true
 	}
+	if pointID == "monster_damage" {
+		return MonsterEnhanceResult{}, fmt.Errorf("旧怪物伤害已移除，请使用怪物伤害-新")
+	}
 	point := findMonsterPatchPoint(pointID)
 	if pointID != "all" && point == nil {
 		return MonsterEnhanceResult{}, fmt.Errorf("未知怪物增强项目: %s", id)
