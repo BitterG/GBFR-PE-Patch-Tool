@@ -17,7 +17,7 @@
       "status": {"saveLoaded":"Save loaded: {count} wrightstones","addedToQueue":"Added to queue","written":"Wrote {created} wrightstones (verified {verified})"}
     },
     "summon": {
-      "none":"None","processId":"PID {pid}","title":"Summon workshop","description":"Open the in-game summon inventory before reading; writing invokes the game's save function.","count":"{count} summons",
+      "none":"None","processId":"PID {pid}","title":"Summon workshop","description":"After the 2.0.3 fix, open Inventory → Summons in-game, select a summon, then refresh. Listing every summon was inconvenient to search and edit when the inventory was large, so only the currently selected summon can now be modified.","count":"{count} summons",
       "actions":{"loading":"Loading...","refreshInventory":"Refresh inventory","connectInventory":"Connect inventory","writing":"Writing...","write":"Write summon"},
       "placeholders":{"searchSummons":"Search name or hash (type changes cannot be saved)","nameOrHash":"Name or hash"},
       "fields":{"type":"Type","mainTraitSearch":"Search main trait","mainTrait":"Main trait","mainTraitLevel":"Main trait level","subParam":"Sub-parameter","subParamLevel":"Sub-parameter level"},

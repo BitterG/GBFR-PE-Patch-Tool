@@ -17,7 +17,7 @@
       "status": {"saveLoaded":"已加载存档: {count} 个祝福","addedToQueue":"已添加到队列","written":"已写入 {created} 个祝福 (验证 {verified})"}
     },
     "summon": {
-      "none":"无","processId":"PID {pid}","title":"召唤石工坊","description":"打开游戏内召唤石背包后读取；写入会调用游戏保存函数。","count":"{count} 颗",
+      "none":"无","processId":"PID {pid}","title":"召唤石工坊","description":"2.0.3修复后目前需要在（持有物→召唤石）界面内选中刷新；之前以列表形式列出所有召唤石，在数量较多时不便查找和修改，因此现在仅修改当前选中的召唤石。","count":"{count} 颗",
       "actions":{"loading":"读取中...","refreshInventory":"刷新背包","connectInventory":"连接背包","writing":"写入中...","write":"写入召唤石"},
       "placeholders":{"searchSummons":"搜索名称或 Hash（更改类型无法写入存档）","nameOrHash":"名称或 Hash"},
       "fields":{"type":"种类","mainTraitSearch":"主因子搜索","mainTrait":"主因子","mainTraitLevel":"主因子等级","subParam":"副参数","subParamLevel":"副参数等级"},

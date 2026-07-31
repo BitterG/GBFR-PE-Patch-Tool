@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 	"unsafe"
 
@@ -24,7 +25,7 @@ const (
 	steamAppID  = "881020"
 	gameExeName = "granblue_fantasy_relink.exe"
 	gameFolder  = "Granblue Fantasy Relink"
-	appVersion  = "v1.9.4"
+	appVersion  = "v1.9.5"
 	repoOwner   = "BitterG"
 	repoName    = "GBFR-PE-Patch-Tool"
 )
@@ -142,11 +143,14 @@ type App struct {
 	monsterDamageHookID        string
 	monsterDamageEnabled       bool
 	materialConsumeCaveAddr    uintptr
-	flyingEnabled              bool
-	flightSpeed                float32
-	flightStop                 chan struct{}
-	config                     AppConfig
-	configLoaded               bool
+	// runtimePatchMu serializes material consumption and inventory-set hooks,
+	// which both replace the same item-quantity instruction.
+	runtimePatchMu sync.Mutex
+	flyingEnabled  bool
+	flightSpeed    float32
+	flightStop     chan struct{}
+	config         AppConfig
+	configLoaded   bool
 }
 
 func NewApp() *App { return &App{} }
@@ -947,10 +951,10 @@ type currencyDef struct {
 }
 
 var currencyDefs = []currencyDef{
-	{ID: "msp", Name: "MSP", RVA: 0x0701E220, Offset: 0x98},
-	{ID: "rupies", Name: "金币", RVA: 0x0701E220, Offset: 0x30},
-	{ID: "purple_msp", Name: "紫MSP", RVA: 0x07C49CB0, Offset: 0x9C},
-	{ID: "cp_extreme_void", Name: "CP(极沌空域)", RVA: 0x07C23E38, Offset: 0x24},
+	{ID: "msp", Name: "MSP", RVA: 0x0701B1E0, Offset: 0x98},
+	{ID: "rupies", Name: "金币", RVA: 0x0701B1E0, Offset: 0x30},
+	{ID: "purple_msp", Name: "紫MSP", RVA: 0x0701B1E0, Offset: 0x9C},
+	{ID: "cp_extreme_void", Name: "CP(极沌空域)", RVA: 0x07C20DF8, Offset: 0x24},
 }
 
 type potionDef struct {
@@ -1668,7 +1672,8 @@ type MaterialConsumeStatus struct {
 	CurrentBytes string `json:"currentBytes"`
 }
 
-const materialConsumeRVA = uintptr(0x356621)
+// materialConsumeRVA is the item-quantity update instruction for the current game build.
+const materialConsumeRVA = uintptr(0x34F8F1)
 
 var (
 	materialConsumeOrig        = []byte{0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1}
@@ -1683,6 +1688,8 @@ func (a *App) MaterialConsumeGetStatus() (MaterialConsumeStatus, error) {
 }
 
 func (a *App) MaterialConsumeSetEnabled(enabled bool) (MaterialConsumeStatus, error) {
+	a.runtimePatchMu.Lock()
+	defer a.runtimePatchMu.Unlock()
 	if err := a.ensureGameProcess(); err != nil {
 		return MaterialConsumeStatus{}, err
 	}
@@ -1696,6 +1703,25 @@ func (a *App) MaterialConsumeSetEnabled(enabled bool) (MaterialConsumeStatus, er
 	return a.readMaterialConsumeStatus()
 }
 
+func (a *App) ensureInventoryPatchAvailable() error {
+	addr := a.moduleBase + materialConsumeRVA
+	current := make([]byte, len(materialConsumeOrig))
+	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
+		return fmt.Errorf("读取小钳蟹数量共享指令失败: %w", err)
+	}
+	if bytesEqual(current, materialConsumeOrig) {
+		return nil
+	}
+	if isMaterialConsumeHook(current) {
+		if a.materialConsumeCaveAddr != 0 {
+			return fmt.Errorf("共享补丁地址正由素材不消耗钩子占用，请先恢复")
+		}
+		// A jump installed by the inventory hook is safe to re-apply.
+		return nil
+	}
+	return fmt.Errorf("小钳蟹数量共享指令字节未知: %s", bytesToHex(current))
+}
+
 func (a *App) installMaterialConsumeHook() error {
 	addr := a.moduleBase + materialConsumeRVA
 	current := make([]byte, len(materialConsumeOrig))
@@ -1703,7 +1729,10 @@ func (a *App) installMaterialConsumeHook() error {
 		return fmt.Errorf("读取升级/强化材料消耗指令失败: %w", err)
 	}
 	if isMaterialConsumeHook(current) {
-		return nil
+		if a.materialConsumeCaveAddr != 0 {
+			return nil
+		}
+		return fmt.Errorf("共享补丁地址正由小钳蟹数量钩子占用，请先恢复")
 	}
 	if !bytesEqual(current, materialConsumeOrig) && !bytesEqual(current, materialConsumeLegacyPatch) {
 		return fmt.Errorf("升级/强化材料消耗指令字节异常: %s", bytesToHex(current))
@@ -1759,6 +1788,9 @@ func (a *App) releaseMaterialConsumeHook() error {
 	if bytesEqual(current, materialConsumeOrig) {
 		return nil
 	}
+	if isMaterialConsumeHook(current) && a.materialConsumeCaveAddr == 0 {
+		return fmt.Errorf("共享补丁地址正由小钳蟹数量钩子占用，请先恢复")
+	}
 	if !isMaterialConsumeHook(current) && !bytesEqual(current, materialConsumeLegacyPatch) {
 		return fmt.Errorf("升级/强化材料消耗指令字节异常: %s", bytesToHex(current))
 	}
@@ -1783,6 +1815,9 @@ func (a *App) readMaterialConsumeStatus() (MaterialConsumeStatus, error) {
 	buf := make([]byte, len(materialConsumeOrig))
 	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&buf[0]), uintptr(len(buf))); err != nil {
 		return MaterialConsumeStatus{}, fmt.Errorf("读取升级/强化材料消耗指令失败: %w", err)
+	}
+	if isMaterialConsumeHook(buf) && a.materialConsumeCaveAddr == 0 {
+		return MaterialConsumeStatus{}, fmt.Errorf("共享补丁地址正由小钳蟹数量钩子占用，请先恢复")
 	}
 	if !bytesEqual(buf, materialConsumeOrig) && !bytesEqual(buf, materialConsumeLegacyPatch) && !isMaterialConsumeHook(buf) {
 		return MaterialConsumeStatus{}, fmt.Errorf("升级/强化材料消耗指令字节异常: %s", bytesToHex(buf))
@@ -2298,7 +2333,7 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:       "inventory_set_45",
 		Name:     "设置背包物品数量为 45",
-		RVA:      0x356621,
+		RVA:      0x34F8F1,
 		Original: []byte{0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1},
 		Hook:     true,
 	},
@@ -2479,6 +2514,10 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 	if pointID != "all" && point == nil {
 		return MonsterEnhanceResult{}, fmt.Errorf("未知怪物增强项目: %s", id)
 	}
+	if pointID == "all" || pointID == "inventory_set_45" {
+		a.runtimePatchMu.Lock()
+		defer a.runtimePatchMu.Unlock()
+	}
 	if enabled && point != nil && point.ID != "overdrive_state" && needsMonsterValue(point.ID) && (math.IsNaN(hpMultiplier) || math.IsInf(hpMultiplier, 0) || hpMultiplier <= 0 || hpMultiplier > 9999) {
 		return MonsterEnhanceResult{}, fmt.Errorf("怪物倍率请输入 0 到 9999 之间的数值")
 	}
@@ -2501,6 +2540,11 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 	}
 
 	if enabled {
+		if pointID == "all" || pointID == "inventory_set_45" {
+			if err := a.ensureInventoryPatchAvailable(); err != nil {
+				return MonsterEnhanceResult{}, err
+			}
+		}
 		if point != nil && point.ID == "sba_chain_timer" {
 			if err := a.setSBAChainTimer(point, hpMultiplier); err != nil {
 				return MonsterEnhanceResult{}, err
@@ -2699,6 +2743,12 @@ func (a *App) restoreMonsterEnhance(id string) error {
 			currentIsPatch = len(current) > 0 && current[0] == 0xE9
 		} else {
 			currentIsPatch = bytesEqual(current, point.Patch)
+		}
+		if point.ID == "inventory_set_45" && currentIsPatch && a.materialConsumeCaveAddr != 0 {
+			if id == "all" {
+				continue
+			}
+			return fmt.Errorf("共享补丁地址正由素材不消耗钩子占用，请先恢复")
 		}
 		if !currentIsPatch {
 			if id == "all" && isMonsterPatchBytesAtRVA(point.RVA, current) {

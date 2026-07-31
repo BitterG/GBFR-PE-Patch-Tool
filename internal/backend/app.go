@@ -138,7 +138,7 @@ type App struct {
 	materialConsumeAddr         uintptr
 	infiniteChallengeAddr       uintptr
 	infiniteChallengeOwnerToken string
-	// runtimePatchMu serializes the two features sharing RVA 0x356621. Their
+	// runtimePatchMu serializes the two features sharing materialConsumeRVA. Their
 	// read/validate/write sequence must be atomic or concurrent Wails calls can
 	// both observe the original bytes and then overwrite each other.
 	runtimePatchMu sync.Mutex
@@ -1921,7 +1921,8 @@ type MaterialConsumeStatus struct {
 	CurrentBytes string `json:"currentBytes"`
 }
 
-const materialConsumeRVA = uintptr(0x356621)
+// materialConsumeRVA is the item-quantity update instruction for the current game build.
+const materialConsumeRVA = uintptr(0x34F8F1)
 
 var (
 	materialConsumeOrig  = []byte{0x41, 0x01, 0x76, 0x04}
@@ -2919,7 +2920,7 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:        "inventory_set_45",
 		Name:      "设置背包物品数量为 45",
-		RVA:       0x356621,
+		RVA:       0x34F8F1,
 		Original:  []byte{0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1},
 		Hook:      true,
 		Available: true,
