@@ -5897,12 +5897,12 @@
             "displayName": "Steady Focus V+",
             "category": null,
             "isPlusSigil": null,
-            "supportsSecondaryTrait": false,
+            "supportsSecondaryTrait": true,
             "allowedSigilLevels": [
-                5
+                15
             ],
-            "defaultSigilLevel": 5,
-            "maxSigilLevel": 5,
+            "defaultSigilLevel": 15,
+            "maxSigilLevel": 15,
             "primaryTraitId": "SKILL_094_00",
             "primaryTraitName": "Steady Focus",
             "firstTraitMaxLevel": 15,
