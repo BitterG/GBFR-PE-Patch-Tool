@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	sigilMemoryHookRVA        = uintptr(0x345157)
-	sigilMemorySaveRVA        = uintptr(0x79D820)
+	sigilMemoryHookRVA        = uintptr(0x33E427) // 2.0.3; was 0x345157 on 2.0.2
+	sigilMemorySaveRVA        = uintptr(0x796E60) // 2.0.3; was 0x79D820 on 2.0.2
 	sigilMemoryHookSize       = 8
 	sigilMemoryCaveDataOffset = uintptr(0x40)
 	sigilMemoryOriginalOffset = uintptr(13)
@@ -152,7 +152,7 @@ func (a *App) SigilMemoryScan() (SigilMemoryStatus, error) {
 	if err := a.ensureGameProcess(); err != nil {
 		return SigilMemoryStatus{}, err
 	}
-	// Current game build verified at granblue_fantasy_relink.exe+345157.
+	// Current game build (2.0.3) verified at granblue_fantasy_relink.exe+33E427.
 	// Its first 8 bytes are safe to validate and hook; later bytes vary by build.
 	addr := a.moduleBase + sigilMemoryHookRVA
 	first := make([]byte, sigilMemoryHookSize)
@@ -214,7 +214,7 @@ func (a *App) scanSigilMemoryPattern() (uintptr, error) {
 	if len(matches) == 0 {
 		return 0, fmt.Errorf("未找到选中因子特征码；当前游戏版本与内置特征不匹配")
 	}
-	// Runtime breakpoint verification: later duplicate (+345157 in current build)
+	// Runtime breakpoint verification: later duplicate (+33E427 in 2.0.3)
 	// receives RAX pointing to the selected sigil structure.
 	return matches[len(matches)-1], nil
 }

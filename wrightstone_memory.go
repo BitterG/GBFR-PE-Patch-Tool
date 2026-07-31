@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	wrightstoneMemoryHookRVA        = uintptr(0x3222CF)
-	wrightstoneMemorySaveRVA        = uintptr(0x79D820)
+	wrightstoneMemoryHookRVA        = uintptr(0x31B59F) // 2.0.3; was 0x3222CF on 2.0.2
+	wrightstoneMemorySaveRVA        = uintptr(0x796E60) // 2.0.3; was 0x79D820 on 2.0.2
 	wrightstoneMemoryHookSize       = 8
 	wrightstoneMemoryCaveDataOffset = uintptr(0x40)
 )
