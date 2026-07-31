@@ -7,10 +7,31 @@ import (
 )
 
 const (
-	wrightstoneMemoryHookRVA        = uintptr(0x31B59F) // 2.0.3; was 0x3222CF on 2.0.2
-	wrightstoneMemorySaveRVA        = uintptr(0x796E60) // 2.0.3; was 0x79D820 on 2.0.2
 	wrightstoneMemoryHookSize       = 8
 	wrightstoneMemoryCaveDataOffset = uintptr(0x40)
+)
+
+// Unique wrightstone trait-copy helper: six dword fields (+0x00..+0x14) then
+// restore rax/epilogue. Relative CALL bytes are wildcards.
+var (
+	wrightstoneMemorySelectedPattern = []byte{
+		0x8B, 0x02, 0x39, 0x06, 0x74, 0x0A, 0x89, 0x06, 0x48, 0x89, 0xF1, 0xE8, 0, 0, 0, 0,
+		0x8B, 0x47, 0x04, 0x39, 0x46, 0x04, 0x74, 0x0B, 0x48, 0x8D, 0x4E, 0x04, 0x89, 0x01, 0xE8, 0, 0, 0, 0,
+		0x8B, 0x47, 0x08, 0x39, 0x46, 0x08, 0x74, 0x0B, 0x48, 0x8D, 0x4E, 0x08, 0x89, 0x01, 0xE8, 0, 0, 0, 0,
+		0x8B, 0x47, 0x0C, 0x39, 0x46, 0x0C, 0x74, 0x0B, 0x48, 0x8D, 0x4E, 0x0C, 0x89, 0x01, 0xE8, 0, 0, 0, 0,
+		0x8B, 0x47, 0x10, 0x39, 0x46, 0x10, 0x74, 0x0B, 0x48, 0x8D, 0x4E, 0x10, 0x89, 0x01, 0xE8, 0, 0, 0, 0,
+		0x8B, 0x47, 0x14, 0x39, 0x46, 0x14, 0x74, 0x0B, 0x48, 0x8D, 0x4E, 0x14, 0x89, 0x01, 0xE8, 0, 0, 0, 0,
+		0x48, 0x89, 0xF0, 0x48, 0x83, 0xC4, 0x30, 0x5F, 0x5E, 0x5D, 0xC3,
+	}
+	wrightstoneMemorySelectedMask = []bool{
+		true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false,
+		true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false,
+		true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false,
+		true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false,
+		true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false,
+		true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false,
+		true, true, true, true, true, true, true, true, true, true, true,
+	}
 )
 
 type WrightstoneMemoryOption struct {
@@ -64,7 +85,11 @@ func (a *App) WrightstoneMemoryGetStatus() (WrightstoneMemoryStatus, error) {
 		return WrightstoneMemoryStatus{}, err
 	}
 	if a.wrightstoneMemoryHookAddr == 0 {
-		a.wrightstoneMemoryHookAddr = a.moduleBase + wrightstoneMemoryHookRVA
+		addr, err := a.resolveWrightstoneMemoryHook()
+		if err != nil {
+			return WrightstoneMemoryStatus{}, err
+		}
+		a.wrightstoneMemoryHookAddr = addr
 		original := make([]byte, wrightstoneMemoryHookSize)
 		if err := readProcessMemory(a.hProcess, a.wrightstoneMemoryHookAddr, unsafe.Pointer(&original[0]), uintptr(len(original))); err != nil {
 			return WrightstoneMemoryStatus{}, fmt.Errorf("读取祝福焦点指令失败: %w", err)
@@ -85,6 +110,28 @@ func (a *App) WrightstoneMemoryGetStatus() (WrightstoneMemoryStatus, error) {
 		}
 	}
 	return a.readWrightstoneMemoryStatus()
+}
+
+func (a *App) resolveWrightstoneMemoryHook() (uintptr, error) {
+	mask := append([]bool{}, wrightstoneMemorySelectedMask...)
+	for i := 0; i < wrightstoneMemoryHookSize && i < len(mask); i++ {
+		mask[i] = false
+	}
+	matches, err := a.scanPatternAll(wrightstoneMemorySelectedPattern, mask)
+	if err != nil {
+		return 0, err
+	}
+	for i := len(matches) - 1; i >= 0; i-- {
+		addr := matches[i]
+		probe := make([]byte, wrightstoneMemoryHookSize)
+		if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&probe[0]), uintptr(len(probe))); err != nil {
+			continue
+		}
+		if isWrightstoneMemoryOriginal(probe) || isWrightstoneMemoryJump(probe) {
+			return addr, nil
+		}
+	}
+	return 0, fmt.Errorf("未找到祝福焦点特征码；当前游戏版本与内置特征不匹配")
 }
 
 func (a *App) WrightstoneMemoryDisable() (WrightstoneMemoryStatus, error) {
@@ -149,8 +196,12 @@ func (a *App) WrightstoneMemoryUpdate(update WrightstoneMemoryUpdate) (Wrightsto
 			return WrightstoneMemoryStatus{}, fmt.Errorf("写入祝福词条失败: %w", err)
 		}
 	}
+	fn, err := a.resolveItemSaveFunction()
+	if err != nil {
+		return WrightstoneMemoryStatus{}, err
+	}
 	for _, offset := range []uintptr{0, 4, 8, 0x0C, 0x10, 0x14} {
-		if err := a.callRemoteOneArg(a.moduleBase+wrightstoneMemorySaveRVA, base+offset); err != nil {
+		if err := a.callRemoteOneArg(fn, base+offset); err != nil {
 			return WrightstoneMemoryStatus{}, fmt.Errorf("保存祝福字段 +0x%02X 失败: %w", offset, err)
 		}
 	}

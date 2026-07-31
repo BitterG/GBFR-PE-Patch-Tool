@@ -130,6 +130,7 @@ type App struct {
 	wrightstoneMemoryHookAddr  uintptr
 	wrightstoneMemoryCaveAddr  uintptr
 	wrightstoneMemoryOriginal  []byte
+	itemSaveFunctionAddr       uintptr // AOB-resolved shared inventory save fn
 	summonMemoryHookAddr       uintptr
 	summonMemoryCaveAddr       uintptr
 	summonMemoryPointerAddr    uintptr
@@ -1252,6 +1253,7 @@ func (a *App) CharaDetach() {
 	a.summonMemoryCaveAddr = 0
 	a.summonMemoryPointerAddr = 0
 	a.summonMemoryOriginal = nil
+	a.itemSaveFunctionAddr = 0
 }
 
 // CharaGetAll reads all character counts, returns valid characters (skipping empty slots).
@@ -2180,10 +2182,10 @@ func (a *App) scanCountdownPattern() (uintptr, error) {
 	return a.scanPatternUnique(countdownPattern, countdownMask, "倒计时特征")
 }
 
-func (a *App) scanPatternUnique(pattern []byte, mask []bool, label string) (uintptr, error) {
+func (a *App) scanPatternAll(pattern []byte, mask []bool) ([]uintptr, error) {
 	moduleSize, err := getRemoteModuleSize(a.hProcess, a.moduleBase)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 	const chunkSize uintptr = 0x10000
 	patternLen := len(pattern)
@@ -2210,9 +2212,6 @@ func (a *App) scanPatternUnique(pattern []byte, mask []bool, label string) (uint
 			scanBase = carryBase
 		}
 		matches = append(matches, findPatternMatches(scanBuf, scanBase, pattern, mask)...)
-		if len(matches) > 1 {
-			return 0, fmt.Errorf("%s命中多个位置: %d", label, len(matches))
-		}
 
 		if len(buf) >= patternLen-1 {
 			carry = append([]byte{}, buf[len(buf)-patternLen+1:]...)
@@ -2225,9 +2224,19 @@ func (a *App) scanPatternUnique(pattern []byte, mask []bool, label string) (uint
 			}
 		}
 	}
+	return matches, nil
+}
 
+func (a *App) scanPatternUnique(pattern []byte, mask []bool, label string) (uintptr, error) {
+	matches, err := a.scanPatternAll(pattern, mask)
+	if err != nil {
+		return 0, err
+	}
 	if len(matches) == 0 {
 		return 0, fmt.Errorf("未找到%s码", label)
+	}
+	if len(matches) > 1 {
+		return 0, fmt.Errorf("%s命中多个位置: %d", label, len(matches))
 	}
 	return matches[0], nil
 }
