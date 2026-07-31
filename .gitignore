@@ -48,4 +48,6 @@
 #Git Bash/MSYS
 *.stackdump
 
+#reasonix
 .reasonix/
+reasonix.toml

@@ -71,8 +71,11 @@ function traitMax(hash) { return traitByHash.value.get(parseHash(hash, t('wright
 
 function load() {
   loading.value = true
-  return CharaAttach()
-    .then((info) => { connected.value = true; pid.value = info.pid; return Promise.all([SummonGetOptions(), SummonGetAll()]) })
+  const connect = connected.value
+    ? Promise.resolve({ pid: pid.value })
+    : CharaAttach().then((info) => { connected.value = true; pid.value = info.pid; return info })
+  return connect
+    .then(() => Promise.all([SummonGetOptions(), SummonGetAll()]))
     .then(([catalog, items]) => {
       Object.assign(options, catalog || { types: [], traits: [], subParams: [] })
       summons.value = Array.isArray(items) ? items : []

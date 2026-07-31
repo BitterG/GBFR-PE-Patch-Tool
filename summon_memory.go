@@ -14,7 +14,9 @@ const (
 	summonRecordSize      = 0x1C
 	summonMaxRecords      = 1000
 	summonInvalidTypeHash = 0x887AE0B0
-	summonSaveFunctionRVA = 0x79D820
+	// CT 的 NBLib.SSS 在 v2.0.2 中对选中记录 +0x00..+0x18 的 7 个
+	// DWORD 逐一调用该保存函数；运行中的 CT 已跟踪验证其地址为此 RVA。
+	summonSaveFunctionRVA = 0x796E60
 )
 
 type SummonInfo struct {
@@ -151,46 +153,29 @@ func (a *App) summonSubParamMaxLevel(hash uint32) (int, bool) {
 }
 
 func (a *App) summonInventoryAddress() (uintptr, error) {
-	if err := a.ensureGameProcess(); err != nil {
+	selected, err := a.summonSelectedAddress()
+	if err != nil {
 		return 0, err
 	}
-	var inventory uintptr
-	root := a.moduleBase + summonInventoryPtrRVA
-	if err := readProcessMemory(a.hProcess, root, unsafe.Pointer(&inventory), unsafe.Sizeof(inventory)); err != nil {
-		return 0, fmt.Errorf("读取召唤石背包指针失败: %w", err)
-	}
-	if inventory == 0 {
-		return 0, fmt.Errorf("召唤石背包未加载，请进入游戏存档并打开召唤石背包")
-	}
-	return inventory, nil
+	// 保持原有调用链不变：将 CT 捕获的当前记录映射为索引 0 的虚拟背包根。
+	return selected - summonRecordsOffset, nil
 }
 
 func (a *App) readSummonRecords(inventory uintptr) ([]SummonInfo, error) {
-	buf := make([]byte, summonMaxRecords*summonRecordSize)
 	start := inventory + summonRecordsOffset
+	buf := make([]byte, summonRecordSize)
 	if err := readProcessMemory(a.hProcess, start, unsafe.Pointer(&buf[0]), uintptr(len(buf))); err != nil {
-		return nil, fmt.Errorf("读取召唤石背包失败: %w", err)
+		return nil, fmt.Errorf("读取当前选中召唤石失败: %w", err)
 	}
-
-	result := make([]SummonInfo, 0, summonMaxRecords)
-	for i := 0; i < summonMaxRecords; i++ {
-		base := i * summonRecordSize
-		item := SummonInfo{
-			Index:          i,
-			Address:        uint64(start + uintptr(base)),
-			TypeHash:       readUint32LE(buf[base:]),
-			Slot:           readUint32LE(buf[base+4:]),
-			MainTraitHash:  readUint32LE(buf[base+8:]),
-			SubParamHash:   readUint32LE(buf[base+12:]),
-			MainTraitLevel: readUint32LE(buf[base+16:]),
-			SubParamLevel:  readUint32LE(buf[base+20:]),
-			Rank:           readUint32LE(buf[base+24:]),
-		}
-		if item.TypeHash != 0 && item.TypeHash != summonInvalidTypeHash {
-			result = append(result, item)
-		}
+	item := SummonInfo{
+		Index: 0, Address: uint64(start), TypeHash: readUint32LE(buf[0x00:]), Slot: readUint32LE(buf[0x04:]),
+		MainTraitHash: readUint32LE(buf[0x08:]), SubParamHash: readUint32LE(buf[0x0C:]),
+		MainTraitLevel: readUint32LE(buf[0x10:]), SubParamLevel: readUint32LE(buf[0x14:]), Rank: readUint32LE(buf[0x18:]),
 	}
-	return result, nil
+	if item.TypeHash == 0 || item.TypeHash == summonInvalidTypeHash {
+		return nil, fmt.Errorf("当前未选中有效召唤石，请在游戏内重新选中后刷新")
+	}
+	return []SummonInfo{item}, nil
 }
 
 func (a *App) SummonGetAll() ([]SummonInfo, error) {
@@ -202,8 +187,8 @@ func (a *App) SummonGetAll() ([]SummonInfo, error) {
 }
 
 func (a *App) SummonUpdate(item SummonUpdate) (SummonInfo, error) {
-	if item.Index < 0 || item.Index >= summonMaxRecords {
-		return SummonInfo{}, fmt.Errorf("无效召唤石索引: %d", item.Index)
+	if item.Index != 0 {
+		return SummonInfo{}, fmt.Errorf("当前 CT 工作流只编辑游戏内选中的召唤石")
 	}
 	if item.TypeHash == 0 {
 		return SummonInfo{}, fmt.Errorf("召唤石种类不能为空")
@@ -245,7 +230,7 @@ func (a *App) SummonUpdate(item SummonUpdate) (SummonInfo, error) {
 		return SummonInfo{}, fmt.Errorf("召唤石索引不存在于当前背包: %d", item.Index)
 	}
 
-	address := inventory + summonRecordsOffset + uintptr(item.Index*summonRecordSize)
+	address := inventory + summonRecordsOffset
 	values := []struct {
 		offset uintptr
 		value  uint32
@@ -264,7 +249,7 @@ func (a *App) SummonUpdate(item SummonUpdate) (SummonInfo, error) {
 	}
 
 	saveFn := a.moduleBase + summonSaveFunctionRVA
-	for _, offset := range []uintptr{0x08, 0x0C, 0x10, 0x14, 0x18} {
+	for _, offset := range []uintptr{0x00, 0x04, 0x08, 0x0C, 0x10, 0x14, 0x18} {
 		if err := a.callRemoteOneArg(saveFn, address+offset); err != nil {
 			return SummonInfo{}, fmt.Errorf("调用召唤石保存函数失败: %w", err)
 		}

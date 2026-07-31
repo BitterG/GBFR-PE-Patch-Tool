@@ -129,6 +129,10 @@ type App struct {
 	wrightstoneMemoryHookAddr  uintptr
 	wrightstoneMemoryCaveAddr  uintptr
 	wrightstoneMemoryOriginal  []byte
+	summonMemoryHookAddr       uintptr
+	summonMemoryCaveAddr       uintptr
+	summonMemoryPointerAddr    uintptr
+	summonMemoryOriginal       []byte
 	damageMeterMapping         windows.Handle
 	damageMeterView            uintptr
 	damageOverlay              *damageOverlayWindow
@@ -1208,6 +1212,7 @@ func (a *App) CharaDetach() {
 	// jump installed makes a later tool instance mistake it for an unsupported
 	// game build and can also leave the game executing tool-owned code.
 	_ = a.releaseSigilMemoryHook()
+	_ = a.releaseSummonMemoryHook()
 	_ = a.releaseMaterialConsumeHook()
 	// Stop the input loop before closing the target handle.
 	a.FlightSetEnabled(false, 0)
@@ -1239,6 +1244,10 @@ func (a *App) CharaDetach() {
 	a.wrightstoneMemoryHookAddr = 0
 	a.wrightstoneMemoryCaveAddr = 0
 	a.wrightstoneMemoryOriginal = nil
+	a.summonMemoryHookAddr = 0
+	a.summonMemoryCaveAddr = 0
+	a.summonMemoryPointerAddr = 0
+	a.summonMemoryOriginal = nil
 }
 
 // CharaGetAll reads all character counts, returns valid characters (skipping empty slots).
