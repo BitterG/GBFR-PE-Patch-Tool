@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	sigilMemoryHookRVA              = uintptr(0x345157)
-	sigilMemorySaveRVA              = uintptr(0x79D820)
+	sigilMemoryHookRVA              = uintptr(0x33E427) // 2.0.3; was 0x345157 on 2.0.2
+	sigilMemorySaveRVA              = uintptr(0x796E60) // 2.0.3; was 0x79D820 on 2.0.2
 	sigilMemoryHookSize             = 8
 	sigilMemoryCaveDataOffset       = uintptr(0x40)
 	sigilMemoryOriginalOffset       = uintptr(17)

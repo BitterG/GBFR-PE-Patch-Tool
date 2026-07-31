@@ -10,11 +10,11 @@ import (
 )
 
 const (
-	// This DLC 2.0.2 instruction captures RDX while the game opens or refreshes
+	// This DLC 2.0.3 instruction captures RDX while the game opens or refreshes
 	// the currently viewed wrightstone record. The RVA and full instruction
-	// window below were independently matched in the local 2.0.2 executable.
-	wrightstoneMemoryHookRVA        = uintptr(0x361CB4)
-	wrightstoneMemorySaveRVA        = uintptr(0x79D820)
+	// window below were independently matched in the local 2.0.3 executable.
+	wrightstoneMemoryHookRVA        = uintptr(0x35AF84) // 2.0.3; was 0x361CB4 on 2.0.2
+	wrightstoneMemorySaveRVA        = uintptr(0x796E60) // 2.0.3; was 0x79D820 on 2.0.2
 	wrightstoneMemoryHookSize       = uintptr(6)
 	wrightstoneMemoryCaveDataOffset = uintptr(0x40)
 	wrightstoneMemoryOriginalOffset = uintptr(17)
@@ -120,7 +120,7 @@ func (a *App) scanWrightstoneMemoryLocked() (WrightstoneMemoryStatus, error) {
 		// The save function uses a version-specific fixed RVA too. Relocating only
 		// this hook from an eight-byte match would create a false sense of version
 		// compatibility and could later start a thread at the wrong function.
-		return WrightstoneMemoryStatus{}, fmt.Errorf("祝福焦点指令字节异常 (%s)：当前游戏版本未通过 2.0.2 / DLC 2.0.2 runtime catalog 完整守卫", bytesToHex(guard))
+		return WrightstoneMemoryStatus{}, fmt.Errorf("祝福焦点指令字节异常 (%s)：当前游戏版本未通过 2.0.3 runtime catalog 完整守卫", bytesToHex(guard))
 	}
 
 	a.wrightstoneMemoryHookAddr = addr
@@ -558,7 +558,7 @@ func newWrightstoneMemoryStatus(found, hooked bool, hookAddr, moduleBase uintptr
 		SaveRVA:       uint64(wrightstoneMemorySaveRVA),
 		CurrentBytes:  bytesToHex(current),
 		CaptureSource: "dlcSupplement-current-view",
-		SourceVersion: "2.0.2",
+		SourceVersion: "2.0.3",
 	}
 }
 
