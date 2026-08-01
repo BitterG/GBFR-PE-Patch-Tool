@@ -7,23 +7,24 @@ import (
 )
 
 const (
-	sigilMemoryHookRVA        = uintptr(0x33E427) // 2.0.3; was 0x345157 on 2.0.2
-	sigilMemorySaveRVA        = uintptr(0x796E60) // 2.0.3; was 0x79D820 on 2.0.2
 	sigilMemoryHookSize       = 8
 	sigilMemoryCaveDataOffset = uintptr(0x40)
 	sigilMemoryOriginalOffset = uintptr(13)
 )
 
 var (
-	// CT v0.4.5 used `01 ?? 83`; current game build inserts `31 C0` before cmp.
-	// First cmp is `81 /7 imm32` (six bytes total), second is `81 /7 disp8 imm32` (seven bytes).
+	// Selected-sigil gate: compare primary/secondary trait slots against the
+	// empty hash 0x887AE0B0, then add+xor+cmp edx,2. Multiple near-duplicates
+	// exist; take the last module hit (verified to receive RAX = selected record).
 	sigilMemorySelectedPattern = []byte{
-		0x31, 0, 0x81, 0, 0, 0, 0, 0x0F, 0x95, 0,
-		0x31, 0, 0x81, 0, 0, 0, 0, 0, 0x0F, 0x95, 0, 0x01, 0, 0x31, 0, 0x83,
+		0x31, 0xC9, 0x81, 0x38, 0xB0, 0xE0, 0x7A, 0x88, 0x0F, 0x95, 0xC1,
+		0x31, 0xD2, 0x81, 0x78, 0x08, 0xB0, 0xE0, 0x7A, 0x88, 0x0F, 0x95, 0xC2,
+		0x01, 0, 0x31, 0, 0x83,
 	}
 	sigilMemorySelectedMask = []bool{
-		true, false, true, false, false, false, false, false, true, true, false,
-		true, false, true, false, false, false, false, false, true, true, false, true, false, true, false, true,
+		true, true, true, true, true, true, true, true, true, true, true,
+		true, true, true, true, true, true, true, true, true, true, true, true,
+		true, false, true, false, true,
 	}
 )
 
@@ -152,9 +153,10 @@ func (a *App) SigilMemoryScan() (SigilMemoryStatus, error) {
 	if err := a.ensureGameProcess(); err != nil {
 		return SigilMemoryStatus{}, err
 	}
-	// Current game build (2.0.3) verified at granblue_fantasy_relink.exe+33E427.
-	// Its first 8 bytes are safe to validate and hook; later bytes vary by build.
-	addr := a.moduleBase + sigilMemoryHookRVA
+	addr, err := a.resolveSigilMemoryHook()
+	if err != nil {
+		return SigilMemoryStatus{}, err
+	}
 	first := make([]byte, sigilMemoryHookSize)
 	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&first[0]), uintptr(len(first))); err != nil {
 		return SigilMemoryStatus{}, fmt.Errorf("读取选中因子指令失败: %w", err)
@@ -180,43 +182,28 @@ func (a *App) SigilMemoryScan() (SigilMemoryStatus, error) {
 	return a.readSigilMemoryStatus()
 }
 
+func (a *App) resolveSigilMemoryHook() (uintptr, error) {
+	return a.scanSigilMemoryPattern()
+}
+
 func (a *App) scanSigilMemoryPattern() (uintptr, error) {
-	moduleSize, err := getRemoteModuleSize(a.hProcess, a.moduleBase)
+	// Wildcard the first hook-sized bytes so both pristine and already-hooked
+	// sites still match the rest of the uniqueness window.
+	matches, err := a.scanPatternAll(sigilMemorySelectedPattern, sigilMemoryHookedMask())
 	if err != nil {
 		return 0, err
 	}
-	const chunkSize uintptr = 0x10000
-	var matches []uintptr
-	var carry []byte
-	var carryBase uintptr
-	for off := uintptr(0); off < moduleSize; off += chunkSize {
-		size := chunkSize
-		if off+size > moduleSize {
-			size = moduleSize - off
-		}
-		buf := make([]byte, size)
-		addr := a.moduleBase + off
-		if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&buf[0]), uintptr(len(buf))); err != nil {
-			carry = nil
+	for i := len(matches) - 1; i >= 0; i-- {
+		addr := matches[i]
+		probe := make([]byte, sigilMemoryHookSize)
+		if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&probe[0]), uintptr(len(probe))); err != nil {
 			continue
 		}
-		scanBuf, scanBase := buf, addr
-		if len(carry) > 0 {
-			scanBuf = append(append([]byte{}, carry...), buf...)
-			scanBase = carryBase
-		}
-		matches = append(matches, findPatternMatches(scanBuf, scanBase, sigilMemorySelectedPattern, sigilMemorySelectedMask)...)
-		if len(buf) >= len(sigilMemorySelectedPattern)-1 {
-			carry = append([]byte{}, buf[len(buf)-len(sigilMemorySelectedPattern)+1:]...)
-			carryBase = addr + uintptr(len(buf)-len(sigilMemorySelectedPattern)+1)
+		if isSigilMemoryOriginal(probe) || isSigilMemoryJump(probe) {
+			return addr, nil
 		}
 	}
-	if len(matches) == 0 {
-		return 0, fmt.Errorf("未找到选中因子特征码；当前游戏版本与内置特征不匹配")
-	}
-	// Runtime breakpoint verification: later duplicate (+33E427 in 2.0.3)
-	// receives RAX pointing to the selected sigil structure.
-	return matches[len(matches)-1], nil
+	return 0, fmt.Errorf("未找到选中因子特征码；当前游戏版本与内置特征不匹配")
 }
 
 func (a *App) SigilMemoryGetStatus() (SigilMemoryStatus, error) {
@@ -321,7 +308,10 @@ func (a *App) SigilMemoryUpdate(update SigilMemoryUpdate) (SigilMemoryStatus, er
 }
 
 func (a *App) saveSigilMemory(base uintptr) error {
-	fn := a.moduleBase + sigilMemorySaveRVA
+	fn, err := a.resolveItemSaveFunction()
+	if err != nil {
+		return err
+	}
 	for offset := uintptr(0); offset <= 0x20; offset += 4 {
 		if err := a.callRemoteOneArg(fn, base+offset); err != nil {
 			return fmt.Errorf("保存因子字段 +0x%02X 失败: %w", offset, err)
@@ -348,8 +338,10 @@ func (a *App) readSigilMemoryStatus() (SigilMemoryStatus, error) {
 		Hooked:       hooked,
 		Address:      uint64(a.sigilMemoryHookAddr),
 		RVA:          uint64(a.sigilMemoryHookAddr - a.moduleBase),
-		SaveRVA:      uint64(sigilMemorySaveRVA),
 		CurrentBytes: bytesToHex(buf),
+	}
+	if saveFn, err := a.resolveItemSaveFunction(); err == nil {
+		status.SaveRVA = uint64(saveFn - a.moduleBase)
 	}
 	if !hooked {
 		return status, nil
