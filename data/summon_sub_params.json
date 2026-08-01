@@ -16,7 +16,8 @@
         40,
         45,
         50
-      ]
+      ],
+      "displayNameEn": "Chain Burst Damage Up"
     },
     {
       "hash": "0x54B09A37",
@@ -34,7 +35,8 @@
         60,
         80,
         100
-      ]
+      ],
+      "displayNameEn": "Chain Burst Damage Up ★"
     },
     {
       "hash": "0xBC4E92CB",
@@ -52,7 +54,8 @@
         1600,
         1800,
         2000
-      ]
+      ],
+      "displayNameEn": "Health Up"
     },
     {
       "hash": "0xF2256E44",
@@ -70,7 +73,8 @@
         2500,
         3000,
         5000
-      ]
+      ],
+      "displayNameEn": "Health Up ★"
     },
     {
       "hash": "0xA3539FBB",
@@ -88,7 +92,8 @@
         40,
         45,
         50
-      ]
+      ],
+      "displayNameEn": "Skybound Art Damage Cap Up"
     },
     {
       "hash": "0x5A1D2C89",
@@ -106,7 +111,8 @@
         60,
         80,
         100
-      ]
+      ],
+      "displayNameEn": "Skybound Art Damage Cap Up ★"
     },
     {
       "hash": "0x75138D21",
@@ -124,7 +130,8 @@
         16,
         18,
         20
-      ]
+      ],
+      "displayNameEn": "Skybound Art Damage Up"
     },
     {
       "hash": "0x33C0D50C",
@@ -142,7 +149,8 @@
         22,
         25,
         30
-      ]
+      ],
+      "displayNameEn": "Skybound Art Damage Up ★"
     },
     {
       "hash": "0xA8900C80",
@@ -160,7 +168,8 @@
         1600,
         1800,
         2000
-      ]
+      ],
+      "displayNameEn": "Attack Power Up"
     },
     {
       "hash": "0xA3E537B1",
@@ -178,7 +187,8 @@
         2200,
         2500,
         3000
-      ]
+      ],
+      "displayNameEn": "Attack Power Up ★"
     },
     {
       "hash": "0xF7B0316F",
@@ -196,7 +206,8 @@
         1.1,
         1.3,
         1.5
-      ]
+      ],
+      "displayNameEn": "Stun Power Up"
     },
     {
       "hash": "0xF0F77BC1",
@@ -214,7 +225,8 @@
         1.6,
         1.8,
         2
-      ]
+      ],
+      "displayNameEn": "Stun Power Up ★"
     },
     {
       "hash": "0xA66241C9",
@@ -232,7 +244,8 @@
         40,
         45,
         50
-      ]
+      ],
+      "displayNameEn": "Normal Attack Damage Cap Up"
     },
     {
       "hash": "0x9245DFA4",
@@ -250,7 +263,8 @@
         60,
         80,
         100
-      ]
+      ],
+      "displayNameEn": "Normal Attack Damage Cap Up ★"
     },
     {
       "hash": "0x00D171E0",
@@ -268,7 +282,8 @@
         16,
         18,
         20
-      ]
+      ],
+      "displayNameEn": "Critical Hit Rate Up"
     },
     {
       "hash": "0xA074A967",
@@ -286,7 +301,8 @@
         22,
         25,
         30
-      ]
+      ],
+      "displayNameEn": "Critical Hit Rate Up ★"
     },
     {
       "hash": "0x2270BC40",
@@ -304,7 +320,8 @@
         40,
         45,
         50
-      ]
+      ],
+      "displayNameEn": "Healing Cap Up"
     },
     {
       "hash": "0x2EA9CA80",
@@ -322,7 +339,8 @@
         55,
         60,
         75
-      ]
+      ],
+      "displayNameEn": "Healing Cap Up ★"
     },
     {
       "hash": "0x2FFB509F",
@@ -340,7 +358,8 @@
         40,
         45,
         50
-      ]
+      ],
+      "displayNameEn": "Skill Damage Cap Up"
     },
     {
       "hash": "0xCE70C58A",
@@ -358,7 +377,8 @@
         60,
         80,
         100
-      ]
+      ],
+      "displayNameEn": "Skill Damage Cap Up ★"
     },
     {
       "hash": "0x664E8E32",
@@ -376,7 +396,8 @@
         16,
         18,
         20
-      ]
+      ],
+      "displayNameEn": "Skill Damage Up"
     },
     {
       "hash": "0xAF39A3FB",
@@ -394,7 +415,8 @@
         22,
         25,
         30
-      ]
+      ],
+      "displayNameEn": "Skill Damage Up ★"
     }
   ]
 }

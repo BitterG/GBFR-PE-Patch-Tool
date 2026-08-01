@@ -19,8 +19,8 @@
     "summon": {
       "none":"无","processId":"PID {pid}","title":"召唤石工坊","description":"2.0.3修复后目前需要在（持有物→召唤石）界面内选中刷新；之前以列表形式列出所有召唤石，在数量较多时不便查找和修改，因此现在仅修改当前选中的召唤石。","count":"{count} 颗",
       "actions":{"loading":"读取中...","refreshInventory":"刷新背包","connectInventory":"连接背包","writing":"写入中...","write":"写入召唤石"},
-      "placeholders":{"searchSummons":"搜索名称或 Hash（更改类型无法写入存档）","nameOrHash":"名称或 Hash"},
-      "fields":{"type":"种类","mainTraitSearch":"主因子搜索","mainTrait":"主因子","mainTraitLevel":"主因子等级","subParam":"副参数","subParamLevel":"副参数等级"},
+      "placeholders":{"searchSummons":"搜索名称或 Hash","nameOrHash":"名称或 Hash"},
+      "fields":{"typeSearch":"种类搜索","type":"种类","mainTraitSearch":"主因子搜索","mainTrait":"主因子","mainTraitLevel":"主因子等级","subParam":"副参数","subParamLevel":"副参数等级"},
       "empty":{"noSummons":"未读取到召唤石。请打开游戏内召唤石背包后刷新。","selectFromList":"从左侧选择召唤石。"},
       "labels":{"subParamValue":"{level} → +{value}{suffix}"},
       "errors":{"unsignedInteger":"{label}必须是 32 位无符号整数","selectSummon":"请选择召唤石","mainTraitLevelRange":"主因子等级必须为 0 到 {max}","subParamLevelRange":"副参数等级必须为 0 到 {max}"},

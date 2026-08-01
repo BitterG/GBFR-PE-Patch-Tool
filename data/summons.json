@@ -6,7 +6,8 @@
       "baseName": "世须良加",
       "code": "4600",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Pyet-A II"
     },
     {
       "hash": "0xBDD84E9A",
@@ -14,7 +15,8 @@
       "baseName": "世须良加",
       "code": "4600",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Pyet-A II"
     },
     {
       "hash": "0xA34BDECB",
@@ -22,7 +24,8 @@
       "baseName": "世须良加",
       "code": "4600",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Pyet-A III"
     },
     {
       "hash": "0xE492E6BF",
@@ -30,7 +33,8 @@
       "baseName": "世须良加",
       "code": "4600",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Pyet-A III"
     },
     {
       "hash": "0x0B366AD9",
@@ -38,7 +42,8 @@
       "baseName": "巨爪焰鳄",
       "code": "1f00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Infernadile I"
     },
     {
       "hash": "0xF98F8B97",
@@ -46,7 +51,8 @@
       "baseName": "巨爪焰鳄",
       "code": "1f00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Infernadile II"
     },
     {
       "hash": "0x1B6A4024",
@@ -54,7 +60,8 @@
       "baseName": "巨爪焰鳄",
       "code": "1f00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Infernadile III"
     },
     {
       "hash": "0x6E5968FC",
@@ -62,7 +69,8 @@
       "baseName": "路西法",
       "code": "0000",
       "cost": 5,
-      "typeName": "特殊"
+      "typeName": "特殊",
+      "displayNameEn": "Lucilius"
     },
     {
       "hash": "0x90BD4AC0",
@@ -70,7 +78,8 @@
       "baseName": "路西法",
       "code": "0000",
       "cost": 5,
-      "typeName": "特殊"
+      "typeName": "特殊",
+      "displayNameEn": "Lucilius"
     },
     {
       "hash": "0x7996A856",
@@ -78,7 +87,8 @@
       "baseName": "胡拉坎",
       "code": "4900",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Furycane I"
     },
     {
       "hash": "0xCA95CD8C",
@@ -86,7 +96,8 @@
       "baseName": "胡拉坎",
       "code": "4900",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Furycane I"
     },
     {
       "hash": "0xE51CE5B0",
@@ -94,7 +105,8 @@
       "baseName": "胡拉坎",
       "code": "4900",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Furycane II"
     },
     {
       "hash": "0x52B14B66",
@@ -102,7 +114,8 @@
       "baseName": "胡拉坎",
       "code": "4900",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Furycane III"
     },
     {
       "hash": "0x0BE2A43A",
@@ -110,7 +123,8 @@
       "baseName": "巨爪岩鳄",
       "code": "1d00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Quakadile II"
     },
     {
       "hash": "0x7A46E50E",
@@ -118,7 +132,8 @@
       "baseName": "巨爪岩鳄",
       "code": "1d00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Quakadile II"
     },
     {
       "hash": "0xA6BB6299",
@@ -126,7 +141,8 @@
       "baseName": "巨爪岩鳄",
       "code": "1d00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Quakadile III"
     },
     {
       "hash": "0x855D018C",
@@ -134,7 +150,8 @@
       "baseName": "莉莉丝",
       "code": "4500",
       "cost": 5,
-      "typeName": "特殊"
+      "typeName": "特殊",
+      "displayNameEn": "Lilith"
     },
     {
       "hash": "0xDFAB70B7",
@@ -142,7 +159,8 @@
       "baseName": "莉莉丝",
       "code": "4500",
       "cost": 5,
-      "typeName": "特殊"
+      "typeName": "特殊",
+      "displayNameEn": "Lilith"
     },
     {
       "hash": "0x0F986ED9",
@@ -150,7 +168,8 @@
       "baseName": "罗兰",
       "code": "0200",
       "cost": 5,
-      "typeName": "特殊"
+      "typeName": "特殊",
+      "displayNameEn": "Rolan"
     },
     {
       "hash": "0x81ECEC7F",
@@ -158,7 +177,8 @@
       "baseName": "罗兰",
       "code": "0200",
       "cost": 5,
-      "typeName": "特殊"
+      "typeName": "特殊",
+      "displayNameEn": "Rolan"
     },
     {
       "hash": "0x5F3337B6",
@@ -166,7 +186,8 @@
       "baseName": "哥布林军士",
       "code": "0d00",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Goblin Soldier I"
     },
     {
       "hash": "0x61C79814",
@@ -174,7 +195,8 @@
       "baseName": "哥布林军士",
       "code": "0d00",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Goblin Soldier II"
     },
     {
       "hash": "0x3C381DCD",
@@ -182,7 +204,8 @@
       "baseName": "哥布林角斗士",
       "code": "0e00",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Goblin Gladiator I"
     },
     {
       "hash": "0xD6387CAA",
@@ -190,7 +213,8 @@
       "baseName": "哥布林角斗士",
       "code": "0e00",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Goblin Gladiator II"
     },
     {
       "hash": "0xF501285C",
@@ -198,7 +222,8 @@
       "baseName": "哥布林角斗士",
       "code": "0e00",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Goblin Gladiator II"
     },
     {
       "hash": "0x99A68616",
@@ -206,7 +231,8 @@
       "baseName": "苍百长",
       "code": "0f00",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Cruel Overseer I"
     },
     {
       "hash": "0x31EE9BA5",
@@ -214,7 +240,8 @@
       "baseName": "苍百长",
       "code": "0f00",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Cruel Overseer II"
     },
     {
       "hash": "0x4D84581F",
@@ -222,7 +249,8 @@
       "baseName": "赤蛮尉",
       "code": "1000",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Scarlet-Shell Butcher I"
     },
     {
       "hash": "0x897FFAF0",
@@ -230,7 +258,8 @@
       "baseName": "赤蛮尉",
       "code": "1000",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Scarlet-Shell Butcher II"
     },
     {
       "hash": "0xFD5FB92B",
@@ -238,7 +267,8 @@
       "baseName": "哥布林勇士",
       "code": "1100",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Goblin Warrior II"
     },
     {
       "hash": "0xC2F91A7F",
@@ -246,7 +276,8 @@
       "baseName": "哥布林勇士",
       "code": "1100",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Goblin Warrior III"
     },
     {
       "hash": "0x55815E99",
@@ -254,7 +285,8 @@
       "baseName": "玄夜叉",
       "code": "1200",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Storm-Mane Gatekeeper II"
     },
     {
       "hash": "0x524D1660",
@@ -262,7 +294,8 @@
       "baseName": "玄夜叉",
       "code": "1200",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Storm-Mane Gatekeeper III"
     },
     {
       "hash": "0xA062EC06",
@@ -270,7 +303,8 @@
       "baseName": "朱罗刹",
       "code": "1300",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Blood-Dyed Rakshasa"
     },
     {
       "hash": "0x8E02E207",
@@ -278,7 +312,8 @@
       "baseName": "死骸格拉森",
       "code": "1600",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Gerasene II"
     },
     {
       "hash": "0xFC8444A1",
@@ -286,7 +321,8 @@
       "baseName": "死骸格拉森",
       "code": "1600",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Gerasene II"
     },
     {
       "hash": "0x0EE2670A",
@@ -294,7 +330,8 @@
       "baseName": "死骸格拉森",
       "code": "1600",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Gerasene III"
     },
     {
       "hash": "0x326DC2DE",
@@ -302,7 +339,8 @@
       "baseName": "冰骸斯卡米勒",
       "code": "1800",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Scarmiglione II"
     },
     {
       "hash": "0x16BA3B8A",
@@ -310,7 +348,8 @@
       "baseName": "冰骸斯卡米勒",
       "code": "1800",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Scarmiglione III"
     },
     {
       "hash": "0xEBEB3DC0",
@@ -318,7 +357,8 @@
       "baseName": "群居狼",
       "code": "1900",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Timber Wolf I"
     },
     {
       "hash": "0xEEEA2080",
@@ -326,7 +366,8 @@
       "baseName": "群居狼",
       "code": "1900",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Timber Wolf II"
     },
     {
       "hash": "0x2EACD79C",
@@ -334,7 +375,8 @@
       "baseName": "角禽",
       "code": "1a00",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Hornbird I"
     },
     {
       "hash": "0x735DD55B",
@@ -342,7 +384,8 @@
       "baseName": "角禽",
       "code": "1a00",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Hornbird II"
     },
     {
       "hash": "0x1B5DAEBD",
@@ -350,7 +393,8 @@
       "baseName": "双足飞龙",
       "code": "1b00",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Wyvern I"
     },
     {
       "hash": "0x9BC09751",
@@ -358,7 +402,8 @@
       "baseName": "双足飞龙",
       "code": "1b00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Wyvern II"
     },
     {
       "hash": "0x4B3D1768",
@@ -366,7 +411,8 @@
       "baseName": "老双足飞龙",
       "code": "1c00",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "ElderWyvern I"
     },
     {
       "hash": "0xAA2BBDBF",
@@ -374,7 +420,8 @@
       "baseName": "老双足飞龙",
       "code": "1c00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "ElderWyvern II"
     },
     {
       "hash": "0x03C95420",
@@ -382,7 +429,8 @@
       "baseName": "巨爪霜鳄",
       "code": "1e00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Blizzadile II"
     },
     {
       "hash": "0xC52147D4",
@@ -390,7 +438,8 @@
       "baseName": "巨爪霜鳄",
       "code": "1e00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Blizzadile II"
     },
     {
       "hash": "0x99CF3E05",
@@ -398,7 +447,8 @@
       "baseName": "巨爪霜鳄",
       "code": "1e00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Blizzadile III"
     },
     {
       "hash": "0x0D94B89F",
@@ -406,7 +456,8 @@
       "baseName": "银史莱姆",
       "code": "2000",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Silverslime II"
     },
     {
       "hash": "0x4EA296FC",
@@ -414,7 +465,8 @@
       "baseName": "银史莱姆",
       "code": "2000",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Silverslime III"
     },
     {
       "hash": "0xE528E76F",
@@ -422,7 +474,8 @@
       "baseName": "银史莱姆",
       "code": "2000",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Silverslime III"
     },
     {
       "hash": "0x316641A4",
@@ -430,7 +483,8 @@
       "baseName": "金史莱姆",
       "code": "2100",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Goldslime II"
     },
     {
       "hash": "0x439CDB88",
@@ -438,7 +492,8 @@
       "baseName": "金史莱姆",
       "code": "2100",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Goldslime III"
     },
     {
       "hash": "0x1ABADE1D",
@@ -446,7 +501,8 @@
       "baseName": "赛伊格亚",
       "code": "2200",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Cyaegha I"
     },
     {
       "hash": "0x1BE16847",
@@ -454,7 +510,8 @@
       "baseName": "赛伊格亚",
       "code": "2200",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Cyaegha I"
     },
     {
       "hash": "0xEF554891",
@@ -462,7 +519,8 @@
       "baseName": "赛伊格亚",
       "code": "2200",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Cyaegha II"
     },
     {
       "hash": "0xB96CB87D",
@@ -470,7 +528,8 @@
       "baseName": "目目连",
       "code": "2300",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Silent Watcher I"
     },
     {
       "hash": "0x7E8A659A",
@@ -478,7 +537,8 @@
       "baseName": "目目连",
       "code": "2300",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Silent Watcher II"
     },
     {
       "hash": "0x634A379D",
@@ -486,7 +546,8 @@
       "baseName": "阿里曼",
       "code": "2400",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ahriman I"
     },
     {
       "hash": "0x6B514309",
@@ -494,7 +555,8 @@
       "baseName": "阿里曼",
       "code": "2400",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ahriman II"
     },
     {
       "hash": "0x2EA15D18",
@@ -502,7 +564,8 @@
       "baseName": "魔眼守卫",
       "code": "2500",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Nazarbonju II"
     },
     {
       "hash": "0x6262979B",
@@ -510,7 +573,8 @@
       "baseName": "魔眼守卫",
       "code": "2500",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Nazarbonju III"
     },
     {
       "hash": "0x3DD9ECEE",
@@ -518,7 +582,8 @@
       "baseName": "火之种",
       "code": "2600",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Flame Gyre I"
     },
     {
       "hash": "0x4A65C97D",
@@ -526,7 +591,8 @@
       "baseName": "火之种",
       "code": "2600",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Flame Gyre II"
     },
     {
       "hash": "0x852287BA",
@@ -534,7 +600,8 @@
       "baseName": "水之种",
       "code": "2700",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Aqua Gyre I"
     },
     {
       "hash": "0xA40E64F4",
@@ -542,7 +609,8 @@
       "baseName": "水之种",
       "code": "2700",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Aqua Gyre II"
     },
     {
       "hash": "0x30F63214",
@@ -550,7 +618,8 @@
       "baseName": "光之种",
       "code": "2800",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Light Gyre I"
     },
     {
       "hash": "0x4F484BBB",
@@ -558,7 +627,8 @@
       "baseName": "光之种",
       "code": "2800",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Light Gyre II"
     },
     {
       "hash": "0x59F8666F",
@@ -566,7 +636,8 @@
       "baseName": "暗之种",
       "code": "2900",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Dark Gyre I"
     },
     {
       "hash": "0x2E3CE3D9",
@@ -574,7 +645,8 @@
       "baseName": "暗之种",
       "code": "2900",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Dark Gyre II"
     },
     {
       "hash": "0xC3E918F9",
@@ -582,7 +654,8 @@
       "baseName": "火精灵",
       "code": "2a00",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Fire Spirit I"
     },
     {
       "hash": "0xD751D8D2",
@@ -590,7 +663,8 @@
       "baseName": "火精灵",
       "code": "2a00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Fire Spirit II"
     },
     {
       "hash": "0x1CC0E0EF",
@@ -598,7 +672,8 @@
       "baseName": "水精灵",
       "code": "2b00",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Water Spirit I"
     },
     {
       "hash": "0x9360B2B5",
@@ -606,7 +681,8 @@
       "baseName": "水精灵",
       "code": "2b00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Water Spirit II"
     },
     {
       "hash": "0x2E657B01",
@@ -614,7 +690,8 @@
       "baseName": "机械武装·主机",
       "code": "3100",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Droita Mother I"
     },
     {
       "hash": "0x5365294F",
@@ -622,7 +699,8 @@
       "baseName": "机械武装·主机",
       "code": "3100",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Droita Mother II"
     },
     {
       "hash": "0xB3C2F3A4",
@@ -630,7 +708,8 @@
       "baseName": "强袭型机械武装·主机",
       "code": "3200",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Droita Mother (Assault) I"
     },
     {
       "hash": "0xAE52556D",
@@ -638,7 +717,8 @@
       "baseName": "强袭型机械武装·主机",
       "code": "3200",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Droita Mother (Assault) II"
     },
     {
       "hash": "0x87C6C345",
@@ -646,7 +726,8 @@
       "baseName": "巨石魔像",
       "code": "3300",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Rock Golem I"
     },
     {
       "hash": "0xCC3C45F3",
@@ -654,7 +735,8 @@
       "baseName": "巨石魔像",
       "code": "3300",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Rock Golem I"
     },
     {
       "hash": "0xB79312A7",
@@ -662,7 +744,8 @@
       "baseName": "巨石魔像",
       "code": "3300",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Rock Golem II"
     },
     {
       "hash": "0x8CF23B58",
@@ -670,7 +753,8 @@
       "baseName": "巨石魔像",
       "code": "3300",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Rock Golem III"
     },
     {
       "hash": "0x315695AE",
@@ -678,7 +762,8 @@
       "baseName": "红宝石魔像",
       "code": "3400",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ruby Golem"
     },
     {
       "hash": "0x52E21E37",
@@ -686,7 +771,8 @@
       "baseName": "红宝石魔像",
       "code": "3400",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ruby Golem"
     },
     {
       "hash": "0xF7F2D161",
@@ -694,7 +780,8 @@
       "baseName": "狮鹫",
       "code": "3500",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Griffin II"
     },
     {
       "hash": "0xBFAC23DC",
@@ -702,7 +789,8 @@
       "baseName": "狮鹫",
       "code": "3500",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Griffin III"
     },
     {
       "hash": "0xC1CCBC3C",
@@ -710,7 +798,8 @@
       "baseName": "漆黑猛禽",
       "code": "3600",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Obsidian Raptor II"
     },
     {
       "hash": "0xD4AC8684",
@@ -718,7 +807,8 @@
       "baseName": "漆黑猛禽",
       "code": "3600",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Obsidian Raptor III"
     },
     {
       "hash": "0x9D5C27DE",
@@ -726,7 +816,8 @@
       "baseName": "贝希摩斯",
       "code": "3700",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Behemoth II"
     },
     {
       "hash": "0x239F769F",
@@ -734,7 +825,8 @@
       "baseName": "贝希摩斯",
       "code": "3700",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Behemoth III"
     },
     {
       "hash": "0xE4B7DCF9",
@@ -742,7 +834,8 @@
       "baseName": "贝希摩斯",
       "code": "3700",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Behemoth III"
     },
     {
       "hash": "0xAC20C821",
@@ -750,7 +843,8 @@
       "baseName": "恩奴基",
       "code": "3800",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ennugi II"
     },
     {
       "hash": "0x67C7E1FF",
@@ -758,7 +852,8 @@
       "baseName": "恩奴基",
       "code": "3800",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ennugi III"
     },
     {
       "hash": "0x38348E1E",
@@ -766,7 +861,8 @@
       "baseName": "远古巨龙",
       "code": "3900",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ancient Dragon II"
     },
     {
       "hash": "0x556DA7B4",
@@ -774,7 +870,8 @@
       "baseName": "远古巨龙",
       "code": "3900",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ancient Dragon II"
     },
     {
       "hash": "0xCE0039D4",
@@ -782,7 +879,8 @@
       "baseName": "远古巨龙",
       "code": "3900",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ancient Dragon III"
     },
     {
       "hash": "0x1E6543A3",
@@ -790,7 +888,8 @@
       "baseName": "火龙布雷扎莱克",
       "code": "3a00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Vrazarek Firewyrm II"
     },
     {
       "hash": "0xF1C229F7",
@@ -798,7 +897,8 @@
       "baseName": "火龙布雷扎莱克",
       "code": "3a00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Vrazarek Firewyrm II"
     },
     {
       "hash": "0x9F0ECF8B",
@@ -806,7 +906,8 @@
       "baseName": "火龙布雷扎莱克",
       "code": "3a00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Vrazarek Firewyrm III"
     },
     {
       "hash": "0xF2BE819E",
@@ -814,7 +915,8 @@
       "baseName": "火龙布雷扎莱克",
       "code": "3a00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Vrazarek Firewyrm III"
     },
     {
       "hash": "0x26E7CCB1",
@@ -822,7 +924,8 @@
       "baseName": "冰龙威利努斯",
       "code": "3b00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Wilinus Icewyrm II"
     },
     {
       "hash": "0x60A6D3A5",
@@ -830,7 +933,8 @@
       "baseName": "冰龙威利努斯",
       "code": "3b00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Wilinus Icewyrm II"
     },
     {
       "hash": "0xB960D2BB",
@@ -838,7 +942,8 @@
       "baseName": "冰龙威利努斯",
       "code": "3b00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Wilinus Icewyrm III"
     },
     {
       "hash": "0x4FD78AF8",
@@ -846,7 +951,8 @@
       "baseName": "地龙杜雷贝尔",
       "code": "3c00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Corvell Earthwyrm II"
     },
     {
       "hash": "0x97E451A4",
@@ -854,7 +960,8 @@
       "baseName": "地龙杜雷贝尔",
       "code": "3c00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Corvell Earthwyrm II"
     },
     {
       "hash": "0x3BAD1134",
@@ -862,7 +969,8 @@
       "baseName": "地龙杜雷贝尔",
       "code": "3c00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Corvell Earthwyrm III"
     },
     {
       "hash": "0xFF513849",
@@ -870,7 +978,8 @@
       "baseName": "风龙伊尔西亚斯",
       "code": "3d00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Elusious Windwyrm II"
     },
     {
       "hash": "0xFC8A2ECB",
@@ -878,7 +987,8 @@
       "baseName": "风龙伊尔西亚斯",
       "code": "3d00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Elusious Windwyrm III"
     },
     {
       "hash": "0x666947C2",
@@ -886,7 +996,8 @@
       "baseName": "白龙拉迪斯",
       "code": "3e00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "RadisWhitewyrmII"
     },
     {
       "hash": "0x9384A5D3",
@@ -894,7 +1005,8 @@
       "baseName": "白龙拉迪斯",
       "code": "3e00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "RadisWhitewyrmIII"
     },
     {
       "hash": "0x7F8364E5",
@@ -902,7 +1014,8 @@
       "baseName": "黑龙伊弗欧",
       "code": "3f00",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Evyl Blackwyrm I"
     },
     {
       "hash": "0x01B80951",
@@ -910,7 +1023,8 @@
       "baseName": "永暗藏匿者",
       "code": "4000",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Lurker in the Dark"
     },
     {
       "hash": "0x2517C481",
@@ -918,7 +1032,8 @@
       "baseName": "黑龙伊弗欧",
       "code": "3f00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Evyl Blackwyrm II"
     },
     {
       "hash": "0x6D6CB496",
@@ -926,7 +1041,8 @@
       "baseName": "永暗藏匿者",
       "code": "4000",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Lurker in the Dark"
     },
     {
       "hash": "0x0033943A",
@@ -934,7 +1050,8 @@
       "baseName": "黑龙伊弗欧",
       "code": "3f00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Evyl Blackwyrm III"
     },
     {
       "hash": "0x8DB272E5",
@@ -942,7 +1059,8 @@
       "baseName": "黑龙伊弗欧",
       "code": "3f00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Evyl Blackwyrm III"
     },
     {
       "hash": "0x8D7FDE58",
@@ -950,7 +1068,8 @@
       "baseName": "断罪铁骑",
       "code": "4100",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Mechanized Executioner II"
     },
     {
       "hash": "0x045EFB5B",
@@ -958,7 +1077,8 @@
       "baseName": "断罪铁骑",
       "code": "4100",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Mechanized Executioner III"
     },
     {
       "hash": "0x15EC425E",
@@ -966,7 +1086,8 @@
       "baseName": "叛乱重炮",
       "code": "4200",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ballistic Ballista II"
     },
     {
       "hash": "0x6EE91E7D",
@@ -974,7 +1095,8 @@
       "baseName": "叛乱重炮",
       "code": "4200",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ballistic Ballista II"
     },
     {
       "hash": "0x847CF372",
@@ -982,7 +1104,8 @@
       "baseName": "叛乱重炮",
       "code": "4200",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ballistic Ballista III"
     },
     {
       "hash": "0x8B489804",
@@ -990,7 +1113,8 @@
       "baseName": "眼镜蛇",
       "code": "4300",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Cobra I"
     },
     {
       "hash": "0x7A7615D3",
@@ -998,7 +1122,8 @@
       "baseName": "眼镜蛇",
       "code": "4300",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Cobra II"
     },
     {
       "hash": "0x9235FB9F",
@@ -1006,7 +1131,8 @@
       "baseName": "眼镜蛇",
       "code": "4300",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Cobra II"
     },
     {
       "hash": "0xB360DD8D",
@@ -1014,7 +1140,8 @@
       "baseName": "沙漠死神",
       "code": "4400",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Sand Reaper I"
     },
     {
       "hash": "0xE7F607DC",
@@ -1022,7 +1149,8 @@
       "baseName": "沙漠死神",
       "code": "4400",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Sand Reaper II"
     },
     {
       "hash": "0x65E658D9",
@@ -1030,7 +1158,8 @@
       "baseName": "伏尔甘博拉",
       "code": "4700",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Vulkan Bolla II"
     },
     {
       "hash": "0x6F6BBBE0",
@@ -1038,7 +1167,8 @@
       "baseName": "伏尔甘博拉",
       "code": "4700",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Vulkan Bolla III"
     },
     {
       "hash": "0xAD15D880",
@@ -1046,7 +1176,8 @@
       "baseName": "伏尔甘博拉·虚无",
       "code": "4800",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Vulkan Bolla Nihilla"
     },
     {
       "hash": "0x5C42D57C",
@@ -1054,7 +1185,8 @@
       "baseName": "胡拉坎·虚无",
       "code": "4a00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Furycane Nihilla"
     },
     {
       "hash": "0x23D839A3",
@@ -1062,7 +1194,8 @@
       "baseName": "玛纳加尔姆",
       "code": "4b00",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Managarmr I"
     },
     {
       "hash": "0x5E29E993",
@@ -1070,7 +1203,8 @@
       "baseName": "玛纳加尔姆",
       "code": "4b00",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Managarmr I"
     },
     {
       "hash": "0xD5536AE8",
@@ -1078,7 +1212,8 @@
       "baseName": "玛纳加尔姆",
       "code": "4b00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Managarmr II"
     },
     {
       "hash": "0xDBD2F84E",
@@ -1086,7 +1221,8 @@
       "baseName": "玛纳加尔姆",
       "code": "4b00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Managarmr III"
     },
     {
       "hash": "0x099E1DD3",
@@ -1094,7 +1230,8 @@
       "baseName": "玛纳加尔姆·虚无",
       "code": "4c00",
       "cost": 5,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Managarmr Nihilla"
     },
     {
       "hash": "0x391C7857",
@@ -1102,7 +1239,8 @@
       "baseName": "灾祸之影",
       "code": "4d00",
       "cost": 3,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ominous Form I"
     },
     {
       "hash": "0x551DC320",
@@ -1110,7 +1248,8 @@
       "baseName": "灾祸之影",
       "code": "4d00",
       "cost": 4,
-      "typeName": "伤害"
+      "typeName": "伤害",
+      "displayNameEn": "Ominous Form II"
     },
     {
       "hash": "0x547E7DFC",
@@ -1118,7 +1257,8 @@
       "baseName": "金枪鱼",
       "code": "4e00",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Albacore I"
     },
     {
       "hash": "0xF7EB57DD",
@@ -1126,7 +1266,8 @@
       "baseName": "金枪鱼",
       "code": "4e00",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Albacore II"
     },
     {
       "hash": "0xB44A8A02",
@@ -1134,7 +1275,8 @@
       "baseName": "金枪鱼",
       "code": "4e00",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Albacore III"
     },
     {
       "hash": "0x3C4F2B7D",
@@ -1142,7 +1284,8 @@
       "baseName": "怀揣希望的空之民",
       "code": "4f00",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Hope-Filled Skydwellers I"
     },
     {
       "hash": "0x4BA8CEBA",
@@ -1150,7 +1293,8 @@
       "baseName": "怀揣希望的空之民",
       "code": "4f00",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Hope-Filled Skydwellers I"
     },
     {
       "hash": "0x67A73702",
@@ -1158,7 +1302,8 @@
       "baseName": "怀揣希望的空之民",
       "code": "4f00",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Hope-Filled Skydwellers II"
     },
     {
       "hash": "0x15ED6D77",
@@ -1166,7 +1311,8 @@
       "baseName": "怀揣希望的空之民",
       "code": "4f00",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Hope-Filled Skydwellers III"
     },
     {
       "hash": "0x299C1A08",
@@ -1174,7 +1320,8 @@
       "baseName": "托付愿望的空之民",
       "code": "5000",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "True Believers I"
     },
     {
       "hash": "0xB5449253",
@@ -1182,7 +1329,8 @@
       "baseName": "托付愿望的空之民",
       "code": "5000",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "True Believers I"
     },
     {
       "hash": "0xCE8E0B79",
@@ -1190,7 +1338,8 @@
       "baseName": "托付愿望的空之民",
       "code": "5000",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "True Believers II"
     },
     {
       "hash": "0x576310DF",
@@ -1198,7 +1347,8 @@
       "baseName": "托付愿望的空之民",
       "code": "5000",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "True Believers III"
     },
     {
       "hash": "0xDDB21C31",
@@ -1206,7 +1356,8 @@
       "baseName": "弗尔卡自卫团",
       "code": "5100",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Folcan Defense Corps I"
     },
     {
       "hash": "0xF1FC31C4",
@@ -1214,7 +1365,8 @@
       "baseName": "弗尔卡自卫团",
       "code": "5100",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Folcan Defense Corps II"
     },
     {
       "hash": "0x7E154422",
@@ -1222,7 +1374,8 @@
       "baseName": "弗尔卡自卫团",
       "code": "5100",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Folcan Defense Corps III"
     },
     {
       "hash": "0x9A6D89DC",
@@ -1230,7 +1383,8 @@
       "baseName": "弗尔卡自卫团",
       "code": "5100",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Folcan Defense Corps III"
     },
     {
       "hash": "0x8C607D26",
@@ -1238,7 +1392,8 @@
       "baseName": "白狼兵团",
       "code": "5200",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Silver Wolf Corps I"
     },
     {
       "hash": "0xEF973D88",
@@ -1246,7 +1401,8 @@
       "baseName": "白狼兵团",
       "code": "5200",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Silver Wolf Corps I"
     },
     {
       "hash": "0x514CF53B",
@@ -1254,7 +1410,8 @@
       "baseName": "白狼兵团",
       "code": "5200",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Silver Wolf Corps II"
     },
     {
       "hash": "0x5CA9330A",
@@ -1262,7 +1419,8 @@
       "baseName": "白狼兵团",
       "code": "5200",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Silver Wolf Corps III"
     },
     {
       "hash": "0x44A5CAB1",
@@ -1270,7 +1428,8 @@
       "baseName": "扎斯巴家",
       "code": "5300",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Family Zathba I"
     },
     {
       "hash": "0xF862E7DA",
@@ -1278,7 +1437,8 @@
       "baseName": "扎斯巴家",
       "code": "5300",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Family Zathba I"
     },
     {
       "hash": "0xF32AA7A7",
@@ -1286,7 +1446,8 @@
       "baseName": "扎斯巴家",
       "code": "5300",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Family Zathba II"
     },
     {
       "hash": "0x4C966E4F",
@@ -1294,7 +1455,8 @@
       "baseName": "扎斯巴家",
       "code": "5300",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Family Zathba III"
     },
     {
       "hash": "0xB4CF26C6",
@@ -1302,7 +1464,8 @@
       "baseName": "希德霍姆兵",
       "code": "5400",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Seedhollow Guardians I"
     },
     {
       "hash": "0x1B9DE0FA",
@@ -1310,7 +1473,8 @@
       "baseName": "希德霍姆兵",
       "code": "5400",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Seedhollow Guardians II"
     },
     {
       "hash": "0xA4F63A8F",
@@ -1318,7 +1482,8 @@
       "baseName": "希德霍姆兵",
       "code": "5400",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Seedhollow Guardians III"
     },
     {
       "hash": "0x58AA9CAD",
@@ -1326,7 +1491,8 @@
       "baseName": "刃重众",
       "code": "5500",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Sword Veil Fellowship I"
     },
     {
       "hash": "0x42465367",
@@ -1334,7 +1500,8 @@
       "baseName": "刃重众",
       "code": "5500",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Sword Veil Fellowship II"
     },
     {
       "hash": "0x730395DC",
@@ -1342,7 +1509,8 @@
       "baseName": "刃重众",
       "code": "5500",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Sword Veil Fellowship III"
     },
     {
       "hash": "0xDA0B6092",
@@ -1350,7 +1518,8 @@
       "baseName": "玛洛斯僧兵",
       "code": "5600",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Mellose Clan I"
     },
     {
       "hash": "0x36CB5052",
@@ -1358,7 +1527,8 @@
       "baseName": "玛洛斯僧兵",
       "code": "5600",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Mellose Clan II"
     },
     {
       "hash": "0x16B702DC",
@@ -1366,7 +1536,8 @@
       "baseName": "玛洛斯僧兵",
       "code": "5600",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Mellose Clan III"
     },
     {
       "hash": "0x6368A53D",
@@ -1374,7 +1545,8 @@
       "baseName": "玛洛斯僧兵",
       "code": "5600",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Mellose Clan III"
     },
     {
       "hash": "0xA0C96959",
@@ -1382,7 +1554,8 @@
       "baseName": "骑空团联盟拉法尔",
       "code": "5700",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Crew Alliance Rafale I"
     },
     {
       "hash": "0x513D05CC",
@@ -1390,7 +1563,8 @@
       "baseName": "骑空团联盟拉法尔",
       "code": "5700",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Crew Alliance Rafale II"
     },
     {
       "hash": "0x109E2271",
@@ -1398,7 +1572,8 @@
       "baseName": "骑空团联盟拉法尔",
       "code": "5700",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Crew Alliance Rafale III"
     },
     {
       "hash": "0xA608AECD",
@@ -1406,7 +1581,8 @@
       "baseName": "裁判",
       "code": "5900",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Referee"
     },
     {
       "hash": "0xE6EBB6FA",
@@ -1414,7 +1590,8 @@
       "baseName": "裁判",
       "code": "5900",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Referee"
     },
     {
       "hash": "0x1AB77FDF",
@@ -1422,7 +1599,8 @@
       "baseName": "猫",
       "code": "5f00",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Cat"
     },
     {
       "hash": "0x9118453A",
@@ -1430,7 +1608,8 @@
       "baseName": "小钳蟹",
       "code": "6300",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Wee Pincer I"
     },
     {
       "hash": "0x0525E77D",
@@ -1438,7 +1617,8 @@
       "baseName": "小钳蟹",
       "code": "6300",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Wee Pincer II"
     },
     {
       "hash": "0xF28D0E35",
@@ -1446,7 +1626,8 @@
       "baseName": "小钳蟹",
       "code": "6300",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Wee Pincer III"
     },
     {
       "hash": "0x7E853E16",
@@ -1454,7 +1635,8 @@
       "baseName": "神谕转轮",
       "code": "6400",
       "cost": 3,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Wheel of Fate"
     },
     {
       "hash": "0x03C8BF90",
@@ -1462,7 +1644,8 @@
       "baseName": "神谕转轮",
       "code": "6400",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Wheel of Fate II"
     },
     {
       "hash": "0xD7555B1F",
@@ -1470,7 +1653,8 @@
       "baseName": "神谕转轮",
       "code": "6400",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Wheel of FateII"
     },
     {
       "hash": "0xE24B4807",
@@ -1478,7 +1662,8 @@
       "baseName": "神谕转轮",
       "code": "6400",
       "cost": 4,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Wheel of FateII"
     },
     {
       "hash": "0x47E2AE71",
@@ -1486,7 +1671,8 @@
       "baseName": "神谕转轮",
       "code": "6400",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Wheel of Fate III"
     },
     {
       "hash": "0x48732D1F",
@@ -1494,7 +1680,8 @@
       "baseName": "神谕转轮",
       "code": "6400",
       "cost": 5,
-      "typeName": "支援"
+      "typeName": "支援",
+      "displayNameEn": "Wheel of Fate III"
     },
     {
       "hash": "0x2F15455C",
@@ -1502,7 +1689,8 @@
       "baseName": "别西卜",
       "code": "9200",
       "cost": 5,
-      "typeName": "特殊"
+      "typeName": "特殊",
+      "displayNameEn": "Beelzebub"
     },
     {
       "hash": "0xA7EFF558",
@@ -1510,7 +1698,8 @@
       "baseName": "别西卜",
       "code": "9200",
       "cost": 5,
-      "typeName": "特殊"
+      "typeName": "特殊",
+      "displayNameEn": "Beelzebub"
     }
   ]
 }

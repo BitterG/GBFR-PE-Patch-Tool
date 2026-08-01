@@ -53,6 +53,7 @@ var summonSubParamsJSON []byte
 type SummonOption struct {
 	Hash      uint32    `json:"hash"`
 	Name      string    `json:"name"`
+	NameEn    string    `json:"nameEn"`
 	MaxLevel  int       `json:"maxLevel"`
 	Cost      int       `json:"cost"`
 	TypeName  string    `json:"typeName"`
@@ -68,28 +69,31 @@ type SummonOptions struct {
 
 type summonTypeFile struct {
 	Summons []struct {
-		Hash        string `json:"hash"`
-		DisplayName string `json:"displayName"`
-		Cost        int    `json:"cost"`
-		TypeName    string `json:"typeName"`
+		Hash          string `json:"hash"`
+		DisplayName   string `json:"displayName"`
+		DisplayNameEn string `json:"displayNameEn"`
+		Cost          int    `json:"cost"`
+		TypeName      string `json:"typeName"`
 	} `json:"summons"`
 }
 
 type summonSkillFile struct {
 	Skills []struct {
-		Hash        string `json:"hash"`
-		DisplayName string `json:"displayName"`
-		MaxLevel    int    `json:"maxLevel"`
+		Hash          string `json:"hash"`
+		DisplayName   string `json:"displayName"`
+		DisplayNameEn string `json:"displayNameEn"`
+		MaxLevel      int    `json:"maxLevel"`
 	} `json:"skills"`
 }
 
 type summonSubParamFile struct {
 	SubParams []struct {
-		Hash        string    `json:"hash"`
-		DisplayName string    `json:"displayName"`
-		MaxLevel    int       `json:"maxLevel"`
-		IsPercent   bool      `json:"isPercent"`
-		Values      []float64 `json:"values"`
+		Hash          string    `json:"hash"`
+		DisplayName   string    `json:"displayName"`
+		DisplayNameEn string    `json:"displayNameEn"`
+		MaxLevel      int       `json:"maxLevel"`
+		IsPercent     bool      `json:"isPercent"`
+		Values        []float64 `json:"values"`
 	} `json:"subParams"`
 }
 
@@ -114,13 +118,13 @@ func (a *App) SummonGetOptions() (SummonOptions, error) {
 	for _, item := range types.Summons {
 		hash, err := ParseHashHex(item.Hash)
 		if err == nil {
-			options.Types = append(options.Types, SummonOption{Hash: hash, Name: item.DisplayName, Cost: item.Cost, TypeName: item.TypeName})
+			options.Types = append(options.Types, SummonOption{Hash: hash, Name: item.DisplayName, NameEn: item.DisplayNameEn, Cost: item.Cost, TypeName: item.TypeName})
 		}
 	}
 	for _, item := range skills.Skills {
 		hash, err := ParseHashHex(item.Hash)
 		if err == nil {
-			options.Traits = append(options.Traits, SummonOption{Hash: hash, Name: item.DisplayName, MaxLevel: item.MaxLevel})
+			options.Traits = append(options.Traits, SummonOption{Hash: hash, Name: item.DisplayName, NameEn: item.DisplayNameEn, MaxLevel: item.MaxLevel})
 		}
 	}
 	for _, item := range subParams.SubParams {
@@ -129,6 +133,7 @@ func (a *App) SummonGetOptions() (SummonOptions, error) {
 			options.SubParams = append(options.SubParams, SummonOption{
 				Hash:      hash,
 				Name:      item.DisplayName,
+				NameEn:    item.DisplayNameEn,
 				MaxLevel:  item.MaxLevel,
 				IsPercent: item.IsPercent,
 				Values:    item.Values,
@@ -215,18 +220,7 @@ func (a *App) SummonUpdate(item SummonUpdate) (SummonInfo, error) {
 	if err != nil {
 		return SummonInfo{}, err
 	}
-	found := false
-	for _, existing := range items {
-		if existing.Index != item.Index {
-			continue
-		}
-		if item.TypeHash != existing.TypeHash {
-			return SummonInfo{}, fmt.Errorf("召唤石种类不支持修改")
-		}
-		found = true
-		break
-	}
-	if !found {
+	if len(items) != 1 || items[0].Index != item.Index {
 		return SummonInfo{}, fmt.Errorf("召唤石索引不存在于当前背包: %d", item.Index)
 	}
 

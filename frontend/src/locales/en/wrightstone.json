@@ -19,8 +19,8 @@
     "summon": {
       "none":"None","processId":"PID {pid}","title":"Summon workshop","description":"After the 2.0.3 fix, open Inventory → Summons in-game, select a summon, then refresh. Listing every summon was inconvenient to search and edit when the inventory was large, so only the currently selected summon can now be modified.","count":"{count} summons",
       "actions":{"loading":"Loading...","refreshInventory":"Refresh inventory","connectInventory":"Connect inventory","writing":"Writing...","write":"Write summon"},
-      "placeholders":{"searchSummons":"Search name or hash (type changes cannot be saved)","nameOrHash":"Name or hash"},
-      "fields":{"type":"Type","mainTraitSearch":"Search main trait","mainTrait":"Main trait","mainTraitLevel":"Main trait level","subParam":"Sub-parameter","subParamLevel":"Sub-parameter level"},
+      "placeholders":{"searchSummons":"Search name or hash","nameOrHash":"Name or hash"},
+      "fields":{"typeSearch":"Search types","type":"Type","mainTraitSearch":"Search main trait","mainTrait":"Main trait","mainTraitLevel":"Main trait level","subParam":"Sub-parameter","subParamLevel":"Sub-parameter level"},
       "empty":{"noSummons":"No summons were read. Open the in-game summon inventory and refresh.","selectFromList":"Select a summon from the list."},
       "labels":{"subParamValue":"{level} → +{value}{suffix}"},
       "errors":{"unsignedInteger":"{label} must be a 32-bit unsigned integer","selectSummon":"Select a summon","mainTraitLevelRange":"Main trait level must be from 0 to {max}","subParamLevelRange":"Sub-parameter level must be from 0 to {max}"},
