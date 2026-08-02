@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"net/http"
@@ -143,6 +144,7 @@ type App struct {
 	monsterDamageHookInstalled bool
 	monsterDamageHookID        string
 	monsterDamageEnabled       bool
+	monsterDamageNewAddr       uintptr
 	monsterHPAddr              uintptr
 	materialConsumeCaveAddr    uintptr
 	// runtimePatchMu serializes material consumption and inventory-set hooks,
@@ -1244,6 +1246,7 @@ func (a *App) CharaDetach() {
 	a.monsterHPAddr = 0
 	a.monsterDamageHookID = ""
 	a.monsterDamageEnabled = false
+	a.monsterDamageNewAddr = 0
 	a.materialConsumeCaveAddr = 0
 	a.sigilMemoryHookAddr = 0
 	a.sigilMemoryCaveAddr = 0
@@ -2320,11 +2323,14 @@ var monsterPatchPoints = []monsterPatchPoint{
 		Hook:          true,
 	},
 	{
-		ID:       "monster_damage_new",
-		Name:     "怪物伤害-新",
-		RVA:      0x1F7A810,
-		Original: []byte{0x48, 0x89, 0x51, 0x10, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC},
-		Hook:     true,
+		ID:            "monster_damage_new",
+		Name:          "怪物伤害-新",
+		RVA:           0x1F74700,
+		Pattern:       []byte{0x48, 0x89, 0x51, 0x18, 0x48, 0x89, 0x51, 0x10, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0x48, 0x89, 0x51, 0x18, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0x48, 0x89, 0x51, 0x10, 0xC3},
+		PatternMask:   []bool{true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+		PatternOffset: 0x20,
+		Original:      []byte{0x48, 0x89, 0x51, 0x10, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC},
+		Hook:          true,
 	},
 	{
 		ID:       "monster_damage",
@@ -2643,6 +2649,50 @@ func (a *App) MonsterEnhanceInject() (MonsterEnhanceResult, error) {
 	return a.MonsterEnhanceSetEnabled(true)
 }
 
+var monsterDamageNewPrefix = []byte{0x48, 0x89, 0x51, 0x18, 0x48, 0x89, 0x51, 0x10, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0x48, 0x89, 0x51, 0x18, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC}
+
+func (a *App) resolveMonsterDamageNewFromStablePrefix(point *monsterPatchPoint) (uintptr, error) {
+	mask := make([]bool, len(monsterDamageNewPrefix))
+	for i := range mask {
+		mask[i] = true
+	}
+	match, err := a.scanPatternUnique(monsterDamageNewPrefix, mask, point.Name+" AOB 前缀")
+	if err != nil {
+		return 0, err
+	}
+	target := match + uintptr(len(monsterDamageNewPrefix))
+	entry := make([]byte, len(point.Original))
+	if err := readProcessMemory(a.hProcess, target, unsafe.Pointer(&entry[0]), uintptr(len(entry))); err != nil {
+		return 0, fmt.Errorf("读取%s AOB 目标失败: %w", point.Name, err)
+	}
+	if !bytesEqual(entry, point.Original) && (len(entry) == 0 || entry[0] != 0xE9) {
+		return 0, fmt.Errorf("%s AOB 目标字节未知: %s", point.Name, bytesToHex(entry))
+	}
+	return target, nil
+}
+
+var monsterHPPrefix = []byte{0x48, 0x8B, 0x41, 0x10, 0x45, 0x31, 0xC9, 0x48, 0x29, 0xD0, 0x4C, 0x0F, 0x43, 0xC8, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x49, 0x0F, 0x47, 0xC1, 0x45, 0x85, 0xC0, 0x49, 0x0F, 0x44, 0xC1}
+
+func (a *App) resolveMonsterHPFromStablePrefix(point *monsterPatchPoint) (uintptr, error) {
+	mask := make([]bool, len(monsterHPPrefix))
+	for i := range mask {
+		mask[i] = true
+	}
+	match, err := a.scanPatternUnique(monsterHPPrefix, mask, point.Name+" AOB 前缀")
+	if err != nil {
+		return 0, err
+	}
+	target := match + uintptr(len(monsterHPPrefix))
+	entry := make([]byte, len(point.Original))
+	if err := readProcessMemory(a.hProcess, target, unsafe.Pointer(&entry[0]), uintptr(len(entry))); err != nil {
+		return 0, fmt.Errorf("读取%s AOB 目标失败: %w", point.Name, err)
+	}
+	if !bytesEqual(entry, point.Original) && (len(entry) == 0 || entry[0] != 0xE9) {
+		return 0, fmt.Errorf("%s AOB 目标字节未知: %s", point.Name, bytesToHex(entry))
+	}
+	return target, nil
+}
+
 func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, error) {
 	if point == nil {
 		return 0, fmt.Errorf("monster patch point is nil")
@@ -2653,14 +2703,37 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	if len(point.Pattern) != len(point.PatternMask) {
 		return 0, fmt.Errorf("%s AOB pattern and mask length mismatch", point.Name)
 	}
+	if point.ID == "monster_damage_new" && a.monsterDamageNewAddr != 0 {
+		return a.monsterDamageNewAddr, nil
+	}
 	if point.ID == "monster_hp" && a.monsterHPAddr != 0 {
 		return a.monsterHPAddr, nil
 	}
 	match, err := a.scanPatternUnique(point.Pattern, point.PatternMask, point.Name+" AOB")
 	if err != nil {
-		return 0, err
+		switch point.ID {
+		case "monster_damage_new":
+			target, prefixErr := a.resolveMonsterDamageNewFromStablePrefix(point)
+			if prefixErr != nil {
+				return 0, errors.Join(err, prefixErr)
+			}
+			a.monsterDamageNewAddr = target
+			return target, nil
+		case "monster_hp":
+			target, prefixErr := a.resolveMonsterHPFromStablePrefix(point)
+			if prefixErr != nil {
+				return 0, errors.Join(err, prefixErr)
+			}
+			a.monsterHPAddr = target
+			return target, nil
+		default:
+			return 0, err
+		}
 	}
 	target := match + point.PatternOffset
+	if point.ID == "monster_damage_new" {
+		a.monsterDamageNewAddr = target
+	}
 	if point.ID == "monster_hp" {
 		a.monsterHPAddr = target
 	}

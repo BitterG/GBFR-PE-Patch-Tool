@@ -143,6 +143,28 @@ func (a *App) monsterEnhanceOwnerForCompatibilityCall() string {
 	return "compatibility"
 }
 
+var monsterHPPrefix = []byte{0x48, 0x8B, 0x41, 0x10, 0x45, 0x31, 0xC9, 0x48, 0x29, 0xD0, 0x4C, 0x0F, 0x43, 0xC8, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x49, 0x0F, 0x47, 0xC1, 0x45, 0x85, 0xC0, 0x49, 0x0F, 0x44, 0xC1}
+
+func (a *App) resolveMonsterHPFromStablePrefix(point *monsterPatchPoint) (uintptr, error) {
+	mask := make([]bool, len(monsterHPPrefix))
+	for i := range mask {
+		mask[i] = true
+	}
+	match, err := a.scanPatternUnique(monsterHPPrefix, mask, point.Name+" AOB 前缀")
+	if err != nil {
+		return 0, err
+	}
+	target := match + uintptr(len(monsterHPPrefix))
+	entry, err := a.readMonsterEnhanceEntry(target, len(point.Original))
+	if err != nil {
+		return 0, fmt.Errorf("read %s AOB target: %w", point.Name, err)
+	}
+	if !bytesEqual(entry, point.Original) && (len(entry) == 0 || entry[0] != 0xE9) {
+		return 0, fmt.Errorf("%s AOB 目标字节未知: %s", point.Name, bytesToHex(entry))
+	}
+	return target, nil
+}
+
 func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, error) {
 	if point == nil {
 		return 0, fmt.Errorf("monster patch point is nil")
@@ -158,7 +180,15 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	}
 	match, err := a.scanPatternUnique(point.Pattern, point.PatternMask, point.Name+" AOB")
 	if err != nil {
-		return 0, err
+		if point.ID != "monster_hp" {
+			return 0, err
+		}
+		target, prefixErr := a.resolveMonsterHPFromStablePrefix(point)
+		if prefixErr != nil {
+			return 0, errors.Join(err, prefixErr)
+		}
+		a.monsterHPAddr = target
+		return target, nil
 	}
 	target := match + point.PatternOffset
 	if point.ID == "monster_hp" {

@@ -107,6 +107,8 @@ static const lm_byte_t kMonsterDamageNewExpected[] = {
     0x48, 0x89, 0x51, 0x10, 0xC3,
     0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC,
 };
+static const char* kMonsterDamageNewSignature = "48 89 51 18 48 89 51 10 C3 CC CC CC CC CC CC CC 48 89 51 18 C3 CC CC CC CC CC CC CC CC CC CC CC 48 89 51 10 C3";
+static constexpr lm_address_t kMonsterDamageNewSignatureOffset = 0x20;
 static const lm_byte_t kMonsterEnhanceCaveMarker[] = { 'G', 'B', 'F', 'R', 'M', 'H', '0', '3' };
 static const lm_byte_t kStunExpected[] = { 0xC5, 0xFA, 0x58, 0x86, 0x60, 0x08, 0x00, 0x00 };
 // v1.3.2+: damage value is finalized in [rsi+0xD4] before this cap check.
@@ -123,7 +125,7 @@ static const PatchPoint kMonsterPatches[] = {
     { "link_time_no_drain", L"link time no drain", 0x187228, kLinkTimeExpected, sizeof(kLinkTimeExpected), kNop10, false },
     { "link_time_disable", L"disable link time", 0x187228, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
     { "monster_hp", L"monster hp", 0x1F7472E, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
-    { "monster_damage_new", L"monster damage new", 0x1F7A810, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
+    { "monster_damage_new", L"monster damage new", 0x1F74700, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
     { "monster_damage", L"monster damage", 0x1FBDEB4, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
     { "monster_stun", L"monster stun", 0xB29128, kStunExpected, sizeof(kStunExpected), nullptr, true },
     { "overdrive_state", L"overdrive state", 0x22CB316, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
@@ -922,6 +924,16 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
                 return false;
             }
             target = match + kMonsterHpSignatureOffset;
+        }
+        else if (strcmp(point.id, "monster_damage_new") == 0)
+        {
+            lm_address_t match = LM_SigScan(kMonsterDamageNewSignature, module.base, module.size);
+            if (match == LM_ADDRESS_BAD)
+            {
+                swprintf_s(message, messageSize, L"signature not found: monster damage new");
+                return false;
+            }
+            target = match + kMonsterDamageNewSignatureOffset;
         }
         lm_byte_t current[16]{};
         if (point.size > sizeof(current) || LM_ReadMemory(target, current, point.size) != point.size)
