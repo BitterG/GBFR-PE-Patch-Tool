@@ -98,7 +98,9 @@ static const lm_byte_t kLinkTimeExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x9C, 0x2
 static const lm_byte_t kLinkTimeDisablePatch[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x84, 0x24, 0xB4, 0x01, 0x00, 0x00 };
 static const lm_byte_t kNop10[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 
-static const lm_byte_t kMonsterHpExpected[] = { 0x48, 0x8B, 0x41, 0x10, 0x45, 0x31, 0xC9 };
+static const lm_byte_t kMonsterHpExpected[] = { 0x48, 0x89, 0x41, 0x10, 0xC3 };
+static const char* kMonsterHpSignature = "48 8B 41 10 45 31 C9 48 29 D0 4C 0F 43 C8 B8 01 00 00 00 49 0F 47 C1 45 85 C0 49 0F 44 C1 48 89 41 10 C3";
+static constexpr lm_address_t kMonsterHpSignatureOffset = 0x1E;
 // The shared health-delta helper receives the health component in rcx and the
 // already-calculated incoming damage in rdx.
 static const lm_byte_t kMonsterDamageNewExpected[] = {
@@ -120,7 +122,7 @@ static const lm_byte_t kNop9[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x9
 static const PatchPoint kMonsterPatches[] = {
     { "link_time_no_drain", L"link time no drain", 0x187228, kLinkTimeExpected, sizeof(kLinkTimeExpected), kNop10, false },
     { "link_time_disable", L"disable link time", 0x187228, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
-    { "monster_hp", L"monster hp", 0x1F7A820, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
+    { "monster_hp", L"monster hp", 0x1F7472E, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
     { "monster_damage_new", L"monster damage new", 0x1F7A810, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
     { "monster_damage", L"monster damage", 0x1FBDEB4, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
     { "monster_stun", L"monster stun", 0xB29128, kStunExpected, sizeof(kStunExpected), nullptr, true },
@@ -331,60 +333,62 @@ static void AppendTeamDamageFromRsiEdi(lm_byte_t* code, size_t& i, uint8_t damag
 static bool PatchDamageHook(lm_address_t target, wchar_t* message, size_t messageSize)
 {
     float scale = ReadScale();
-    lm_address_t cave = AllocNear(target, 256);
+    lm_address_t cave = AllocNear(target, 128);
     if (cave == LM_ADDRESS_BAD)
     {
         swprintf_s(message, messageSize, L"alloc near failed: monster hp");
         return false;
     }
 
-    lm_byte_t code[192]{};
+    lm_byte_t code[128]{};
     size_t i = 0;
     code[i++] = 0x41; code[i++] = 0x53;                                                             // push r11
-    code[i++] = 0x41; code[i++] = 0x52;                                                             // push r10
     code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xEC; code[i++] = 0x10;                         // sub rsp,10
     code[i++] = 0x0F; code[i++] = 0x11; code[i++] = 0x04; code[i++] = 0x24;                         // movups [rsp],xmm0
-    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xC2;                         // cvtsi2ss xmm0,edx
+    code[i++] = 0xF3; code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xC2;       // cvtsi2ss xmm0,rdx
     code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x05;                         // mulss xmm0,[rip+disp32]
     size_t scaleDisp = i; i += 4;
-    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xD0;                         // cvttss2si edx,xmm0
-    code[i++] = 0x85; code[i++] = 0xD2;                                                             // test edx,edx
-    code[i++] = 0x7F; size_t jgScaled = i++;                                                        // jg scaled
-    code[i++] = 0xBA; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00;       // mov edx,1
-    size_t scaledOffset = i;
+    code[i++] = 0xF3; code[i++] = 0x4C; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xD8;       // cvttss2si r11,xmm0
     code[i++] = 0x0F; code[i++] = 0x10; code[i++] = 0x04; code[i++] = 0x24;                         // movups xmm0,[rsp]
     code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xC4; code[i++] = 0x10;                         // add rsp,10
-    AppendTeamDamageFromRcXEdxR8(code, i, 0);
-    code[i++] = 0x41; code[i++] = 0x5A;                                                             // pop r10
+    code[i++] = 0x4D; code[i++] = 0x85; code[i++] = 0xDB;                                           // test r11,r11
+    code[i++] = 0x7F; size_t jgScaled = i++;                                                        // jg scaled
+    code[i++] = 0x41; code[i++] = 0xBB; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov r11d,1
+    size_t scaledOffset = i;
+    code[i++] = 0x4C; code[i++] = 0x89; code[i++] = 0xDA;                                           // mov rdx,r11
     code[i++] = 0x41; code[i++] = 0x5B;                                                             // pop r11
     code[i++] = 0x48; code[i++] = 0x8B; code[i++] = 0x41; code[i++] = 0x10;                         // mov rax,[rcx+10]
     code[i++] = 0x45; code[i++] = 0x31; code[i++] = 0xC9;                                           // xor r9d,r9d
-    code[i++] = 0xE9;                                                                               // jmp return
-    size_t jmpBackDisp = i; i += 4;
+    code[i++] = 0x48; code[i++] = 0x29; code[i++] = 0xD0;                                           // sub rax,rdx
+    code[i++] = 0x4C; code[i++] = 0x0F; code[i++] = 0x43; code[i++] = 0xC8;                         // cmovae r9,rax
+    code[i++] = 0xB8; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00;       // mov eax,1
+    code[i++] = 0x49; code[i++] = 0x0F; code[i++] = 0x47; code[i++] = 0xC1;                         // cmova rax,r9
+    code[i++] = 0x45; code[i++] = 0x85; code[i++] = 0xC0;                                           // test r8d,r8d
+    code[i++] = 0x49; code[i++] = 0x0F; code[i++] = 0x44; code[i++] = 0xC1;                         // cmove rax,r9
+    code[i++] = 0x48; code[i++] = 0x89; code[i++] = 0x41; code[i++] = 0x10;                         // mov [rcx+10],rax
+    code[i++] = 0xC3;                                                                               // ret
     size_t scaleOffset = i;
     memcpy(code + i, &scale, sizeof(scale)); i += sizeof(scale);
 
     code[jgScaled] = static_cast<lm_byte_t>(scaledOffset - (jgScaled + 1));
 
     int64_t scaleDelta = static_cast<int64_t>(cave + scaleOffset) - static_cast<int64_t>(cave + scaleDisp + 4);
-    int64_t backDelta = static_cast<int64_t>(target + 7) - static_cast<int64_t>(cave + jmpBackDisp + 4);
-    if (scaleDelta < INT32_MIN || scaleDelta > INT32_MAX || backDelta < INT32_MIN || backDelta > INT32_MAX)
+    if (scaleDelta < INT32_MIN || scaleDelta > INT32_MAX)
     {
-        swprintf_s(message, messageSize, L"jump out of range: monster hp");
+        swprintf_s(message, messageSize, L"scale jump out of range: monster hp");
         return false;
     }
     int32_t relScale = static_cast<int32_t>(scaleDelta);
-    int32_t relBack = static_cast<int32_t>(backDelta);
     memcpy(code + scaleDisp, &relScale, sizeof(relScale));
-    memcpy(code + jmpBackDisp, &relBack, sizeof(relBack));
 
-    if (LM_WriteMemory(cave, code, i) != i)
+    memcpy(code + 128 - sizeof(kMonsterEnhanceCaveMarker), kMonsterEnhanceCaveMarker, sizeof(kMonsterEnhanceCaveMarker));
+    if (LM_WriteMemory(cave, code, sizeof(code)) != sizeof(code))
     {
         swprintf_s(message, messageSize, L"cave write failed: monster hp");
         return false;
     }
 
-    lm_byte_t jmp[7]{ 0xE9 };
+    lm_byte_t jmp[sizeof(kMonsterHpExpected)]{ 0xE9 };
     memset(jmp + 5, 0x90, sizeof(jmp) - 5);
     int32_t rel = static_cast<int32_t>(cave - (target + 5));
     memcpy(jmp + 1, &rel, sizeof(rel));
@@ -909,6 +913,16 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
         ++selected;
 
         lm_address_t target = module.base + point.rva;
+        if (strcmp(point.id, "monster_hp") == 0)
+        {
+            lm_address_t match = LM_SigScan(kMonsterHpSignature, module.base, module.size);
+            if (match == LM_ADDRESS_BAD)
+            {
+                swprintf_s(message, messageSize, L"signature not found: monster hp");
+                return false;
+            }
+            target = match + kMonsterHpSignatureOffset;
+        }
         lm_byte_t current[16]{};
         if (point.size > sizeof(current) || LM_ReadMemory(target, current, point.size) != point.size)
         {

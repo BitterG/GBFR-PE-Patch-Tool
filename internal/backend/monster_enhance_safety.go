@@ -143,6 +143,30 @@ func (a *App) monsterEnhanceOwnerForCompatibilityCall() string {
 	return "compatibility"
 }
 
+func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, error) {
+	if point == nil {
+		return 0, fmt.Errorf("monster patch point is nil")
+	}
+	if len(point.Pattern) == 0 {
+		return a.moduleBase + point.RVA, nil
+	}
+	if len(point.Pattern) != len(point.PatternMask) {
+		return 0, fmt.Errorf("%s AOB pattern and mask length mismatch", point.Name)
+	}
+	if point.ID == "monster_hp" && a.monsterHPAddr != 0 {
+		return a.monsterHPAddr, nil
+	}
+	match, err := a.scanPatternUnique(point.Pattern, point.PatternMask, point.Name+" AOB")
+	if err != nil {
+		return 0, err
+	}
+	target := match + point.PatternOffset
+	if point.ID == "monster_hp" {
+		a.monsterHPAddr = target
+	}
+	return target, nil
+}
+
 func (a *App) prepareMonsterEnhanceEnable(ownerToken string, point *monsterPatchPoint) ([]byte, error) {
 	if point == nil {
 		return nil, fmt.Errorf("monster patch point is nil")
@@ -163,7 +187,10 @@ func (a *App) prepareMonsterEnhanceEnable(ownerToken string, point *monsterPatch
 		}
 		return nil, fmt.Errorf("%s is already enabled; disable it before changing its value", point.Name)
 	}
-	target := a.moduleBase + point.RVA
+	target, err := a.resolveMonsterPatchTarget(point)
+	if err != nil {
+		return nil, err
+	}
 	current, err := a.readMonsterEnhanceEntry(target, len(point.Original))
 	if err != nil {
 		return nil, fmt.Errorf("read %s before injection: %w", point.Name, err)
@@ -182,7 +209,10 @@ func (a *App) claimMonsterEnhancePatchWithAux(ownerToken string, point *monsterP
 	if point == nil || len(original) == 0 {
 		return fmt.Errorf("cannot claim an empty monster patch")
 	}
-	target := a.moduleBase + point.RVA
+	target, err := a.resolveMonsterPatchTarget(point)
+	if err != nil {
+		return err
+	}
 	patched, err := a.readMonsterEnhanceEntry(target, len(point.Original))
 	if err != nil {
 		return fmt.Errorf("read %s after injection: %w", point.Name, err)
@@ -250,7 +280,11 @@ func (a *App) rollbackMonsterEnhanceFailedEnableWithAux(ownerToken string, point
 	if point == nil || len(original) == 0 {
 		return fmt.Errorf("failed monster enable has no rollback metadata")
 	}
-	current, err := a.readMonsterEnhanceEntry(a.moduleBase+point.RVA, len(original))
+	target, resolveErr := a.resolveMonsterPatchTarget(point)
+	if resolveErr != nil {
+		return resolveErr
+	}
+	current, err := a.readMonsterEnhanceEntry(target, len(original))
 	if err != nil {
 		return fmt.Errorf("read failed monster enable state: %w", err)
 	}
@@ -267,7 +301,7 @@ func (a *App) rollbackMonsterEnhanceFailedEnableWithAux(ownerToken string, point
 		}
 		record := monsterEnhanceOwnedPatch{
 			OwnerToken:  ownerToken,
-			Target:      a.moduleBase + point.RVA,
+			Target:      target,
 			Original:    append([]byte(nil), original...),
 			Patched:     append([]byte(nil), original...),
 			AuxTarget:   aux.Target,
@@ -306,7 +340,11 @@ func (a *App) monsterEnhanceHookMarked(point *monsterPatchPoint, entry []byte) b
 	if point == nil || !point.Hook {
 		return false
 	}
-	cave, ok := monsterEnhanceRelJumpTarget(a.moduleBase+point.RVA, entry)
+	target, err := a.resolveMonsterPatchTarget(point)
+	if err != nil {
+		return false
+	}
+	cave, ok := monsterEnhanceRelJumpTarget(target, entry)
 	if !ok {
 		return false
 	}

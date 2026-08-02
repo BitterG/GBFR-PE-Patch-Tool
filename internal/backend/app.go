@@ -120,6 +120,7 @@ type App struct {
 	// this App instance. Exact entry bytes, rel32 cave and an in-cave marker are
 	// retained until restoration succeeds, so detach can fail closed and retry.
 	monsterEnhanceOwned map[string]monsterEnhanceOwnedPatch
+	monsterHPAddr       uintptr
 	// runtimePatchPatchLeases owns only independently verified direct patches. The
 	// process identity and exact bytes make every record a retryable recovery
 	// lease; runtimePatchPatchOrder preserves reverse installation order on detach.
@@ -1185,6 +1186,7 @@ func (a *App) charaDetachLocked() error {
 	a.currencyCaveAddr = 0
 	a.currencyOriginal = nil
 	a.monsterEnhanceOwned = nil
+	a.monsterHPAddr = 0
 	a.runtimePatchPatchLeases = nil
 	a.runtimePatchPatchOrder = nil
 	a.runtimePatchSelectedMaterialHook = runtimePatchSelectedCaptureLease{}
@@ -2845,6 +2847,9 @@ type monsterPatchPoint struct {
 	ID                string
 	Name              string
 	RVA               uintptr
+	Pattern           []byte
+	PatternMask       []bool
+	PatternOffset     uintptr
 	Original          []byte
 	Patch             []byte
 	Hook              bool
@@ -2870,12 +2875,15 @@ var monsterPatchPoints = []monsterPatchPoint{
 		UnavailableReason: "当前游戏版本定位未闭环",
 	},
 	{
-		ID:        "monster_hp",
-		Name:      "怪物多倍血",
-		RVA:       0x1F7A820,
-		Original:  []byte{0x48, 0x8B, 0x41, 0x10, 0x45, 0x31, 0xC9},
-		Hook:      true,
-		Available: true,
+		ID:            "monster_hp",
+		Name:          "怪物多倍血",
+		RVA:           0x1F7472E,
+		Pattern:       []byte{0x48, 0x8B, 0x41, 0x10, 0x45, 0x31, 0xC9, 0x48, 0x29, 0xD0, 0x4C, 0x0F, 0x43, 0xC8, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x49, 0x0F, 0x47, 0xC1, 0x45, 0x85, 0xC0, 0x49, 0x0F, 0x44, 0xC1, 0x48, 0x89, 0x41, 0x10, 0xC3},
+		PatternMask:   []bool{true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+		PatternOffset: 0x1E,
+		Original:      []byte{0x48, 0x89, 0x41, 0x10, 0xC3},
+		Hook:          true,
+		Available:     true,
 	},
 	{
 		ID:        "monster_damage_new",
@@ -3157,7 +3165,11 @@ func (a *App) monsterEnhanceSetPatchValueEnabledLocked(ownerToken, id string, en
 				return MonsterEnhanceResult{}, err
 			}
 			if err := a.claimMonsterEnhancePatch(ownerToken, point, original); err != nil {
-				rollbackErr := a.writeAndVerifyMonsterEnhanceEntry(a.moduleBase+point.RVA, original, point.Name+" rollback")
+				target, targetErr := a.resolveMonsterPatchTarget(point)
+				if targetErr != nil {
+					return MonsterEnhanceResult{}, errors.Join(err, targetErr)
+				}
+				rollbackErr := a.writeAndVerifyMonsterEnhanceEntry(target, original, point.Name+" rollback")
 				return MonsterEnhanceResult{}, errors.Join(err, rollbackErr)
 			}
 			return a.readMonsterEnhanceStatus("")
@@ -3212,7 +3224,11 @@ func (a *App) monsterEnhanceSetPatchValueEnabledLocked(ownerToken, id string, en
 	if pointID != "all" {
 		record, owned := a.monsterEnhanceOwned[pointID]
 		if !owned {
-			current, err := a.readMonsterEnhanceEntry(a.moduleBase+point.RVA, len(point.Original))
+			target, targetErr := a.resolveMonsterPatchTarget(point)
+			if targetErr != nil {
+				return MonsterEnhanceResult{}, targetErr
+			}
+			current, err := a.readMonsterEnhanceEntry(target, len(point.Original))
 			if err != nil {
 				return MonsterEnhanceResult{}, fmt.Errorf("读取%s失败: %w", point.Name, err)
 			}
@@ -3272,8 +3288,11 @@ func (a *App) readMonsterEnhanceStatus(dllPath string) (MonsterEnhanceResult, er
 	var parts []string
 	items := make([]MonsterEnhanceItem, 0, len(monsterPatchPoints))
 	for _, point := range monsterPatchPoints {
+		addr, resolveErr := a.resolveMonsterPatchTarget(&point)
+		if resolveErr != nil {
+			return MonsterEnhanceResult{}, resolveErr
+		}
 		current := make([]byte, len(point.Original))
-		addr := a.moduleBase + point.RVA
 		if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
 			return MonsterEnhanceResult{}, fmt.Errorf("读取%s失败: %w", point.Name, err)
 		}
@@ -3298,7 +3317,7 @@ func (a *App) readMonsterEnhanceStatus(dllPath string) (MonsterEnhanceResult, er
 		items = append(items, MonsterEnhanceItem{
 			ID:                point.ID,
 			Name:              point.Name,
-			RVA:               uint64(point.RVA),
+			RVA:               uint64(addr - a.moduleBase),
 			Available:         point.Available,
 			UnavailableReason: point.UnavailableReason,
 			Enabled:           enabled,
@@ -3315,7 +3334,10 @@ func (a *App) readMonsterEnhanceStatus(dllPath string) (MonsterEnhanceResult, er
 }
 
 func (a *App) setSBAChainTimer(point *monsterPatchPoint, value float64) error {
-	addr := a.moduleBase + point.RVA
+	addr, err := a.resolveMonsterPatchTarget(point)
+	if err != nil {
+		return err
+	}
 	current := make([]byte, len(point.Original))
 	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
 		return fmt.Errorf("读取%s失败: %w", point.Name, err)
