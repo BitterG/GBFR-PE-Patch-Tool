@@ -146,6 +146,7 @@ type App struct {
 	monsterDamageEnabled       bool
 	monsterDamageNewAddr       uintptr
 	monsterHPAddr              uintptr
+	monsterStunAddr            uintptr
 	materialConsumeCaveAddr    uintptr
 	// runtimePatchMu serializes material consumption and inventory-set hooks,
 	// which both replace the same item-quantity instruction.
@@ -1247,6 +1248,7 @@ func (a *App) CharaDetach() {
 	a.monsterDamageHookID = ""
 	a.monsterDamageEnabled = false
 	a.monsterDamageNewAddr = 0
+	a.monsterStunAddr = 0
 	a.materialConsumeCaveAddr = 0
 	a.sigilMemoryHookAddr = 0
 	a.sigilMemoryCaveAddr = 0
@@ -2340,11 +2342,14 @@ var monsterPatchPoints = []monsterPatchPoint{
 		Hook:     true,
 	},
 	{
-		ID:       "monster_stun",
-		Name:     "怪物多倍昏厥条",
-		RVA:      0xB29128,
-		Original: []byte{0xC5, 0xFA, 0x58, 0x86, 0x60, 0x08, 0x00, 0x00},
-		Hook:     true,
+		ID:            "monster_stun",
+		Name:          "怪物多倍昏厥条",
+		RVA:           0xB228A8,
+		Pattern:       []byte{0xC5, 0xFA, 0x58, 0x86, 0x60, 0x00, 0x00, 0x00, 0xC5, 0xFA, 0x5D, 0x86, 0x64, 0x00, 0x00, 0x00, 0xC5, 0xFA, 0x11, 0x86, 0x60, 0x00, 0x00, 0x00},
+		PatternMask:   []bool{true, true, true, true, true, false, false, false, true, true, true, true, true, false, false, false, true, true, true, true, true, false, false, false},
+		PatternOffset: 0,
+		Original:      []byte{0xC5, 0xFA, 0x58, 0x86, 0x60, 0x08, 0x00, 0x00},
+		Hook:          true,
 	},
 	{
 		ID:       "overdrive_state",
@@ -2649,6 +2654,31 @@ func (a *App) MonsterEnhanceInject() (MonsterEnhanceResult, error) {
 	return a.MonsterEnhanceSetEnabled(true)
 }
 
+var monsterStunSuffix = []byte{0xC5, 0xFA, 0x5D, 0x86, 0x64, 0x08, 0x00, 0x00, 0xC5, 0xFA, 0x11, 0x86, 0x60, 0x08, 0x00, 0x00}
+
+func (a *App) resolveMonsterStunFromStableSuffix(point *monsterPatchPoint) (uintptr, error) {
+	mask := make([]bool, len(monsterStunSuffix))
+	for i := range mask {
+		mask[i] = true
+	}
+	match, err := a.scanPatternUnique(monsterStunSuffix, mask, point.Name+" AOB 后缀")
+	if err != nil {
+		return 0, err
+	}
+	if match < uintptr(len(point.Original)) {
+		return 0, fmt.Errorf("%s AOB 目标地址无效", point.Name)
+	}
+	target := match - uintptr(len(point.Original))
+	entry := make([]byte, len(point.Original))
+	if err := readProcessMemory(a.hProcess, target, unsafe.Pointer(&entry[0]), uintptr(len(entry))); err != nil {
+		return 0, fmt.Errorf("读取%s AOB 目标失败: %w", point.Name, err)
+	}
+	if !bytesEqual(entry, point.Original) && (len(entry) == 0 || entry[0] != 0xE9) {
+		return 0, fmt.Errorf("%s AOB 目标字节未知: %s", point.Name, bytesToHex(entry))
+	}
+	return target, nil
+}
+
 var monsterDamageNewPrefix = []byte{0x48, 0x89, 0x51, 0x18, 0x48, 0x89, 0x51, 0x10, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0x48, 0x89, 0x51, 0x18, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC}
 
 func (a *App) resolveMonsterDamageNewFromStablePrefix(point *monsterPatchPoint) (uintptr, error) {
@@ -2703,6 +2733,9 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	if len(point.Pattern) != len(point.PatternMask) {
 		return 0, fmt.Errorf("%s AOB pattern and mask length mismatch", point.Name)
 	}
+	if point.ID == "monster_stun" && a.monsterStunAddr != 0 {
+		return a.monsterStunAddr, nil
+	}
 	if point.ID == "monster_damage_new" && a.monsterDamageNewAddr != 0 {
 		return a.monsterDamageNewAddr, nil
 	}
@@ -2712,6 +2745,13 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	match, err := a.scanPatternUnique(point.Pattern, point.PatternMask, point.Name+" AOB")
 	if err != nil {
 		switch point.ID {
+		case "monster_stun":
+			target, suffixErr := a.resolveMonsterStunFromStableSuffix(point)
+			if suffixErr != nil {
+				return 0, errors.Join(err, suffixErr)
+			}
+			a.monsterStunAddr = target
+			return target, nil
 		case "monster_damage_new":
 			target, prefixErr := a.resolveMonsterDamageNewFromStablePrefix(point)
 			if prefixErr != nil {
@@ -2731,6 +2771,9 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 		}
 	}
 	target := match + point.PatternOffset
+	if point.ID == "monster_stun" {
+		a.monsterStunAddr = target
+	}
 	if point.ID == "monster_damage_new" {
 		a.monsterDamageNewAddr = target
 	}

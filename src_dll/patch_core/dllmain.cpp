@@ -111,6 +111,7 @@ static const char* kMonsterDamageNewSignature = "48 89 51 18 48 89 51 10 C3 CC C
 static constexpr lm_address_t kMonsterDamageNewSignatureOffset = 0x20;
 static const lm_byte_t kMonsterEnhanceCaveMarker[] = { 'G', 'B', 'F', 'R', 'M', 'H', '0', '3' };
 static const lm_byte_t kStunExpected[] = { 0xC5, 0xFA, 0x58, 0x86, 0x60, 0x08, 0x00, 0x00 };
+static const char* kStunSignature = "C5 FA 58 86 60 ?? ?? ?? C5 FA 5D 86 64 ?? ?? ?? C5 FA 11 86 60 ?? ?? ??";
 // v1.3.2+: damage value is finalized in [rsi+0xD4] before this cap check.
 static const lm_byte_t kMonsterDamageExpected[] = { 0x81, 0xBE, 0xD4, 0x00, 0x00, 0x00, 0x00, 0xE1, 0xF5, 0x05 };
 static const lm_byte_t kInventorySet45Expected[] = { 0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1 };
@@ -127,7 +128,7 @@ static const PatchPoint kMonsterPatches[] = {
     { "monster_hp", L"monster hp", 0x1F7472E, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
     { "monster_damage_new", L"monster damage new", 0x1F74700, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
     { "monster_damage", L"monster damage", 0x1FBDEB4, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
-    { "monster_stun", L"monster stun", 0xB29128, kStunExpected, sizeof(kStunExpected), nullptr, true },
+    { "monster_stun", L"monster stun", 0xB228A8, kStunExpected, sizeof(kStunExpected), nullptr, true },
     { "overdrive_state", L"overdrive state", 0x22CB316, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
     { "inventory_set_45", L"inventory set 45", 0x34F8F1, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
     { "purple_drain", L"purple bar drain", 0xA0379A, kPurpleExpected, sizeof(kPurpleExpected), kNop9, false },
@@ -934,6 +935,16 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
                 return false;
             }
             target = match + kMonsterDamageNewSignatureOffset;
+        }
+        else if (strcmp(point.id, "monster_stun") == 0)
+        {
+            lm_address_t match = LM_SigScan(kStunSignature, module.base, module.size);
+            if (match == LM_ADDRESS_BAD)
+            {
+                swprintf_s(message, messageSize, L"signature not found: monster stun");
+                return false;
+            }
+            target = match;
         }
         lm_byte_t current[16]{};
         if (point.size > sizeof(current) || LM_ReadMemory(target, current, point.size) != point.size)
