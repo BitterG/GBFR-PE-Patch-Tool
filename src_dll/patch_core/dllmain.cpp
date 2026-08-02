@@ -119,7 +119,8 @@ static const lm_byte_t kInventorySet45Expected[] = { 0x41, 0x01, 0x76, 0x04, 0x4
 static const lm_byte_t kPurpleExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x10, 0x0A, 0x00, 0x00 };
 static const lm_byte_t kBlueGrowExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x20, 0x07, 0x00, 0x00 };
 static const lm_byte_t kBlueDrainExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x70, 0x0A, 0x00, 0x00 };
-static const lm_byte_t kOverdriveExpected[] = { 0x8B, 0x46, 0x10, 0x83, 0xF8, 0x03, 0x0F, 0x84, 0xC7, 0x00, 0x00, 0x00 };
+static const lm_byte_t kOverdriveExpected[] = { 0x8B, 0x46, 0x10, 0x83, 0xF8, 0x03 };
+static const char* kOverdriveSignature = "8B 46 10 83 F8 03 0F 84 ?? ?? ?? ?? 83 F8 01 0F 84 ?? ?? ?? ??";
 static const lm_byte_t kNop9[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 
 static const PatchPoint kMonsterPatches[] = {
@@ -129,7 +130,7 @@ static const PatchPoint kMonsterPatches[] = {
     { "monster_damage_new", L"monster damage new", 0x1F74700, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
     { "monster_damage", L"monster damage", 0x1FBDEB4, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
     { "monster_stun", L"monster stun", 0xB228A8, kStunExpected, sizeof(kStunExpected), nullptr, true },
-    { "overdrive_state", L"overdrive state", 0x22CB316, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
+    { "overdrive_state", L"overdrive state", 0x22C5986, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
     { "inventory_set_45", L"inventory set 45", 0x34F8F1, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
     { "purple_drain", L"purple bar drain", 0xA0379A, kPurpleExpected, sizeof(kPurpleExpected), kNop9, false },
     { "blue_grow", L"blue bar grow", 0xA09AF1, kBlueGrowExpected, sizeof(kBlueGrowExpected), kNop9, false },
@@ -336,14 +337,14 @@ static void AppendTeamDamageFromRsiEdi(lm_byte_t* code, size_t& i, uint8_t damag
 static bool PatchDamageHook(lm_address_t target, wchar_t* message, size_t messageSize)
 {
     float scale = ReadScale();
-    lm_address_t cave = AllocNear(target, 128);
+    lm_address_t cave = AllocNear(target, 256);
     if (cave == LM_ADDRESS_BAD)
     {
         swprintf_s(message, messageSize, L"alloc near failed: monster hp");
         return false;
     }
 
-    lm_byte_t code[128]{};
+    lm_byte_t code[256]{};
     size_t i = 0;
     code[i++] = 0x41; code[i++] = 0x53;                                                             // push r11
     code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xEC; code[i++] = 0x10;                         // sub rsp,10
@@ -359,6 +360,7 @@ static bool PatchDamageHook(lm_address_t target, wchar_t* message, size_t messag
     code[i++] = 0x41; code[i++] = 0xBB; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov r11d,1
     size_t scaledOffset = i;
     code[i++] = 0x4C; code[i++] = 0x89; code[i++] = 0xDA;                                           // mov rdx,r11
+    AppendTeamDamageFromRcXEdxR8(code, i, 0);
     code[i++] = 0x41; code[i++] = 0x5B;                                                             // pop r11
     code[i++] = 0x48; code[i++] = 0x8B; code[i++] = 0x41; code[i++] = 0x10;                         // mov rax,[rcx+10]
     code[i++] = 0x45; code[i++] = 0x31; code[i++] = 0xC9;                                           // xor r9d,r9d
@@ -384,7 +386,7 @@ static bool PatchDamageHook(lm_address_t target, wchar_t* message, size_t messag
     int32_t relScale = static_cast<int32_t>(scaleDelta);
     memcpy(code + scaleDisp, &relScale, sizeof(relScale));
 
-    memcpy(code + 128 - sizeof(kMonsterEnhanceCaveMarker), kMonsterEnhanceCaveMarker, sizeof(kMonsterEnhanceCaveMarker));
+    memcpy(code + sizeof(code) - sizeof(kMonsterEnhanceCaveMarker), kMonsterEnhanceCaveMarker, sizeof(kMonsterEnhanceCaveMarker));
     if (LM_WriteMemory(cave, code, sizeof(code)) != sizeof(code))
     {
         swprintf_s(message, messageSize, L"cave write failed: monster hp");
@@ -942,6 +944,16 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
             if (match == LM_ADDRESS_BAD)
             {
                 swprintf_s(message, messageSize, L"signature not found: monster stun");
+                return false;
+            }
+            target = match;
+        }
+        else if (strcmp(point.id, "overdrive_state") == 0)
+        {
+            lm_address_t match = LM_SigScan(kOverdriveSignature, module.base, module.size);
+            if (match == LM_ADDRESS_BAD)
+            {
+                swprintf_s(message, messageSize, L"signature not found: overdrive state");
                 return false;
             }
             target = match;

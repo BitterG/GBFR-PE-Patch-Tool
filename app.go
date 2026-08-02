@@ -147,6 +147,7 @@ type App struct {
 	monsterDamageNewAddr       uintptr
 	monsterHPAddr              uintptr
 	monsterStunAddr            uintptr
+	overdriveStateAddr         uintptr
 	materialConsumeCaveAddr    uintptr
 	// runtimePatchMu serializes material consumption and inventory-set hooks,
 	// which both replace the same item-quantity instruction.
@@ -1249,6 +1250,7 @@ func (a *App) CharaDetach() {
 	a.monsterDamageEnabled = false
 	a.monsterDamageNewAddr = 0
 	a.monsterStunAddr = 0
+	a.overdriveStateAddr = 0
 	a.materialConsumeCaveAddr = 0
 	a.sigilMemoryHookAddr = 0
 	a.sigilMemoryCaveAddr = 0
@@ -2352,11 +2354,14 @@ var monsterPatchPoints = []monsterPatchPoint{
 		Hook:          true,
 	},
 	{
-		ID:       "overdrive_state",
-		Name:     "怪物 Overdrive 状态",
-		RVA:      0x22CB316,
-		Original: []byte{0x8B, 0x46, 0x10, 0x83, 0xF8, 0x03, 0x0F, 0x84, 0xC7, 0x00, 0x00, 0x00},
-		Hook:     true,
+		ID:            "overdrive_state",
+		Name:          "怪物 Overdrive 状态",
+		RVA:           0x22C5986,
+		Pattern:       []byte{0x8B, 0x46, 0x10, 0x83, 0xF8, 0x03, 0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, 0x83, 0xF8, 0x01, 0x0F, 0x84, 0x00, 0x00, 0x00, 0x00},
+		PatternMask:   []bool{true, true, true, true, true, true, true, true, false, false, false, false, true, true, true, true, true, false, false, false, false},
+		PatternOffset: 0,
+		Original:      []byte{0x8B, 0x46, 0x10, 0x83, 0xF8, 0x03},
+		Hook:          true,
 	},
 	{
 		ID:       "inventory_set_45",
@@ -2654,6 +2659,28 @@ func (a *App) MonsterEnhanceInject() (MonsterEnhanceResult, error) {
 	return a.MonsterEnhanceSetEnabled(true)
 }
 
+var overdriveStateSuffixPattern = []byte{0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, 0x83, 0xF8, 0x01, 0x0F, 0x84, 0x00, 0x00, 0x00, 0x00}
+var overdriveStateSuffixMask = []bool{true, true, false, false, false, false, true, true, true, true, true, false, false, false, false}
+
+func (a *App) resolveOverdriveStateFromStableSuffix(point *monsterPatchPoint) (uintptr, error) {
+	match, err := a.scanPatternUnique(overdriveStateSuffixPattern, overdriveStateSuffixMask, point.Name+" AOB 后缀")
+	if err != nil {
+		return 0, err
+	}
+	if match < uintptr(len(point.Original)) {
+		return 0, fmt.Errorf("%s AOB 目标地址无效", point.Name)
+	}
+	target := match - uintptr(len(point.Original))
+	entry := make([]byte, len(point.Original))
+	if err := readProcessMemory(a.hProcess, target, unsafe.Pointer(&entry[0]), uintptr(len(entry))); err != nil {
+		return 0, fmt.Errorf("读取%s AOB 目标失败: %w", point.Name, err)
+	}
+	if !bytesEqual(entry, point.Original) && (len(entry) == 0 || entry[0] != 0xE9) {
+		return 0, fmt.Errorf("%s AOB 目标字节未知: %s", point.Name, bytesToHex(entry))
+	}
+	return target, nil
+}
+
 var monsterStunSuffix = []byte{0xC5, 0xFA, 0x5D, 0x86, 0x64, 0x08, 0x00, 0x00, 0xC5, 0xFA, 0x11, 0x86, 0x60, 0x08, 0x00, 0x00}
 
 func (a *App) resolveMonsterStunFromStableSuffix(point *monsterPatchPoint) (uintptr, error) {
@@ -2733,6 +2760,9 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	if len(point.Pattern) != len(point.PatternMask) {
 		return 0, fmt.Errorf("%s AOB pattern and mask length mismatch", point.Name)
 	}
+	if point.ID == "overdrive_state" && a.overdriveStateAddr != 0 {
+		return a.overdriveStateAddr, nil
+	}
 	if point.ID == "monster_stun" && a.monsterStunAddr != 0 {
 		return a.monsterStunAddr, nil
 	}
@@ -2745,6 +2775,13 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	match, err := a.scanPatternUnique(point.Pattern, point.PatternMask, point.Name+" AOB")
 	if err != nil {
 		switch point.ID {
+		case "overdrive_state":
+			target, suffixErr := a.resolveOverdriveStateFromStableSuffix(point)
+			if suffixErr != nil {
+				return 0, errors.Join(err, suffixErr)
+			}
+			a.overdriveStateAddr = target
+			return target, nil
 		case "monster_stun":
 			target, suffixErr := a.resolveMonsterStunFromStableSuffix(point)
 			if suffixErr != nil {
@@ -2771,6 +2808,9 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 		}
 	}
 	target := match + point.PatternOffset
+	if point.ID == "overdrive_state" {
+		a.overdriveStateAddr = target
+	}
 	if point.ID == "monster_stun" {
 		a.monsterStunAddr = target
 	}
