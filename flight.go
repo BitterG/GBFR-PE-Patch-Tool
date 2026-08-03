@@ -13,7 +13,6 @@ import (
 const (
 	flightTick            = 16 * time.Millisecond
 	flightMinimumSpeed    = float32(0.1)
-	flightGravityRVA      = uintptr(0x39DD964)
 	flightMaximumSpeed    = float32(1000)
 	flightDefaultSpeed    = float32(8)
 	flightVirtualKeyW     = 0x57
@@ -85,7 +84,11 @@ func (a *App) FlightSetEnabled(enabled bool, speed float32) (FlightStatus, error
 }
 
 func (a *App) setFlightGravityDisabled(disabled bool) error {
-	addr := a.moduleBase + flightGravityRVA
+	_, _, layout, err := a.playerPositionAddressesForLayout()
+	if err != nil {
+		return fmt.Errorf("定位飞行模式游戏布局失败: %w", err)
+	}
+	addr := a.moduleBase + layout.gravityRVA
 	current := make([]byte, 8)
 	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
 		return fmt.Errorf("读取飞行重力指令失败: %w", err)

@@ -8,8 +8,6 @@ import (
 )
 
 const (
-	playerPositionSignatureRVA    = uintptr(0x22CECA0)
-	playerPositionSlotTableRVA    = uintptr(0x7036860)
 	playerPositionSignatureSize   = 69
 	playerPositionTransformRoot   = uintptr(0x28)
 	playerPositionTransformNode   = uintptr(0x08)
@@ -18,6 +16,18 @@ const (
 	playerPositionZOffset         = uintptr(0xD0)
 	playerPositionMaximumAbsValue = float32(10_000_000)
 )
+
+type playerPositionLayout struct {
+	version      string
+	signatureRVA uintptr
+	slotTableRVA uintptr
+	gravityRVA   uintptr
+}
+
+var playerPositionLayouts = [...]playerPositionLayout{
+	{version: "2.0.2", signatureRVA: 0x22CECA0, slotTableRVA: 0x7036860, gravityRVA: 0x39DD964},
+	{version: "2.0.3", signatureRVA: 0x22C9310, slotTableRVA: 0x7033820, gravityRVA: 0x39D8E24},
+}
 
 var playerPositionSignature = []byte{
 	0x48, 0x8B, 0, 0, 0, 0, 0, 0x48, 0x85, 0, 0x74, 0, 0x48, 0x8B, 0, 0xFF,
@@ -42,7 +52,7 @@ type PlayerPosition struct {
 	Address uint64  `json:"address"`
 }
 
-// PlayerPositionGet reads the primary player's world position from the verified 2.0.2 runtime layout.
+// PlayerPositionGet reads the primary player's world position from a verified runtime layout.
 func (a *App) PlayerPositionGet() (PlayerPosition, error) {
 	player, transformNode, err := a.playerPositionAddresses()
 	if err != nil {
@@ -98,38 +108,52 @@ func (a *App) PlayerPositionSet(x, y, z float32) (PlayerPosition, error) {
 }
 
 func (a *App) playerPositionAddresses() (uintptr, uintptr, error) {
+	player, transformNode, _, err := a.playerPositionAddressesForLayout()
+	return player, transformNode, err
+}
+
+func (a *App) playerPositionAddressesForLayout() (uintptr, uintptr, playerPositionLayout, error) {
 	if a.hProcess == 0 || a.moduleBase == 0 {
-		return 0, 0, fmt.Errorf("未连接游戏进程")
+		return 0, 0, playerPositionLayout{}, fmt.Errorf("未连接游戏进程")
 	}
 
-	signatureAddress := a.moduleBase + playerPositionSignatureRVA
-	signature := make([]byte, playerPositionSignatureSize)
-	if err := readProcessMemory(a.hProcess, signatureAddress, unsafe.Pointer(&signature[0]), uintptr(len(signature))); err != nil {
-		return 0, 0, fmt.Errorf("读取玩家坐标签名失败: %w", err)
+	var matched playerPositionLayout
+	for _, layout := range playerPositionLayouts {
+		signatureAddress := a.moduleBase + layout.signatureRVA
+		candidate := make([]byte, playerPositionSignatureSize)
+		if err := readProcessMemory(a.hProcess, signatureAddress, unsafe.Pointer(&candidate[0]), uintptr(len(candidate))); err != nil {
+			continue
+		}
+		if !matchPattern(candidate, playerPositionSignature, playerPositionSignatureMask) {
+			continue
+		}
+		displacement := int64(int32(binary.LittleEndian.Uint32(candidate[3:7])))
+		resolved := int64(signatureAddress) + 7 + displacement
+		if resolved <= 0 || uintptr(resolved) != a.moduleBase+layout.slotTableRVA {
+			continue
+		}
+		if matched.version != "" {
+			return 0, 0, playerPositionLayout{}, fmt.Errorf("玩家坐标签名匹配多个游戏布局")
+		}
+		matched = layout
 	}
-	if !matchPattern(signature, playerPositionSignature, playerPositionSignatureMask) {
-		return 0, 0, fmt.Errorf("玩家坐标仅支持游戏 2.0.2，当前签名不匹配")
+	if matched.version == "" {
+		return 0, 0, playerPositionLayout{}, fmt.Errorf("玩家坐标签名不匹配，暂不支持当前游戏版本")
 	}
-
-	displacement := int64(int32(binary.LittleEndian.Uint32(signature[3:7])))
-	slotTable := uintptr(int64(signatureAddress) + 7 + displacement)
-	if slotTable != a.moduleBase+playerPositionSlotTableRVA {
-		return 0, 0, fmt.Errorf("玩家坐标根表校验失败")
-	}
-
+	slotTable := a.moduleBase + matched.slotTableRVA
 	player, err := a.readPlayerPositionPointer(slotTable)
 	if err != nil || player == 0 {
-		return 0, 0, fmt.Errorf("读取玩家实体失败: %w", pointerReadError(err))
+		return 0, 0, playerPositionLayout{}, fmt.Errorf("读取玩家实体失败: %w", pointerReadError(err))
 	}
 	transformRoot, err := a.readPlayerPositionPointer(player + playerPositionTransformRoot)
 	if err != nil || transformRoot == 0 {
-		return 0, 0, fmt.Errorf("读取玩家坐标根节点失败: %w", pointerReadError(err))
+		return 0, 0, playerPositionLayout{}, fmt.Errorf("读取玩家坐标根节点失败: %w", pointerReadError(err))
 	}
 	transformNode, err := a.readPlayerPositionPointer(transformRoot + playerPositionTransformNode)
 	if err != nil || transformNode == 0 {
-		return 0, 0, fmt.Errorf("读取玩家坐标节点失败: %w", pointerReadError(err))
+		return 0, 0, playerPositionLayout{}, fmt.Errorf("读取玩家坐标节点失败: %w", pointerReadError(err))
 	}
-	return player, transformNode, nil
+	return player, transformNode, matched, nil
 }
 
 func validatePlayerPosition(x, y, z float32) error {
