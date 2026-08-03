@@ -28,7 +28,7 @@
     },
     "memory": {
       "level":"Lv {level}","noSelection":"No selection","status":{"ready":"Reader is ready","waiting":"Waiting for a wrightstone selection","read":"Current wrightstone read","enabled":"Reader enabled","disabled":"Reader disabled","selectBeforeWriting":"Select a wrightstone in the game first","written":"Wrightstone written"},
-      "warning":{"closeReader":"Close the save editor before enabling the reader.","backup":"This directly modifies game memory. Confirm that you backed up your save before continuing."},
+      "warning":{"closeReader":"Open in Backpack > wrightstone Interface. After writing is complete (the reader must be closed after opening), immediately click \"Close Reader\". Do not perform any unnecessary operations during this period, otherwise the game will crash.","backup":"This directly modifies game memory. Confirm that you backed up your save before continuing."},
       "connection":{"enabled":"Reader enabled","ready":"Reader ready","disconnected":"Disconnected","captured":"Current wrightstone captured","select":"Select a wrightstone in the game","hint":"Enable the reader, then select a wrightstone in the game."},
       "enableReader":"Enable reader","disableReader":"Disable reader","common":{"refresh":"Refresh","reconnect":"Reconnect","revert":"Revert","notRead":"Not read","changes":"{count} changes","unwritten":" (unwritten)","writing":"Writing…","write":"Write"},"editor":{"title":"Wrightstone editor","slot":{"first":"First trait","second":"Second trait","third":"Third trait"},"selectTrait":"Select a trait"}
     }

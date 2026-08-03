@@ -28,7 +28,7 @@
     },
     "memory": {
       "level":"Lv {level}","noSelection":"无选择","status":{"ready":"读取器已准备就绪","waiting":"等待选择祝福","read":"已读取当前祝福","enabled":"读取器已开启","disabled":"读取器已关闭","selectBeforeWriting":"请先在游戏中选择祝福","written":"祝福已写入"},
-      "warning":{"closeReader":"请在开启前关闭存档编辑器。","backup":"此操作会直接修改游戏内存。请确认已备份存档后继续。"},
+      "warning":{"closeReader":"在持有物品>祝福界面后开启，写入完毕后（开启后必须关闭）立即点击“关闭读取器”，期间不要插入多余操作，否则会导致游戏崩溃。","backup":"此操作会直接修改游戏内存。请确认已备份存档后继续。"},
       "connection":{"enabled":"读取已开启","ready":"读取器就绪","disconnected":"未连接","captured":"已捕获当前祝福","select":"请在游戏中选择祝福","hint":"开启读取器后，在游戏中选择祝福。"},
       "enableReader":"开启读取器","disableReader":"关闭读取器","common":{"refresh":"刷新","reconnect":"重新连接","revert":"还原","notRead":"未读取","changes":"已更改 {count} 项","unwritten":"（未写入）","writing":"写入中…","write":"写入"},"editor":{"title":"祝福编辑","slot":{"first":"第一特性","second":"第二特性","third":"第三特性"},"selectTrait":"选择特性"}
     }

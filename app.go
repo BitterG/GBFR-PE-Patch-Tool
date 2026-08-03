@@ -26,7 +26,7 @@ const (
 	steamAppID  = "881020"
 	gameExeName = "granblue_fantasy_relink.exe"
 	gameFolder  = "Granblue Fantasy Relink"
-	appVersion  = "v1.9.7"
+	appVersion  = "v1.9.8"
 	repoOwner   = "BitterG"
 	repoName    = "GBFR-PE-Patch-Tool"
 )
@@ -971,8 +971,8 @@ type potionDef struct {
 }
 
 var potionDefs = []potionDef{
-	{ID: "revive", Name: "复活药水", RVA: 0x071B69B8, Offsets: []uintptr{0x28, 0x8, 0x8, 0x18, 0x38}},
-	{ID: "group_chat", Name: "群疗药水", RVA: 0x071B69B8, Offsets: []uintptr{0x28, 0x8, 0x8, 0x18, 0x18}},
+	{ID: "revive", Name: "复活药水", RVA: 0x0701B160, Offsets: []uintptr{0x2A8, 0x8, 0x38, 0xCC4}},
+	{ID: "group_chat", Name: "群疗药水", RVA: 0x0701B100, Offsets: []uintptr{0x1C8, 0x710, 0x38, 0xCA4}},
 }
 
 // CharaAttach finds the game process, opens a handle, reads module base and manager pointer.
