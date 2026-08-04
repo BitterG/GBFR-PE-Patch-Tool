@@ -87,6 +87,7 @@ C:\Users\YOUR_NAME\AppData\Local\GBFR\Saved\SaveGames\
 ### Monster Enhancement Notes
 
 - Entering `10` for **Monster HP Multiplier** or **Crocodile HP Multiplier** produces the equivalent of `10× HP`.
+- **OD Gauge Rate** — entering `10` speeds OD gauge accumulation to `10×` (a gain of 100 becomes 1000); `0.1` slows it to `1/10` (100 → 10); `1` disables scaling. Growth and the in-OD drain are scaled together.
 - **Monster Overdrive State** supports `1` for a full red gauge, `4` for a full yellow gauge, and **Auto OD**.
 - **Lock** continuously writes the selected state; **Apply** writes it once, then restores the original instruction.
 - **Auto OD** writes a full yellow gauge once when the monster is not in the red state, and does not repeat while it is red.

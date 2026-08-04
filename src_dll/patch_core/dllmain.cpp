@@ -121,6 +121,16 @@ static const lm_byte_t kBlueGrowExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x2
 static const lm_byte_t kBlueDrainExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x70, 0x0A, 0x00, 0x00 };
 static const lm_byte_t kOverdriveExpected[] = { 0x8B, 0x46, 0x10, 0x83, 0xF8, 0x03 };
 static const char* kOverdriveSignature = "8B 46 10 83 F8 03 0F 84 ?? ?? ?? ?? 83 F8 01 0F 84 ?? ?? ?? ??";
+// OD gauge accumulation method (vtable+72 of the OD component):
+//   cmp byte ptr [rcx+50h], 0 ; enabled flag
+//   jz  ret
+//   add rdx, [rcx+18h]        ; [rcx+18h] += damage-scaled delta (signed)
+//   mov rax, -1
+//   cmovnb rax, rdx
+//   mov [rcx+18h], rax
+//   ret
+static const lm_byte_t kOdRateExpected[] = { 0x80, 0x79, 0x50, 0x00, 0x74, 0x13, 0x48, 0x03, 0x51, 0x18 };
+static const char* kOdRateSignature = "80 79 50 00 74 13 48 03 51 18";
 static const lm_byte_t kNop9[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 
 static const PatchPoint kMonsterPatches[] = {
@@ -131,6 +141,7 @@ static const PatchPoint kMonsterPatches[] = {
     { "monster_damage", L"monster damage", 0x1FBDEB4, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
     { "monster_stun", L"monster stun", 0xB228A8, kStunExpected, sizeof(kStunExpected), nullptr, true },
     { "overdrive_state", L"overdrive state", 0x22C5986, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
+    { "od_rate", L"od gauge rate", 0x22C5E50, kOdRateExpected, sizeof(kOdRateExpected), nullptr, true },
     { "inventory_set_45", L"inventory set 45", 0x34F8F1, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
     { "purple_drain", L"purple bar drain", 0xA0379A, kPurpleExpected, sizeof(kPurpleExpected), kNop9, false },
     { "blue_grow", L"blue bar grow", 0xA09AF1, kBlueGrowExpected, sizeof(kBlueGrowExpected), kNop9, false },
@@ -224,7 +235,7 @@ static float ReadScale()
     char* space = strchr(patchId, ' ');
     if (!space) return 1.0f;
     float scale = static_cast<float>(atof(space + 1));
-    if (scale <= 0.0f || scale > 1000.0f) return 1.0f;
+    if (scale <= 0.0f || scale > 9999.0f) return 1.0f;
     return scale;
 }
 
@@ -888,6 +899,69 @@ static bool ShouldApply(const char* requestedId, const PatchPoint& point)
     return strcmp(requestedId, "all") == 0 || PatchIdEquals(requestedId, point.id);
 }
 
+static bool PatchOdRateHook(lm_address_t target, wchar_t* message, size_t messageSize)
+{
+    float scale = ReadScale(); // scale = 1 / user N; N < 1 speeds the gauge up.
+    lm_address_t cave = AllocNear(target, 96);
+    if (cave == LM_ADDRESS_BAD)
+    {
+        swprintf_s(message, messageSize, L"alloc near failed: od gauge rate");
+        return false;
+    }
+
+    lm_byte_t code[64]{};
+    size_t i = 0;
+    code[i++] = 0x80; code[i++] = 0x79; code[i++] = 0x50; code[i++] = 0x00; // cmp byte ptr [rcx+50h],0
+    size_t jzDisp = i; code[i++] = 0x74; code[i++] = 0x00;                  // jz ret
+    code[i++] = 0xF3; code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xC2; // cvtsi2ss xmm0,rdx
+    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x05; // mulss xmm0,[rip+disp32]
+    size_t scaleDisp = i; i += 4;
+    code[i++] = 0xF3; code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xD0; // cvttss2si rdx,xmm0 (ModRM D0 = reg:rdx, rm:xmm0)
+    code[i++] = 0x48; code[i++] = 0x03; code[i++] = 0x51; code[i++] = 0x18; // add rdx,[rcx+18h]
+    code[i++] = 0x48; code[i++] = 0xC7; code[i++] = 0xC0; code[i++] = 0xFF; code[i++] = 0xFF; code[i++] = 0xFF; code[i++] = 0xFF; // mov rax,-1
+    code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x43; code[i++] = 0xC2; // cmovnb rax,rdx
+    code[i++] = 0x48; code[i++] = 0x89; code[i++] = 0x41; code[i++] = 0x18; // mov [rcx+18h],rax
+    size_t retOffset = i;
+    code[i++] = 0xC3;                                                       // ret
+    size_t scaleOffset = i;
+    memcpy(code + i, &scale, sizeof(scale)); i += sizeof(scale);
+
+    code[jzDisp + 1] = static_cast<lm_byte_t>(retOffset - (jzDisp + 2));
+
+    int64_t scaleDelta = static_cast<int64_t>(cave + scaleOffset) - static_cast<int64_t>(cave + scaleDisp + 4);
+    if (scaleDelta < INT32_MIN || scaleDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"scale jump out of range: od gauge rate");
+        return false;
+    }
+    int32_t relScale = static_cast<int32_t>(scaleDelta);
+    memcpy(code + scaleDisp, &relScale, sizeof(relScale));
+
+    if (LM_WriteMemory(cave, code, i) != i)
+    {
+        swprintf_s(message, messageSize, L"cave write failed: od gauge rate");
+        return false;
+    }
+
+    // Overwrite the first 6 bytes (cmp+jz) with a 5-byte jmp plus one NOP.
+    lm_byte_t jmp[sizeof(kOdRateExpected)]{ 0xE9 };
+    memset(jmp + 5, 0x90, sizeof(jmp) - 5);
+    int64_t hookDelta = static_cast<int64_t>(cave) - static_cast<int64_t>(target + 5);
+    if (hookDelta < INT32_MIN || hookDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"hook jump out of range: od gauge rate");
+        return false;
+    }
+    int32_t rel = static_cast<int32_t>(hookDelta);
+    memcpy(jmp + 1, &rel, sizeof(rel));
+    if (!PatchBytes(target, jmp, sizeof(jmp)))
+    {
+        swprintf_s(message, messageSize, L"hook write failed: od gauge rate");
+        return false;
+    }
+    return true;
+}
+
 static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
 {
     char patchId[64]{};
@@ -958,6 +1032,14 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
             }
             target = match;
         }
+        else if (strcmp(point.id, "od_rate") == 0)
+        {
+            // Resolve by fixed RVA instead of LM_SigScan: scanning the whole
+            // 136 MB module can fault on non-readable pages (WER shows
+            // c0000005 inside libmem's LM_DataScan). The byte check below
+            // still guards against a wrong version.
+            target = module.base + point.rva;
+        }
         lm_byte_t current[16]{};
         if (point.size > sizeof(current) || LM_ReadMemory(target, current, point.size) != point.size)
         {
@@ -999,6 +1081,10 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
             else if (strcmp(point.id, "overdrive_state") == 0)
             {
                 if (!PatchOverdriveHook(target, message, messageSize)) return false;
+            }
+            else if (strcmp(point.id, "od_rate") == 0)
+            {
+                if (!PatchOdRateHook(target, message, messageSize)) return false;
             }
             else if (strcmp(point.id, "inventory_set_45") == 0)
             {

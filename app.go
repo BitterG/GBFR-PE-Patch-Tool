@@ -26,7 +26,7 @@ const (
 	steamAppID  = "881020"
 	gameExeName = "granblue_fantasy_relink.exe"
 	gameFolder  = "Granblue Fantasy Relink"
-	appVersion  = "v1.9.8"
+	appVersion  = "v1.9.9"
 	repoOwner   = "BitterG"
 	repoName    = "GBFR-PE-Patch-Tool"
 )
@@ -148,6 +148,7 @@ type App struct {
 	monsterHPAddr              uintptr
 	monsterStunAddr            uintptr
 	overdriveStateAddr         uintptr
+	odRateAddr                 uintptr
 	materialConsumeCaveAddr    uintptr
 	// runtimePatchMu serializes material consumption and inventory-set hooks,
 	// which both replace the same item-quantity instruction.
@@ -1251,6 +1252,7 @@ func (a *App) CharaDetach() {
 	a.monsterDamageNewAddr = 0
 	a.monsterStunAddr = 0
 	a.overdriveStateAddr = 0
+	a.odRateAddr = 0
 	a.materialConsumeCaveAddr = 0
 	a.sigilMemoryHookAddr = 0
 	a.sigilMemoryCaveAddr = 0
@@ -2364,6 +2366,16 @@ var monsterPatchPoints = []monsterPatchPoint{
 		Hook:          true,
 	},
 	{
+		ID:            "od_rate",
+		Name:          "OD条变化率",
+		RVA:           0x22C5E50,
+		Pattern:       []byte{0x80, 0x79, 0x50, 0x00, 0x74, 0x13, 0x48, 0x03, 0x51, 0x18},
+		PatternMask:   []bool{true, true, true, true, true, true, true, true, true, true},
+		PatternOffset: 0,
+		Original:      []byte{0x80, 0x79, 0x50, 0x00, 0x74, 0x13, 0x48, 0x03, 0x51, 0x18},
+		Hook:          true,
+	},
+	{
 		ID:       "inventory_set_45",
 		Name:     "设置背包物品数量为 45",
 		RVA:      0x34F8F1,
@@ -2592,6 +2604,8 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 			command = fmt.Sprintf("%s %d", pointID, int(hpMultiplier))
 		} else if point != nil && needsMonsterValue(point.ID) {
 			commandValue := hpMultiplier
+			// monster_hp / monster_stun: UI 输入 N = 等效 N 倍（传给 DLL 的是 1/N 的缩放系数）。
+			// od_rate: UI 输入 N 直接作为缩放系数（10 = 放大10倍，0.1 = 缩小10倍）。
 			if point.ID == "monster_hp" || point.ID == "monster_stun" {
 				commandValue = 1 / hpMultiplier
 			}
@@ -2683,6 +2697,33 @@ func (a *App) resolveOverdriveStateFromStableSuffix(point *monsterPatchPoint) (u
 
 var monsterStunSuffix = []byte{0xC5, 0xFA, 0x5D, 0x86, 0x64, 0x08, 0x00, 0x00, 0xC5, 0xFA, 0x11, 0x86, 0x60, 0x08, 0x00, 0x00}
 
+// od_rate suffix: stable bytes at hook point + 10 (the add rdx,[rcx+18h] instruction is
+// consumed by the hook; everything after it stays untouched, even while the hook is active).
+var odRateSuffixPattern = []byte{0x48, 0xC7, 0xC0, 0xFF, 0xFF, 0xFF, 0xFF, 0x48, 0x0F, 0x43, 0xC2, 0x48, 0x89, 0x41, 0x18, 0xC3}
+
+func (a *App) resolveOdRateFromStableSuffix(point *monsterPatchPoint) (uintptr, error) {
+	mask := make([]bool, len(odRateSuffixPattern))
+	for i := range mask {
+		mask[i] = true
+	}
+	match, err := a.scanPatternUnique(odRateSuffixPattern, mask, point.Name+" AOB 后缀")
+	if err != nil {
+		return 0, err
+	}
+	if match < uintptr(len(point.Original)) {
+		return 0, fmt.Errorf("%s AOB 目标地址无效", point.Name)
+	}
+	target := match - uintptr(len(point.Original))
+	entry := make([]byte, len(point.Original))
+	if err := readProcessMemory(a.hProcess, target, unsafe.Pointer(&entry[0]), uintptr(len(entry))); err != nil {
+		return 0, fmt.Errorf("读取%s AOB 目标失败: %w", point.Name, err)
+	}
+	if !bytesEqual(entry, point.Original) && (len(entry) == 0 || entry[0] != 0xE9) {
+		return 0, fmt.Errorf("%s AOB 目标字节未知: %s", point.Name, bytesToHex(entry))
+	}
+	return target, nil
+}
+
 func (a *App) resolveMonsterStunFromStableSuffix(point *monsterPatchPoint) (uintptr, error) {
 	mask := make([]bool, len(monsterStunSuffix))
 	for i := range mask {
@@ -2772,6 +2813,30 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	if point.ID == "monster_hp" && a.monsterHPAddr != 0 {
 		return a.monsterHPAddr, nil
 	}
+	if point.ID == "od_rate" && a.odRateAddr != 0 {
+		return a.odRateAddr, nil
+	}
+	if point.ID == "od_rate" {
+		// Resolve by fixed RVA first and validate the bytes; only fall back
+		// to the suffix scan if the RVA looks wrong. This avoids the
+		// full-module AOB scan for this point (the injected DLL resolves it
+		// the same way).
+		target := a.moduleBase + point.RVA
+		entry := make([]byte, len(point.Original))
+		if err := readProcessMemory(a.hProcess, target, unsafe.Pointer(&entry[0]), uintptr(len(entry))); err != nil {
+			return 0, fmt.Errorf("读取%s失败: %w", point.Name, err)
+		}
+		if bytesEqual(entry, point.Original) || (len(entry) > 0 && entry[0] == 0xE9) {
+			a.odRateAddr = target
+			return target, nil
+		}
+		target, suffixErr := a.resolveOdRateFromStableSuffix(point)
+		if suffixErr != nil {
+			return 0, errors.Join(fmt.Errorf("%s RVA 字节未知: %s", point.Name, bytesToHex(entry)), suffixErr)
+		}
+		a.odRateAddr = target
+		return target, nil
+	}
 	match, err := a.scanPatternUnique(point.Pattern, point.PatternMask, point.Name+" AOB")
 	if err != nil {
 		switch point.ID {
@@ -2788,6 +2853,13 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 				return 0, errors.Join(err, suffixErr)
 			}
 			a.monsterStunAddr = target
+			return target, nil
+		case "od_rate":
+			target, suffixErr := a.resolveOdRateFromStableSuffix(point)
+			if suffixErr != nil {
+				return 0, errors.Join(err, suffixErr)
+			}
+			a.odRateAddr = target
 			return target, nil
 		case "monster_damage_new":
 			target, prefixErr := a.resolveMonsterDamageNewFromStablePrefix(point)
@@ -2813,6 +2885,9 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	}
 	if point.ID == "monster_stun" {
 		a.monsterStunAddr = target
+	}
+	if point.ID == "od_rate" {
+		a.odRateAddr = target
 	}
 	if point.ID == "monster_damage_new" {
 		a.monsterDamageNewAddr = target
@@ -3010,7 +3085,7 @@ func isMonsterPatchBytesAtRVA(rva uintptr, data []byte) bool {
 }
 
 func needsMonsterValue(id string) bool {
-	return id == "monster_hp" || id == "monster_stun" || id == "monster_damage" || id == "monster_damage_new" || id == "overdrive_state"
+	return id == "monster_hp" || id == "monster_stun" || id == "monster_damage" || id == "monster_damage_new" || id == "overdrive_state" || id == "od_rate"
 }
 
 func findMonsterPatchPoint(id string) *monsterPatchPoint {
