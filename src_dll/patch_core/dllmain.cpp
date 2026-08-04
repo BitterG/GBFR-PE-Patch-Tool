@@ -116,6 +116,12 @@ static const lm_byte_t kStunExpected[] = { 0xC5, 0xFA, 0x58, 0x86, 0x60, 0x08, 0
 static const char* kStunSignature = "C5 FA 58 86 60 ?? ?? ?? C5 FA 5D 86 64 ?? ?? ?? C5 FA 11 86 60 ?? ?? ??";
 // v1.3.2+: damage value is finalized in [rsi+0xD4] before this cap check.
 static const lm_byte_t kMonsterDamageExpected[] = { 0x81, 0xBE, 0xD4, 0x00, 0x00, 0x00, 0x00, 0xE1, 0xF5, 0x05 };
+// v2.0.2+: the final damage-settle point moved to RVA 0x1FB77EE
+//   mov eax,[rsi+D4]      ; 0x1FB77E8
+//   cmp eax,05F5E100      ; 0x1FB77EE  <-- hook here (eax already holds final damage)
+//   jb  0x1FB7804         ; 0x1FB77F3
+// Party-wide "defense multiplier": divide eax by the multiplier when r14 is a player.
+static const lm_byte_t kDefenseMultiplierExpected[] = { 0x3D, 0x00, 0xE1, 0xF5, 0x05 };
 static const lm_byte_t kInventorySet45Expected[] = { 0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1 };
 
 static const lm_byte_t kPurpleExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x10, 0x0A, 0x00, 0x00 };
@@ -140,6 +146,7 @@ static const PatchPoint kMonsterPatches[] = {
     { "link_time_disable", L"disable link time", 0x187228, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
     { "monster_hp", L"monster hp", 0x1F7472E, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
     { "monster_damage_new", L"monster damage new", 0x1F74700, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
+    { "defense_multiplier", L"defense multiplier", 0x1FB77EE, kDefenseMultiplierExpected, sizeof(kDefenseMultiplierExpected), nullptr, true },
     { "monster_damage", L"monster damage", 0x1FBDEB4, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
     { "monster_stun", L"monster stun", 0xB228A8, kStunExpected, sizeof(kStunExpected), nullptr, true },
     { "overdrive_state", L"overdrive state", 0x22C5986, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
@@ -247,7 +254,7 @@ static void ConfigurePlayerDamage()
 
     char patchId[64]{};
     if (!ReadPatchId(patchId, sizeof(patchId))) return;
-    if (!PatchIdEquals(patchId, "monster_damage") && !PatchIdEquals(patchId, "monster_damage_new")) return;
+    if (!PatchIdEquals(patchId, "monster_damage") && !PatchIdEquals(patchId, "monster_damage_new") && !PatchIdEquals(patchId, "defense_multiplier")) return;
 
     char* space = strchr(patchId, ' ');
     float scale = space ? static_cast<float>(atof(space + 1)) : 0.0f;
@@ -422,14 +429,12 @@ static bool InstallPlayerPointerHook(const lm_module_t& module, wchar_t* message
 {
     if (g_playerPointerHookInstalled) return true;
 
-    lm_address_t match = LM_SigScan("FF 90 ?? ?? 00 00 ?? ?? ?? ?? ?? ?? ?? ?? 8B ?? ?? ?? 00 00 48 81 C1 ?? ?? 00 00 FF ?? ?? ?? 00 00 ?? 39", module.base, module.size);
-    if (match == LM_ADDRESS_BAD)
-    {
-        swprintf_s(message, messageSize, L"player pointer signature not found");
-        return false;
-    }
-
-    lm_address_t target = match + 0x14;
+    // Resolve the permanent player-pointer capture point by fixed RVA instead
+    // of LM_SigScan (scanning the 136 MB module can fault on unreadable pages
+    // and crash the game on re-injection). Verified against the current exe:
+    // RVA 0x267DCA: call [rax+0xA0]; ... mov rcx,[r14+10]; mov rax,[rcx+0x150];
+    // RVA 0x267DDE: add rcx,0x150  <-- hook here, capture rcx (player object)
+    lm_address_t target = module.base + 0x267DDE;
     lm_byte_t original[7]{};
     if (LM_ReadMemory(target, original, sizeof(original)) != sizeof(original))
     {
@@ -444,7 +449,7 @@ static bool InstallPlayerPointerHook(const lm_module_t& module, wchar_t* message
     }
     if (original[0] != 0x48 || original[1] != 0x81 || original[2] != 0xC1)
     {
-        swprintf_s(message, messageSize, L"unexpected player pointer instruction");
+        swprintf_s(message, messageSize, L"unexpected player pointer instruction at +%llX", static_cast<unsigned long long>(target - module.base));
         return false;
     }
 
@@ -542,17 +547,26 @@ static bool PatchMonsterDamageNewHook(lm_address_t target, wchar_t* message, siz
     }
     code[i++] = 0xEB; size_t jmpRestore = i++;                                                      // jmp restore
     size_t scaleOffset = i;
-    // True damage arrives in R13: the caller stores this hit's damage in R13
-    // (callee-saved, still intact on entry). 13/13 runtime samples verified
-    // R13 == reverse-derived [rcx+10]-rdx, so scale it directly instead of
-    // deriving it from hp deltas (deltas are unreliable across multi-hit
-    // mixed damage and can overflow negative, killing the player).
+    // Respect the game's own lethal/1hp-protection writes: when the game has
+    // already decided the new hp is 0 (death) or 1 (forced 1hp survive), scale
+    // nothing and write the game's value back unchanged. Without this, scaling
+    // a clamped-to-1 hit would zero the hp and kill a player the game meant to
+    // keep alive.
+    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xFA; code[i++] = 0x01;                         // cmp rdx,1
+    code[i++] = 0x76; size_t jbeEdgeRestore = i++;                                                 // jbe restore (0 or 1: game edge value)
     code[i++] = 0x4C; code[i++] = 0x8B; code[i++] = 0x49; code[i++] = 0x10;                         // mov r9,[rcx+10]      ; old hp
     code[i++] = 0x49; code[i++] = 0x39; code[i++] = 0xD1;                                           // cmp r9,rdx
     code[i++] = 0x72; size_t jbHealRestore = i++;                                                   // jb restore (healing)
     code[i++] = 0x4D; code[i++] = 0x89; code[i++] = 0xEB;                                           // mov r11,r13          ; true damage from caller
     code[i++] = 0x4D; code[i++] = 0x85; code[i++] = 0xDB;                                           // test r11,r11
-    code[i++] = 0x7E; size_t jleNoDamageRestore = i++;                                              // jle restore (non-damage)
+    code[i++] = 0x7F; size_t jgUseR13 = i++;                                                        // jg use_r13
+    // R13<=0 (environmental damage like lava, DoT: caller does not set r13):
+    // fall back to reverse-deriving dmg = old hp - rdx; linear ticks make this exact.
+    code[i++] = 0x4D; code[i++] = 0x89; code[i++] = 0xCB;                                           // mov r11,r9
+    code[i++] = 0x49; code[i++] = 0x29; code[i++] = 0xD3;                                           // sub r11,rdx
+    code[i++] = 0x4D; code[i++] = 0x85; code[i++] = 0xDB;                                           // test r11,r11
+    code[i++] = 0x7E; size_t jleNoDamageRestore = i++;                                              // jle restore (no damage)
+    size_t useR13Offset = i;
     code[i++] = 0xF3; code[i++] = 0x49; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xC3;       // cvtsi2ss xmm0,r11
     code[i++] = 0xF3; code[i++] = 0x41; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x42; code[i++] = 0x08; // mulss xmm0,[r10+8] ; * scale
     code[i++] = 0xF3; code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xC0;       // cvttss2si rax,xmm0
@@ -561,8 +575,12 @@ static bool PatchMonsterDamageNewHook(lm_address_t target, wchar_t* message, siz
     code[i++] = 0x48; code[i++] = 0xC7; code[i++] = 0xC0; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov rax,1 ; min 1 dmg
     size_t scaledOffset = i;
     code[i++] = 0x49; code[i++] = 0x39; code[i++] = 0xC1;                                           // cmp r9,rax
-    code[i++] = 0x76; size_t jbeLethalRestore = i++;                                                // jbe restore (lethal hit: scaled dmg >= hp, keep game's value so death logic stays intact)
+    code[i++] = 0x76; size_t jbeZero = i++;                                                         // jbe zero (scaled dmg >= hp: clamp to 0 so the multiplier takes effect without wrapping negative)
     code[i++] = 0x49; code[i++] = 0x29; code[i++] = 0xC1;                                           // sub r9,rax
+    code[i++] = 0xEB; size_t jmpWrite = i++;                                                        // jmp write
+    size_t zeroOffset = i;
+    code[i++] = 0x4D; code[i++] = 0x31; code[i++] = 0xC9;                                           // xor r9,r9
+    size_t writeOffset = i;
     code[i++] = 0x4C; code[i++] = 0x89; code[i++] = 0xCA;                                           // mov rdx,r9
     size_t restoreOffset = i;
     code[i++] = 0x0F; code[i++] = 0x10; code[i++] = 0x04; code[i++] = 0x24;                         // movups xmm0,[rsp]
@@ -583,9 +601,12 @@ static bool PatchMonsterDamageNewHook(lm_address_t target, wchar_t* message, siz
     code[jzDisabled] = static_cast<lm_byte_t>(restoreOffset - (jzDisabled + 1));
     code[jmpRestore] = static_cast<lm_byte_t>(restoreOffset - (jmpRestore + 1));
     code[jbHealRestore] = static_cast<lm_byte_t>(restoreOffset - (jbHealRestore + 1));
+    code[jbeEdgeRestore] = static_cast<lm_byte_t>(restoreOffset - (jbeEdgeRestore + 1));
     code[jleNoDamageRestore] = static_cast<lm_byte_t>(restoreOffset - (jleNoDamageRestore + 1));
     code[jgScaled] = static_cast<lm_byte_t>(scaledOffset - (jgScaled + 1));
-    code[jbeLethalRestore] = static_cast<lm_byte_t>(restoreOffset - (jbeLethalRestore + 1));
+    code[jbeZero] = static_cast<lm_byte_t>(zeroOffset - (jbeZero + 1));
+    code[jmpWrite] = static_cast<lm_byte_t>(writeOffset - (jmpWrite + 1));
+    code[jgUseR13] = static_cast<lm_byte_t>(useR13Offset - (jgUseR13 + 1));
 
     memcpy(code + sizeof(code) - sizeof(kMonsterEnhanceCaveMarker), kMonsterEnhanceCaveMarker, sizeof(kMonsterEnhanceCaveMarker));
     if (LM_WriteMemory(cave, code, sizeof(code)) != sizeof(code))
@@ -700,6 +721,103 @@ static bool PatchMonsterDamageHook(lm_address_t target, wchar_t* message, size_t
     if (!PatchBytes(target, jmp, sizeof(jmp)))
     {
         swprintf_s(message, messageSize, L"hook write failed: monster damage");
+        return false;
+    }
+    return true;
+}
+
+// Party-wide "defense multiplier" (same idea as FLiNG's, but applies to the
+// whole party): hook the final damage-settle point RVA 0x1FB77EE
+// (`cmp eax,05F5E100`).
+// On entry eax already holds [rsi+D4] (the fully computed damage for the
+// target object in r14). When r14 is one of the captured player objects (host
+// or any ally), divide eax by the multiplier (input N => damage/N), replay the
+// original cmp and let the game's own clamp/death logic run on the scaled
+// value — no hp edge cases, and every party member benefits.
+static bool PatchDefenseHook(lm_address_t target, wchar_t* message, size_t messageSize)
+{
+    lm_address_t cave = AllocNear(target, 192);
+    if (cave == LM_ADDRESS_BAD)
+    {
+        swprintf_s(message, messageSize, L"alloc near failed: defense multiplier");
+        return false;
+    }
+
+    lm_byte_t code[256]{};
+    size_t i = 0;
+    // Player detection via a shared player-only vtable slot instead of an
+    // exhaustive vtable list. Verified with CE breakpoints at RVA 0x1FB77EE:
+    // vtable slot 7 (0x96DE00) is shared by ALL battle entities (players AND
+    // monsters, e.g. Em8300/BehaviorDummy) — useless. vtable slot 2 differs:
+    // players Pl2400/Pl2800 = 0x7FF63B73A9D0 (RVA 0x9CA9D0), monsters =
+    // 0x7FF63B6DDD20. (If a different playable character turns out to have
+    // another slot-2 value, add it to a comparison list.)
+    HMODULE gameModule = GetModuleHandleW(L"granblue_fantasy_relink.exe");
+    uintptr_t gameBase = reinterpret_cast<uintptr_t>(gameModule);
+    const uintptr_t playerVtableSlot2 = gameBase + 0x9CA9D0;
+    uintptr_t stateAddr = reinterpret_cast<uintptr_t>(g_playerPointerState);
+    code[i++] = 0x52;                                                                               // push rdx
+    code[i++] = 0x41; code[i++] = 0x50;                                                             // push r8
+    code[i++] = 0x48; code[i++] = 0xBA; memcpy(code + i, &stateAddr, sizeof(stateAddr)); i += sizeof(stateAddr); // mov rdx,PlayerPointerState*
+    code[i++] = 0x83; code[i++] = 0x7A; code[i++] = 0x04; code[i++] = 0x00;                         // cmp dword ptr [rdx+4],0
+    code[i++] = 0x74; size_t jzDisabled = i++;                                                       // je skip
+    code[i++] = 0x4F; code[i++] = 0x8B; code[i++] = 0x06;                                           // mov r8,[r14]       ; vtable
+    code[i++] = 0x4D; code[i++] = 0x8B; code[i++] = 0x40; code[i++] = 0x10;                         // mov r8,[r8+0x10]   ; vtable slot 2 (player-only base method)
+    code[i++] = 0x48; code[i++] = 0xBA; memcpy(code + i, &playerVtableSlot2, sizeof(playerVtableSlot2)); i += sizeof(playerVtableSlot2); // mov rdx,playerVtableSlot2
+    code[i++] = 0x4C; code[i++] = 0x39; code[i++] = 0xC2;                                           // cmp rdx,r8
+    code[i++] = 0x74; size_t jeScale = i++;                                                         // je scale
+    code[i++] = 0xEB; size_t jmpSkip = i++;                                                         // jmp skip
+    size_t scaleOffset = i;
+    code[i++] = 0x48; code[i++] = 0xBA; memcpy(code + i, &stateAddr, sizeof(stateAddr)); i += sizeof(stateAddr); // mov rdx,PlayerPointerState* (scale path)
+    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xC0;                         // cvtsi2ss xmm0,eax
+    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x42; code[i++] = 0x08;       // mulss xmm0,[rdx+8]  ; damage * multiplier (input 10 = x10 damage, 0.1 = x0.1)
+    code[i++] = 0xF3; code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xC0;       // cvttss2si rax,xmm0
+    code[i++] = 0x48; code[i++] = 0x85; code[i++] = 0xC0;                                           // test rax,rax
+    code[i++] = 0x7F; size_t jgScaled = i++;                                                        // jg scaled
+    code[i++] = 0xB8; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00;       // mov eax,1 ; min 1 dmg
+    size_t scaledOffset = i;
+    code[i++] = 0xEB; size_t jmpDone = i++;                                                         // jmp skip
+    size_t skipOffset = i;
+    code[jzDisabled] = static_cast<lm_byte_t>(skipOffset - (jzDisabled + 1));
+    code[jeScale] = static_cast<lm_byte_t>(scaleOffset - (jeScale + 1));
+    code[jmpSkip] = static_cast<lm_byte_t>(skipOffset - (jmpSkip + 1));
+    code[jmpDone] = static_cast<lm_byte_t>(skipOffset - (jmpDone + 1));
+    code[jgScaled] = static_cast<lm_byte_t>(scaledOffset - (jgScaled + 1));
+    code[i++] = 0x41; code[i++] = 0x58;                                                             // pop r8
+    code[i++] = 0x5A;                                                                               // pop rdx
+    code[i++] = 0x3D; code[i++] = 0x00; code[i++] = 0xE1; code[i++] = 0xF5; code[i++] = 0x05;       // cmp eax,05F5E100  ; replay original
+    code[i++] = 0xE9;                                                                               // jmp return
+    size_t jmpBackDisp = i; i += 4;
+    code[jgScaled] = static_cast<lm_byte_t>(scaledOffset - (jgScaled + 1));
+
+    int64_t backDelta = static_cast<int64_t>(target + sizeof(kDefenseMultiplierExpected)) - static_cast<int64_t>(cave + jmpBackDisp + 4);
+    if (backDelta < INT32_MIN || backDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"return jump out of range: defense multiplier");
+        return false;
+    }
+    int32_t relBack = static_cast<int32_t>(backDelta);
+    memcpy(code + jmpBackDisp, &relBack, sizeof(relBack));
+
+    if (LM_WriteMemory(cave, code, i) != i)
+    {
+        swprintf_s(message, messageSize, L"cave write failed: defense multiplier");
+        return false;
+    }
+
+    lm_byte_t jmp[sizeof(kDefenseMultiplierExpected)]{ 0xE9 };
+    memset(jmp + 5, 0x90, sizeof(jmp) - 5);
+    int64_t hookDelta = static_cast<int64_t>(cave) - static_cast<int64_t>(target + 5);
+    if (hookDelta < INT32_MIN || hookDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"hook jump out of range: defense multiplier");
+        return false;
+    }
+    int32_t rel = static_cast<int32_t>(hookDelta);
+    memcpy(jmp + 1, &rel, sizeof(rel));
+    if (!PatchBytes(target, jmp, sizeof(jmp)))
+    {
+        swprintf_s(message, messageSize, L"hook write failed: defense multiplier");
         return false;
     }
     return true;
@@ -986,12 +1104,20 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
     }
 
     lm_module_t module{};
-    if (!LM_FindModule("granblue_fantasy_relink.exe", &module))
+    // GetModuleHandleW returns the real in-process image base; libmem's
+    // LM_FindModule base can be stale/wrong (caused "unexpected player pointer
+    // instruction" — read at a shifted target), so do not use it here.
+    HMODULE gameModule = GetModuleHandleW(L"granblue_fantasy_relink.exe");
+    if (gameModule == nullptr)
     {
-        swprintf_s(message, messageSize, L"LM_FindModule failed");
+        swprintf_s(message, messageSize, L"GetModuleHandle failed");
         return false;
     }
+    module.base = reinterpret_cast<lm_address_t>(gameModule);
 
+    // defense_multiplier detects players by victim vtable in its own cave and
+    // must NOT trigger the pointer-capture hook (its page can be encrypted at
+    // enable time), so it is intentionally excluded here.
     if ((PatchIdEquals(patchId, "monster_damage") || PatchIdEquals(patchId, "monster_damage_new") || strcmp(patchId, "all") == 0) && !InstallPlayerPointerHook(module, message, messageSize))
     {
         return false;
@@ -1006,55 +1132,10 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
         if (!ShouldApply(patchId, point)) continue;
         ++selected;
 
+        // All patches resolve by fixed RVA. LM_SigScan over the 136 MB module
+        // can fault on unreadable pages (c0000005) and crash the game on
+        // re-injection (see od_rate history), so it is intentionally unused.
         lm_address_t target = module.base + point.rva;
-        if (strcmp(point.id, "monster_hp") == 0)
-        {
-            lm_address_t match = LM_SigScan(kMonsterHpSignature, module.base, module.size);
-            if (match == LM_ADDRESS_BAD)
-            {
-                swprintf_s(message, messageSize, L"signature not found: monster hp");
-                return false;
-            }
-            target = match + kMonsterHpSignatureOffset;
-        }
-        else if (strcmp(point.id, "monster_damage_new") == 0)
-        {
-            lm_address_t match = LM_SigScan(kMonsterDamageNewSignature, module.base, module.size);
-            if (match == LM_ADDRESS_BAD)
-            {
-                swprintf_s(message, messageSize, L"signature not found: monster damage new");
-                return false;
-            }
-            target = match + kMonsterDamageNewSignatureOffset;
-        }
-        else if (strcmp(point.id, "monster_stun") == 0)
-        {
-            lm_address_t match = LM_SigScan(kStunSignature, module.base, module.size);
-            if (match == LM_ADDRESS_BAD)
-            {
-                swprintf_s(message, messageSize, L"signature not found: monster stun");
-                return false;
-            }
-            target = match;
-        }
-        else if (strcmp(point.id, "overdrive_state") == 0)
-        {
-            lm_address_t match = LM_SigScan(kOverdriveSignature, module.base, module.size);
-            if (match == LM_ADDRESS_BAD)
-            {
-                swprintf_s(message, messageSize, L"signature not found: overdrive state");
-                return false;
-            }
-            target = match;
-        }
-        else if (strcmp(point.id, "od_rate") == 0)
-        {
-            // Resolve by fixed RVA instead of LM_SigScan: scanning the whole
-            // 136 MB module can fault on non-readable pages (WER shows
-            // c0000005 inside libmem's LM_DataScan). The byte check below
-            // still guards against a wrong version.
-            target = module.base + point.rva;
-        }
         lm_byte_t current[16]{};
         if (point.size > sizeof(current) || LM_ReadMemory(target, current, point.size) != point.size)
         {
@@ -1088,6 +1169,10 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
             else if (strcmp(point.id, "monster_damage_new") == 0)
             {
                 if (!PatchMonsterDamageNewHook(target, message, messageSize)) return false;
+            }
+            else if (strcmp(point.id, "defense_multiplier") == 0)
+            {
+                if (!PatchDefenseHook(target, message, messageSize)) return false;
             }
             else if (strcmp(point.id, "monster_damage") == 0)
             {
@@ -1132,7 +1217,18 @@ static DWORD WINAPI InitThread(LPVOID)
     ConfigurePlayerDamage();
 
     wchar_t message[256]{};
-    ApplyMonsterPatches(message, _countof(message));
+    // The game's .text is segment-encrypted: the player-pointer capture page
+    // (RVA 0x267DDE) stays encrypted until the game first executes that code
+    // path (player object setup), so the initial apply can fail with
+    // "unexpected player pointer instruction". Retry until the page is
+    // decrypted so the hook lands (up to ~25 s).
+    bool ok = false;
+    for (int attempt = 0; attempt < 100; ++attempt)
+    {
+        ok = ApplyMonsterPatches(message, _countof(message));
+        if (ok) break;
+        Sleep(250);
+    }
     WritePatchDebugLog(message);
 
     wchar_t debugMessage[320]{};

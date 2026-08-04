@@ -5,7 +5,7 @@ import { MonsterEnhanceGetStatus, MonsterEnhanceSetPatchValueEnabled, DamageMete
 
 const emit = defineEmits(['status'])
 
-const defaultMultipliers = { monster_hp: '1', monster_stun: '1', monster_damage_new: '1', sba_chain_timer: '3', od_rate: '1' }
+const defaultMultipliers = { monster_hp: '1', monster_stun: '1', monster_damage_new: '1', defense_multiplier: '1', sba_chain_timer: '3', od_rate: '1' }
 const sessionMultipliers = window.gbfrMonsterEnhanceMultipliers || (window.gbfrMonsterEnhanceMultipliers = { ...defaultMultipliers })
 
 const loading = ref(false)
@@ -17,6 +17,7 @@ const hiddenUnfixedItems = new Set([
   'link_time_no_drain',
   'link_time_disable',
   'monster_damage',
+  'monster_damage_new',
   'sba_chain_timer',
   'purple_drain',
   'blue_grow',
@@ -47,7 +48,7 @@ function refreshStatus() {
 }
 
 function needsMultiplier(item) {
-  return item.id === 'monster_hp' || item.id === 'monster_stun' || item.id === 'monster_damage_new' || item.id === 'sba_chain_timer' || item.id === 'od_rate'
+  return item.id === 'monster_hp' || item.id === 'monster_stun' || item.id === 'monster_damage_new' || item.id === 'defense_multiplier' || item.id === 'sba_chain_timer' || item.id === 'od_rate'
 }
 
 function needsOverdriveState(item) {
@@ -66,6 +67,7 @@ function multiplierHint(item) {
   if (item.id === 'monster_hp') return t('runtimeTools.monsterEnhance.hintHp')
   if (item.id === 'monster_stun') return t('runtimeTools.monsterEnhance.hintStun')
   if (item.id === 'monster_damage_new') return t('runtimeTools.monsterEnhance.hintDamageNew')
+  if (item.id === 'defense_multiplier') return t('runtimeTools.monsterEnhance.hintDefense')
   if (item.id === 'sba_chain_timer') return t('runtimeTools.monsterEnhance.hintSba')
   if (item.id === 'od_rate') return t('runtimeTools.monsterEnhance.hintOdRate')
   return ''

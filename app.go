@@ -2339,6 +2339,13 @@ var monsterPatchPoints = []monsterPatchPoint{
 		Hook:          true,
 	},
 	{
+		ID:       "defense_multiplier",
+		Name:     "防御倍率(全队)",
+		RVA:      0x1FB77EE,
+		Original: []byte{0x3D, 0x00, 0xE1, 0xF5, 0x05},
+		Hook:     true,
+	},
+	{
 		ID:       "monster_damage",
 		Name:     "怪物伤害",
 		RVA:      0x1FBDEB4,
@@ -2923,7 +2930,7 @@ func (a *App) captureMonsterHookInstall(id string) error {
 func (a *App) waitMonsterEnhanceApplied(id string, dllPath string) (MonsterEnhanceResult, error) {
 	var last MonsterEnhanceResult
 	var err error
-	deadline := time.Now().Add(2 * time.Second)
+	deadline := time.Now().Add(25 * time.Second)
 	for {
 		last, err = a.readMonsterEnhanceStatus(dllPath)
 		if err == nil && monsterStatusHasPatch(last, id) {
@@ -3085,7 +3092,7 @@ func isMonsterPatchBytesAtRVA(rva uintptr, data []byte) bool {
 }
 
 func needsMonsterValue(id string) bool {
-	return id == "monster_hp" || id == "monster_stun" || id == "monster_damage" || id == "monster_damage_new" || id == "overdrive_state" || id == "od_rate"
+	return id == "monster_hp" || id == "monster_stun" || id == "monster_damage" || id == "monster_damage_new" || id == "defense_multiplier" || id == "overdrive_state" || id == "od_rate"
 }
 
 func findMonsterPatchPoint(id string) *monsterPatchPoint {
