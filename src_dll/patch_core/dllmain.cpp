@@ -101,8 +101,10 @@ static const lm_byte_t kNop10[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x
 static const lm_byte_t kMonsterHpExpected[] = { 0x48, 0x89, 0x41, 0x10, 0xC3 };
 static const char* kMonsterHpSignature = "48 8B 41 10 45 31 C9 48 29 D0 4C 0F 43 C8 B8 01 00 00 00 49 0F 47 C1 45 85 C0 49 0F 44 C1 48 89 41 10 C3";
 static constexpr lm_address_t kMonsterHpSignatureOffset = 0x1E;
-// The shared health-delta helper receives the health component in rcx and the
-// already-calculated incoming damage in rdx.
+// The shared health-component setter (vtable slot 0, RVA 0x1F74700) receives
+// the health component in rcx and the already-computed FINAL hp in rdx — NOT the
+// damage amount. The caller keeps the true incoming damage in r13 (callee-saved),
+// which the hook below reads directly instead of reverse-deriving it from hp deltas.
 static const lm_byte_t kMonsterDamageNewExpected[] = {
     0x48, 0x89, 0x51, 0x10, 0xC3,
     0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC,
@@ -540,16 +542,26 @@ static bool PatchMonsterDamageNewHook(lm_address_t target, wchar_t* message, siz
     }
     code[i++] = 0xEB; size_t jmpRestore = i++;                                                      // jmp restore
     size_t scaleOffset = i;
-    code[i++] = 0x4C; code[i++] = 0x8B; code[i++] = 0x59; code[i++] = 0x10;                         // mov r11,[rcx+10]
-    code[i++] = 0x4D; code[i++] = 0x89; code[i++] = 0xD9;                                           // mov r9,r11
-    code[i++] = 0x49; code[i++] = 0x39; code[i++] = 0xD3;                                           // cmp r11,rdx
-    code[i++] = 0x72; size_t jbRestore = i++;                                                       // jb restore (healing)
-    code[i++] = 0x49; code[i++] = 0x29; code[i++] = 0xD3;                                           // sub r11,rdx
+    // True damage arrives in R13: the caller stores this hit's damage in R13
+    // (callee-saved, still intact on entry). 13/13 runtime samples verified
+    // R13 == reverse-derived [rcx+10]-rdx, so scale it directly instead of
+    // deriving it from hp deltas (deltas are unreliable across multi-hit
+    // mixed damage and can overflow negative, killing the player).
+    code[i++] = 0x4C; code[i++] = 0x8B; code[i++] = 0x49; code[i++] = 0x10;                         // mov r9,[rcx+10]      ; old hp
+    code[i++] = 0x49; code[i++] = 0x39; code[i++] = 0xD1;                                           // cmp r9,rdx
+    code[i++] = 0x72; size_t jbHealRestore = i++;                                                   // jb restore (healing)
+    code[i++] = 0x4D; code[i++] = 0x89; code[i++] = 0xEB;                                           // mov r11,r13          ; true damage from caller
+    code[i++] = 0x4D; code[i++] = 0x85; code[i++] = 0xDB;                                           // test r11,r11
+    code[i++] = 0x7E; size_t jleNoDamageRestore = i++;                                              // jle restore (non-damage)
     code[i++] = 0xF3; code[i++] = 0x49; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xC3;       // cvtsi2ss xmm0,r11
-    code[i++] = 0xF3; code[i++] = 0x41; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x42; code[i++] = 0x08; // mulss xmm0,[r10+8]
+    code[i++] = 0xF3; code[i++] = 0x41; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x42; code[i++] = 0x08; // mulss xmm0,[r10+8] ; * scale
     code[i++] = 0xF3; code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xC0;       // cvttss2si rax,xmm0
+    code[i++] = 0x48; code[i++] = 0x85; code[i++] = 0xC0;                                           // test rax,rax
+    code[i++] = 0x7F; size_t jgScaled = i++;                                                        // jg scaled
+    code[i++] = 0x48; code[i++] = 0xC7; code[i++] = 0xC0; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov rax,1 ; min 1 dmg
+    size_t scaledOffset = i;
     code[i++] = 0x49; code[i++] = 0x39; code[i++] = 0xC1;                                           // cmp r9,rax
-    code[i++] = 0x4C; code[i++] = 0x0F; code[i++] = 0x42; code[i++] = 0xC8;                         // cmovb r9,rax
+    code[i++] = 0x76; size_t jbeLethalRestore = i++;                                                // jbe restore (lethal hit: scaled dmg >= hp, keep game's value so death logic stays intact)
     code[i++] = 0x49; code[i++] = 0x29; code[i++] = 0xC1;                                           // sub r9,rax
     code[i++] = 0x4C; code[i++] = 0x89; code[i++] = 0xCA;                                           // mov rdx,r9
     size_t restoreOffset = i;
@@ -570,7 +582,10 @@ static bool PatchMonsterDamageNewHook(lm_address_t target, wchar_t* message, siz
     code[jzRestore] = static_cast<lm_byte_t>(restoreOffset - (jzRestore + 1));
     code[jzDisabled] = static_cast<lm_byte_t>(restoreOffset - (jzDisabled + 1));
     code[jmpRestore] = static_cast<lm_byte_t>(restoreOffset - (jmpRestore + 1));
-    code[jbRestore] = static_cast<lm_byte_t>(restoreOffset - (jbRestore + 1));
+    code[jbHealRestore] = static_cast<lm_byte_t>(restoreOffset - (jbHealRestore + 1));
+    code[jleNoDamageRestore] = static_cast<lm_byte_t>(restoreOffset - (jleNoDamageRestore + 1));
+    code[jgScaled] = static_cast<lm_byte_t>(scaledOffset - (jgScaled + 1));
+    code[jbeLethalRestore] = static_cast<lm_byte_t>(restoreOffset - (jbeLethalRestore + 1));
 
     memcpy(code + sizeof(code) - sizeof(kMonsterEnhanceCaveMarker), kMonsterEnhanceCaveMarker, sizeof(kMonsterEnhanceCaveMarker));
     if (LM_WriteMemory(cave, code, sizeof(code)) != sizeof(code))
