@@ -13,6 +13,7 @@ import { CharaAttach, CharaDetach,
          TerminusDropGetStatus, TerminusDropScan, TerminusDropSetEnabled,
          UnlockAllTrophyGetStatus, UnlockAllTrophyScan, UnlockAllTrophySetEnabled,
          OtherSkinPurpleRuneGetStatus, OtherSkinPurpleRuneSetEnabled,
+         LoadoutPrivacyGetStatus, LoadoutPrivacySetEnabled,
          DamageMeterGetStatus, DamageMeterReset,
          DamageOverlaySetEnabled, DamageOverlaySetValue, DamageOverlaySetFontSize,
          PlayerPositionGet, PlayerPositionSet,
@@ -34,6 +35,8 @@ const infiniteChallengeStatus = reactive({ rva: 0, enabled: false, currentBytes:
 const infiniteChallengeLoading = ref(false)
 const materialConsumeStatus = reactive({ rva: 0, enabled: false, currentBytes: '' })
 const materialConsumeLoading = ref(false)
+const loadoutPrivacyStatus = reactive({ rva: 0, enabled: false, currentBytes: '', clearRange: '' })
+const loadoutPrivacyLoading = ref(false)
 const collectibleTaskLoading = ref(false)
 const inventorySet45Enabled = ref(false)
 const inventorySet45Loading = ref(false)
@@ -88,6 +91,7 @@ function connect() {
       }
       loadInfiniteChallengeStatus()
       loadMaterialConsumeStatus()
+      loadLoadoutPrivacyStatus()
       if (showOutdatedFeatures) {
         loadTerminusDropStatus()
         loadUnlockAllTrophyStatus()
@@ -111,6 +115,7 @@ function disconnect() {
       Object.assign(faceAccessoryStatus, { found: false, address: 0, rva: 0, hidden: false, jumpOpcode: '', currentBytes: '' })
       Object.assign(infiniteChallengeStatus, { rva: 0, enabled: false, currentBytes: '' })
       Object.assign(materialConsumeStatus, { rva: 0, enabled: false, currentBytes: '' })
+      Object.assign(loadoutPrivacyStatus, { rva: 0, enabled: false, currentBytes: '', clearRange: '' })
       Object.assign(terminusDropStatus, { found: false, address: 0, rva: 0, enabled: false, currentBytes: '' })
       Object.assign(unlockAllTrophyStatus, { found: false, address: 0, rva: 0, enabled: false, currentBytes: '' })
       Object.assign(otherSkinPurpleRuneStatus, { rva: 0, enabled: false, jumpOpcode: '', currentBytes: '' })
@@ -247,6 +252,28 @@ function setMaterialConsumeEnabled(enabled) {
     .then((status) => { applyMaterialConsumeStatus(status); emit('status', enabled ? t('runtimeTools.misc.material.enabled') : t('runtimeTools.misc.material.disabled'), 'success') })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { materialConsumeLoading.value = false })
+}
+
+function applyLoadoutPrivacyStatus(status) {
+  Object.assign(loadoutPrivacyStatus, status || { rva: 0, enabled: false, currentBytes: '', clearRange: '' })
+}
+
+function loadLoadoutPrivacyStatus() {
+  if (!connected.value) return
+  loadoutPrivacyLoading.value = true
+  LoadoutPrivacyGetStatus()
+    .then(applyLoadoutPrivacyStatus)
+    .catch((err) => emit('status', String(err), 'error'))
+    .finally(() => { loadoutPrivacyLoading.value = false })
+}
+
+function setLoadoutPrivacyEnabled(enabled) {
+  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
+  loadoutPrivacyLoading.value = true
+  LoadoutPrivacySetEnabled(enabled)
+    .then((status) => { applyLoadoutPrivacyStatus(status); emit('status', enabled ? t('runtimeTools.misc.loadoutPrivacy.enabled') : t('runtimeTools.misc.loadoutPrivacy.disabled'), 'success') })
+    .catch((err) => emit('status', String(err), 'error'))
+    .finally(() => { loadoutPrivacyLoading.value = false })
 }
 
 function completeCollectibleTask() {
@@ -830,6 +857,25 @@ onBeforeUnmount(() => {
             <button class="btn-refresh" @click="loadMaterialConsumeStatus" :disabled="materialConsumeLoading">{{ t('runtimeTools.common.refresh') }}</button>
           </div>
           <div class="memory-bytes">{{ materialConsumeStatus.currentBytes || t('runtimeTools.common.notRead') }}</div>
+        </div>
+
+        <div class="memory-card" :class="{ active: loadoutPrivacyStatus.enabled }">
+          <div class="memory-header">
+            <span class="memory-title">{{ t('runtimeTools.misc.loadoutPrivacy.title') }}</span>
+            <span class="info-dot" :title="t('runtimeTools.misc.loadoutPrivacy.notice')">!</span>
+            <span class="memory-hint">{{ t('runtimeTools.misc.loadoutPrivacy.hint') }}</span>
+          </div>
+          <div class="memory-info">
+            <span>{{ t('runtimeTools.common.rva') }}: {{ formatHex(loadoutPrivacyStatus.rva) }}</span>
+            <span>{{ t('runtimeTools.common.status') }}: {{ loadoutPrivacyStatus.enabled ? t('runtimeTools.common.enabled') : t('runtimeTools.common.default') }}</span>
+            <span v-if="loadoutPrivacyStatus.clearRange">{{ t('runtimeTools.misc.loadoutPrivacy.clearRange') }}: {{ loadoutPrivacyStatus.clearRange }}</span>
+          </div>
+          <div class="memory-row">
+            <button class="btn-batch" @click="setLoadoutPrivacyEnabled(true)" :disabled="loadoutPrivacyLoading || loadoutPrivacyStatus.enabled">{{ t('runtimeTools.misc.loadoutPrivacy.enable') }}</button>
+            <button class="btn-refresh" @click="setLoadoutPrivacyEnabled(false)" :disabled="loadoutPrivacyLoading || !loadoutPrivacyStatus.enabled">{{ t('runtimeTools.common.restoreDefault') }}</button>
+            <button class="btn-refresh" @click="loadLoadoutPrivacyStatus" :disabled="loadoutPrivacyLoading">{{ t('runtimeTools.common.refresh') }}</button>
+          </div>
+          <div class="memory-bytes">{{ loadoutPrivacyStatus.currentBytes || t('runtimeTools.common.notRead') }}</div>
         </div>
 
         <div class="memory-card" :class="{ active: inventorySet45Enabled }">

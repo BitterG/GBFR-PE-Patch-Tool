@@ -150,6 +150,7 @@ type App struct {
 	overdriveStateAddr         uintptr
 	odRateAddr                 uintptr
 	materialConsumeCaveAddr    uintptr
+	loadoutPrivacyCaveAddr     uintptr
 	// runtimePatchMu serializes material consumption and inventory-set hooks,
 	// which both replace the same item-quantity instruction.
 	runtimePatchMu sync.Mutex
@@ -1225,6 +1226,7 @@ func (a *App) CharaDetach() {
 	_ = a.releaseSigilMemoryHook()
 	_ = a.releaseSummonMemoryHook()
 	_ = a.releaseMaterialConsumeHook()
+	_ = a.releaseLoadoutPrivacyHook()
 	// Stop the input loop before closing the target handle.
 	a.FlightSetEnabled(false, 0)
 	if a.hProcess != 0 {
@@ -1254,6 +1256,7 @@ func (a *App) CharaDetach() {
 	a.overdriveStateAddr = 0
 	a.odRateAddr = 0
 	a.materialConsumeCaveAddr = 0
+	a.loadoutPrivacyCaveAddr = 0
 	a.sigilMemoryHookAddr = 0
 	a.sigilMemoryCaveAddr = 0
 	a.sigilMemoryOriginal = nil
@@ -1683,6 +1686,14 @@ type MaterialConsumeStatus struct {
 	RVA          uint64 `json:"rva"`
 	Enabled      bool   `json:"enabled"`
 	CurrentBytes string `json:"currentBytes"`
+}
+
+// LoadoutPrivacyStatus 描述配装隐私 hook 的当前状态。
+type LoadoutPrivacyStatus struct {
+	RVA          uint64 `json:"rva"`
+	Enabled      bool   `json:"enabled"`
+	CurrentBytes string `json:"currentBytes"`
+	ClearRange   string `json:"clearRange"`
 }
 
 // materialConsumeRVA is the item-quantity update instruction for the current game build.
