@@ -139,6 +139,15 @@ static const char* kOverdriveSignature = "8B 46 10 83 F8 03 0F 84 ?? ?? ?? ?? 83
 //   ret
 static const lm_byte_t kOdRateExpected[] = { 0x80, 0x79, 0x50, 0x00, 0x74, 0x13, 0x48, 0x03, 0x51, 0x18 };
 static const char* kOdRateSignature = "80 79 50 00 74 13 48 03 51 18";
+// Second OD-gauge accumulation path used by some bosses (e.g. Beelzebub):
+// inlined into their update function instead of going through the vtable+72
+// method. rsi = OD component, rdi = damage-scaled delta.
+//   add rdi, [rsi+18]
+//   mov rax, -1
+//   cmovae rax, rdi
+//   mov [rsi+18], rax
+//   (followed by: add rsp,20 / pop rbx / pop rdi / pop rsi / ret)
+static const lm_byte_t kOdRateInlineExpected[] = { 0x48, 0x03, 0x7E, 0x18, 0x48, 0xC7, 0xC0, 0xFF, 0xFF, 0xFF, 0xFF, 0x48, 0x0F, 0x43, 0xC7, 0x48, 0x89, 0x46, 0x18 };
 static const lm_byte_t kNop9[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 
 static const PatchPoint kMonsterPatches[] = {
@@ -1032,6 +1041,76 @@ static bool ShouldApply(const char* requestedId, const PatchPoint& point)
     return strcmp(requestedId, "all") == 0 || PatchIdEquals(requestedId, point.id);
 }
 
+static bool PatchOdRateHookInline(lm_address_t target, wchar_t* message, size_t messageSize)
+{
+    // Inlined OD-gauge accumulation (Beelzebub-style bosses). Rewrites the
+    // 19-byte block INCLUDING the epilogue and returns directly from the
+    // cave (no jump back) — same shape as the vtable+72 hook, which is the
+    // only pattern proven stable on this hot per-frame path.
+    float scale = ReadScale(); // scale = user N (10 = 10x faster, 0.1 = 1/10)
+    lm_address_t cave = AllocNear(target, 128);
+    if (cave == LM_ADDRESS_BAD)
+    {
+        swprintf_s(message, messageSize, L"alloc near failed: od gauge rate (inline)");
+        return false;
+    }
+
+    lm_byte_t code[64]{};
+    size_t i = 0;
+    code[i++] = 0x80; code[i++] = 0x7E; code[i++] = 0x50; code[i++] = 0x00; // cmp byte ptr [rsi+50h],0
+    size_t jzDisp = i; code[i++] = 0x74; code[i++] = 0x00;                  // jz epilogue
+    code[i++] = 0xF3; code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xC7; // cvtsi2ss xmm0,rdi
+    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x05; // mulss xmm0,[rip+disp32]
+    size_t scaleDisp = i; i += 4;
+    code[i++] = 0xF3; code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xF8; // cvttss2si rdi,xmm0 (ModRM F8 = reg:rdi, rm:xmm0)
+    code[i++] = 0x48; code[i++] = 0x03; code[i++] = 0x7E; code[i++] = 0x18; // add rdi,[rsi+18h]
+    code[i++] = 0x48; code[i++] = 0xC7; code[i++] = 0xC0; code[i++] = 0xFF; code[i++] = 0xFF; code[i++] = 0xFF; code[i++] = 0xFF; // mov rax,-1
+    code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x43; code[i++] = 0xC7; // cmovae rax,rdi
+    code[i++] = 0x48; code[i++] = 0x89; code[i++] = 0x46; code[i++] = 0x18; // mov [rsi+18h],rax
+    size_t epiOffset = i;
+    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xC4; code[i++] = 0x20; // add rsp,20h
+    code[i++] = 0x5B;                                                       // pop rbx
+    code[i++] = 0x5F;                                                       // pop rdi
+    code[i++] = 0x5E;                                                       // pop rsi
+    code[i++] = 0xC3;                                                       // ret
+    size_t scaleOffset = i;
+    memcpy(code + i, &scale, sizeof(scale)); i += sizeof(scale);
+
+    code[jzDisp + 1] = static_cast<lm_byte_t>(epiOffset - (jzDisp + 2));
+
+    int64_t scaleDelta = static_cast<int64_t>(cave + scaleOffset) - static_cast<int64_t>(cave + scaleDisp + 4);
+    if (scaleDelta < INT32_MIN || scaleDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"scale jump out of range: od gauge rate (inline)");
+        return false;
+    }
+    int32_t relScale = static_cast<int32_t>(scaleDelta);
+    memcpy(code + scaleDisp, &relScale, sizeof(relScale));
+
+    if (LM_WriteMemory(cave, code, i) != i)
+    {
+        swprintf_s(message, messageSize, L"cave write failed: od gauge rate (inline)");
+        return false;
+    }
+
+    lm_byte_t jmp[sizeof(kOdRateInlineExpected)]{ 0xE9 };
+    memset(jmp + 5, 0x90, sizeof(jmp) - 5);
+    int64_t hookDelta = static_cast<int64_t>(cave) - static_cast<int64_t>(target + 5);
+    if (hookDelta < INT32_MIN || hookDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"hook jump out of range: od gauge rate (inline)");
+        return false;
+    }
+    int32_t rel = static_cast<int32_t>(hookDelta);
+    memcpy(jmp + 1, &rel, sizeof(rel));
+    if (!PatchBytes(target, jmp, sizeof(jmp)))
+    {
+        swprintf_s(message, messageSize, L"hook write failed: od gauge rate (inline)");
+        return false;
+    }
+    return true;
+}
+
 static bool PatchOdRateHook(lm_address_t target, wchar_t* message, size_t messageSize)
 {
     float scale = ReadScale(); // scale = 1 / user N; N < 1 speeds the gauge up.
@@ -1185,6 +1264,15 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
             else if (strcmp(point.id, "od_rate") == 0)
             {
                 if (!PatchOdRateHook(target, message, messageSize)) return false;
+                // Additional inlined accumulation path used by
+                // Beelzebub-style bosses (their update loop does not call
+                // the vtable+72 method).
+                lm_address_t inlineTarget = module.base + 0x2B3E7DE;
+                lm_byte_t inlineCur[1]{};
+                if (LM_ReadMemory(inlineTarget, inlineCur, 1) == 1 && inlineCur[0] != 0xE9)
+                {
+                    if (!PatchOdRateHookInline(inlineTarget, message, messageSize)) return false;
+                }
             }
             else if (strcmp(point.id, "inventory_set_45") == 0)
             {

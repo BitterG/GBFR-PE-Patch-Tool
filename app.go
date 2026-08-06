@@ -26,7 +26,7 @@ const (
 	steamAppID  = "881020"
 	gameExeName = "granblue_fantasy_relink.exe"
 	gameFolder  = "Granblue Fantasy Relink"
-	appVersion  = "v1.9.9"
+	appVersion  = "v1.10"
 	repoOwner   = "BitterG"
 	repoName    = "GBFR-PE-Patch-Tool"
 )
@@ -150,7 +150,6 @@ type App struct {
 	overdriveStateAddr         uintptr
 	odRateAddr                 uintptr
 	materialConsumeCaveAddr    uintptr
-	loadoutPrivacyCaveAddr     uintptr
 	// runtimePatchMu serializes material consumption and inventory-set hooks,
 	// which both replace the same item-quantity instruction.
 	runtimePatchMu sync.Mutex
@@ -1226,7 +1225,6 @@ func (a *App) CharaDetach() {
 	_ = a.releaseSigilMemoryHook()
 	_ = a.releaseSummonMemoryHook()
 	_ = a.releaseMaterialConsumeHook()
-	_ = a.releaseLoadoutPrivacyHook()
 	// Stop the input loop before closing the target handle.
 	a.FlightSetEnabled(false, 0)
 	if a.hProcess != 0 {
@@ -1256,7 +1254,6 @@ func (a *App) CharaDetach() {
 	a.overdriveStateAddr = 0
 	a.odRateAddr = 0
 	a.materialConsumeCaveAddr = 0
-	a.loadoutPrivacyCaveAddr = 0
 	a.sigilMemoryHookAddr = 0
 	a.sigilMemoryCaveAddr = 0
 	a.sigilMemoryOriginal = nil
@@ -1688,13 +1685,6 @@ type MaterialConsumeStatus struct {
 	CurrentBytes string `json:"currentBytes"`
 }
 
-// LoadoutPrivacyStatus 描述配装隐私 hook 的当前状态。
-type LoadoutPrivacyStatus struct {
-	RVA          uint64 `json:"rva"`
-	Enabled      bool   `json:"enabled"`
-	CurrentBytes string `json:"currentBytes"`
-	ClearRange   string `json:"clearRange"`
-}
 
 // materialConsumeRVA is the item-quantity update instruction for the current game build.
 const materialConsumeRVA = uintptr(0x34F8F1)
@@ -2351,7 +2341,7 @@ var monsterPatchPoints = []monsterPatchPoint{
 	},
 	{
 		ID:       "defense_multiplier",
-		Name:     "防御倍率(全队)",
+		Name:     "防御倍率(单人)",
 		RVA:      0x1FB77EE,
 		Original: []byte{0x3D, 0x00, 0xE1, 0xF5, 0x05},
 		Hook:     true,
@@ -2719,6 +2709,12 @@ var monsterStunSuffix = []byte{0xC5, 0xFA, 0x5D, 0x86, 0x64, 0x08, 0x00, 0x00, 0
 // consumed by the hook; everything after it stays untouched, even while the hook is active).
 var odRateSuffixPattern = []byte{0x48, 0xC7, 0xC0, 0xFF, 0xFF, 0xFF, 0xFF, 0x48, 0x0F, 0x43, 0xC2, 0x48, 0x89, 0x41, 0x18, 0xC3}
 
+// Second OD-gauge accumulation path (Beelzebub-style bosses): inlined into
+// their update function. Hooked together with the vtable+72 point by the DLL.
+const odRateInlineRVA = 0x2B3E7DE
+
+var odRateInlineOriginal = []byte{0x48, 0x03, 0x7E, 0x18, 0x48, 0xC7, 0xC0, 0xFF, 0xFF, 0xFF, 0xFF, 0x48, 0x0F, 0x43, 0xC7, 0x48, 0x89, 0x46, 0x18}
+
 func (a *App) resolveOdRateFromStableSuffix(point *monsterPatchPoint) (uintptr, error) {
 	mask := make([]bool, len(odRateSuffixPattern))
 	for i := range mask {
@@ -3057,6 +3053,20 @@ func (a *App) restoreMonsterEnhance(id string) error {
 		}
 		if err := writeCodeMemory(a.hProcess, addr, point.Original); err != nil {
 			return fmt.Errorf("恢复%s失败: %w", point.Name, err)
+		}
+	}
+	if (id == "od_rate" || id == "all") && a.moduleBase != 0 {
+		// Restore the second (inlined) OD-gauge accumulation point that the
+		// od_rate hook also patches (Beelzebub-style bosses).
+		inlineAddr := a.moduleBase + odRateInlineRVA
+		current := make([]byte, len(odRateInlineOriginal))
+		if err := readProcessMemory(a.hProcess, inlineAddr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
+			return fmt.Errorf("读取OD条变化率内联点失败: %w", err)
+		}
+		if len(current) > 0 && current[0] == 0xE9 {
+			if err := writeCodeMemory(a.hProcess, inlineAddr, odRateInlineOriginal); err != nil {
+				return fmt.Errorf("恢复OD条变化率内联点失败: %w", err)
+			}
 		}
 	}
 	return nil

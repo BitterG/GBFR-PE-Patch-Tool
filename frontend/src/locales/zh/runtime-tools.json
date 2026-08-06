@@ -185,15 +185,6 @@
         "enable": "开启显示",
         "enabled": "已开启其他皮肤紫色符文显示",
         "disabled": "已恢复其他皮肤紫色符文判断"
-      },
-      "loadoutPrivacy": {
-        "title": "配装隐私（隐藏配装，防 relink-logs 类工具采集）",
-        "notice": "把联机时发送给其他玩家的 profile blob 中的配装区（因子/召唤石/武器/觉醒/skillboard）清零，保留名字、角色与等级。任务中途开启只影响之后的同步；重启游戏后需重新开启。",
-        "enable": "开启配装隐私",
-        "hint": "序列化器执行后清零 blob 0x06..0x2A4",
-        "clearRange": "清空范围",
-        "enabled": "配装隐私已开启",
-        "disabled": "配装隐私已关闭"
       }
     },
     "monsterEnhance": {
@@ -206,7 +197,7 @@
       "hintStun": "输入 10 = 怪物10倍昏厥条",
       "hintDamage": "输入 32 = 怪物伤害32倍",
       "hintDamageNew": "输入 10 = 角色受到的怪物伤害10倍",
-      "hintDefense": "输入 10 = 受到的伤害10倍（全队生效）",
+      "hintDefense": "输入 10 = 受到的伤害10倍（单人）",
       "hintSba": "游戏默认 3 秒",
       "hintOdRate": "输入 10 = OD条增长速度10倍（增长100 → 1000）；输入 0.1 = 缩小10倍（增长100 → 10）",
       "damageMeterFailed": "伤害记录开启失败: {error}",
@@ -221,7 +212,7 @@
         "monster_hp": "怪物多倍血",
         "monster_damage": "怪物伤害",
         "monster_damage_new": "怪物伤害-新",
-        "defense_multiplier": "受伤倍率(全队)",
+        "defense_multiplier": "受伤倍率(自己)",
         "monster_stun": "怪物多倍昏厥条",
         "crocodile_damage": "鳄鱼伤害",
         "overdrive_state": "怪物 Overdrive 状态",

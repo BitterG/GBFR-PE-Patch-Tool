@@ -144,15 +144,6 @@
         "enabled": "No material consumption enabled",
         "disabled": "Material changes restored"
       },
-      "loadoutPrivacy": {
-        "title": "Loadout privacy (hide build from relink-logs style tools)",
-        "notice": "Clears the build section (sigils/summons/weapon/overmastery/skillboard) of the profile blob sent to other players in online lobbies. Names, character and levels stay visible. Enabling mid-quest only affects later syncs; re-enable after game restart.",
-        "enable": "Enable loadout privacy",
-        "hint": "Zeroes blob 0x06..0x2A4 after the loadout→profile serializer runs",
-        "clearRange": "Cleared range",
-        "enabled": "Loadout privacy enabled",
-        "disabled": "Loadout privacy disabled"
-      },
       "crab": {
         "title": "Crab tools",
         "notice": "Pick up one crab of the corresponding type after enabling it. Do not enable it early, and disable it after use.",
