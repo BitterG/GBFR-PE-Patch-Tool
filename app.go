@@ -26,7 +26,7 @@ const (
 	steamAppID  = "881020"
 	gameExeName = "granblue_fantasy_relink.exe"
 	gameFolder  = "Granblue Fantasy Relink"
-	appVersion  = "v1.10"
+	appVersion  = "v1.10.1"
 	repoOwner   = "BitterG"
 	repoName    = "GBFR-PE-Patch-Tool"
 )
@@ -954,17 +954,47 @@ type PotionInfo struct {
 }
 
 type currencyDef struct {
-	ID     string
-	Name   string
-	RVA    uintptr
-	Offset uintptr
+	ID      string
+	Name    string
+	Offset  uintptr
+	RVA     uintptr   // 链式定位（cp 等独立资源）用；0 = 货币 root + Offset
+	Offsets []uintptr // 链式定位用
+	AOB     bool      // 用独立 AOB 定位（cp）
+}
+
+// currencyRootPattern 引用货币 root 全局指针存储的代码（2.0.4 实测 0x3F4ECC6）：
+// mov rdi,[rip+disp]（disp → root 指针存储）; mov rcx,[rcx+0x1B8]; test rcx,rcx; je
+var currencyRootPattern = []byte{
+	0x48, 0x8B, 0x3D, 0, 0, 0, 0,
+	0x48, 0x8B, 0x89, 0xB8, 0x01, 0x00, 0x00,
+	0x48, 0x85, 0xC9, 0x74, 0x2C,
+}
+
+var currencyRootMask = []bool{
+	true, true, true, false, false, false, false,
+	true, true, true, true, true, true, true,
+	true, true, true, true, true,
+}
+
+// cpStorePattern 引用 CP(极沌空域) 存储的代码（2.0.4 实测 0x21AAF89）：
+// cmp ecx,0xCC633BF8（cp 类型 hash）; jne; mov rax,[rip+disp→cp存储]; mov ecx,[rax+0x24]
+var cpStorePattern = []byte{
+	0x81, 0xF9, 0xF8, 0x3B, 0x63, 0xCC, 0x75, 0x21,
+	0x48, 0x8B, 0x05, 0, 0, 0, 0,
+	0x8B, 0x48, 0x24,
+}
+
+var cpStoreMask = []bool{
+	true, true, true, true, true, true, true, true,
+	true, true, true, false, false, false, false,
+	true, true, true,
 }
 
 var currencyDefs = []currencyDef{
-	{ID: "msp", Name: "MSP", RVA: 0x0701B1E0, Offset: 0x98},
-	{ID: "rupies", Name: "金币", RVA: 0x0701B1E0, Offset: 0x30},
-	{ID: "purple_msp", Name: "紫MSP", RVA: 0x0701B1E0, Offset: 0x9C},
-	{ID: "cp_extreme_void", Name: "CP(极沌空域)", RVA: 0x07C20DF8, Offset: 0x24},
+	{ID: "msp", Name: "MSP", Offset: 0x98},
+	{ID: "rupies", Name: "金币", Offset: 0x30},
+	{ID: "purple_msp", Name: "紫MSP", Offset: 0x9C},
+	{ID: "cp_extreme_void", Name: "CP(极沌空域)", Offset: 0x24, AOB: true},
 }
 
 type potionDef struct {
@@ -975,8 +1005,8 @@ type potionDef struct {
 }
 
 var potionDefs = []potionDef{
-	{ID: "revive", Name: "复活药水", RVA: 0x0701B160, Offsets: []uintptr{0x2A8, 0x8, 0x38, 0xCC4}},
-	{ID: "group_chat", Name: "群疗药水", RVA: 0x0701B100, Offsets: []uintptr{0x1C8, 0x710, 0x38, 0xCA4}},
+	{ID: "revive", Name: "复活药水", RVA: 0x07369E08, Offsets: []uintptr{0x9B0, 0x38, 0xD84}},
+	{ID: "group_chat", Name: "群疗药水", RVA: 0x07369E08, Offsets: []uintptr{0x9B0, 0x38, 0xD64}},
 }
 
 // CharaAttach finds the game process, opens a handle, reads module base and manager pointer.
@@ -1368,15 +1398,100 @@ func (a *App) currencyAddress(def currencyDef) (uintptr, error) {
 	if a.hProcess == 0 || a.moduleBase == 0 {
 		return 0, fmt.Errorf("未连接游戏进程")
 	}
-	var base uintptr
-	ptrAddr := a.moduleBase + def.RVA
-	if err := readProcessMemory(a.hProcess, ptrAddr, unsafe.Pointer(&base), unsafe.Sizeof(base)); err != nil {
-		return 0, fmt.Errorf("读取%s指针失败: %w", def.Name, err)
+	if def.AOB {
+		return a.cpAddress()
 	}
-	if base == 0 {
-		return 0, fmt.Errorf("%s指针为空，请确保已进入游戏存档", def.Name)
+	if len(def.Offsets) > 0 {
+		// 链式资源（cp 等独立指针链）
+		return a.resolvePointerChain(def.RVA, def.Offsets, def.Name)
 	}
-	return base + def.Offset, nil
+	root, err := a.currencyRootAOB()
+	if err != nil {
+		return 0, err
+	}
+	return root + def.Offset, nil
+}
+
+// cpAddress 通过 AOB 定位 CP(极沌空域) 存储（mov rax,[rip+disp]），
+// 从 disp 动态算出存储位置后读取 CP 对象，返回对象+0x24 字段地址。版本免疫。
+func (a *App) cpAddress() (uintptr, error) {
+	sigAddr, err := a.scanPatternUnique(cpStorePattern, cpStoreMask, "CP存储引用")
+	if err != nil {
+		return 0, err
+	}
+	// mov rax,[rip+disp] 在 sigAddr+8，disp 位于 +8+3 起 4 字节
+	dispAddr := sigAddr + 8 + 3
+	var disp int32
+	if err := readProcessMemory(a.hProcess, dispAddr, unsafe.Pointer(&disp), unsafe.Sizeof(disp)); err != nil {
+		return 0, fmt.Errorf("读取CP存储引用指令失败: %w", err)
+	}
+	store := uintptr(int64(sigAddr) + 8 + 7 + int64(disp))
+	var cpObj uintptr
+	if err := readProcessMemory(a.hProcess, store, unsafe.Pointer(&cpObj), unsafe.Sizeof(cpObj)); err != nil {
+		return 0, fmt.Errorf("读取CP指针失败: %w", err)
+	}
+	if cpObj == 0 {
+		return 0, fmt.Errorf("CP数据未初始化，请确保已进入极沌空域相关场景")
+	}
+	return cpObj + 0x24, nil
+}
+
+// currencyRootAOB 通过 AOB 定位货币 root 全局指针存储（mov rdi,[rip+disp]），
+// 从 disp 动态算出存储位置后读取 root，并校验金币字段。版本免疫。
+func (a *App) currencyRootAOB() (uintptr, error) {
+	sigAddr, err := a.scanPatternUnique(currencyRootPattern, currencyRootMask, "货币结构引用")
+	if err != nil {
+		return 0, err
+	}
+	candidate := make([]byte, 7)
+	if err := readProcessMemory(a.hProcess, sigAddr, unsafe.Pointer(&candidate[0]), uintptr(len(candidate))); err != nil {
+		return 0, fmt.Errorf("读取货币结构引用指令失败: %w", err)
+	}
+	displacement := int64(int32(binary.LittleEndian.Uint32(candidate[3:7])))
+	rootPtrStore := uintptr(int64(sigAddr) + 7 + displacement)
+	var root uintptr
+	if err := readProcessMemory(a.hProcess, rootPtrStore, unsafe.Pointer(&root), unsafe.Sizeof(root)); err != nil {
+		return 0, fmt.Errorf("读取实时资源指针失败: %w", err)
+	}
+	if root == 0 {
+		return 0, fmt.Errorf("实时资源未初始化，请在游戏内打开主菜单或让金币/MSP发生一次刷新")
+	}
+	var gold int32
+	if err := readProcessMemory(a.hProcess, root+0x30, unsafe.Pointer(&gold), unsafe.Sizeof(gold)); err != nil {
+		return 0, fmt.Errorf("实时资源结构校验失败: %w", err)
+	}
+	if gold < 0 {
+		return 0, fmt.Errorf("实时资源结构校验失败：金币读取到异常负值，已拒绝写入")
+	}
+	return root, nil
+}
+
+// resolvePointerChain 沿稳定指针链定位资源地址（链起点 = moduleBase + rva）。
+func (a *App) resolvePointerChain(rva uintptr, offsets []uintptr, name string) (uintptr, error) {
+	if len(offsets) == 0 {
+		return 0, fmt.Errorf("%s指针路径为空", name)
+	}
+	var addr uintptr
+	ptrAddr := a.moduleBase + rva
+	if err := readProcessMemory(a.hProcess, ptrAddr, unsafe.Pointer(&addr), unsafe.Sizeof(addr)); err != nil {
+		return 0, fmt.Errorf("读取%s指针失败: %w", name, err)
+	}
+	if addr == 0 {
+		return 0, fmt.Errorf("%s指针为空，请确保已进入游戏存档", name)
+	}
+	for i, offset := range offsets {
+		addr += offset
+		if i == len(offsets)-1 {
+			return addr, nil
+		}
+		if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&addr), unsafe.Sizeof(addr)); err != nil {
+			return 0, fmt.Errorf("读取%s指针链失败: %w", name, err)
+		}
+		if addr == 0 {
+			return 0, fmt.Errorf("%s指针链为空，请确保已进入游戏存档", name)
+		}
+	}
+	return addr, nil
 }
 
 func (a *App) readCurrency(def currencyDef) (CurrencyInfo, error) {
@@ -1431,30 +1546,7 @@ func (a *App) potionAddress(def potionDef) (uintptr, error) {
 	if a.hProcess == 0 || a.moduleBase == 0 {
 		return 0, fmt.Errorf("未连接游戏进程")
 	}
-	if len(def.Offsets) == 0 {
-		return 0, fmt.Errorf("%s指针路径为空", def.Name)
-	}
-	var addr uintptr
-	ptrAddr := a.moduleBase + def.RVA
-	if err := readProcessMemory(a.hProcess, ptrAddr, unsafe.Pointer(&addr), unsafe.Sizeof(addr)); err != nil {
-		return 0, fmt.Errorf("读取%s指针失败: %w", def.Name, err)
-	}
-	if addr == 0 {
-		return 0, fmt.Errorf("%s指针为空，请确保已进入游戏存档", def.Name)
-	}
-	for i, offset := range def.Offsets {
-		addr += offset
-		if i == len(def.Offsets)-1 {
-			return addr, nil
-		}
-		if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&addr), unsafe.Sizeof(addr)); err != nil {
-			return 0, fmt.Errorf("读取%s指针链失败: %w", def.Name, err)
-		}
-		if addr == 0 {
-			return 0, fmt.Errorf("%s指针链为空，请确保已进入游戏存档", def.Name)
-		}
-	}
-	return addr, nil
+	return a.resolvePointerChain(def.RVA, def.Offsets, def.Name)
 }
 
 func potionOffsetsJSON(offsets []uintptr) []uint64 {
@@ -1687,7 +1779,6 @@ type MaterialConsumeStatus struct {
 	Enabled      bool   `json:"enabled"`
 	CurrentBytes string `json:"currentBytes"`
 }
-
 
 // materialConsumeRVA is the item-quantity update instruction for the current game build.
 const materialConsumeRVA = uintptr(0x34F8F1)
