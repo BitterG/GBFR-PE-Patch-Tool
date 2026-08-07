@@ -18,18 +18,16 @@ const (
 )
 
 type playerPositionLayout struct {
-	version      string
-	signatureRVA uintptr
-	slotTableRVA uintptr
-	gravityRVA   uintptr
+	version        string
+	signatureRVA   uintptr
+	slotTableRVA   uintptr
+	gravityRVA     uintptr
+	signature      []byte
+	signatureMask  []bool
 }
 
-var playerPositionLayouts = [...]playerPositionLayout{
-	{version: "2.0.2", signatureRVA: 0x22CECA0, slotTableRVA: 0x7036860, gravityRVA: 0x39DD964},
-	{version: "2.0.3", signatureRVA: 0x22C9310, slotTableRVA: 0x7033820, gravityRVA: 0x39D8E24},
-}
-
-var playerPositionSignature = []byte{
+// 2.0.2/2.0.3 共享的玩家坐标获取签名（mov rax,[rip+disp] 开头，引用 slotTable）
+var playerPositionSignatureLegacy = []byte{
 	0x48, 0x8B, 0, 0, 0, 0, 0, 0x48, 0x85, 0, 0x74, 0, 0x48, 0x8B, 0, 0xFF,
 	0, 0, 0, 0, 0, 0x48, 0x85, 0, 0x74, 0, 0x48, 0x8B, 0, 0, 0x48, 0x8B,
 	0, 0, 0x48, 0x8B, 0, 0x48, 0x8D, 0, 0, 0, 0xFF, 0, 0, 0, 0, 0, 0xEB,
@@ -37,12 +35,35 @@ var playerPositionSignature = []byte{
 	0x48, 0x8D,
 }
 
-var playerPositionSignatureMask = []bool{
+var playerPositionSignatureMaskLegacy = []bool{
 	true, true, false, false, false, false, false, true, true, false, true, false, true, true, false, true,
 	false, false, false, false, false, true, true, false, true, false, true, true, false, false, true, true,
 	false, false, true, true, false, true, true, false, false, false, true, false, false, false, false, false,
 	true, false, true, false, false, false, false, false, false, false, true, false, false, false, false, false,
 	true, true, false, true, true,
+}
+
+// 2.0.4 玩家坐标获取签名（mov rcx,[rip+disp] 开头，引用 slotTable；0xC2541B 起 69 字节）
+var playerPositionSignature204 = []byte{
+	0x48, 0x8B, 0x0D, 0, 0, 0, 0, 0x48, 0x85, 0xC9, 0x74, 0x71, 0x48, 0x8B, 0x01, 0xFF,
+	0x90, 0xC0, 0x04, 0x00, 0x00, 0x48, 0x85, 0xC0, 0x74, 0x63, 0x8B, 0x3D, 0, 0, 0, 0,
+	0x8D, 0x87, 0x00, 0xF3, 0xFF, 0xFF, 0x83, 0xF8, 0x04, 0x77, 0x42, 0x83, 0xF8, 0x03, 0x74,
+	0x3D, 0x48, 0x8B, 0x0D, 0, 0, 0, 0, 0xC5, 0xF8, 0x28, 0xFE, 0x48, 0x85, 0xC9, 0x74,
+	0x1A, 0x48, 0x8B, 0x01, 0xFF, 0x90,
+}
+
+var playerPositionSignatureMask204 = []bool{
+	true, true, true, false, false, false, false, true, true, true, true, true, true, true, true, true,
+	true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false,
+	true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+	true, true, true, false, false, false, false, true, true, true, true, true, true, true, true,
+	true, true, true, true, true, true,
+}
+
+var playerPositionLayouts = [...]playerPositionLayout{
+	{version: "2.0.2", signatureRVA: 0x22CECA0, slotTableRVA: 0x7036860, gravityRVA: 0x39DD964, signature: playerPositionSignatureLegacy, signatureMask: playerPositionSignatureMaskLegacy},
+	{version: "2.0.3", signatureRVA: 0x22C9310, slotTableRVA: 0x7033820, gravityRVA: 0x39D8E24, signature: playerPositionSignatureLegacy, signatureMask: playerPositionSignatureMaskLegacy},
+	{version: "2.0.4", signatureRVA: 0xC2541B, slotTableRVA: 0x7034AA0, gravityRVA: 0x39D9DC4, signature: playerPositionSignature204, signatureMask: playerPositionSignatureMask204},
 }
 
 type PlayerPosition struct {
@@ -124,7 +145,7 @@ func (a *App) playerPositionAddressesForLayout() (uintptr, uintptr, playerPositi
 		if err := readProcessMemory(a.hProcess, signatureAddress, unsafe.Pointer(&candidate[0]), uintptr(len(candidate))); err != nil {
 			continue
 		}
-		if !matchPattern(candidate, playerPositionSignature, playerPositionSignatureMask) {
+		if !matchPattern(candidate, layout.signature, layout.signatureMask) {
 			continue
 		}
 		displacement := int64(int32(binary.LittleEndian.Uint32(candidate[3:7])))
