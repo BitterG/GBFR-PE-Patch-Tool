@@ -14,9 +14,10 @@ const (
 	summonRecordSize      = 0x1C
 	summonMaxRecords      = 1000
 	summonInvalidTypeHash = 0x887AE0B0
-	// CT 的 NBLib.SSS 在 v2.0.2 中对选中记录 +0x00..+0x18 的 7 个
-	// DWORD 逐一调用该保存函数；运行中的 CT 已跟踪验证其地址为此 RVA。
-	summonSaveFunctionRVA = 0x796E60
+	// CT 的 NBLib.SSS 在 v2.0.4 中对选中记录 +0x00..+0x18 的 7 个
+	// DWORD 逐一调用该保存函数；CE executeCodeEx 实测其地址为此 RVA。
+	// 2.0.2/2.0.3 为 0x796E60，2.0.4 移动为 0x797E00。
+	summonSaveFunctionRVA = 0x797E00
 )
 
 type SummonInfo struct {

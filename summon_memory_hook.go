@@ -9,7 +9,7 @@ import (
 
 const (
 	summonMemoryHookSize       = uintptr(5)
-	summonMemoryKnownHookRVA   = uintptr(0x3F1FB1B)
+	summonMemoryKnownHookRVA   = uintptr(0x3F20ABB) // 2.0.4; was 0x3F1FB1B on 2.0.2
 	summonMemoryCaveDataOffset = uintptr(0x40)
 	summonMemoryOriginalOffset = uintptr(17)
 )
