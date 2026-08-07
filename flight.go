@@ -68,7 +68,7 @@ func (a *App) FlightSetEnabled(enabled bool, speed float32) (FlightStatus, error
 		a.flightSpeed = speed
 		return FlightStatus{Enabled: true, Speed: speed}, nil
 	}
-	if _, _, err := a.playerPositionAddresses(); err != nil {
+	if _, _, _, err := a.playerPositionAddresses(); err != nil {
 		return FlightStatus{}, err
 	}
 	if err := a.setFlightGravityDisabled(true); err != nil {
@@ -84,11 +84,10 @@ func (a *App) FlightSetEnabled(enabled bool, speed float32) (FlightStatus, error
 }
 
 func (a *App) setFlightGravityDisabled(disabled bool) error {
-	_, _, layout, err := a.playerPositionAddressesForLayout()
+	addr, err := a.resolveGravityAddress()
 	if err != nil {
 		return fmt.Errorf("定位飞行模式游戏布局失败: %w", err)
 	}
-	addr := a.moduleBase + layout.gravityRVA
 	current := make([]byte, 8)
 	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
 		return fmt.Errorf("读取飞行重力指令失败: %w", err)

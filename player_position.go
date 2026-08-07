@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"math"
 	"unsafe"
+
+	"golang.org/x/sys/windows"
 )
 
 const (
@@ -19,52 +21,45 @@ const (
 
 type playerPositionLayout struct {
 	version        string
-	signatureRVA   uintptr
-	slotTableRVA   uintptr
-	gravityRVA     uintptr
-	signature      []byte
-	signatureMask  []bool
+	// 引用 slotTable 的代码模式（mov rcx,[rip+disp]...），AOB 通配字节用 0 + mask false
+	signatureAOB   []byte
+	signatureAMask []bool
 }
 
-// 2.0.2/2.0.3 共享的玩家坐标获取签名（mov rax,[rip+disp] 开头，引用 slotTable）
-var playerPositionSignatureLegacy = []byte{
-	0x48, 0x8B, 0, 0, 0, 0, 0, 0x48, 0x85, 0, 0x74, 0, 0x48, 0x8B, 0, 0xFF,
-	0, 0, 0, 0, 0, 0x48, 0x85, 0, 0x74, 0, 0x48, 0x8B, 0, 0, 0x48, 0x8B,
-	0, 0, 0x48, 0x8B, 0, 0x48, 0x8D, 0, 0, 0, 0xFF, 0, 0, 0, 0, 0, 0xEB,
-	0, 0xC5, 0, 0, 0, 0, 0, 0, 0, 0xC5, 0, 0, 0, 0, 0, 0x48, 0x8B, 0,
-	0x48, 0x8D,
+// 2.0.4 玩家坐标获取（实测 0xC2541B 起 26 字节；displacement 指向 slotTable）
+// 48 8B 0D ?? ?? ?? ?? | 48 85 C9 | 74 71 | 48 8B 01 | FF 90 C0 04 00 00 | 48 85 C0 | 74 63
+var playerPositionLayout204 = playerPositionLayout{
+	version: "2.0.4",
+	signatureAOB: []byte{
+		0x48, 0x8B, 0x0D, 0, 0, 0, 0, 0x48, 0x85, 0xC9, 0x74, 0x71, 0x48, 0x8B, 0x01, 0xFF,
+		0x90, 0xC0, 0x04, 0x00, 0x00, 0x48, 0x85, 0xC0, 0x74, 0x63,
+	},
+	signatureAMask: []bool{
+		true, true, true, false, false, false, false, true, true, true, true, true, true, true, true, true,
+		true, true, true, true, true, true, true, true, true, true,
+	},
 }
 
-var playerPositionSignatureMaskLegacy = []bool{
-	true, true, false, false, false, false, false, true, true, false, true, false, true, true, false, true,
-	false, false, false, false, false, true, true, false, true, false, true, true, false, false, true, true,
-	false, false, true, true, false, true, true, false, false, false, true, false, false, false, false, false,
-	true, false, true, false, false, false, false, false, false, false, true, false, false, false, false, false,
-	true, true, false, true, true,
-}
+var playerPositionLayouts = [...]playerPositionLayout{playerPositionLayout204}
 
-// 2.0.4 玩家坐标获取签名（mov rcx,[rip+disp] 开头，引用 slotTable；0xC2541B 起 69 字节）
-var playerPositionSignature204 = []byte{
-	0x48, 0x8B, 0x0D, 0, 0, 0, 0, 0x48, 0x85, 0xC9, 0x74, 0x71, 0x48, 0x8B, 0x01, 0xFF,
-	0x90, 0xC0, 0x04, 0x00, 0x00, 0x48, 0x85, 0xC0, 0x74, 0x63, 0x8B, 0x3D, 0, 0, 0, 0,
-	0x8D, 0x87, 0x00, 0xF3, 0xFF, 0xFF, 0x83, 0xF8, 0x04, 0x77, 0x42, 0x83, 0xF8, 0x03, 0x74,
-	0x3D, 0x48, 0x8B, 0x0D, 0, 0, 0, 0, 0xC5, 0xF8, 0x28, 0xFE, 0x48, 0x85, 0xC9, 0x74,
-	0x1A, 0x48, 0x8B, 0x01, 0xFF, 0x90,
+// 玩家坐标 getter（AOB 唯一命中）：mov rax,rdx; vmovaps xmm0,[rcx+0xD0]; vmovaps [rdx],xmm0; ret
+var gravityGetterAOB = []byte{
+	0x48, 0x89, 0xD0, 0xC5, 0xF8, 0x28, 0x81, 0xD0, 0x00, 0x00, 0x00, 0xC5, 0xF8, 0x29, 0x02, 0xC3,
 }
-
-var playerPositionSignatureMask204 = []bool{
-	true, true, true, false, false, false, false, true, true, true, true, true, true, true, true, true,
-	true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false,
+var gravityGetterMask = []bool{
 	true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-	true, true, true, false, false, false, false, true, true, true, true, true, true, true, true,
-	true, true, true, true, true, true,
 }
 
-var playerPositionLayouts = [...]playerPositionLayout{
-	{version: "2.0.2", signatureRVA: 0x22CECA0, slotTableRVA: 0x7036860, gravityRVA: 0x39DD964, signature: playerPositionSignatureLegacy, signatureMask: playerPositionSignatureMaskLegacy},
-	{version: "2.0.3", signatureRVA: 0x22C9310, slotTableRVA: 0x7033820, gravityRVA: 0x39D8E24, signature: playerPositionSignatureLegacy, signatureMask: playerPositionSignatureMaskLegacy},
-	{version: "2.0.4", signatureRVA: 0xC2541B, slotTableRVA: 0x7034AA0, gravityRVA: 0x39D9DC4, signature: playerPositionSignature204, signatureMask: playerPositionSignatureMask204},
+// 坐标 setter（位于 getter 前方 0x200 内）：vmovaps xmm0,[rdx]; vmovaps [rcx+0xD0],xmm0; ret
+// gravity 指令（vmovaps [rcx+0xD0],xmm0）= setter 命中 + 4
+var gravitySetterAOB = []byte{
+	0xC5, 0xF8, 0x28, 0x02, 0xC5, 0xF8, 0x29, 0x81, 0xD0, 0x00, 0x00, 0x00, 0xC3,
 }
+var gravitySetterMask = []bool{
+	true, true, true, true, true, true, true, true, true, true, true, true, true,
+}
+
+var gravityOriginal = []byte{0xC5, 0xF8, 0x29, 0x81, 0xD0, 0x00, 0x00, 0x00}
 
 type PlayerPosition struct {
 	X       float32 `json:"x"`
@@ -75,7 +70,7 @@ type PlayerPosition struct {
 
 // PlayerPositionGet reads the primary player's world position from a verified runtime layout.
 func (a *App) PlayerPositionGet() (PlayerPosition, error) {
-	player, transformNode, err := a.playerPositionAddresses()
+	player, transformNode, err := a.cachedPlayerPositionAddresses()
 	if err != nil {
 		return PlayerPosition{}, err
 	}
@@ -101,7 +96,7 @@ func (a *App) PlayerPositionSet(x, y, z float32) (PlayerPosition, error) {
 	if err := validatePlayerPosition(x, y, z); err != nil {
 		return PlayerPosition{}, err
 	}
-	player, transformNode, err := a.playerPositionAddresses()
+	player, transformNode, err := a.cachedPlayerPositionAddresses()
 	if err != nil {
 		return PlayerPosition{}, err
 	}
@@ -128,53 +123,134 @@ func (a *App) PlayerPositionSet(x, y, z float32) (PlayerPosition, error) {
 	return position, nil
 }
 
-func (a *App) playerPositionAddresses() (uintptr, uintptr, error) {
-	player, transformNode, _, err := a.playerPositionAddressesForLayout()
-	return player, transformNode, err
+func (a *App) playerPositionAddresses() (uintptr, uintptr, uintptr, error) {
+	player, transformNode, gravityAddr, err := a.playerPositionAddressesForLayout()
+	return player, transformNode, gravityAddr, err
 }
 
-func (a *App) playerPositionAddressesForLayout() (uintptr, uintptr, playerPositionLayout, error) {
+// cachedPlayerPositionAddresses 返回缓存的玩家实体/坐标节点；缓存失效时重新 AOB 定位。
+// 飞行循环每 16ms 调用 PlayerPositionGet，AOB 全模块扫描不能走热路径。
+func (a *App) cachedPlayerPositionAddresses() (uintptr, uintptr, error) {
+	if a.playerPosPlayer != 0 && a.playerPosNode != 0 && a.validPlayerPositionNode(a.playerPosNode) {
+		return a.playerPosPlayer, a.playerPosNode, nil
+	}
+	player, node, _, err := a.playerPositionAddresses()
+	if err != nil {
+		return 0, 0, err
+	}
+	a.playerPosPlayer, a.playerPosNode = player, node
+	return player, node, nil
+}
+
+// playerPositionAddressesForLayout 用 AOB 定位玩家坐标链：签名代码 → slotTable（动态 disp）
+// → player → +0x28 → root → +0x08 → node，并校验 node 坐标合理性；同时解析飞行重力地址。
+func (a *App) playerPositionAddressesForLayout() (uintptr, uintptr, uintptr, error) {
 	if a.hProcess == 0 || a.moduleBase == 0 {
-		return 0, 0, playerPositionLayout{}, fmt.Errorf("未连接游戏进程")
+		return 0, 0, 0, fmt.Errorf("未连接游戏进程")
 	}
 
-	var matched playerPositionLayout
+	var lastErr error
 	for _, layout := range playerPositionLayouts {
-		signatureAddress := a.moduleBase + layout.signatureRVA
-		candidate := make([]byte, playerPositionSignatureSize)
-		if err := readProcessMemory(a.hProcess, signatureAddress, unsafe.Pointer(&candidate[0]), uintptr(len(candidate))); err != nil {
+		matches, err := a.scanPatternAll(layout.signatureAOB, layout.signatureAMask)
+		if err != nil {
+			lastErr = err
 			continue
 		}
-		if !matchPattern(candidate, layout.signature, layout.signatureMask) {
-			continue
+		for _, signatureAddress := range matches {
+			candidate := make([]byte, playerPositionSignatureSize)
+			if err := readProcessMemory(a.hProcess, signatureAddress, unsafe.Pointer(&candidate[0]), uintptr(len(candidate))); err != nil {
+				continue
+			}
+			if !matchPattern(candidate, layout.signatureAOB, layout.signatureAMask) {
+				continue
+			}
+			// displacement（lea/mov [rip+disp] 的 4 字节）→ slotTable
+			displacement := int64(int32(binary.LittleEndian.Uint32(candidate[3:7])))
+			slotTable := uintptr(int64(signatureAddress) + 7 + displacement)
+			if slotTable == 0 || slotTable < a.moduleBase {
+				continue
+			}
+			player, err := a.readPlayerPositionPointer(slotTable)
+			if err != nil || player == 0 {
+				continue
+			}
+			transformRoot, err := a.readPlayerPositionPointer(player + playerPositionTransformRoot)
+			if err != nil || transformRoot == 0 {
+				continue
+			}
+			transformNode, err := a.readPlayerPositionPointer(transformRoot + playerPositionTransformNode)
+			if err != nil || transformNode == 0 {
+				continue
+			}
+			if !a.validPlayerPositionNode(transformNode) {
+				continue
+			}
+			gravityAddr, err := a.resolveGravityAddress()
+			if err != nil {
+				return 0, 0, 0, fmt.Errorf("定位飞行重力失败: %w", err)
+			}
+			return player, transformNode, gravityAddr, nil
 		}
-		displacement := int64(int32(binary.LittleEndian.Uint32(candidate[3:7])))
-		resolved := int64(signatureAddress) + 7 + displacement
-		if resolved <= 0 || uintptr(resolved) != a.moduleBase+layout.slotTableRVA {
-			continue
+	}
+	if lastErr != nil {
+		return 0, 0, 0, fmt.Errorf("玩家坐标 AOB 扫描失败: %v", lastErr)
+	}
+	return 0, 0, 0, fmt.Errorf("玩家坐标签名不匹配，暂不支持当前游戏版本")
+}
+
+func (a *App) validPlayerPositionNode(node uintptr) bool {
+	for _, off := range []uintptr{playerPositionXOffset, playerPositionYOffset, playerPositionZOffset} {
+		value, err := a.readPlayerPositionFloat(node + off)
+		if err != nil || math.IsNaN(float64(value)) || math.IsInf(float64(value), 0) || math.Abs(float64(value)) > float64(playerPositionMaximumAbsValue) {
+			return false
 		}
-		if matched.version != "" {
-			return 0, 0, playerPositionLayout{}, fmt.Errorf("玩家坐标签名匹配多个游戏布局")
+	}
+	return true
+}
+
+// resolveGravityAddress 定位飞行重力指令（vmovaps [rcx+0xD0],xmm0）：
+// 玩家坐标 getter AOB 唯一命中 → 向前 0x200 内找坐标 setter → gravity 指令 = setter+4。结果缓存。
+func (a *App) resolveGravityAddress() (uintptr, error) {
+	if a.playerGravityAddr != 0 {
+		return a.playerGravityAddr, nil
+	}
+	getter, err := a.scanPatternUnique(gravityGetterAOB, gravityGetterMask, "飞行坐标读取特征")
+	if err != nil {
+		return 0, err
+	}
+	setter, err := scanPatternBackward(a.hProcess, a.moduleBase, getter, gravitySetterAOB, gravitySetterMask, 0x200)
+	if err != nil {
+		return 0, err
+	}
+	gravityAddr := setter + 4
+	current := make([]byte, 8)
+	if err := readProcessMemory(a.hProcess, gravityAddr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
+		return 0, fmt.Errorf("读取飞行重力指令失败: %w", err)
+	}
+	if !bytesEqual(current, gravityOriginal) {
+		return 0, fmt.Errorf("飞行重力指令字节未知: %s", bytesToHex(current))
+	}
+	a.playerGravityAddr = gravityAddr
+	return gravityAddr, nil
+}
+
+// scanPatternBackward 从 endAddr 向前 maxBack 字节范围内逆向匹配（取离 endAddr 最近的命中）。
+func scanPatternBackward(h windows.Handle, moduleBase, endAddr uintptr, pattern []byte, mask []bool, maxBack uintptr) (uintptr, error) {
+	start := endAddr - maxBack
+	if start < moduleBase {
+		start = moduleBase
+	}
+	size := endAddr - start
+	buf := make([]byte, int(size))
+	if err := readProcessMemory(h, start, unsafe.Pointer(&buf[0]), uintptr(len(buf))); err != nil {
+		return 0, fmt.Errorf("读取逆向扫描区域失败: %w", err)
+	}
+	for i := len(buf) - len(pattern); i >= 0; i-- {
+		if matchPattern(buf[i:], pattern, mask) {
+			return start + uintptr(i), nil
 		}
-		matched = layout
 	}
-	if matched.version == "" {
-		return 0, 0, playerPositionLayout{}, fmt.Errorf("玩家坐标签名不匹配，暂不支持当前游戏版本")
-	}
-	slotTable := a.moduleBase + matched.slotTableRVA
-	player, err := a.readPlayerPositionPointer(slotTable)
-	if err != nil || player == 0 {
-		return 0, 0, playerPositionLayout{}, fmt.Errorf("读取玩家实体失败: %w", pointerReadError(err))
-	}
-	transformRoot, err := a.readPlayerPositionPointer(player + playerPositionTransformRoot)
-	if err != nil || transformRoot == 0 {
-		return 0, 0, playerPositionLayout{}, fmt.Errorf("读取玩家坐标根节点失败: %w", pointerReadError(err))
-	}
-	transformNode, err := a.readPlayerPositionPointer(transformRoot + playerPositionTransformNode)
-	if err != nil || transformNode == 0 {
-		return 0, 0, playerPositionLayout{}, fmt.Errorf("读取玩家坐标节点失败: %w", pointerReadError(err))
-	}
-	return player, transformNode, matched, nil
+	return 0, fmt.Errorf("逆向未找到飞行坐标写入特征")
 }
 
 func validatePlayerPosition(x, y, z float32) error {

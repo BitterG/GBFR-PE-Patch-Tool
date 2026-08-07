@@ -71,7 +71,7 @@
       },
       "position": {
         "title": "Player position",
-        "hint": "Only supports game version 2.0.2 · Read-only",
+        "hint": "Y is height",
         "location": "Position: X {x} · Y {y} · Z {z}",
         "entity": "Entity: {address}",
         "set": "Set position",

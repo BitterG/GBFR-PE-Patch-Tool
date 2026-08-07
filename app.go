@@ -132,6 +132,9 @@ type App struct {
 	wrightstoneMemoryCaveAddr  uintptr
 	wrightstoneMemoryOriginal  []byte
 	itemSaveFunctionAddr       uintptr // AOB-resolved shared inventory save fn
+	playerGravityAddr          uintptr // AOB-resolved flight gravity instruction
+	playerPosPlayer            uintptr // cached player entity (AOB-resolved)
+	playerPosNode              uintptr // cached player transform node
 	summonMemoryHookAddr       uintptr
 	summonMemoryCaveAddr       uintptr
 	summonMemoryPointerAddr    uintptr

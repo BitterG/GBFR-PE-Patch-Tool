@@ -71,7 +71,7 @@
       },
       "position": {
         "title": "玩家坐标",
-        "hint": "仅支持游戏 2.0.2 · 只读",
+        "hint": "Y为高度",
         "location": "位置: X {x} · Y {y} · Z {z}",
         "entity": "实体: {address}",
         "set": "设置坐标",
