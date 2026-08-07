@@ -9,7 +9,6 @@ import (
 
 const (
 	summonMemoryHookSize       = uintptr(5)
-	summonMemoryKnownHookRVA   = uintptr(0x3F20ABB) // 2.0.4; was 0x3F1FB1B on 2.0.2
 	summonMemoryCaveDataOffset = uintptr(0x40)
 	summonMemoryOriginalOffset = uintptr(17)
 )
@@ -25,19 +24,13 @@ func (a *App) summonSelectedAddress() (uintptr, error) {
 		return 0, err
 	}
 	if a.summonMemoryHookAddr == 0 {
-		// 当前 v2.0.2 可执行文件中，CT 的同一特征命中该 RVA。先用这个
-		// 已验证位置，只有字节不匹配时才退回 AOB 扫描，避免扫描器漏读大模块区段。
-		candidate := a.moduleBase + summonMemoryKnownHookRVA
-		probe := make([]byte, len(summonMemorySelectedPattern))
-		if e := readProcessMemory(a.hProcess, candidate, unsafe.Pointer(&probe[0]), uintptr(len(probe))); e == nil && len(findPatternMatches(probe, candidate, summonMemorySelectedPattern, summonMemorySelectedMask)) == 1 {
-			a.summonMemoryHookAddr = candidate
-		} else {
-			x, e := a.scanPatternUnique(summonMemorySelectedPattern, summonMemorySelectedMask, "当前选中召唤石特征")
-			if e != nil {
-				return 0, e
-			}
-			a.summonMemoryHookAddr = x
+		// 纯 AOB 定位（模式前 5 字节通配，兼容已 hook 状态），游戏版本更新后自动适配。
+		// 历史已知位置：2.0.2 = 0x3F1FB1B，2.0.4 = 0x3F20ABB。
+		x, e := a.scanPatternUnique(summonMemorySelectedPattern, summonMemorySelectedMask, "当前选中召唤石特征")
+		if e != nil {
+			return 0, e
 		}
+		a.summonMemoryHookAddr = x
 	}
 	cur := make([]byte, summonMemoryHookSize)
 	if e := readProcessMemory(a.hProcess, a.summonMemoryHookAddr, unsafe.Pointer(&cur[0]), uintptr(len(cur))); e != nil {

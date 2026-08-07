@@ -14,10 +14,9 @@ const (
 	summonRecordSize      = 0x1C
 	summonMaxRecords      = 1000
 	summonInvalidTypeHash = 0x887AE0B0
-	// CT 的 NBLib.SSS 在 v2.0.4 中对选中记录 +0x00..+0x18 的 7 个
-	// DWORD 逐一调用该保存函数；CE executeCodeEx 实测其地址为此 RVA。
-	// 2.0.2/2.0.3 为 0x796E60，2.0.4 移动为 0x797E00。
-	summonSaveFunctionRVA = 0x797E00
+	// 保存函数不再硬编码 RVA：与 sigil/wrightstone 共用 item_save_memory.go 的
+	// resolveItemSaveFunction()（AOB 特征 `55 48 83 EC 60 48 8D 6C 24 60 ...` 唯一命中），
+	// 游戏版本更新后自动适配。历史值：2.0.2/2.0.3 = 0x796E60，2.0.4 = 0x797E00。
 )
 
 type SummonInfo struct {
@@ -243,7 +242,10 @@ func (a *App) SummonUpdate(item SummonUpdate) (SummonInfo, error) {
 		}
 	}
 
-	saveFn := a.moduleBase + summonSaveFunctionRVA
+	saveFn, err := a.resolveItemSaveFunction()
+	if err != nil {
+		return SummonInfo{}, fmt.Errorf("定位召唤石保存函数失败: %w", err)
+	}
 	for _, offset := range []uintptr{0x00, 0x04, 0x08, 0x0C, 0x10, 0x14, 0x18} {
 		if err := a.callRemoteOneArg(saveFn, address+offset); err != nil {
 			return SummonInfo{}, fmt.Errorf("调用召唤石保存函数失败: %w", err)
