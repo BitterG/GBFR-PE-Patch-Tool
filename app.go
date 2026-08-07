@@ -2322,7 +2322,7 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:            "monster_hp",
 		Name:          "怪物多倍血",
-		RVA:           0x1F7472E,
+		RVA:           0x1F756CE, // 2.0.4; was 0x1F7472E
 		Pattern:       []byte{0x48, 0x8B, 0x41, 0x10, 0x45, 0x31, 0xC9, 0x48, 0x29, 0xD0, 0x4C, 0x0F, 0x43, 0xC8, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x49, 0x0F, 0x47, 0xC1, 0x45, 0x85, 0xC0, 0x49, 0x0F, 0x44, 0xC1, 0x48, 0x89, 0x41, 0x10, 0xC3},
 		PatternMask:   []bool{true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
 		PatternOffset: 0x1E,
@@ -2332,7 +2332,7 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:            "monster_damage_new",
 		Name:          "怪物伤害-新",
-		RVA:           0x1F74700,
+		RVA:           0x1F756A0, // 2.0.4; was 0x1F74700
 		Pattern:       []byte{0x48, 0x89, 0x51, 0x18, 0x48, 0x89, 0x51, 0x10, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0x48, 0x89, 0x51, 0x18, 0xC3, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0x48, 0x89, 0x51, 0x10, 0xC3},
 		PatternMask:   []bool{true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
 		PatternOffset: 0x20,
@@ -2340,11 +2340,14 @@ var monsterPatchPoints = []monsterPatchPoint{
 		Hook:          true,
 	},
 	{
-		ID:       "defense_multiplier",
-		Name:     "防御倍率(单人)",
-		RVA:      0x1FB77EE,
-		Original: []byte{0x3D, 0x00, 0xE1, 0xF5, 0x05},
-		Hook:     true,
+		ID:            "defense_multiplier",
+		Name:          "防御倍率(单人)",
+		RVA:           0x1FB878E, // 2.0.4; was 0x1FB77EE
+		Pattern:       []byte{0x3D, 0x00, 0xE1, 0xF5, 0x05},
+		PatternMask:   []bool{true, true, true, true, true},
+		PatternOffset: 0,
+		Original:      []byte{0x3D, 0x00, 0xE1, 0xF5, 0x05},
+		Hook:          true,
 	},
 	{
 		ID:       "monster_damage",
@@ -2356,7 +2359,7 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:            "monster_stun",
 		Name:          "怪物多倍昏厥条",
-		RVA:           0xB228A8,
+		RVA:           0xB23848, // 2.0.4; was 0xB228A8
 		Pattern:       []byte{0xC5, 0xFA, 0x58, 0x86, 0x60, 0x00, 0x00, 0x00, 0xC5, 0xFA, 0x5D, 0x86, 0x64, 0x00, 0x00, 0x00, 0xC5, 0xFA, 0x11, 0x86, 0x60, 0x00, 0x00, 0x00},
 		PatternMask:   []bool{true, true, true, true, true, false, false, false, true, true, true, true, true, false, false, false, true, true, true, true, true, false, false, false},
 		PatternOffset: 0,
@@ -2366,7 +2369,7 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:            "overdrive_state",
 		Name:          "怪物 Overdrive 状态",
-		RVA:           0x22C5986,
+		RVA:           0x23C6926, // 2.0.4; was 0x22C5986
 		Pattern:       []byte{0x8B, 0x46, 0x10, 0x83, 0xF8, 0x03, 0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, 0x83, 0xF8, 0x01, 0x0F, 0x84, 0x00, 0x00, 0x00, 0x00},
 		PatternMask:   []bool{true, true, true, true, true, true, true, true, false, false, false, false, true, true, true, true, true, false, false, false, false},
 		PatternOffset: 0,
@@ -2376,7 +2379,7 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:            "od_rate",
 		Name:          "OD条变化率",
-		RVA:           0x22C5E50,
+		RVA:           0x23C6DF0, // 2.0.4; was 0x22C5E50
 		Pattern:       []byte{0x80, 0x79, 0x50, 0x00, 0x74, 0x13, 0x48, 0x03, 0x51, 0x18},
 		PatternMask:   []bool{true, true, true, true, true, true, true, true, true, true},
 		PatternOffset: 0,
@@ -2711,7 +2714,7 @@ var odRateSuffixPattern = []byte{0x48, 0xC7, 0xC0, 0xFF, 0xFF, 0xFF, 0xFF, 0x48,
 
 // Second OD-gauge accumulation path (Beelzebub-style bosses): inlined into
 // their update function. Hooked together with the vtable+72 point by the DLL.
-const odRateInlineRVA = 0x2B3E7DE
+const odRateInlineRVA = 0x2B3F77E // 2.0.4; was 0x2B3E7DE
 
 var odRateInlineOriginal = []byte{0x48, 0x03, 0x7E, 0x18, 0x48, 0xC7, 0xC0, 0xFF, 0xFF, 0xFF, 0xFF, 0x48, 0x0F, 0x43, 0xC7, 0x48, 0x89, 0x46, 0x18}
 
@@ -2829,6 +2832,34 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	}
 	if point.ID == "od_rate" && a.odRateAddr != 0 {
 		return a.odRateAddr, nil
+	}
+	// Unified RVA fast-path: validate the fixed RVA bytes and tolerate the
+	// already-hooked (E9) / already-patched state. This keeps status reads
+	// working after a hook is installed (AOB patterns of hook points get
+	// clobbered by the E9 at the target), and only falls through to AOB
+	// scanning when the RVA is stale (game updated).
+	if point.RVA != 0 && len(point.Original) > 0 {
+		target := a.moduleBase + point.RVA
+		entry := make([]byte, len(point.Original))
+		if err := readProcessMemory(a.hProcess, target, unsafe.Pointer(&entry[0]), uintptr(len(entry))); err == nil {
+			if bytesEqual(entry, point.Original) ||
+				(point.Hook && len(entry) > 0 && entry[0] == 0xE9) ||
+				(!point.Hook && bytesEqual(entry, point.Patch)) {
+				switch point.ID {
+				case "overdrive_state":
+					a.overdriveStateAddr = target
+				case "monster_stun":
+					a.monsterStunAddr = target
+				case "monster_damage_new":
+					a.monsterDamageNewAddr = target
+				case "monster_hp":
+					a.monsterHPAddr = target
+				case "od_rate":
+					a.odRateAddr = target
+				}
+				return target, nil
+			}
+		}
 	}
 	if point.ID == "od_rate" {
 		// Resolve by fixed RVA first and validate the bytes; only fall back

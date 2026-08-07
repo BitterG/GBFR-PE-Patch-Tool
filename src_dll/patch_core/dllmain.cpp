@@ -1,6 +1,7 @@
 // dllmain.cpp : 定义 DLL 应用程序的入口点。
 #include "pch.h"
 #include <Windows.h>
+#include <psapi.h>
 #include <cstdint>
 #include <cstdlib>
 #include <libmem/libmem.h>
@@ -88,6 +89,8 @@ struct PatchPoint
     const char* id;
     const wchar_t* name;
     lm_address_t rva;
+    const char* signature;        // AOB fallback signature (nullptr = RVA only)
+    lm_address_t signatureOffset; // signature match -> hook point offset
     const lm_byte_t* expected;
     lm_size_t size;
     const lm_byte_t* patch;
@@ -122,6 +125,7 @@ static const lm_byte_t kMonsterDamageExpected[] = { 0x81, 0xBE, 0xD4, 0x00, 0x00
 //   jb  0x1FB7804         ; 0x1FB77F3
 // Party-wide "defense multiplier": divide eax by the multiplier when r14 is a player.
 static const lm_byte_t kDefenseMultiplierExpected[] = { 0x3D, 0x00, 0xE1, 0xF5, 0x05 };
+static const char* kDefenseMultiplierSignature = "3D 00 E1 F5 05";
 static const lm_byte_t kInventorySet45Expected[] = { 0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1 };
 
 static const lm_byte_t kPurpleExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x10, 0x0A, 0x00, 0x00 };
@@ -151,19 +155,22 @@ static const lm_byte_t kOdRateInlineExpected[] = { 0x48, 0x03, 0x7E, 0x18, 0x48,
 static const lm_byte_t kNop9[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 
 static const PatchPoint kMonsterPatches[] = {
-    { "link_time_no_drain", L"link time no drain", 0x187228, kLinkTimeExpected, sizeof(kLinkTimeExpected), kNop10, false },
-    { "link_time_disable", L"disable link time", 0x187228, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
-    { "monster_hp", L"monster hp", 0x1F7472E, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
-    { "monster_damage_new", L"monster damage new", 0x1F74700, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
-    { "defense_multiplier", L"defense multiplier", 0x1FB77EE, kDefenseMultiplierExpected, sizeof(kDefenseMultiplierExpected), nullptr, true },
-    { "monster_damage", L"monster damage", 0x1FBDEB4, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
-    { "monster_stun", L"monster stun", 0xB228A8, kStunExpected, sizeof(kStunExpected), nullptr, true },
-    { "overdrive_state", L"overdrive state", 0x22C5986, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
-    { "od_rate", L"od gauge rate", 0x22C5E50, kOdRateExpected, sizeof(kOdRateExpected), nullptr, true },
-    { "inventory_set_45", L"inventory set 45", 0x34F8F1, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
-    { "purple_drain", L"purple bar drain", 0xA0379A, kPurpleExpected, sizeof(kPurpleExpected), kNop9, false },
-    { "blue_grow", L"blue bar grow", 0xA09AF1, kBlueGrowExpected, sizeof(kBlueGrowExpected), kNop9, false },
-    { "blue_drain", L"blue bar drain", 0xA03F38, kBlueDrainExpected, sizeof(kBlueDrainExpected), kNop9, false },
+    { "link_time_no_drain", L"link time no drain", 0x187228, nullptr, 0, kLinkTimeExpected, sizeof(kLinkTimeExpected), kNop10, false },
+    { "link_time_disable", L"disable link time", 0x187228, nullptr, 0, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
+    // 2.0.4 re-baselined: monster_hp 0x1F7472E->0x1F756CE, damage_new 0x1F74700->0x1F756A0,
+    // defense 0x1FB77EE->0x1FB878E, stun 0xB228A8->0xB23848, overdrive 0x22C5986->0x23C6926,
+    // od_rate 0x22C5E50->0x23C6DF0. Signature fallback keeps them version-proof.
+    { "monster_hp", L"monster hp", 0x1F756CE, kMonsterHpSignature, 0x1E, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
+    { "monster_damage_new", L"monster damage new", 0x1F756A0, kMonsterDamageNewSignature, 0x20, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
+    { "defense_multiplier", L"defense multiplier", 0x1FB878E, kDefenseMultiplierSignature, 0, kDefenseMultiplierExpected, sizeof(kDefenseMultiplierExpected), nullptr, true },
+    { "monster_damage", L"monster damage", 0x1FBDEB4, nullptr, 0, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
+    { "monster_stun", L"monster stun", 0xB23848, kStunSignature, 0, kStunExpected, sizeof(kStunExpected), nullptr, true },
+    { "overdrive_state", L"overdrive state", 0x23C6926, kOverdriveSignature, 0, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
+    { "od_rate", L"od gauge rate", 0x23C6DF0, kOdRateSignature, 0, kOdRateExpected, sizeof(kOdRateExpected), nullptr, true },
+    { "inventory_set_45", L"inventory set 45", 0x34F8F1, nullptr, 0, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
+    { "purple_drain", L"purple bar drain", 0xA0379A, nullptr, 0, kPurpleExpected, sizeof(kPurpleExpected), kNop9, false },
+    { "blue_grow", L"blue bar grow", 0xA09AF1, nullptr, 0, kBlueGrowExpected, sizeof(kBlueGrowExpected), kNop9, false },
+    { "blue_drain", L"blue bar drain", 0xA03F38, nullptr, 0, kBlueDrainExpected, sizeof(kBlueDrainExpected), kNop9, false },
 };
 
 static bool BytesEqual(const lm_byte_t* a, const lm_byte_t* b, lm_size_t size)
@@ -755,15 +762,13 @@ static bool PatchDefenseHook(lm_address_t target, wchar_t* message, size_t messa
     lm_byte_t code[256]{};
     size_t i = 0;
     // Player detection via a shared player-only vtable slot instead of an
-    // exhaustive vtable list. Verified with CE breakpoints at RVA 0x1FB77EE:
-    // vtable slot 7 (0x96DE00) is shared by ALL battle entities (players AND
-    // monsters, e.g. Em8300/BehaviorDummy) — useless. vtable slot 2 differs:
-    // players Pl2400/Pl2800 = 0x7FF63B73A9D0 (RVA 0x9CA9D0), monsters =
-    // 0x7FF63B6DDD20. (If a different playable character turns out to have
+    // exhaustive vtable list. Verified with CE breakpoints at RVA 0x1FB878E
+    // (2.0.4): players vtable slot 2 = RVA 0x9CB970 (was 0x9CA9D0), monsters
+    // = 0x2938850. (If a different playable character turns out to have
     // another slot-2 value, add it to a comparison list.)
     HMODULE gameModule = GetModuleHandleW(L"granblue_fantasy_relink.exe");
     uintptr_t gameBase = reinterpret_cast<uintptr_t>(gameModule);
-    const uintptr_t playerVtableSlot2 = gameBase + 0x9CA9D0;
+    const uintptr_t playerVtableSlot2 = gameBase + 0x9CB970;
     uintptr_t stateAddr = reinterpret_cast<uintptr_t>(g_playerPointerState);
     code[i++] = 0x52;                                                                               // push rdx
     code[i++] = 0x41; code[i++] = 0x50;                                                             // push r8
@@ -1193,6 +1198,15 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
         return false;
     }
     module.base = reinterpret_cast<lm_address_t>(gameModule);
+    // module.size must be real for the AOB fallback scan range; it was left 0
+    // (LM_SigScan with a 0 size scans a bogus range and can land on a wrong
+    // match -> "AOB target mismatch"). GetModuleInformation fills the true
+    // in-memory image size without relying on libmem.
+    MODULEINFO mi{};
+    if (GetModuleInformation(GetCurrentProcess(), gameModule, &mi, sizeof(mi)))
+    {
+        module.size = static_cast<lm_size_t>(mi.SizeOfImage);
+    }
 
     // defense_multiplier detects players by victim vtable in its own cave and
     // must NOT trigger the pointer-capture hook (its page can be encrypted at
@@ -1211,26 +1225,55 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
         if (!ShouldApply(patchId, point)) continue;
         ++selected;
 
-        // All patches resolve by fixed RVA. LM_SigScan over the 136 MB module
-        // can fault on unreadable pages (c0000005) and crash the game on
-        // re-injection (see od_rate history), so it is intentionally unused.
+        // Resolve by fixed RVA first (fast path, no full-module scan). If the
+        // bytes no longer match (game updated), fall back to the point's AOB
+        // signature so the patch stays version-proof. LM_SigScan is wrapped in
+        // SEH because scanning the 136 MB module can fault on unreadable pages
+        // (see od_rate history).
         lm_address_t target = module.base + point.rva;
         lm_byte_t current[16]{};
-        if (point.size > sizeof(current) || LM_ReadMemory(target, current, point.size) != point.size)
+        bool readOk = point.size <= sizeof(current) && LM_ReadMemory(target, current, point.size) == point.size;
+        if (readOk)
         {
-            swprintf_s(message, messageSize, L"read failed: %s at +%llX", point.name, static_cast<unsigned long long>(point.rva));
-            return false;
+            if (point.hook && current[0] == 0xE9)
+            {
+                ++already;
+                continue;
+            }
+            if (!point.hook && BytesEqual(current, point.patch, point.size))
+            {
+                ++already;
+                continue;
+            }
         }
-
-        if (point.hook && current[0] == 0xE9)
+        if (!readOk || !BytesEqual(current, point.expected, point.size))
         {
-            ++already;
-            continue;
-        }
-        if (!point.hook && BytesEqual(current, point.patch, point.size))
-        {
-            ++already;
-            continue;
+            if (point.signature == nullptr)
+            {
+                swprintf_s(message, messageSize, L"unexpected bytes: %s at +%llX", point.name, static_cast<unsigned long long>(point.rva));
+                return false;
+            }
+            lm_address_t sigMatch = 0;
+            __try
+            {
+                sigMatch = LM_SigScan(point.signature, module.base, module.size);
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER)
+            {
+                sigMatch = 0;
+            }
+            if (sigMatch == 0)
+            {
+                swprintf_s(message, messageSize, L"AOB not found: %s (rva +%llX)", point.name, static_cast<unsigned long long>(point.rva));
+                return false;
+            }
+            target = sigMatch + point.signatureOffset;
+            if (LM_ReadMemory(target, current, point.size) != point.size || !BytesEqual(current, point.expected, point.size))
+            {
+                swprintf_s(message, messageSize, L"AOB target mismatch: %s at +%llX", point.name, static_cast<unsigned long long>(point.rva));
+                return false;
+            }
+            swprintf_s(message, messageSize, L"AOB resolved %s: +%llX -> +%llX", point.name, static_cast<unsigned long long>(point.rva), static_cast<unsigned long long>(target - module.base));
         }
 
         if (!BytesEqual(current, point.expected, point.size))
@@ -1266,8 +1309,8 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
                 if (!PatchOdRateHook(target, message, messageSize)) return false;
                 // Additional inlined accumulation path used by
                 // Beelzebub-style bosses (their update loop does not call
-                // the vtable+72 method).
-                lm_address_t inlineTarget = module.base + 0x2B3E7DE;
+                // the vtable+72 method). 2.0.4: 0x2B3E7DE -> 0x2B3F77E.
+                lm_address_t inlineTarget = module.base + 0x2B3F77E;
                 lm_byte_t inlineCur[1]{};
                 if (LM_ReadMemory(inlineTarget, inlineCur, 1) == 1 && inlineCur[0] != 0xE9)
                 {
