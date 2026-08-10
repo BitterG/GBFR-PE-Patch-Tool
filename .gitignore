@@ -45,6 +45,10 @@
 # Local notes
 /src_dll/todo.txt
 
+# Reference material (decompiled third-party mod source — not project code)
+/chatoverlay_src/
+/自动聊天功能逆向总结.md
+
 #Git Bash/MSYS
 *.stackdump
 

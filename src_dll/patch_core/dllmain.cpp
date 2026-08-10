@@ -7,6 +7,7 @@
 #include <libmem/libmem.h>
 #include <cstdio>
 #include <cstring>
+#include <string>
 
 // 0 = refill needed, 1 = waiting for OD to begin, 2 = OD active.
 static LONG g_autoOverdrivePhase = 0;
@@ -35,6 +36,764 @@ static HANDLE g_playerPointerMapping = nullptr;
 static PlayerPointerState* g_playerPointerState = nullptr;
 static const wchar_t* kPlayerPointerName = L"Local\\GBFRPlayerInfoEditPlayerPointersV1";
 static bool g_playerPointerHookInstalled = false;
+
+static constexpr UINT kAutoChatWindowMessage = WM_APP + 0x4A1;
+static constexpr uint32_t kAutoChatMagic = 0x54414347; // "GCAT"
+static constexpr uint32_t kAutoChatVersion = 1;
+static constexpr size_t kAutoChatMessageCapacity = 256;
+static const wchar_t* kAutoChatMappingName = L"Local\\GBFRPlayerInfoEditAutoChatV1";
+
+struct AutoChatBridgeState
+{
+    uint32_t magic;
+    uint32_t version;
+    volatile LONG ready;
+    uint32_t reserved;
+    volatile LONG commandSeq;
+    volatile LONG completedSeq;
+    volatile LONG result;
+    volatile LONG messageLen;
+    char message[kAutoChatMessageCapacity];
+};
+
+static HANDLE g_autoChatMapping = nullptr;
+static HANDLE g_autoChatStopEvent = nullptr;
+static HANDLE g_autoChatDispatchThread = nullptr;
+static AutoChatBridgeState* g_autoChatBridge = nullptr;
+static HWND g_autoChatWindow = nullptr;
+static WNDPROC g_autoChatOriginalWndProc = nullptr;
+static HMODULE g_gameModule = nullptr;
+
+// Diagnostic logger shared by the auto-chat path. Writes to a temp file so the
+// Go side / user can inspect what happened without attaching a debugger.
+static void LogAutoChatDiag(const char* line)
+{
+    FILE* f = nullptr;
+    fopen_s(&f, "C:\\Users\\kugua\\AppData\\Local\\Temp\\gbfr-autochat-diag.log", "a");
+    if (f)
+    {
+        fprintf(f, "%s\n", line);
+        fclose(f);
+    }
+}
+
+static BOOL CALLBACK FindGameWindowCallback(HWND window, LPARAM param)
+{
+    DWORD processId = 0;
+    GetWindowThreadProcessId(window, &processId);
+    if (processId != GetCurrentProcessId() || GetWindow(window, GW_OWNER) != nullptr || !IsWindowVisible(window)) return TRUE;
+
+    *reinterpret_cast<HWND*>(param) = window;
+    return FALSE;
+}
+
+static LONG ExecuteAutoChatCommand()
+{
+    if (!g_autoChatBridge || !g_gameModule)
+    {
+        // Diagnostic: write the failing globals to a log file.
+        FILE* f = nullptr;
+        fopen_s(&f, "C:\\Users\\kugua\\AppData\\Local\\Temp\\gbfr-autochat-diag.log", "a");
+        if (f)
+        {
+            fprintf(f, "autochat -5: bridge=%p gameModule=%p\n",
+                    (void*)g_autoChatBridge, (void*)g_gameModule);
+            fclose(f);
+        }
+        return -5;
+    }
+    LONG length = InterlockedCompareExchange(&g_autoChatBridge->messageLen, 0, 0);
+    if (length <= 0 || static_cast<size_t>(length) >= kAutoChatMessageCapacity) return -4;
+
+    // Validate that we can resolve the Manager + sendMessage entry from the
+    // game module. Actual sending happens inside the sendMessage hook on the
+    // game thread (window-thread calls to sendMessage crash with 0xC0000005).
+    constexpr uintptr_t kManagerSlotRVA = 0x7C23460;
+    const auto base = reinterpret_cast<uintptr_t>(g_gameModule);
+    const auto managerSlot = reinterpret_cast<uintptr_t*>(base + kManagerSlotRVA);
+    const auto manager = *managerSlot;
+    if (!manager) return -2; // Manager not ready (not in online lobby)
+    return 1;
+}
+
+// ── sendMessage hook (game-thread sender, via LM_HookCode) ──
+// ui::hud::Manager::sendMessage entry RVA 0x9049F0. Each time the game calls
+// sendMessage (manual send / quick phrase), this hook checks the pending queue
+// on the game thread, sends our message through the trampoline if queued,
+// then continues the game's own call.
+static bool g_autoChatSendHookInstalled = false;
+static lm_address_t g_autoChatSendTrampoline = LM_ADDRESS_BAD;
+// ABI-safe call stub (equivalent to Reloaded.Hooks' X64.Wrapper): preserves all
+// callee-saved registers, aligns RSP to 16, moves the 5th (stack) argument into
+// shadow space, calls the sendMessage trampoline, restores and returns.
+// Direct bare calls to the trampoline from arbitrary call sites crashed the
+// game (register pollution / stack alignment); this stub mirrors the proven
+// Reloaded.Hooks wrapper the mod uses.
+static lm_address_t g_autoChatSendSafe = LM_ADDRESS_BAD;
+static lm_address_t AllocNear(lm_address_t target, size_t size);
+
+// Builds the wrapper machine code next to the trampoline. Layout (x64 MS ABI):
+//   push rbp; mov rbp,rsp; push rbx,rdi,rsi,r12,r13,r14,r15; sub rsp,8
+//   mov rax,[rbp+0x30] (category); mov [rsp+0x20],rax
+//   mov rax,<trampoline>; call rax; add rsp,8; pop r15..rbx; pop rbp; ret
+static bool BuildSendSafeWrapper(wchar_t* message, size_t messageSize)
+{
+    if (g_autoChatSendSafe != LM_ADDRESS_BAD) return true;
+    lm_address_t base = AllocNear(g_autoChatSendTrampoline, 96);
+    if (base == LM_ADDRESS_BAD)
+    {
+        swprintf_s(message, messageSize, L"alloc failed: send wrapper");
+        return false;
+    }
+    uint8_t code[96]{};
+    size_t i = 0;
+    code[i++] = 0x55;                // push rbp
+    code[i++] = 0x48; code[i++] = 0x89; code[i++] = 0xE5; // mov rbp,rsp
+    code[i++] = 0x53;                // push rbx
+    code[i++] = 0x57;                // push rdi
+    code[i++] = 0x56;                // push rsi
+    code[i++] = 0x41; code[i++] = 0x54; // push r12
+    code[i++] = 0x41; code[i++] = 0x55; // push r13
+    code[i++] = 0x41; code[i++] = 0x56; // push r14
+    code[i++] = 0x41; code[i++] = 0x57; // push r15
+    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xEC; code[i++] = 0x08; // sub rsp,8 (align)
+    code[i++] = 0x48; code[i++] = 0x8B; code[i++] = 0x45; code[i++] = 0x30; // mov rax,[rbp+0x30]
+    code[i++] = 0x48; code[i++] = 0x89; code[i++] = 0x44; code[i++] = 0x24; code[i++] = 0x20; // mov [rsp+0x20],rax
+    code[i++] = 0x48; code[i++] = 0xB8; // mov rax, imm64
+    uint64_t t = static_cast<uint64_t>(g_autoChatSendTrampoline);
+    memcpy(code + i, &t, 8); i += 8;
+    code[i++] = 0xFF; code[i++] = 0xD0; // call rax
+    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xC4; code[i++] = 0x08; // add rsp,8
+    code[i++] = 0x41; code[i++] = 0x5F; // pop r15
+    code[i++] = 0x41; code[i++] = 0x5E; // pop r14
+    code[i++] = 0x41; code[i++] = 0x5D; // pop r13
+    code[i++] = 0x41; code[i++] = 0x5C; // pop r12
+    code[i++] = 0x5E;                // pop rsi
+    code[i++] = 0x5F;                // pop rdi
+    code[i++] = 0x5B;                // pop rbx
+    code[i++] = 0x5D;                // pop rbp
+    code[i++] = 0xC3;                // ret
+
+    if (LM_WriteMemory(base, code, i) != i)
+    {
+        swprintf_s(message, messageSize, L"write failed: send wrapper");
+        return false;
+    }
+    g_autoChatSendSafe = base;
+    return true;
+}
+
+struct AutoChatStringView
+{
+    const char* data;
+    size_t size;
+};
+
+static int TryConsumeAutoChatQueue(uintptr_t manager);
+static LONG LogChatException(PEXCEPTION_POINTERS ep);
+static volatile LONG g_autoChatChatActive = 0;
+static size_t g_gameModuleSize = 0;
+
+static void __fastcall SendMessageHook(uintptr_t manager, const AutoChatStringView* text,
+    uint32_t hash, const AutoChatStringView* sender, int category)
+{
+    typedef void(__fastcall* SendMessageFn)(uintptr_t, const AutoChatStringView*, uint32_t, const AutoChatStringView*, int);
+    auto original = reinterpret_cast<SendMessageFn>(g_autoChatSendTrampoline);
+
+    // The game called sendMessage on its own — chat is active; from now on the
+    // Present hook may actively send queued messages.
+    InterlockedExchange(&g_autoChatChatActive, 1);
+
+    // Consume any queued message first (guarded by the reserved CAS lock so
+    // the Present hook and this hook never double-send).
+    TryConsumeAutoChatQueue(manager);
+
+    // Continue the game's own sendMessage call.
+    original(manager, text, hash, sender, category);
+}
+
+// ── sendMessage hook (game-thread sender) ──
+// Installs SendMessageHook via LM_HookCode (libmem generates the trampoline
+// and handles register preservation; far more robust than hand-written caves).
+static bool InstallAutoChatSendHook(wchar_t* message, size_t messageSize)
+{
+    if (g_autoChatSendHookInstalled) return true;
+    if (!g_gameModule) return false;
+
+    constexpr uintptr_t kSendMessageRVA = 0x9049F0;
+    lm_address_t target = reinterpret_cast<lm_address_t>(g_gameModule) + kSendMessageRVA;
+    lm_address_t trampoline = LM_ADDRESS_BAD;
+
+    lm_size_t hooked = LM_HookCode(target, reinterpret_cast<lm_address_t>(&SendMessageHook), &trampoline);
+    if (hooked == 0 || trampoline == LM_ADDRESS_BAD)
+    {
+        LogAutoChatDiag("sendMessage hook: LM_HookCode failed");
+        swprintf_s(message, messageSize, L"LM_HookCode failed: auto chat sendMessage");
+        return false;
+    }
+    g_autoChatSendTrampoline = trampoline;
+    g_autoChatSendHookInstalled = true;
+    if (!BuildSendSafeWrapper(message, messageSize))
+    {
+        return false;
+    }
+    char buf[128];
+    sprintf_s(buf, "sendMessage hook: installed at %p trampoline=%p wrapper=%p", (void*)target, (void*)trampoline, (void*)g_autoChatSendSafe);
+    LogAutoChatDiag(buf);
+    return true;
+}
+
+// ── DXGI Present hook (主动发送心跳) ──
+// The game's render thread calls IDXGISwapChain::Present once per frame.
+// We hook it and, on every frame, check the pending queue. If a message is
+// queued we send it *on the render thread* (a real game thread) through the
+// sendMessage trampoline — the same verified-safe path the sendMessage hook
+// uses. This is what makes sending truly *active* instead of waiting for the
+// game to call sendMessage on its own.
+static bool g_autoChatPresentHookInstalled = false;
+static lm_address_t g_autoChatPresentTrampoline = LM_ADDRESS_BAD;
+
+// Validates that `manager` looks like a real ui::hud::Manager: its vtable
+// pointer must lie inside the game module. Cheap, no allocations.
+static bool IsValidChatManager(uintptr_t manager)
+{
+    if (!manager) return false;
+    if (!g_gameModule || !g_gameModuleSize) return false;
+    uintptr_t vtable = 0;
+    __try
+    {
+        vtable = *reinterpret_cast<uintptr_t*>(manager);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        return false;
+    }
+    const uintptr_t base = reinterpret_cast<uintptr_t>(g_gameModule);
+    return vtable >= base && vtable < base + g_gameModuleSize;
+}
+
+// Consume the pending queue if any, on the caller's (game) thread.
+// Returns 1 if a message was sent, 0 otherwise. Never throws: the sendMessage
+// call is wrapped in SEH so a bad manager state degrades to "skip" instead of
+// crashing the game. The queue is always cleared (completedSeq = commandSeq)
+// so the Go side never waits forever.
+//
+// NOTE: manager is trusted when non-zero — in the passive path it is the game's
+// own rcx (valid by construction); in the active (Present) path a bogus pointer
+// is caught by the SEH around the sendMessage call. An extra vtable range check
+// here previously rejected the game's valid manager and silently dropped sends.
+static int TryConsumeAutoChatQueue(uintptr_t manager)
+{
+    if (!g_autoChatBridge || !g_autoChatSendTrampoline) return 0;
+    LONG command = InterlockedCompareExchange(&g_autoChatBridge->commandSeq, 0, 0);
+    LONG completed = InterlockedCompareExchange(&g_autoChatBridge->completedSeq, 0, 0);
+    if (command == completed) return 0;
+
+    // reserve:0 → 1 via CAS. Only one consumer wins; the other skips.
+    if (InterlockedCompareExchange(&g_autoChatBridge->reserved, 1, 0) != 0) return 0;
+
+    int sent = 0;
+    if (!manager)
+    {
+        // Manager not ready (not in an online lobby / chat UI never opened).
+        InterlockedExchange(&g_autoChatBridge->result, -2);
+    }
+    else
+    {
+        LONG length = InterlockedCompareExchange(&g_autoChatBridge->messageLen, 0, 0);
+        if (length > 0 && static_cast<size_t>(length) < kAutoChatMessageCapacity)
+        {
+            typedef void(__fastcall* SendMessageFn)(uintptr_t, const AutoChatStringView*, uint32_t, const AutoChatStringView*, int);
+            auto original = reinterpret_cast<SendMessageFn>(g_autoChatSendSafe);
+            if (!original) original = reinterpret_cast<SendMessageFn>(g_autoChatSendTrampoline);
+            AutoChatStringView ourText{ g_autoChatBridge->message, static_cast<size_t>(length) };
+            static const char s_emptyByte = 0;
+            AutoChatStringView empty{ &s_emptyByte, 0 };
+            __try
+            {
+                original(manager, &ourText, 0x887AE0B0, &empty, -1);
+                InterlockedExchange(&g_autoChatBridge->result, 1);
+                sent = 1;
+            }
+            __except (LogChatException(GetExceptionInformation()))
+            {
+                LogAutoChatDiag("sendMessage call crashed (SEH) — skipping");
+                InterlockedExchange(&g_autoChatBridge->result, -5);
+            }
+        }
+        else
+        {
+            InterlockedExchange(&g_autoChatBridge->result, -4);
+        }
+    }
+    InterlockedExchange(&g_autoChatBridge->completedSeq, command);
+    InterlockedExchange(&g_autoChatBridge->reserved, 0);
+    return sent;
+}
+
+// Present signature: HRESULT Present(IDXGISwapChain* self, UINT syncInterval, UINT flags)
+static HRESULT __fastcall PresentHook(void* self, unsigned int syncInterval, unsigned int flags)
+{
+    typedef HRESULT(__fastcall* PresentFn)(void*, unsigned int, unsigned int);
+    auto original = reinterpret_cast<PresentFn>(g_autoChatPresentTrampoline);
+    if (!original) return E_FAIL;
+
+    // Diagnostics: every 4096th call, log a heartbeat line so we can verify
+    // the Present hook actually runs (Steam overlay chain may bypass it).
+    static volatile LONG s_presentCalls = 0;
+    LONG calls = InterlockedIncrement(&s_presentCalls);
+    if ((calls & 0xFFF) == 0)
+    {
+        char buf[96];
+        sprintf_s(buf, "PresentHook heartbeat: calls=%ld", calls);
+        LogAutoChatDiag(buf);
+    }
+
+    if (g_autoChatBridge && g_autoChatSendTrampoline)
+    {
+        LONG command = InterlockedCompareExchange(&g_autoChatBridge->commandSeq, 0, 0);
+        LONG completed = InterlockedCompareExchange(&g_autoChatBridge->completedSeq, 0, 0);
+        if (command != completed)
+        {
+            // Manager = *(moduleBase + ManagerSlot). Guard against not-ready.
+            constexpr uintptr_t kManagerSlotRVA = 0x7C23460;
+            const auto base = reinterpret_cast<uintptr_t>(g_gameModule);
+            uintptr_t manager = 0;
+            if (base)
+                manager = *reinterpret_cast<uintptr_t*>(base + kManagerSlotRVA);
+            TryConsumeAutoChatQueue(manager);
+        }
+    }
+    return original(self, syncInterval, flags);
+}
+
+// Finds the IDXGISwapChain::Present vtable slot by creating a temporary
+// (hidden) swap chain and reading vtable[8]. This is the standard technique
+// used by Reloaded.Imgui.Hook and most DX11 overlay hooks.
+static lm_address_t FindDxgiPresentAddress()
+{
+    typedef HRESULT(WINAPI* D3D11CreateDeviceAndSwapChainFn)(
+        void* adapter, int driverType, HMODULE software, unsigned int flags,
+        const void* featureLevels, unsigned int numLevels, unsigned int sdkVersion,
+        const void* swapChainDesc, void** swapChain, void** device,
+        void* featureLevelOut, void** context);
+    HMODULE d3d11 = LoadLibraryW(L"d3d11.dll");
+    if (!d3d11)
+    {
+        LogAutoChatDiag("Present probe: LoadLibrary(d3d11) failed");
+        return LM_ADDRESS_BAD;
+    }
+    auto fn = reinterpret_cast<D3D11CreateDeviceAndSwapChainFn>(
+        GetProcAddress(d3d11, "D3D11CreateDeviceAndSwapChain"));
+    if (!fn)
+    {
+        LogAutoChatDiag("Present probe: D3D11CreateDeviceAndSwapChain export missing");
+        return LM_ADDRESS_BAD;
+    }
+
+    // Create a hidden message-only window for the swap chain.
+    const wchar_t* kProbeClass = L"GBFRPlayerInfoEditPresentProbe";
+    WNDCLASSEXW wc{};
+    wc.cbSize = sizeof(wc);
+    wc.lpfnWndProc = DefWindowProcW;
+    wc.hInstance = GetModuleHandleW(nullptr);
+    wc.lpszClassName = kProbeClass;
+    RegisterClassExW(&wc);
+    HWND hwnd = CreateWindowExW(0, kProbeClass, L"", WS_OVERLAPPED,
+                                0, 0, 8, 8, nullptr, nullptr, wc.hInstance, nullptr);
+    if (!hwnd)
+    {
+        char buf[128];
+        sprintf_s(buf, "Present probe: CreateWindow failed err=%lu", (unsigned long)GetLastError());
+        LogAutoChatDiag(buf);
+        return LM_ADDRESS_BAD;
+    }
+
+    // Minimal DXGI_SWAP_CHAIN_DESC — exact dxgi.h layout (x64, default align):
+    //   DXGI_MODE_DESC BufferDesc =
+    //     Width(4) Height(4) RefreshRate{Num(4),Den(4)} Format(4)
+    //     ScanlineOrdering(4) Scaling(4)           = 28B
+    //   DXGI_SAMPLE_DESC SampleDesc {Count(4), Quality(4)} = 8B  -> 36
+    //   DXGI_USAGE BufferUsage (4)                 -> 40
+    //   UINT BufferCount (4)                       -> 44
+    //   HWND OutputWindow (8, aligned)             -> 56
+    //   BOOL Windowed (4)                          -> 60
+    //   DXGI_SWAP_EFFECT SwapEffect (4)            -> 64
+    //   UINT Flags (4)                             -> 68, tail-padded to 72
+    struct SwapChainDesc
+    {
+        UINT width, height;
+        UINT refreshNumerator, refreshDenominator;
+        UINT format;
+        UINT scanlineOrdering, scaling;
+        UINT sampleCount, sampleQuality;
+        UINT bufferUsage;
+        UINT bufferCount;
+        uintptr_t outputWindow;
+        int windowed;
+        UINT swapEffect;
+        UINT flags;
+    };
+    static_assert(sizeof(SwapChainDesc) == 72, "DXGI_SWAP_CHAIN_DESC must be 72 bytes on x64");
+    static_assert(offsetof(SwapChainDesc, sampleCount) == 28, "SampleDesc must be at offset 28");
+    static_assert(offsetof(SwapChainDesc, outputWindow) == 48, "OutputWindow must be at offset 48");
+    SwapChainDesc desc{};
+    desc.width = 8; desc.height = 8;
+    desc.format = 28; // DXGI_FORMAT_R8G8B8A8_UNORM
+    desc.sampleCount = 1; // DXGI_SAMPLE_DESC.Count must be 1 (0 → INVALID_CALL)
+    desc.bufferCount = 2;
+    desc.bufferUsage = 0x20; // DXGI_USAGE_RENDER_TARGET_OUTPUT
+    desc.outputWindow = reinterpret_cast<uintptr_t>(hwnd);
+    desc.windowed = TRUE;
+    desc.swapEffect = 0; // DXGI_SWAP_EFFECT_DISCARD (most compatible for windowed)
+
+    // Feature levels 11_0, 10_1, 10_0
+    const unsigned int featureLevels[] = { 0xB000, 0xA100, 0xA000 };
+    void* swapChain = nullptr;
+    void* device = nullptr;
+    void* context = nullptr;
+
+    HRESULT hr = fn(nullptr, 1 /*D3D_DRIVER_TYPE_HARDWARE*/, nullptr, 0,
+                    featureLevels, 3, 7 /*D3D11_SDK_VERSION*/, &desc,
+                    &swapChain, &device, nullptr, &context);
+
+    lm_address_t present = LM_ADDRESS_BAD;
+    if (SUCCEEDED(hr) && swapChain)
+    {
+        // vtable slot 8 = IDXGISwapChain::Present
+        present = (*reinterpret_cast<lm_address_t**>(swapChain))[8];
+        char buf[128];
+        sprintf_s(buf, "Present probe: OK hr=%08X present=%p", (unsigned)hr, (void*)present);
+        LogAutoChatDiag(buf);
+    }
+    else
+    {
+        char buf[128];
+        sprintf_s(buf, "Present probe: CreateSwapChain FAILED hr=%08X swapChain=%p", (unsigned)hr, (void*)swapChain);
+        LogAutoChatDiag(buf);
+    }
+    // Release via vtable[2] (IUnknown::Release) to avoid needing dxgi headers.
+    if (swapChain)
+    {
+        auto release = reinterpret_cast<unsigned long(__stdcall*)(void*)>(
+            (*reinterpret_cast<lm_address_t**>(swapChain))[2]);
+        release(swapChain);
+    }
+    if (device)
+    {
+        auto release = reinterpret_cast<unsigned long(__stdcall*)(void*)>(
+            (*reinterpret_cast<lm_address_t**>(device))[2]);
+        release(device);
+    }
+    if (context)
+    {
+        auto release = reinterpret_cast<unsigned long(__stdcall*)(void*)>(
+            (*reinterpret_cast<lm_address_t**>(context))[2]);
+        release(context);
+    }
+    DestroyWindow(hwnd);
+    UnregisterClassW(kProbeClass, wc.hInstance);
+    return present;
+}
+
+// Follows a chain of unconditional jumps (E9/EB rel, FF25/FF24 abs) from
+// `address` to the real target, like the mod's ResolveHookChainTarget. Steam
+// overlay / RTSS hook Present's entry with a jmp; hooking the entry directly
+// would copy that jmp into our trampoline and break their chain (crash).
+// Returns the final non-jump address (or the original if no jumps).
+static lm_address_t ResolveJumpChain(lm_address_t address, unsigned int maxJumps = 16)
+{
+    for (unsigned int hop = 0; hop < maxJumps; ++hop)
+    {
+        uint8_t b[2]{};
+        if (LM_ReadMemory(address, b, sizeof(b)) != sizeof(b))
+            return address;
+
+        if (b[0] == 0xE9) // jmp rel32
+        {
+            int32_t disp = 0;
+            lm_byte_t raw[4]{};
+            if (LM_ReadMemory(address + 1, raw, sizeof(raw)) != sizeof(raw))
+                return address;
+            memcpy(&disp, raw, sizeof(disp));
+            address = static_cast<lm_address_t>(address + 5 + static_cast<int64_t>(disp));
+        }
+        else if (b[0] == 0xEB) // jmp rel8
+        {
+            int8_t disp = 0;
+            lm_byte_t raw[1]{};
+            if (LM_ReadMemory(address + 1, raw, sizeof(raw)) != sizeof(raw))
+                return address;
+            disp = static_cast<int8_t>(raw[0]);
+            address = static_cast<lm_address_t>(address + 2 + static_cast<int64_t>(disp));
+        }
+        else if (b[0] == 0xFF && b[1] == 0x25) // jmp [rip+disp32]
+        {
+            int32_t disp = 0;
+            lm_byte_t raw[4]{};
+            if (LM_ReadMemory(address + 2, raw, sizeof(raw)) != sizeof(raw))
+                return address;
+            memcpy(&disp, raw, sizeof(disp));
+            uintptr_t slot = static_cast<uintptr_t>(address + 6 + static_cast<int64_t>(disp));
+            uintptr_t target = 0;
+            lm_byte_t rawp[8]{};
+            if (LM_ReadMemory(slot, rawp, sizeof(rawp)) != sizeof(rawp))
+                return address;
+            memcpy(&target, rawp, sizeof(target));
+            address = static_cast<lm_address_t>(target);
+        }
+        else
+        {
+            return address; // real code — stop
+        }
+    }
+    return address;
+}
+
+static bool InstallAutoChatPresentHook(wchar_t* message, size_t messageSize)
+{
+    if (g_autoChatPresentHookInstalled)
+    {
+        LogAutoChatDiag("Present hook: already installed");
+        return true;
+    }
+
+    lm_address_t present = FindDxgiPresentAddress();
+    if (present == LM_ADDRESS_BAD)
+    {
+        LogAutoChatDiag("Present hook: address not found");
+        swprintf_s(message, messageSize, L"Present address not found");
+        return false;
+    }
+
+    // Steam overlay / RTSS may have hooked Present's entry with a jmp chain.
+    // Resolve to the real Present code so our hook inserts cleanly *before*
+    // their chain tail without copying/breaking their jump.
+    lm_address_t hookTarget = ResolveJumpChain(present);
+    char buf[160];
+    if (hookTarget != present)
+    {
+        sprintf_s(buf, "Present hook: entry %p jumped to %p (chain resolved)", (void*)present, (void*)hookTarget);
+        LogAutoChatDiag(buf);
+    }
+
+    lm_address_t trampoline = LM_ADDRESS_BAD;
+    lm_size_t hooked = LM_HookCode(hookTarget, reinterpret_cast<lm_address_t>(&PresentHook), &trampoline);
+    if (hooked == 0 || trampoline == LM_ADDRESS_BAD)
+    {
+        LogAutoChatDiag("Present hook: LM_HookCode failed");
+        swprintf_s(message, messageSize, L"LM_HookCode failed: auto chat Present");
+        return false;
+    }
+    g_autoChatPresentTrampoline = trampoline;
+    g_autoChatPresentHookInstalled = true;
+    sprintf_s(buf, "Present hook: installed at %p trampoline=%p", (void*)hookTarget, (void*)trampoline);
+    LogAutoChatDiag(buf);
+    return true;
+}
+
+static LONG LogChatException(PEXCEPTION_POINTERS ep)
+{
+    FILE* f = nullptr;
+    fopen_s(&f, "C:\\Users\\kugua\\AppData\\Local\\Temp\\gbfr-autochat-diag.log", "a");
+    if (f && ep)
+    {
+        fprintf(f, "autochat EXCEPTION: code=0x%08X addr=%p rcx=%p rdx=%p r8=%p r9=%p rip=%p\n",
+                (unsigned)ep->ExceptionRecord->ExceptionCode,
+                (void*)ep->ExceptionRecord->ExceptionAddress,
+                (void*)ep->ContextRecord->Rcx,
+                (void*)ep->ContextRecord->Rdx,
+                (void*)ep->ContextRecord->R8,
+                (void*)ep->ContextRecord->R9,
+                (void*)ep->ContextRecord->Rip);
+        fclose(f);
+    }
+    return EXCEPTION_EXECUTE_HANDLER;
+}
+
+static LONG ExecuteAutoChatCommandSafe()
+{
+    __try
+    {
+        return ExecuteAutoChatCommand();
+    }
+    __except (LogChatException(GetExceptionInformation()))
+    {
+        return -5;
+    }
+}
+
+static LRESULT CALLBACK AutoChatWindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    if (message == kAutoChatWindowMessage && g_autoChatBridge)
+    {
+        LONG sequence = InterlockedCompareExchange(&g_autoChatBridge->commandSeq, 0, 0);
+        if (sequence != InterlockedCompareExchange(&g_autoChatBridge->completedSeq, 0, 0))
+        {
+            // Window thread must NOT call sendMessage (crashes: register
+            // state polluted off the game thread). Just leave the sequence
+            // pending; the sendMessage hook on the game thread picks it up
+            // next time the game calls sendMessage (manual send / phrase).
+            // result stays at its previous value until the hook completes.
+        }
+        return 0;
+    }
+    return CallWindowProcW(g_autoChatOriginalWndProc, window, message, wParam, lParam);
+}
+
+static DWORD WINAPI AutoChatDispatchThread(LPVOID)
+{
+    LONG postedSequence = 0;
+    while (WaitForSingleObject(g_autoChatStopEvent, 10) == WAIT_TIMEOUT)
+    {
+        LONG sequence = InterlockedCompareExchange(&g_autoChatBridge->commandSeq, 0, 0);
+        LONG completed = InterlockedCompareExchange(&g_autoChatBridge->completedSeq, 0, 0);
+        if (sequence != completed && sequence != postedSequence)
+        {
+            if (PostMessageW(g_autoChatWindow, kAutoChatWindowMessage, 0, 0))
+            {
+                postedSequence = sequence;
+            }
+            else
+            {
+                InterlockedExchange(&g_autoChatBridge->result, -1);
+                InterlockedExchange(&g_autoChatBridge->completedSeq, sequence);
+            }
+        }
+        if (sequence == completed) postedSequence = completed;
+        Sleep(10);
+    }
+    return 0;
+}
+
+static bool InitAutoChatBridge(wchar_t* message, size_t messageSize)
+{
+    if (g_autoChatBridge)
+    {
+        swprintf_s(message, messageSize, L"auto chat bridge already ready");
+        return true;
+    }
+
+    g_gameModule = GetModuleHandleW(L"granblue_fantasy_relink.exe");
+    if (!g_gameModule)
+    {
+        swprintf_s(message, messageSize, L"auto chat game module not found");
+        return false;
+    }
+    MODULEINFO mi{};
+    if (GetModuleInformation(GetCurrentProcess(), g_gameModule, &mi, sizeof(mi)))
+    {
+        g_gameModuleSize = static_cast<size_t>(mi.SizeOfImage);
+    }
+    else
+    {
+        // Fallback: ~90 MB (game is large; the range check just needs to be
+        // generous enough to catch a real vtable pointer inside the module).
+        g_gameModuleSize = 0x5800000;
+    }
+    EnumWindows(FindGameWindowCallback, reinterpret_cast<LPARAM>(&g_autoChatWindow));
+    if (!g_autoChatWindow)
+    {
+        swprintf_s(message, messageSize, L"auto chat game window not found");
+        return false;
+    }
+
+    g_autoChatMapping = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, sizeof(AutoChatBridgeState), kAutoChatMappingName);
+    if (!g_autoChatMapping)
+    {
+        swprintf_s(message, messageSize, L"auto chat mapping create failed");
+        return false;
+    }
+    g_autoChatBridge = reinterpret_cast<AutoChatBridgeState*>(MapViewOfFile(g_autoChatMapping, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(AutoChatBridgeState)));
+    if (!g_autoChatBridge)
+    {
+        CloseHandle(g_autoChatMapping);
+        g_autoChatMapping = nullptr;
+        swprintf_s(message, messageSize, L"auto chat mapping view failed");
+        return false;
+    }
+
+    SetLastError(0);
+    g_autoChatOriginalWndProc = reinterpret_cast<WNDPROC>(SetWindowLongPtrW(g_autoChatWindow, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(AutoChatWindowProc)));
+    if (!g_autoChatOriginalWndProc && GetLastError() != 0)
+    {
+        UnmapViewOfFile(g_autoChatBridge);
+        CloseHandle(g_autoChatMapping);
+        g_autoChatBridge = nullptr;
+        g_autoChatMapping = nullptr;
+        swprintf_s(message, messageSize, L"auto chat window hook failed");
+        return false;
+    }
+
+    g_autoChatBridge->magic = kAutoChatMagic;
+    g_autoChatBridge->version = kAutoChatVersion;
+    g_autoChatStopEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    if (!g_autoChatStopEvent)
+    {
+        SetWindowLongPtrW(g_autoChatWindow, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(g_autoChatOriginalWndProc));
+        UnmapViewOfFile(g_autoChatBridge);
+        CloseHandle(g_autoChatMapping);
+        g_autoChatBridge = nullptr;
+        g_autoChatMapping = nullptr;
+        swprintf_s(message, messageSize, L"auto chat stop event failed");
+        return false;
+    }
+    g_autoChatDispatchThread = CreateThread(nullptr, 0, AutoChatDispatchThread, nullptr, 0, nullptr);
+    if (!g_autoChatDispatchThread)
+    {
+        CloseHandle(g_autoChatStopEvent);
+        g_autoChatStopEvent = nullptr;
+        SetWindowLongPtrW(g_autoChatWindow, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(g_autoChatOriginalWndProc));
+        UnmapViewOfFile(g_autoChatBridge);
+        CloseHandle(g_autoChatMapping);
+        g_autoChatBridge = nullptr;
+        g_autoChatMapping = nullptr;
+        swprintf_s(message, messageSize, L"auto chat dispatch thread failed");
+        return false;
+    }
+    if (!InstallAutoChatSendHook(message, messageSize))
+    {
+        swprintf_s(message, messageSize, L"auto chat sendMessage hook failed");
+        return false;
+    }
+    // The Present hook (active send path) is installed separately a few seconds
+    // after injection by DelayedPresentHookThread — installing it synchronously
+    // here raced the game's render setup and crashed the game.
+    InterlockedExchange(&g_autoChatBridge->ready, 1);
+    swprintf_s(message, messageSize, L"auto chat bridge ready");
+    return true;
+}
+
+static void CloseAutoChatBridge()
+{
+    if (g_autoChatBridge) InterlockedExchange(&g_autoChatBridge->ready, 0);
+    if (g_autoChatStopEvent) SetEvent(g_autoChatStopEvent);
+    if (g_autoChatDispatchThread)
+    {
+        WaitForSingleObject(g_autoChatDispatchThread, 1000);
+        CloseHandle(g_autoChatDispatchThread);
+        g_autoChatDispatchThread = nullptr;
+    }
+    if (g_autoChatStopEvent)
+    {
+        CloseHandle(g_autoChatStopEvent);
+        g_autoChatStopEvent = nullptr;
+    }
+    if (g_autoChatWindow && g_autoChatOriginalWndProc)
+    {
+        SetWindowLongPtrW(g_autoChatWindow, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(g_autoChatOriginalWndProc));
+    }
+    if (g_autoChatBridge)
+    {
+        UnmapViewOfFile(g_autoChatBridge);
+        g_autoChatBridge = nullptr;
+    }
+    if (g_autoChatMapping)
+    {
+        CloseHandle(g_autoChatMapping);
+        g_autoChatMapping = nullptr;
+    }
+}
 
 static void InitDamageMeter()
 {
@@ -1341,6 +2100,18 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
     return true;
 }
 
+// Installs the Present hook after a delay so the game has settled after
+// injection (creating a dummy swap chain + hooking Present too early races the
+// game's render setup and crashed the game). Non-fatal on failure.
+static DWORD WINAPI DelayedPresentHookThread(LPVOID)
+{
+    Sleep(5000);
+    wchar_t message[256]{};
+    bool ok = InstallAutoChatPresentHook(message, _countof(message));
+    WritePatchDebugLog(message);
+    return ok ? 0 : 1;
+}
+
 static DWORD WINAPI InitThread(LPVOID)
 {
     InitDamageMeter();
@@ -1348,6 +2119,23 @@ static DWORD WINAPI InitThread(LPVOID)
     ConfigurePlayerDamage();
 
     wchar_t message[256]{};
+    char patchId[64]{};
+    if (ReadPatchId(patchId, sizeof(patchId)) && PatchIdEquals(patchId, "auto_chat"))
+    {
+        LogAutoChatDiag("auto_chat init: starting");
+        bool ok = InitAutoChatBridge(message, _countof(message));
+        WritePatchDebugLog(message);
+        OutputDebugStringW(message);
+        if (ok)
+        {
+            // Present hook is installed asynchronously a few seconds later to
+            // avoid racing the game right after injection.
+            if (HANDLE t = CreateThread(nullptr, 0, DelayedPresentHookThread, nullptr, 0, nullptr))
+                CloseHandle(t);
+        }
+        return ok ? 0 : 1;
+    }
+
     // The game's .text is segment-encrypted: the player-pointer capture page
     // (RVA 0x267DDE) stays encrypted until the game first executes that code
     // path (player object setup), so the initial apply can fail with
@@ -1384,7 +2172,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         }
         break;
     case DLL_PROCESS_DETACH:
-        CloseDamageMeter();
         break;
     }
     return TRUE;

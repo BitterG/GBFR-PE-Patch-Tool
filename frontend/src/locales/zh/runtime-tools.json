@@ -1,5 +1,36 @@
 {
   "runtimeTools": {
+    "autoChat": {
+      "title": "自动聊天",
+      "notice": "通过游戏自身的聊天功能发送消息（进程内调用游戏函数，不模拟键盘）。当前为框架版本，发送函数待接入。",
+      "hint": "按设置间隔自动发送游戏聊天消息",
+      "running": "定时发送运行中",
+      "enabled": "运行中",
+      "disabled": "已停止",
+      "status": "状态",
+      "message": "消息内容",
+      "messagePlaceholder": "输入要发送的聊天文本，例如：大佬求带！",
+      "interval": "发送间隔",
+      "intervalPlaceholder": "如 300000 = 5 分钟",
+      "ms": "毫秒",
+      "save": "保存配置",
+      "start": "开始定时",
+      "stop": "停止",
+      "sendNow": "立即发送",
+      "sending": "发送中...",
+      "sentCount": "已发送",
+      "lastSend": "上次发送",
+      "lastError": "上次错误",
+      "implementation": "发送实现：待接入（SetText RVA 0x78EA10 已定位）",
+      "messages": {
+        "messageRequired": "消息内容不能为空",
+        "intervalInvalid": "请输入有效的间隔（毫秒，非负数）",
+        "saved": "自动聊天配置已保存",
+        "started": "自动聊天已启动",
+        "stopped": "自动聊天已停止",
+        "sent": "聊天消息已发送"
+      }
+    },
     "common": {
       "connectGame": "连接游戏进程",
       "connecting": "连接中...",

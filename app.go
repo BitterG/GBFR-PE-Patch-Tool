@@ -31,6 +31,7 @@ const (
 	repoName    = "GBFR-PE-Patch-Tool"
 )
 
+//go:generate cmd /c build_dll.bat
 //go:embed build/bin/patch_core.dll
 var patchCoreDLL []byte
 
@@ -144,6 +145,8 @@ type App struct {
 	damageOverlay              *damageOverlayWindow
 	playerDamageMapping        windows.Handle
 	playerDamageView           uintptr
+	autoChatMapping            windows.Handle
+	autoChatView               uintptr
 	monsterDamageHookInstalled bool
 	monsterDamageHookID        string
 	monsterDamageEnabled       bool
@@ -186,6 +189,7 @@ func (a *App) shutdown(ctx context.Context) {
 	if a.damageOverlay != nil {
 		a.damageOverlay.stop()
 	}
+	stopAutoChatLoop()
 	a.closeDamageMeter()
 	a.closePlayerDamageState()
 	a.CharaDetach()
@@ -1252,6 +1256,16 @@ func isCharaListData(data []byte, countIndex int) bool {
 
 // CharaDetach closes the process handle.
 func (a *App) CharaDetach() {
+	autoChatLifecycleMu.Lock()
+	defer autoChatLifecycleMu.Unlock()
+	a.charaDetachLocked()
+}
+
+func (a *App) charaDetachLocked() {
+	stopAutoChatLoop()
+	autoChat.mu.Lock()
+	a.closeAutoChatMapping()
+	autoChat.mu.Unlock()
 	// Restore hooks while the target process is still available. Leaving the
 	// jump installed makes a later tool instance mistake it for an unsupported
 	// game build and can also leave the game executing tool-owned code.
@@ -2257,6 +2271,12 @@ func (a *App) CountdownSet(value float64) (CountdownStatus, error) {
 }
 
 func (a *App) ensureGameProcess() error {
+	autoChatLifecycleMu.Lock()
+	defer autoChatLifecycleMu.Unlock()
+	return a.ensureGameProcessLocked()
+}
+
+func (a *App) ensureGameProcessLocked() error {
 	pid, err := findProcessByName(charaProcessName)
 	if err != nil {
 		return fmt.Errorf("未找到游戏进程，请先启动游戏")
@@ -2267,7 +2287,7 @@ func (a *App) ensureGameProcess() error {
 	// The game was restarted while the tool stayed open. Drop every address
 	// derived from the old process before attaching to the new PID.
 	if a.hProcess != 0 || a.moduleBase != 0 || a.charaPID != 0 {
-		a.CharaDetach()
+		a.charaDetachLocked()
 	}
 	h, err := windows.OpenProcess(windows.PROCESS_ALL_ACCESS, false, pid)
 	if err != nil {
@@ -2690,6 +2710,8 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 	}
 
 	if enabled {
+		patchCoreInjectMu.Lock()
+		defer patchCoreInjectMu.Unlock()
 		if pointID == "all" || pointID == "inventory_set_45" {
 			if err := a.ensureInventoryPatchAvailable(); err != nil {
 				return MonsterEnhanceResult{}, err
@@ -2716,7 +2738,7 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 			}
 			command = fmt.Sprintf("%s %.8g", command, commandValue)
 		}
-		dllPath, err := extractPatchCoreDLL(command)
+		dllPath, err := extractPatchCoreDLLLocked(command)
 		if err != nil {
 			return MonsterEnhanceResult{}, err
 		}
@@ -3251,6 +3273,12 @@ func findMonsterPatchPoint(id string) *monsterPatchPoint {
 }
 
 func extractPatchCoreDLL(patchID string) (string, error) {
+	patchCoreInjectMu.Lock()
+	defer patchCoreInjectMu.Unlock()
+	return extractPatchCoreDLLLocked(patchID)
+}
+
+func extractPatchCoreDLLLocked(patchID string) (string, error) {
 	if len(patchCoreDLL) == 0 {
 		return "", fmt.Errorf("内置 patch_core.dll 为空，请先编译 src_dll/patch_core Release x64")
 	}
@@ -3278,7 +3306,12 @@ func injectDLL(h windows.Handle, dllPath string) error {
 	if err != nil {
 		return err
 	}
-	defer func() { _ = virtualFreeRemote(h, remotePath) }()
+	releaseRemotePath := true
+	defer func() {
+		if releaseRemotePath {
+			_ = virtualFreeRemote(h, remotePath)
+		}
+	}()
 
 	if err := writeProcessMemory(h, remotePath, unsafe.Pointer(&utf16Path[0]), size); err != nil {
 		return err
@@ -3290,8 +3323,23 @@ func injectDLL(h windows.Handle, dllPath string) error {
 	}
 	defer windows.CloseHandle(thread)
 
-	_, err = windows.WaitForSingleObject(thread, 10000)
-	return err
+	wait, err := windows.WaitForSingleObject(thread, 10000)
+	if err != nil {
+		return err
+	}
+	if wait != uint32(windows.WAIT_OBJECT_0) {
+		releaseRemotePath = false
+		return fmt.Errorf("等待 LoadLibraryW 线程失败（状态 0x%X，已保留远程路径内存）", wait)
+	}
+	var exitCode uint32
+	ret, _, callErr := procGetExitCodeThread.Call(uintptr(thread), uintptr(unsafe.Pointer(&exitCode)))
+	if ret == 0 {
+		return fmt.Errorf("读取 LoadLibraryW 线程结果失败: %w", callErr)
+	}
+	if exitCode == 0 {
+		return fmt.Errorf("LoadLibraryW 返回空模块句柄")
+	}
+	return nil
 }
 
 func findPatternMatches(buf []byte, base uintptr, pattern []byte, mask []bool) []uintptr {
@@ -3469,6 +3517,7 @@ var (
 	procVirtualFreeEx      = modKernel32.NewProc("VirtualFreeEx")
 	procVirtualQueryEx     = modKernel32.NewProc("VirtualQueryEx")
 	procLoadLibraryW       = modKernel32.NewProc("LoadLibraryW")
+	procGetExitCodeThread  = modKernel32.NewProc("GetExitCodeThread")
 	procCreateRemoteThread = modKernel32.NewProc("CreateRemoteThread")
 )
 

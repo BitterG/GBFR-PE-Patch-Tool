@@ -14,6 +14,7 @@ import CharaStats from './CharaStats.vue'
 import MiscTools from './MiscTools.vue'
 import MonsterEnhance from './MonsterEnhance.vue'
 import OverLimit from './OverLimit.vue'
+import AutoChat from './AutoChat.vue'
 import SummonEditor from './SummonEditor.vue'
 import LanguageSettings from './LanguageSettings.vue'
 import { hasStoredLanguage, language, translate as t } from '../i18n'
@@ -198,6 +199,9 @@ function showStatus(msg, type) {
       <button class="tab-btn" :class="{ active: activeTab === 'monster' }" @click="activeTab = 'monster'">
         {{ t('patchTool.tabs.monster') }}
       </button>
+      <button class="tab-btn" :class="{ active: activeTab === 'autoChat' }" @click="activeTab = 'autoChat'">
+        {{ t('patchTool.tabs.autoChat') }}
+      </button>
     </div>
 
     <main v-if="activeTab === 'patch'" class="container" style="--wails-draggable:no-drag">
@@ -313,6 +317,10 @@ function showStatus(msg, type) {
 
     <main v-else-if="activeTab === 'monster'" class="container" style="--wails-draggable:no-drag">
       <MonsterEnhance @status="showStatus" />
+    </main>
+
+    <main v-else-if="activeTab === 'autoChat'" class="container" style="--wails-draggable:no-drag">
+      <AutoChat @status="showStatus" />
     </main>
 
     <main v-else-if="activeTab === 'language'" class="container" style="--wails-draggable:no-drag">
