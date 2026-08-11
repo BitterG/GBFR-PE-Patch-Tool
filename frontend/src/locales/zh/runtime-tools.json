@@ -11,8 +11,8 @@
       "message": "消息内容",
       "messagePlaceholder": "输入要发送的聊天文本，例如：大佬求带！",
       "interval": "发送间隔",
-      "intervalPlaceholder": "如 300000 = 5 分钟",
-      "ms": "毫秒",
+      "intervalPlaceholder": "如 60 = 每 60 秒一条（最小 1 秒）",
+      "ms": "秒",
       "save": "保存配置",
       "start": "开始定时",
       "stop": "停止",
@@ -24,7 +24,7 @@
       "implementation": "发送实现：待接入（SetText RVA 0x78EA10 已定位）",
       "messages": {
         "messageRequired": "消息内容不能为空",
-        "intervalInvalid": "请输入有效的间隔（毫秒，非负数）",
+        "intervalInvalid": "请输入有效的间隔（秒，非负数）",
         "saved": "自动聊天配置已保存",
         "started": "自动聊天已启动",
         "stopped": "自动聊天已停止",
@@ -46,7 +46,8 @@
       "send": "发送",
       "edit": "编辑",
       "delete": "删除",
-      "cancel": "取消"
+      "cancel": "取消",
+      "rateLimitHint": "发送频率上限：1 秒 1 条（手动/定时/热键共用）"
     },
     "common": {
       "connectGame": "连接游戏进程",

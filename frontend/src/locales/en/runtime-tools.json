@@ -11,8 +11,8 @@
       "message": "Message",
       "messagePlaceholder": "Enter the chat text to send, e.g. Let's go!",
       "interval": "Send interval",
-      "intervalPlaceholder": "e.g. 300000 = 5 min",
-      "ms": "ms",
+      "intervalPlaceholder": "e.g. 60 = every 60 seconds (min 1s)",
+      "ms": "sec",
       "save": "Save config",
       "start": "Start timer",
       "stop": "Stop",
@@ -24,7 +24,7 @@
       "implementation": "Send implementation: pending (SetText RVA 0x78EA10 located)",
       "messages": {
         "messageRequired": "Message text must not be empty",
-        "intervalInvalid": "Enter a valid interval (ms, non-negative)",
+        "intervalInvalid": "Enter a valid interval in seconds (non-negative)",
         "saved": "Auto chat config saved",
         "started": "Auto chat started",
         "stopped": "Auto chat stopped",
@@ -46,7 +46,8 @@
       "send": "Send",
       "edit": "Edit",
       "delete": "Delete",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "rateLimitHint": "Send rate cap: 1 message per second (manual/timer/hotkey shared)"
     },
     "common": {
       "connectGame": "Connect to game",

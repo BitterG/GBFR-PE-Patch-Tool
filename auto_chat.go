@@ -34,7 +34,7 @@ type AutoChatConfig struct {
 type AutoChatStatus struct {
 	Enabled        bool   `json:"enabled"`
 	Message        string `json:"message"`
-	IntervalMs     int64  `json:"intervalMs"`
+	IntervalSec    int64  `json:"intervalSec"` // 发送间隔（秒），0 表示只手动发送
 	LastSendAtUnix int64  `json:"lastSendAtUnix"` // 最近发送时间（Unix 毫秒），0 表示尚未发送
 	LastError      string `json:"lastError"`
 	SentCount      int64  `json:"sentCount"`
@@ -45,7 +45,7 @@ type autoChatState struct {
 	mu        sync.Mutex
 	enabled   bool
 	message   string
-	interval  int64 // 毫秒
+	interval  int64 // 秒
 	lastSend  time.Time
 	lastError string
 	sentCount int64
@@ -63,16 +63,16 @@ func (a *App) AutoChatGetStatus() AutoChatStatus {
 }
 
 // AutoChatSetConfig 更新消息文本与发送间隔。
-// intervalMs <= 0 时仅保留手动发送；更新后若已在运行，下次发送立即生效。
-func (a *App) AutoChatSetConfig(message string, intervalMs int64) (AutoChatStatus, error) {
+// intervalSec <= 0 时仅保留手动发送；更新后若已在运行，下次发送立即生效。
+func (a *App) AutoChatSetConfig(message string, intervalSec int64) (AutoChatStatus, error) {
 	autoChat.mu.Lock()
 	defer autoChat.mu.Unlock()
 
-	if intervalMs < 0 {
-		intervalMs = 0
+	if intervalSec < 0 {
+		intervalSec = 0
 	}
 	autoChat.message = message
-	autoChat.interval = intervalMs
+	autoChat.interval = intervalSec
 	autoChat.lastError = ""
 	return autoChat.snapshotLocked(), nil
 }
@@ -101,7 +101,7 @@ func (a *App) AutoChatSetEnabled(enabled bool) (AutoChatStatus, error) {
 		return autoChat.snapshotLocked(), fmt.Errorf("消息内容不能为空")
 	}
 	if autoChat.interval <= 0 {
-		return autoChat.snapshotLocked(), fmt.Errorf("定时发送需要设置间隔（毫秒）")
+		return autoChat.snapshotLocked(), fmt.Errorf("定时发送需要设置间隔（秒）")
 	}
 	if autoChat.enabled {
 		return autoChat.snapshotLocked(), nil
@@ -158,7 +158,7 @@ func (a *App) AutoChatSendNow(message string) (AutoChatStatus, error) {
 // loopLocked 是定时发送主循环。
 func (st *autoChatState) loopLocked(a *App, stopCh, stopped chan struct{}) {
 	defer close(stopped)
-	ticker := time.NewTicker(time.Duration(st.interval) * time.Millisecond)
+	ticker := time.NewTicker(time.Duration(st.interval) * time.Second)
 	defer ticker.Stop()
 	for {
 		select {
@@ -208,7 +208,7 @@ func (st *autoChatState) snapshotLocked() AutoChatStatus {
 	return AutoChatStatus{
 		Enabled:        st.enabled,
 		Message:        st.message,
-		IntervalMs:     st.interval,
+		IntervalSec:    st.interval,
 		LastSendAtUnix: st.lastSend.UnixMilli(),
 		LastError:      st.lastError,
 		SentCount:      st.sentCount,
@@ -258,6 +258,12 @@ func getAsyncKeyState(vk int) bool {
 // sendChatMessageLocked 将请求写入共享内存，由 patch_core.dll 投递到游戏窗口线程。
 // 调用方必须持有 autoChat.mu。
 func (a *App) sendChatMessageLocked() error {
+	// 全局发送频率限制：最多 1 秒 1 条（覆盖手动/定时/热键所有路径）。
+	const minSendInterval = time.Second
+	if !autoChat.lastSend.IsZero() && time.Since(autoChat.lastSend) < minSendInterval {
+		return fmt.Errorf("发送过于频繁（至少间隔 1 秒）")
+	}
+
 	text := autoChat.message
 	if text == "" {
 		return fmt.Errorf("消息内容不能为空")

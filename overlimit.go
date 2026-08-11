@@ -413,12 +413,6 @@ func writeUint32Remote(h windows.Handle, addr uintptr, value uint32) error {
 	return writeProcessMemory(h, addr, unsafe.Pointer(&buf[0]), uintptr(len(buf)))
 }
 
-func writeUint64Remote(h windows.Handle, addr uintptr, value uint64) error {
-	buf := make([]byte, 8)
-	binary.LittleEndian.PutUint64(buf, value)
-	return writeProcessMemory(h, addr, unsafe.Pointer(&buf[0]), uintptr(len(buf)))
-}
-
 func writeFloat32Remote(h windows.Handle, addr uintptr, value float32) error {
 	buf := make([]byte, 4)
 	binary.LittleEndian.PutUint32(buf, math.Float32bits(value))

@@ -8,7 +8,7 @@ const emit = defineEmits(['status'])
 const status = reactive({
   enabled: false,
   message: '',
-  intervalMs: 0,
+  intervalSec: 0,
   lastSendAtUnix: 0,
   lastError: '',
   sentCount: 0,
@@ -38,7 +38,13 @@ function hotkeyLabel(mods, key) {
   if (mods & 0x4) parts.push('Shift')
   if (mods & 0x2) parts.push('Ctrl')
   if (mods & 0x1) parts.push('Alt')
-  const k = key >= 0x70 && key <= 0x7B ? `F${key - 0x6F}` : key >= 65 && key <= 90 ? String.fromCharCode(key) : String(key)
+  let k
+  if (key === 0x05) k = 'XButton1'
+  else if (key === 0x06) k = 'XButton2'
+  else if (key === 0x04) k = 'Middle'
+  else if (key >= 0x70 && key <= 0x7B) k = `F${key - 0x6F}`
+  else if (key >= 65 && key <= 90) k = String.fromCharCode(key)
+  else k = String(key)
   parts.push(k)
   return parts.join('+')
 }
@@ -55,12 +61,30 @@ function startCapture() {
   tplForm.key = 0
   // 用 window 级监听捕获按键，避免依赖元素焦点。
   window.addEventListener('keydown', onKeydownCapture, true)
+  window.addEventListener('mousedown', onMouseCapture, true)
 }
 
 function stopCapture() {
   if (capturing.value) {
     capturing.value = false
     window.removeEventListener('keydown', onKeydownCapture, true)
+    window.removeEventListener('mousedown', onMouseCapture, true)
+  }
+}
+
+// 鼠标侧键/中键捕获：button 3=XButton1(0x05)、4=XButton2(0x06)、1=中键(0x04)。
+function onMouseCapture(e) {
+  if (!capturing.value) return
+  e.preventDefault()
+  e.stopPropagation()
+  let vk = 0
+  if (e.button === 3) vk = 0x05 // XBUTTON1
+  else if (e.button === 4) vk = 0x06 // XBUTTON2
+  else if (e.button === 1) vk = 0x04 // MBUTTON
+  if (vk) {
+    tplForm.modifiers = 0
+    tplForm.key = vk
+    stopCapture()
   }
 }
 
@@ -153,7 +177,7 @@ function formatTimestamp(unixMs) {
 }
 
 function applyStatus(s) {
-  Object.assign(status, s || { enabled: false, message: '', intervalMs: 0, lastSendAtUnix: 0, lastError: '', sentCount: 0 })
+  Object.assign(status, s || { enabled: false, message: '', intervalSec: 0, lastSendAtUnix: 0, lastError: '', sentCount: 0 })
 }
 
 function loadStatus() {
@@ -251,6 +275,7 @@ onBeforeUnmount(() => {
             :placeholder="t('runtimeTools.autoChat.intervalPlaceholder')" :disabled="status.enabled" />
           <span class="auto-chat-unit">{{ t('runtimeTools.autoChat.ms') }}</span>
         </div>
+        <span class="auto-chat-rate-limit">{{ t('runtimeTools.autoChat.rateLimitHint') }}</span>
       </div>
 
       <div class="memory-row">
@@ -364,6 +389,11 @@ onBeforeUnmount(() => {
 
 .auto-chat-error {
   color: #fca5a5;
+}
+
+.auto-chat-rate-limit {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 /* ── 模板管理 ── */
