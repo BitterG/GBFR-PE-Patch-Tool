@@ -255,16 +255,9 @@ func getAsyncKeyState(vk int) bool {
 	return r&0x8000 != 0
 }
 
-// sendChatMessageLocked 将请求写入共享内存，由 patch_core.dll 投递到游戏窗口线程。
-// 调用方必须持有 autoChat.mu。
-func (a *App) sendChatMessageLocked() error {
-	// 全局发送频率限制：最多 1 秒 1 条（覆盖手动/定时/热键所有路径）。
-	const minSendInterval = time.Second
-	if !autoChat.lastSend.IsZero() && time.Since(autoChat.lastSend) < minSendInterval {
-		return fmt.Errorf("发送过于频繁（至少间隔 1 秒）")
-	}
-
-	text := autoChat.message
+// sendChatTextLocked 发送指定文本，但不修改 autoChat.message（供热键/模板发送，
+// 避免覆盖定时/手动配置的内容）。调用方必须持有 autoChat.mu。
+func (a *App) sendChatTextLocked(text string) error {
 	if text == "" {
 		return fmt.Errorf("消息内容不能为空")
 	}
@@ -272,14 +265,23 @@ func (a *App) sendChatMessageLocked() error {
 	if len(data) > autoChatMaxTextLen {
 		return fmt.Errorf("消息最多 %d 个 UTF-8 字节", autoChatMaxTextLen)
 	}
-	// 进程内调用：DLL 窗口线程调 ui::hud::Manager::sendMessage（插件验证过的安全路径）。
-	// sendMessage 自己管理 state/cooldown/filter/network，不模拟键盘、无需游戏前台。
+	// 全局发送频率限制：最多 1 秒 1 条（覆盖手动/定时/热键所有路径）。
+	const minSendInterval = time.Second
+	if !autoChat.lastSend.IsZero() && time.Since(autoChat.lastSend) < minSendInterval {
+		return fmt.Errorf("发送过于频繁（至少间隔 1 秒）")
+	}
 	if err := a.sendChatViaBridge(data); err != nil {
 		return err
 	}
 	autoChat.lastSend = time.Now()
 	autoChat.sentCount++
 	return nil
+}
+
+// sendChatMessageLocked 将请求写入共享内存，由 patch_core.dll 投递到游戏窗口线程。
+// 调用方必须持有 autoChat.mu。
+func (a *App) sendChatMessageLocked() error {
+	return a.sendChatTextLocked(autoChat.message)
 }
 
 func (a *App) sendChatViaBridge(message []byte) error {
@@ -538,11 +540,18 @@ func (a *App) AutoChatSendTemplate(id string) (AutoChatStatus, error) {
 			break
 		}
 	}
-	autoChat.mu.Unlock()
 	if t == nil {
+		autoChat.mu.Unlock()
 		return autoChat.snapshot(), fmt.Errorf("模板不存在")
 	}
-	return a.AutoChatSendNow(t.Text)
+	// 发送模板文本但不修改 autoChat.message（避免覆盖定时/手动配置的内容）。
+	text := t.Text
+	err := a.sendChatTextLocked(text)
+	if err != nil {
+		autoChat.lastError = err.Error()
+	}
+	autoChat.mu.Unlock()
+	return autoChat.snapshot(), err
 }
 
 func (st *autoChatState) snapshot() AutoChatStatus {
@@ -633,7 +642,13 @@ func hotkeyLoop(a *App) {
 				text := t.Text
 				hotkeyDiagLog("hotkey triggered name=%q key=%d mods=%d", t.Name, t.Key, t.Modifiers)
 				go func(txt string) {
-					_, err := a.AutoChatSendNow(txt)
+					// 发送热键文本但不修改 autoChat.message（避免覆盖定时/手动配置内容）。
+					autoChat.mu.Lock()
+					err := a.sendChatTextLocked(txt)
+					if err != nil {
+						autoChat.lastError = err.Error()
+					}
+					autoChat.mu.Unlock()
 					if err != nil {
 						runtime.EventsEmit(a.ctx, "autoChat:hotkeyError", err.Error())
 					}

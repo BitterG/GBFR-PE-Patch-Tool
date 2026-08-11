@@ -315,8 +315,9 @@ onBeforeUnmount(() => {
 
         <!-- 编辑表单 -->
         <div v-if="editing" class="auto-chat-tpl-edit">
-          <input v-model="tplForm.name" class="edit-input" :placeholder="t('runtimeTools.autoChat.tplName')" />
-          <input v-model="tplForm.text" class="edit-input" :placeholder="t('runtimeTools.autoChat.tplText')" />
+          <input v-model="tplForm.name" class="edit-input auto-chat-tpl-name-input" :placeholder="t('runtimeTools.autoChat.tplName')" />
+          <textarea v-model="tplForm.text" class="auto-chat-tpl-text-input" rows="3"
+            :placeholder="t('runtimeTools.autoChat.tplText')"></textarea>
           <div class="auto-chat-hotkey-row">
             <button class="btn-batch" @click="startCapture" :disabled="capturing">
               {{ capturing ? t('runtimeTools.autoChat.pressKey') : (tplForm.key ? hotkeyLabel(tplForm.modifiers, tplForm.key) : t('runtimeTools.autoChat.captureHotkey')) }}
@@ -366,6 +367,11 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  width: 100%;
+}
+.auto-chat .memory-card {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .auto-chat-field {
@@ -455,6 +461,9 @@ onBeforeUnmount(() => {
   border-radius: 8px;
   padding: 8px 10px;
   background: rgba(255, 255, 255, 0.04);
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .auto-chat-tpl-info {
@@ -477,6 +486,8 @@ onBeforeUnmount(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .auto-chat-tpl-hotkey {
@@ -530,7 +541,26 @@ onBeforeUnmount(() => {
   color: rgba(255, 255, 255, 0.7);
 }
 
-.auto-chat-tpl-edit .edit-input {
+.auto-chat-tpl-name-input {
+  flex: none;
   width: 100%;
+  max-width: 240px;
+}
+.auto-chat-tpl-text-input {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.auto-chat-tpl-text-input:focus {
+  border-color: rgba(165, 180, 252, 0.5);
 }
 </style>

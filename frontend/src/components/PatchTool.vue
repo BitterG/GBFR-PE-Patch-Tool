@@ -345,7 +345,7 @@ function showStatus(msg, type) {
       <MonsterEnhance @status="showStatus" />
     </main>
 
-    <main v-else-if="activeTab === 'autoChat'" class="container" style="--wails-draggable:no-drag">
+    <main v-else-if="activeTab === 'autoChat'" class="container container-wide" style="--wails-draggable:no-drag">
       <AutoChat @status="showStatus" />
     </main>
 
@@ -448,6 +448,7 @@ function showStatus(msg, type) {
 .titlebar-status.error { color:#f87171; background:rgba(239,68,68,0.15); }
 
 .container { flex:1; overflow-y:auto; max-width:720px; width:100%; margin:0 auto; padding:20px 20px 40px; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; gap:14px; scrollbar-width:none; }
+.container-wide { max-width: 1120px; }
 .summon-container { max-width:none; align-items:stretch; padding-left:28px; padding-right:28px; }
 .container::-webkit-scrollbar { display:none; }
 
