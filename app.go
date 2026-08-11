@@ -101,9 +101,10 @@ type UpdateInfo struct {
 }
 
 type AppConfig struct {
-	LastSavePath string `json:"lastSavePath"`
-	WindowWidth  int    `json:"windowWidth"`
-	WindowHeight int    `json:"windowHeight"`
+	LastSavePath       string              `json:"lastSavePath"`
+	WindowWidth        int                 `json:"windowWidth"`
+	WindowHeight       int                 `json:"windowHeight"`
+	AutoChatTemplates  []AutoChatTemplate  `json:"autoChatTemplates,omitempty"`
 }
 
 // ── App ──
@@ -173,6 +174,7 @@ func (a *App) startup(ctx context.Context) {
 	if err := a.loadConfig(); err != nil {
 		return
 	}
+	registerAutoChatHotkeys(a)
 	width, height := a.config.windowSize()
 	if width > 0 && height > 0 {
 		runtime.WindowSetSize(ctx, width, height)
@@ -190,6 +192,7 @@ func (a *App) shutdown(ctx context.Context) {
 		a.damageOverlay.stop()
 	}
 	stopAutoChatLoop()
+	stopAutoChatHotkeys()
 	a.closeDamageMeter()
 	a.closePlayerDamageState()
 	a.CharaDetach()

@@ -5,8 +5,8 @@
       "notice": "Sends chat messages through the game's own chat (calls game functions in-process, no simulated keys). Framework build; the send function is pending.",
       "hint": "Automatically send game chat messages at a set interval",
       "running": "Timed sending active",
-      "enabled": "Running",
-      "disabled": "Stopped",
+      "enabled": "Enable hotkey",
+      "disabled": "Hotkey disabled",
       "status": "Status",
       "message": "Message",
       "messagePlaceholder": "Enter the chat text to send, e.g. Let's go!",
@@ -28,8 +28,25 @@
         "saved": "Auto chat config saved",
         "started": "Auto chat started",
         "stopped": "Auto chat stopped",
-        "sent": "Chat message sent"
-      }
+        "sent": "Chat message sent",
+        "templateRequired": "Template name and text are required",
+        "hotkeyRequired": "Set a hotkey combination first",
+        "templateSaved": "Template saved; hotkey active",
+        "templateDeleted": "Template deleted",
+        "templateSent": "Template message sent"
+      },
+      "templates": "Hotkey Message Templates",
+      "addTemplate": "+ Add Template",
+      "noTemplates": "No templates yet. Hotkeys are global (work while the game is focused); a single-key hotkey (e.g. F1) intercepts that key everywhere — prefer a combination",
+      "tplName": "Template name (e.g. Callout)",
+      "tplText": "Text to send",
+      "captureHotkey": "Click to set hotkey",
+      "pressKey": "Press combination…",
+      "pressKeyHint": "Press a combination (e.g. Ctrl+F1) or a single key (e.g. F1). Single-key hotkeys are global and will intercept that key everywhere",
+      "send": "Send",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel"
     },
     "common": {
       "connectGame": "Connect to game",

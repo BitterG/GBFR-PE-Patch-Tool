@@ -5,8 +5,8 @@
       "notice": "通过游戏自身的聊天功能发送消息（进程内调用游戏函数，不模拟键盘）。当前为框架版本，发送函数待接入。",
       "hint": "按设置间隔自动发送游戏聊天消息",
       "running": "定时发送运行中",
-      "enabled": "运行中",
-      "disabled": "已停止",
+      "enabled": "启用热键",
+      "disabled": "热键未启用",
       "status": "状态",
       "message": "消息内容",
       "messagePlaceholder": "输入要发送的聊天文本，例如：大佬求带！",
@@ -28,8 +28,25 @@
         "saved": "自动聊天配置已保存",
         "started": "自动聊天已启动",
         "stopped": "自动聊天已停止",
-        "sent": "聊天消息已发送"
-      }
+        "sent": "聊天消息已发送",
+        "templateRequired": "模板名称和文本不能为空",
+        "hotkeyRequired": "请先设置热键组合",
+        "templateSaved": "模板已保存，热键已生效",
+        "templateDeleted": "模板已删除",
+        "templateSent": "模板消息已发送"
+      },
+      "templates": "热键文字模板",
+      "addTemplate": "+ 添加模板",
+      "noTemplates": "还没有模板，点\"添加模板\"创建。热键为全局热键（游戏前台也生效）；单键（如 F1）会全局拦截该键，建议优先用组合键",
+      "tplName": "模板名称（如：喊话）",
+      "tplText": "发送的文本",
+      "captureHotkey": "点击设置热键",
+      "pressKey": "按下组合键…",
+      "pressKeyHint": "按下组合键（如 Ctrl+F1）或单键（如 F1）。单键为全局热键，会拦截该键在其他程序的输入",
+      "send": "发送",
+      "edit": "编辑",
+      "delete": "删除",
+      "cancel": "取消"
     },
     "common": {
       "connectGame": "连接游戏进程",

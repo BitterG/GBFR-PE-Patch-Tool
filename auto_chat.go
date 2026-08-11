@@ -2,10 +2,14 @@ package main
 
 import (
 	"fmt"
+	goruntime "runtime"
+	"os"
+	"path/filepath"
 	"sync"
 	"time"
 	"unsafe"
 
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.org/x/sys/windows"
 )
 
@@ -118,8 +122,9 @@ func (a *App) AutoChatSetEnabled(enabled bool) (AutoChatStatus, error) {
 	return autoChat.snapshotLocked(), nil
 }
 
-// AutoChatSendNow 立即手动发送一次。
-func (a *App) AutoChatSendNow() (AutoChatStatus, error) {
+// AutoChatSendNow 立即手动发送一次。message 非空时直接使用该文本（无需先保存
+// 配置），并同步更新当前配置；为空时使用已保存的配置消息。
+func (a *App) AutoChatSendNow(message string) (AutoChatStatus, error) {
 	autoChatLifecycleMu.Lock()
 	defer autoChatLifecycleMu.Unlock()
 	if err := a.ensureGameProcessLocked(); err != nil {
@@ -131,7 +136,15 @@ func (a *App) AutoChatSendNow() (AutoChatStatus, error) {
 	autoChat.mu.Lock()
 	defer autoChat.mu.Unlock()
 
-	if autoChat.message == "" {
+	text := autoChat.message
+	if message != "" {
+		text = message
+		if len([]byte(text)) > autoChatMaxTextLen {
+			return autoChat.snapshotLocked(), fmt.Errorf("消息最多 %d 个 UTF-8 字节", autoChatMaxTextLen)
+		}
+		autoChat.message = text
+	}
+	if text == "" {
 		return autoChat.snapshotLocked(), fmt.Errorf("消息内容不能为空")
 	}
 	if err := a.sendChatMessageLocked(); err != nil {
@@ -234,6 +247,40 @@ var (
 	procEnumProcessModulesEx = psapidll.NewProc("EnumProcessModulesEx")
 	procGetModuleBaseNameW   = psapidll.NewProc("GetModuleBaseNameW")
 )
+
+var (
+	modUser32AutoChat = windows.NewLazySystemDLL("user32.dll")
+	procRegisterHotKey   = modUser32AutoChat.NewProc("RegisterHotKey")
+	procUnregisterHotKey = modUser32AutoChat.NewProc("UnregisterHotKey")
+	procPeekMessageW     = modUser32AutoChat.NewProc("PeekMessageW")
+)
+
+func registerHotKey(hwnd uintptr, id int, mods, vk uint32) error {
+	r, _, e := procRegisterHotKey.Call(hwnd, uintptr(id), uintptr(mods), uintptr(vk))
+	if r == 0 {
+		return fmt.Errorf("RegisterHotKey 失败: %v", e)
+	}
+	return nil
+}
+
+func unregisterHotKey(hwnd uintptr, id int) {
+	_, _, _ = procUnregisterHotKey.Call(hwnd, uintptr(id))
+}
+
+type msgPeek struct {
+	hwnd    uintptr
+	message uint32
+	wparam  uintptr
+	lparam  uintptr
+	time    uint32
+	pt      struct{ x, y int32 }
+}
+
+func peekMessage(msg *msgPeek, hwnd uintptr, filterMin, filterMax uint32, remove uint32) uintptr {
+	r, _, _ := procPeekMessageW.Call(
+		uintptr(unsafe.Pointer(msg)), hwnd, uintptr(filterMin), uintptr(filterMax), uintptr(remove))
+	return r
+}
 
 // sendChatMessageLocked 将请求写入共享内存，由 patch_core.dll 投递到游戏窗口线程。
 // 调用方必须持有 autoChat.mu。
@@ -422,4 +469,242 @@ func (a *App) closeAutoChatMapping() {
 		_ = windows.CloseHandle(a.autoChatMapping)
 		a.autoChatMapping = 0
 	}
+}
+
+// ── 自动聊天模板 + 全局热键 ──
+
+// AutoChatTemplate 是"热键 → 发送文本"模板。
+type AutoChatTemplate struct {
+	ID        string `json:"id"`        // 唯一 ID（UUID）
+	Name      string `json:"name"`      // 显示名称
+	Text      string `json:"text"`      // 发送的文本
+	Modifiers int    `json:"modifiers"` // MOD_ALT(1)|MOD_CONTROL(2)|MOD_SHIFT(4)|MOD_WIN(8)
+	Key       int    `json:"key"`       // 虚拟键码（VK_F1..F12 / 'A'..'Z' / '0'..'9'）
+	Enabled   bool   `json:"enabled"`   // 是否注册热键
+}
+
+const (
+	hotkeyMsgBase    = 0x4000 // WM_APP 起始
+	autoChatHotkeyID = 0x7E11 // RegisterHotKey id 基址
+)
+
+var autoChatHotkeyMu sync.Mutex
+
+// AutoChatListTemplates 返回全部模板（含注册状态）。
+func (a *App) AutoChatListTemplates() []AutoChatTemplate {
+	autoChat.mu.Lock()
+	defer autoChat.mu.Unlock()
+	tmpls := make([]AutoChatTemplate, len(a.config.AutoChatTemplates))
+	copy(tmpls, a.config.AutoChatTemplates)
+	return tmpls
+}
+
+// AutoChatSaveTemplate 新增或更新一个模板并重新注册热键。
+func (a *App) AutoChatSaveTemplate(t AutoChatTemplate) ([]AutoChatTemplate, error) {
+	if t.Name == "" || t.Text == "" {
+		return nil, fmt.Errorf("模板名称和文本不能为空")
+	}
+	if t.Key == 0 {
+		return nil, fmt.Errorf("请设置热键主键")
+	}
+	if len([]byte(t.Text)) > autoChatMaxTextLen {
+		return nil, fmt.Errorf("文本最多 %d 个 UTF-8 字节", autoChatMaxTextLen)
+	}
+
+	// 先更新配置（持 autoChat.mu），保存并释放锁后再注册热键，
+	// 避免 registerAutoChatHotkeys 内部再次 Lock autoChat.mu 造成死锁。
+	autoChat.mu.Lock()
+	replaced := false
+	for i := range a.config.AutoChatTemplates {
+		if a.config.AutoChatTemplates[i].ID == t.ID {
+			a.config.AutoChatTemplates[i] = t
+			replaced = true
+			break
+		}
+	}
+	if !replaced {
+		if t.ID == "" {
+			t.ID = fmt.Sprintf("tpl-%d", time.Now().UnixNano())
+		}
+		a.config.AutoChatTemplates = append(a.config.AutoChatTemplates, t)
+	}
+	err := a.saveConfig()
+	autoChat.mu.Unlock()
+	if err != nil {
+		return nil, fmt.Errorf("保存配置失败: %w", err)
+	}
+	registerAutoChatHotkeys(a)
+	return a.AutoChatListTemplates(), nil
+}
+
+// AutoChatDeleteTemplate 删除模板并注销其热键。
+func (a *App) AutoChatDeleteTemplate(id string) ([]AutoChatTemplate, error) {
+	autoChat.mu.Lock()
+	out := a.config.AutoChatTemplates[:0]
+	for _, t := range a.config.AutoChatTemplates {
+		if t.ID != id {
+			out = append(out, t)
+		}
+	}
+	a.config.AutoChatTemplates = out
+	err := a.saveConfig()
+	autoChat.mu.Unlock()
+	if err != nil {
+		return nil, fmt.Errorf("保存配置失败: %w", err)
+	}
+	registerAutoChatHotkeys(a)
+	return a.AutoChatListTemplates(), nil
+}
+
+// AutoChatSendTemplate 按 ID 立即发送模板文本（供 UI 按钮触发）。
+func (a *App) AutoChatSendTemplate(id string) (AutoChatStatus, error) {
+	autoChat.mu.Lock()
+	var t *AutoChatTemplate
+	for i := range a.config.AutoChatTemplates {
+		if a.config.AutoChatTemplates[i].ID == id {
+			t = &a.config.AutoChatTemplates[i]
+			break
+		}
+	}
+	autoChat.mu.Unlock()
+	if t == nil {
+		return autoChat.snapshot(), fmt.Errorf("模板不存在")
+	}
+	return a.AutoChatSendNow(t.Text)
+}
+
+func (st *autoChatState) snapshot() AutoChatStatus {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	return st.snapshotLocked()
+}
+
+// ── RegisterHotKey 全局热键 ──
+// 每个启用的模板注册一个全局热键；后台 goroutine 跑 GetMessageW 循环接收
+// WM_HOTKEY，命中后调 sendChatViaBridge 发送对应模板文本（游戏前台也生效）。
+
+var (
+	// hotkeyCmdCh 把 RegisterHotKey/UnregisterHotKey 命令投递到热键线程执行。
+	// RegisterHotKey(hwnd=0) 的 WM_HOTKEY 会投递到*调用 RegisterHotKey 的线程*
+	// 的消息队列；hotkeyLoop 用 runtime.LockOSThread 固定在同一 OS 线程上跑
+	// PeekMessageW，才能收到这些消息（之前跨线程注册 → 永远收不到 → 热键无效）。
+	hotkeyCmdCh    = make(chan func(), 8)
+	hotkeyStopCh   chan struct{}
+	hotkeyStopOnce sync.Once
+)
+
+// templateHotkeyID 由模板 ID 派生稳定的热键 id（删除/插入模板不影响其他模板的 id）。
+func templateHotkeyID(tplID string) int {
+	var h uint32 = 2166136261
+	for i := 0; i < len(tplID); i++ {
+		h ^= uint32(tplID[i])
+		h *= 16777619
+	}
+	return autoChatHotkeyID + int(h%32)
+}
+
+func registerAutoChatHotkeys(a *App) {
+	autoChatHotkeyMu.Lock()
+	defer autoChatHotkeyMu.Unlock()
+
+	autoChat.mu.Lock()
+	tmpls := append([]AutoChatTemplate(nil), a.config.AutoChatTemplates...)
+	autoChat.mu.Unlock()
+
+	// 启动接收循环（幂等），并把注册命令投递到热键线程执行。
+	hotkeyStopOnce.Do(func() {
+		hotkeyStopCh = make(chan struct{})
+		go hotkeyLoop(a)
+	})
+	// 非阻塞投递：热键线程卡住时不能阻塞调用方（否则 SaveTemplate 持锁 → 手动发送也卡）。
+	select {
+	case hotkeyCmdCh <- func() {
+		// 注销旧的（全部 id 范围），避免残留。
+		for id := autoChatHotkeyID; id < autoChatHotkeyID+64; id++ {
+			unregisterHotKey(0, id)
+		}
+		hotkeyDiagLog("register: %d templates", len(tmpls))
+		for _, t := range tmpls {
+			if !t.Enabled || t.ID == "" {
+				hotkeyDiagLog("  skip %q (enabled=%v)", t.Name, t.Enabled)
+				continue
+			}
+			mods := t.Modifiers & (0x1 | 0x2 | 0x4 | 0x8)
+			// 支持单键热键（mods==0），例如单独的 F1。RegisterHotKey 允许无修饰键；
+			// 是否误触由用户决定（UI 已限制主键为 F1-F12/字母/数字）。
+			err := registerHotKey(0, templateHotkeyID(t.ID), uint32(mods), uint32(t.Key))
+			hotkeyDiagLog("  hotkey id=%d mods=%d key=%d name=%q err=%v", templateHotkeyID(t.ID), mods, t.Key, t.Name, err)
+		}
+	}:
+	default:
+		hotkeyDiagLog("register: hotkeyCmdCh full — hotkey thread may be stuck")
+	}
+}
+
+func hotkeyLoop(a *App) {
+	// 固定本 goroutine 到一个 OS 线程：RegisterHotKey(hwnd=0) 的 WM_HOTKEY 只投递
+	// 到注册线程的消息队列，PeekMessageW 必须与注册在同一线程才能收到。
+	goruntime.LockOSThread()
+	for {
+		select {
+		case fn := <-hotkeyCmdCh:
+			fn()
+			continue
+		case <-hotkeyStopCh:
+			return
+		default:
+		}
+		// 非阻塞取消息：轮询队列（10ms 间隔），避免阻塞式 GetMessageW 无法响应停止。
+		var msg msgPeek
+		// PeekMessageW 拉取线程消息队列。
+		if peekMessage(&msg, 0, 0, 0, 1) != 0 {
+			if msg.message == 0x0312 { // WM_HOTKEY
+				hotkeyDiagLog("WM_HOTKEY wparam=%d (id=%d)", msg.wparam, int(msg.wparam)-autoChatHotkeyID)
+				autoChat.mu.Lock()
+				var tmplText string
+				for i := range a.config.AutoChatTemplates {
+					if templateHotkeyID(a.config.AutoChatTemplates[i].ID) == int(msg.wparam) {
+						tmplText = a.config.AutoChatTemplates[i].Text
+						break
+					}
+				}
+				autoChat.mu.Unlock()
+				hotkeyDiagLog("  matched text=%q", tmplText)
+				if tmplText != "" {
+					go func(text string) {
+						_, err := a.AutoChatSendNow(text)
+						if err != nil {
+							runtime.EventsEmit(a.ctx, "autoChat:hotkeyError", err.Error())
+						}
+					}(tmplText)
+				}
+			}
+		} else {
+			time.Sleep(10 * time.Millisecond)
+		}
+	}
+}
+
+func stopAutoChatHotkeys() {
+	autoChatHotkeyMu.Lock()
+	defer autoChatHotkeyMu.Unlock()
+	select {
+	case hotkeyCmdCh <- func() {
+		for id := autoChatHotkeyID; id < autoChatHotkeyID+64; id++ {
+			unregisterHotKey(0, id)
+		}
+	}:
+	default:
+	}
+}
+
+// hotkeyDiagLog 追加热键诊断到临时日志，定位注册/接收问题。
+func hotkeyDiagLog(format string, args ...interface{}) {
+	f, err := os.OpenFile(filepath.Join(os.TempDir(), "gbfr-autochat-hotkey.log"),
+		os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+	fmt.Fprintf(f, "%s "+format+"\n", append([]interface{}{time.Now().Format("15:04:05.000")}, args...)...)
 }
