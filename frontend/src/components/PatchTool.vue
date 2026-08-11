@@ -30,6 +30,43 @@ const state = reactive({
 
 const activeTab = ref(hasStoredLanguage() ? 'sigil' : 'language')
 const manualPath = ref('')
+
+// ── Tab 分组（折叠二级导航）──
+// 折叠分组：语言 / 角色装备 / 数据。monster / autoChat / misc 不折叠，常驻显示。
+const tabGroups = [
+  { id: 'lang', labelKey: 'tabGroups.language', tabs: ['language'] },
+  {
+    id: 'gear',
+    labelKey: 'tabGroups.gear',
+    tabs: ['sigil', 'sigilMemory', 'sigilLoadout', 'offlineLoadout', 'wrightstone', 'wrightstoneMemory', 'summon', 'overlimit'],
+  },
+  { id: 'data', labelKey: 'tabGroups.data', tabs: ['chara', 'save', 'badge'] },
+]
+// 常驻（不折叠）tab，直接显示在分组旁。
+const pinnedTabs = ['monster', 'autoChat', 'misc']
+const activeGroup = ref(tabGroups[0].id)
+
+// 当前分组内子 tab 是否含激活 tab（激活后同步所属分组）。
+function groupOf(tabId) {
+  if (pinnedTabs.includes(tabId)) return null // 常驻 tab 不属于折叠组
+  for (const g of tabGroups) {
+    if (g.tabs.includes(tabId)) return g.id
+  }
+  return tabGroups[0].id
+}
+function setGroup(gid) {
+  activeGroup.value = gid
+  const g = tabGroups.find((x) => x.id === gid)
+  if (g && !g.tabs.includes(activeTab.value)) {
+    activeTab.value = g.tabs[0]
+  }
+}
+function setTab(tabId) {
+  activeTab.value = tabId
+  activeGroup.value = groupOf(tabId)
+}
+// 初始化时同步 activeGroup。
+activeGroup.value = groupOf(activeTab.value)
 const patchValues = reactive({}) // { patchID: 'value' }
 const isLoaded = ref(false)
 const isDetecting = ref(false)
@@ -157,51 +194,40 @@ function showStatus(msg, type) {
     </div>
 
     <div class="tab-bar" style="--wails-draggable:no-drag">
-      <button class="tab-btn language-tab" :class="{ active: activeTab === 'language' }" @click="activeTab = 'language'">
-        {{ t('patchTool.tabs.language') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'sigil' }" @click="activeTab = 'sigil'">
-        {{ t('patchTool.tabs.sigil') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'sigilMemory' }" @click="activeTab = 'sigilMemory'">
-        {{ t('patchTool.tabs.sigilMemory') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'sigilLoadout' }" @click="activeTab = 'sigilLoadout'">
-        {{ t('patchTool.tabs.sigilLoadout') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'offlineLoadout' }" @click="activeTab = 'offlineLoadout'">
-        {{ t('patchTool.tabs.offlineLoadout') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'wrightstone' }" @click="activeTab = 'wrightstone'">
-        {{ t('patchTool.tabs.wrightstone') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'wrightstoneMemory' }" @click="activeTab = 'wrightstoneMemory'">
-        {{ t('patchTool.tabs.wrightstoneMemory') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'chara' }" @click="activeTab = 'chara'">
-        {{ t('patchTool.tabs.chara') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'save' }" @click="activeTab = 'save'">
-        {{ t('patchTool.tabs.save') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'badge' }" @click="activeTab = 'badge'">
-        {{ t('patchTool.tabs.badge') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'misc' }" @click="activeTab = 'misc'">
-        {{ t('patchTool.tabs.misc') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'summon' }" @click="activeTab = 'summon'">
-        {{ t('patchTool.tabs.summon') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'overlimit' }" @click="activeTab = 'overlimit'">
-        {{ t('patchTool.tabs.overlimit') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'monster' }" @click="activeTab = 'monster'">
-        {{ t('patchTool.tabs.monster') }}
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'autoChat' }" @click="activeTab = 'autoChat'">
-        {{ t('patchTool.tabs.autoChat') }}
-      </button>
+      <!-- 第一行：分组 + 常驻 tab -->
+      <div class="tab-groups-row">
+        <button
+          v-for="g in tabGroups"
+          :key="g.id"
+          class="tab-btn tab-group-btn"
+          :class="{ active: activeGroup === g.id }"
+          @click="setGroup(g.id)"
+        >
+          {{ t('patchTool.' + g.labelKey) }}
+        </button>
+        <span class="tab-pin-divider"></span>
+        <button
+          v-for="tabId in pinnedTabs"
+          :key="tabId"
+          class="tab-btn tab-sub-btn"
+          :class="{ active: activeTab === tabId }"
+          @click="setTab(tabId)"
+        >
+          {{ t('patchTool.tabs.' + tabId) }}
+        </button>
+      </div>
+      <!-- 第二行：当前分组子 tab（常驻 tab 激活时隐藏） -->
+      <div class="tab-sub-row" v-if="activeGroup">
+        <button
+          v-for="tabId in (tabGroups.find(g => g.id === activeGroup) || { tabs: [] }).tabs"
+          :key="tabId"
+          class="tab-btn tab-sub-btn"
+          :class="{ active: activeTab === tabId }"
+          @click="setTab(tabId)"
+        >
+          {{ t('patchTool.tabs.' + tabId) }}
+        </button>
+      </div>
     </div>
 
     <main v-if="activeTab === 'patch'" class="container" style="--wails-draggable:no-drag">
@@ -349,17 +375,50 @@ function showStatus(msg, type) {
 
 .tab-bar {
   display: flex;
-  gap: 0;
+  flex-direction: column;
+  gap: 2px;
   padding: 5px 8px;
   background: rgba(18,26,38,0.95);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   flex-shrink: 0;
+}
+.tab-groups-row,
+.tab-sub-row {
+  display: flex;
+  gap: 0;
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
   overscroll-behavior-x: contain;
 }
-.tab-bar::-webkit-scrollbar { display:none; }
+.tab-groups-row::-webkit-scrollbar,
+.tab-sub-row::-webkit-scrollbar { display: none; }
+.tab-group-btn {
+  color: rgba(255,255,255,0.78);
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+}
+.tab-group-btn.active {
+  color: #67e8f9;
+  background: rgba(103,232,249,0.12);
+  border-color: rgba(103,232,249,0.3);
+  border-radius: 6px;
+}
+.tab-pin-divider {
+  width: 1px;
+  margin: 2px 6px;
+  background: rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+}
+.tab-sub-btn {
+  opacity: 0.85;
+}
+.tab-sub-btn.active {
+  opacity: 1;
+  color: #67e8f9;
+  background: rgba(103,232,249,0.12);
+}
 .tab-btn {
   padding: 5px 7px;
   border-radius: 6px;
