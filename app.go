@@ -26,7 +26,7 @@ const (
 	steamAppID  = "881020"
 	gameExeName = "granblue_fantasy_relink.exe"
 	gameFolder  = "Granblue Fantasy Relink"
-	appVersion  = "v1.10.1"
+	appVersion  = "v1.10.2"
 	repoOwner   = "BitterG"
 	repoName    = "GBFR-PE-Patch-Tool"
 )
@@ -101,13 +101,13 @@ type UpdateInfo struct {
 }
 
 type AppConfig struct {
-	LastSavePath       string              `json:"lastSavePath"`
-	WindowWidth        int                 `json:"windowWidth"`
-	WindowHeight       int                 `json:"windowHeight"`
-	AutoChatTemplates  []AutoChatTemplate  `json:"autoChatTemplates,omitempty"`
+	LastSavePath        string             `json:"lastSavePath"`
+	WindowWidth         int                `json:"windowWidth"`
+	WindowHeight        int                `json:"windowHeight"`
+	AutoChatTemplates   []AutoChatTemplate `json:"autoChatTemplates,omitempty"`
 	ActiveAutoChatGroup string             `json:"activeAutoChatGroup,omitempty"`
-	ExternalApiEnabled bool                `json:"externalApiEnabled,omitempty"`
-	ExternalApiPort    int                 `json:"externalApiPort,omitempty"`
+	ExternalApiEnabled  bool               `json:"externalApiEnabled,omitempty"`
+	ExternalApiPort     int                `json:"externalApiPort,omitempty"`
 }
 
 // ── App ──
