@@ -11,7 +11,7 @@
       "message": "消息内容",
       "messagePlaceholder": "输入要发送的聊天文本，例如：大佬求带！",
       "interval": "发送间隔",
-      "intervalPlaceholder": "如 60 = 每 60 秒一条（最小 1 秒）",
+      "intervalPlaceholder": "如 60 = 每 60 秒一条（定时最小 3 秒）",
       "ms": "秒",
       "save": "保存配置",
       "start": "开始定时",
@@ -35,10 +35,10 @@
         "templateDeleted": "模板已删除",
         "templateSent": "模板消息已发送",
         "externalStarted": "外部接入服务已启动",
-        "externalStopped": "外部接入服务已停止"
+        "externalStopped": "外部接入服务已停止",
+        "intervalMin": "定时发送间隔最小 3 秒"
       },
       "templates": "热键文字模板",
-      "addTemplate": "+ 添加模板",
       "noTemplates": "还没有模板，点\"添加模板\"创建。热键仅在游戏前台时触发（游戏不在前台不响应）",
       "tplName": "模板名称（如：喊话）",
       "tplText": "发送的文本",
@@ -53,7 +53,12 @@
       "externalTitle": "外部接入（HTTP 服务）",
       "externalStart": "启动服务",
       "externalPortPlaceholder": "端口（默认 17395）",
-      "externalHelp": "启动后可用任意 HTTP 客户端发送消息到游戏聊天：\n\n  POST http://127.0.0.1:{port}/api/chat/send\n  body: {\"text\":\"要发送的消息\"}\n\nPowerShell 示例（用 curl.exe，不要用 curl 别名）：\n  curl.exe -X POST http://127.0.0.1:{port}/api/chat/send -H \"Content-Type: application/json\" -d '{\"text\":\"hi\"}'\n\n或 PowerShell 原生：\n  Invoke-RestMethod -Uri http://127.0.0.1:{port}/api/chat/send -Method Post -ContentType \"application/json\" -Body '{\"text\":\"hi\"}'\n\n仅本机可访问；与手动/定时/热键共用 1 秒发送频率限制。"
+      "externalHelp": "启动后可用任意 HTTP 客户端发送消息到游戏聊天：\n\n  POST http://127.0.0.1:{port}/api/chat/send\n  body: {\"text\":\"要发送的消息\"}\n\nPowerShell 示例（用 curl.exe，不要用 curl 别名）：\n  curl.exe -X POST http://127.0.0.1:{port}/api/chat/send -H \"Content-Type: application/json\" -d '{\"text\":\"hi\"}'\n\n或 PowerShell 原生：\n  Invoke-RestMethod -Uri http://127.0.0.1:{port}/api/chat/send -Method Post -ContentType \"application/json\" -Body '{\"text\":\"hi\"}'\n\n仅本机可访问；与手动/定时/热键共用 1 秒发送频率限制。",
+      "tplGroup": "分组（留空=默认）",
+      "groupDefault": "默认分组",
+      "groupHint": "每次只启用一个分组的热键；切换分组后仅该分组的模板热键生效",
+      "groupLabel": "分组",
+      "addHotkey": "+ 添加热键"
     },
     "common": {
       "connectGame": "连接游戏进程",

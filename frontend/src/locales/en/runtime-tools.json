@@ -11,7 +11,7 @@
       "message": "Message",
       "messagePlaceholder": "Enter the chat text to send, e.g. Let's go!",
       "interval": "Send interval",
-      "intervalPlaceholder": "e.g. 60 = every 60 seconds (min 1s)",
+      "intervalPlaceholder": "e.g. 60 = every 60 seconds (timer min 3s)",
       "ms": "sec",
       "save": "Save config",
       "start": "Start timer",
@@ -35,10 +35,10 @@
         "templateDeleted": "Template deleted",
         "templateSent": "Template message sent",
         "externalStarted": "External API server started",
-        "externalStopped": "External API server stopped"
+        "externalStopped": "External API server stopped",
+        "intervalMin": "Timer interval must be at least 3 seconds"
       },
       "templates": "Hotkey Message Templates",
-      "addTemplate": "+ Add Template",
       "noTemplates": "No templates yet. Hotkeys trigger only while the game is in the foreground",
       "tplName": "Template name (e.g. Callout)",
       "tplText": "Text to send",
@@ -53,7 +53,12 @@
       "externalTitle": "External API (HTTP)",
       "externalStart": "Start server",
       "externalPortPlaceholder": "Port (default 17395)",
-      "externalHelp": "Send messages to the in-game chat from any HTTP client:\n\n  POST http://127.0.0.1:{port}/api/chat/send\n  body: {\"text\":\"message\"}\n\nPowerShell (use curl.exe, not the curl alias):\n  curl.exe -X POST http://127.0.0.1:{port}/api/chat/send -H \"Content-Type: application/json\" -d '{\"text\":\"hi\"}'\n\nOr native PowerShell:\n  Invoke-RestMethod -Uri http://127.0.0.1:{port}/api/chat/send -Method Post -ContentType \"application/json\" -Body '{\"text\":\"hi\"}'\n\nLocalhost only; shares the 1/sec send rate limit with manual/timer/hotkey."
+      "externalHelp": "Send messages to the in-game chat from any HTTP client:\n\n  POST http://127.0.0.1:{port}/api/chat/send\n  body: {\"text\":\"message\"}\n\nPowerShell (use curl.exe, not the curl alias):\n  curl.exe -X POST http://127.0.0.1:{port}/api/chat/send -H \"Content-Type: application/json\" -d '{\"text\":\"hi\"}'\n\nOr native PowerShell:\n  Invoke-RestMethod -Uri http://127.0.0.1:{port}/api/chat/send -Method Post -ContentType \"application/json\" -Body '{\"text\":\"hi\"}'\n\nLocalhost only; shares the 1/sec send rate limit with manual/timer/hotkey.",
+      "tplGroup": "Group (blank = default)",
+      "groupDefault": "Default",
+      "groupHint": "Only one group is active at a time; hotkeys of the active group take effect",
+      "groupLabel": "Group",
+      "addHotkey": "+ Add Hotkey"
     },
     "common": {
       "connectGame": "Connect to game",

@@ -5,6 +5,7 @@ import (
 	goruntime "runtime"
 	"os"
 	"path/filepath"
+	"sort"
 	"sync"
 	"time"
 	"unsafe"
@@ -64,12 +65,16 @@ func (a *App) AutoChatGetStatus() AutoChatStatus {
 
 // AutoChatSetConfig 更新消息文本与发送间隔。
 // intervalSec <= 0 时仅保留手动发送；更新后若已在运行，下次发送立即生效。
+// 定时间隔最小 3 秒（0 < intervalSec < 3 拒绝）。
 func (a *App) AutoChatSetConfig(message string, intervalSec int64) (AutoChatStatus, error) {
 	autoChat.mu.Lock()
 	defer autoChat.mu.Unlock()
 
 	if intervalSec < 0 {
 		intervalSec = 0
+	}
+	if intervalSec > 0 && intervalSec < autoChatMinIntervalSec {
+		return autoChat.snapshotLocked(), fmt.Errorf("定时发送间隔最小 %d 秒", autoChatMinIntervalSec)
 	}
 	autoChat.message = message
 	autoChat.interval = intervalSec
@@ -102,6 +107,9 @@ func (a *App) AutoChatSetEnabled(enabled bool) (AutoChatStatus, error) {
 	}
 	if autoChat.interval <= 0 {
 		return autoChat.snapshotLocked(), fmt.Errorf("定时发送需要设置间隔（秒）")
+	}
+	if autoChat.interval < autoChatMinIntervalSec {
+		return autoChat.snapshotLocked(), fmt.Errorf("定时发送间隔最小 %d 秒", autoChatMinIntervalSec)
 	}
 	if autoChat.enabled {
 		return autoChat.snapshotLocked(), nil
@@ -227,6 +235,7 @@ func (st *autoChatState) snapshotLocked() AutoChatStatus {
 
 const (
 	autoChatMaxTextLen         = 255
+	autoChatMinIntervalSec     = 3 // 定时发送最小间隔（秒）
 	autoChatMappingName        = "Local\\GBFRPlayerInfoEditAutoChatV1"
 	autoChatBridgeSize         = 288
 	autoChatMagic              = 0x54414347
@@ -457,11 +466,74 @@ func (a *App) closeAutoChatMapping() {
 // AutoChatTemplate 是"热键 → 发送文本"模板。
 type AutoChatTemplate struct {
 	ID        string `json:"id"`        // 唯一 ID（UUID）
+	Group     string `json:"group"`     // 所属分组（空 = 默认分组）；只有激活分组的模板热键生效
 	Name      string `json:"name"`      // 显示名称
 	Text      string `json:"text"`      // 发送的文本
 	Modifiers int    `json:"modifiers"` // MOD_ALT(1)|MOD_CONTROL(2)|MOD_SHIFT(4)|MOD_WIN(8)
 	Key       int    `json:"key"`       // 虚拟键码（VK_F1..F12 / 'A'..'Z' / '0'..'9'）
 	Enabled   bool   `json:"enabled"`   // 是否注册热键
+}
+
+// AutoChatGroupInfo 是一个分组的信息。
+type AutoChatGroupInfo struct {
+	Name       string `json:"name"`   // 分组名（"" = 默认分组）
+	Active     bool   `json:"active"` // 是否当前激活分组
+	TemplateCount int `json:"templateCount"`
+}
+
+// AutoChatGroups 返回全部分组（按字母排序，默认分组排最前），以及当前激活分组。
+// AutoChatGroupsResult 分组列表 + 当前激活分组（单值返回，避免 wails 多返回值歧义）。
+type AutoChatGroupsResult struct {
+	Groups []AutoChatGroupInfo `json:"groups"`
+	Active string              `json:"active"`
+}
+
+func (a *App) AutoChatGroups() AutoChatGroupsResult {
+	autoChat.mu.Lock()
+	defer autoChat.mu.Unlock()
+
+	counts := map[string]int{}
+	for _, t := range a.config.AutoChatTemplates {
+		counts[t.Group]++
+	}
+	active := a.config.ActiveAutoChatGroup
+	names := make([]string, 0, len(counts)+1)
+	if _, ok := counts[""]; ok {
+		names = append(names, "")
+	}
+	for g := range counts {
+		if g != "" {
+			names = append(names, g)
+		}
+	}
+	if len(names) > 1 {
+		sort.Strings(names[1:]) // 默认分组之后的按字母排序
+	}
+	// 即使没有任何模板/分组，也始终显示"默认分组"，保证分组栏可见。
+	if len(names) == 0 {
+		names = append(names, "")
+	}
+	out := make([]AutoChatGroupInfo, 0, len(names))
+	for _, g := range names {
+		out = append(out, AutoChatGroupInfo{
+			Name:          g,
+			Active:        g == active,
+			TemplateCount: counts[g],
+		})
+	}
+	return AutoChatGroupsResult{Groups: out, Active: active}
+}
+
+// AutoChatSetActiveGroup 切换当前激活分组（仅该分组的模板热键生效），并持久化。
+func (a *App) AutoChatSetActiveGroup(group string) AutoChatGroupsResult {
+	autoChat.mu.Lock()
+	a.config.ActiveAutoChatGroup = group
+	err := a.saveConfig()
+	autoChat.mu.Unlock()
+	if err != nil {
+		fmt.Printf("[AutoChat] SetActiveGroup save failed: %v\n", err)
+	}
+	return a.AutoChatGroups()
 }
 
 // AutoChatListTemplates 返回全部模板（含注册状态）。
@@ -621,6 +693,7 @@ func hotkeyLoop(a *App) {
 
 		autoChat.mu.Lock()
 		tmpls := append([]AutoChatTemplate(nil), a.config.AutoChatTemplates...)
+		activeGroup := a.config.ActiveAutoChatGroup
 		autoChat.mu.Unlock()
 
 		// 热键只在游戏前台时触发；游戏不在前台（切到其他程序）时忽略按键。
@@ -628,7 +701,8 @@ func hotkeyLoop(a *App) {
 
 		for i := range tmpls {
 			t := &tmpls[i]
-			if !t.Enabled || t.ID == "" || t.Key == 0 {
+			// 只处理激活分组的模板；其他分组的模板热键不触发（但仍可手动/按钮发送）。
+			if t.Group != activeGroup || !t.Enabled || t.ID == "" || t.Key == 0 {
 				continue
 			}
 			down := hotkeyDown(t.Modifiers, t.Key)

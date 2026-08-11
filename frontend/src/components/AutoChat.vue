@@ -1,7 +1,7 @@
 <script setup>
 import { translate as t } from '../i18n'
-import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import { AutoChatGetStatus, AutoChatSetConfig, AutoChatSetEnabled, AutoChatSendNow, AutoChatListTemplates, AutoChatSaveTemplate, AutoChatDeleteTemplate, AutoChatSendTemplate, AutoChatExternalStatus, AutoChatExternalSetEnabled } from '../../wailsjs/go/main/App'
+import { onBeforeUnmount, onMounted, reactive, ref, computed } from 'vue'
+import { AutoChatGetStatus, AutoChatSetConfig, AutoChatSetEnabled, AutoChatSendNow, AutoChatListTemplates, AutoChatSaveTemplate, AutoChatDeleteTemplate, AutoChatSendTemplate, AutoChatExternalStatus, AutoChatExternalSetEnabled, AutoChatGroups, AutoChatSetActiveGroup } from '../../wailsjs/go/main/App'
 
 const emit = defineEmits(['status'])
 
@@ -23,8 +23,49 @@ let refreshTimer = 0
 const templates = ref([])
 const editing = ref(false)
 const editingIdx = ref(-1)
-const tplForm = reactive({ id: '', name: '', text: '', modifiers: 0, key: 0, enabled: true })
+const tplForm = reactive({ id: '', group: '', name: '', text: '', modifiers: 0, key: 0, enabled: true })
+// 当前激活分组的模板（列表只显示激活分组；手动按钮发送不限分组）。
+const visibleTemplates = computed(() =>
+  (templates.value || []).filter((t) => (t.group || '') === (activeGroup.value || '')),
+)
 const capturing = ref(false)
+const groups = ref([])
+const activeGroup = ref('')
+const groupDropdownOpen = ref(false)
+
+function toggleGroupDropdown() {
+  groupDropdownOpen.value = !groupDropdownOpen.value
+}
+function pickGroup(name) {
+  groupDropdownOpen.value = false
+  setActiveGroup(name || '')
+}
+
+function loadGroups() {
+  AutoChatGroups()
+    .then((res) => {
+      const r = res || {}
+      groups.value = Array.isArray(r.groups) ? r.groups : []
+      activeGroup.value = r.active || ''
+    })
+    .catch(() => {})
+}
+
+function setActiveGroup(name) {
+  AutoChatSetActiveGroup(name || '')
+    .then((res) => {
+      const r = res || {}
+      groups.value = Array.isArray(r.groups) ? r.groups : []
+      activeGroup.value = r.active || name || ''
+      groupDropdownOpen.value = false
+      loadTemplates()
+    })
+    .catch((err) => emit('status', String(err), 'error'))
+}
+
+function groupLabel(name) {
+  return name || t('runtimeTools.autoChat.groupDefault')
+}
 
 // ── 外部接入 HTTP 服务 ──
 const external = reactive({ running: false, enabled: false, port: 17395 })
@@ -69,6 +110,12 @@ function hotkeyLabel(mods, key) {
   if (key === 0x05) k = 'XButton1'
   else if (key === 0x06) k = 'XButton2'
   else if (key === 0x04) k = 'Middle'
+  else if (key >= 0x60 && key <= 0x69) k = `Num${key - 0x60}`
+  else if (key === 0x6A) k = 'Num*'
+  else if (key === 0x6B) k = 'Num+'
+  else if (key === 0x6D) k = 'Num-'
+  else if (key === 0x6E) k = 'Num.'
+  else if (key === 0x6F) k = 'Num/'
   else if (key >= 0x70 && key <= 0x7B) k = `F${key - 0x6F}`
   else if (key >= 65 && key <= 90) k = String.fromCharCode(key)
   else k = String(key)
@@ -123,9 +170,12 @@ function onKeydownCapture(e) {
   const k = e.keyCode || e.which
   // 纯修饰键（Ctrl/Alt/Shift/Win）不作为主键，等待下一个键。
   if (k === 16 || k === 17 || k === 18 || k === 91 || k === 92) return
-  // 主键限 F1-F12 / 字母 / 数字。
+  // 主键限 F1-F12 / 字母 / 数字 / 小键盘（Num0-9 及运算符）。
   const validMain =
-    (k >= 0x70 && k <= 0x7B) || (k >= 65 && k <= 90) || (k >= 48 && k <= 57)
+    (k >= 0x70 && k <= 0x7B) || // F1-F12
+    (k >= 65 && k <= 90) || // A-Z
+    (k >= 48 && k <= 57) || // 主键盘 0-9
+    (k >= 0x60 && k <= 0x6F) // 小键盘 Num0-9 / * + - . /
   if (validMain) {
     tplForm.modifiers = mods
     tplForm.key = k
@@ -136,14 +186,14 @@ function onKeydownCapture(e) {
 function addTemplate() {
   editing.value = true
   editingIdx.value = -1
-  Object.assign(tplForm, { id: '', name: '', text: '', modifiers: 0, key: 0, enabled: true })
+  Object.assign(tplForm, { id: '', group: activeGroup.value, name: '', text: '', modifiers: 0, key: 0, enabled: true })
 }
 
 function editTemplate(idx) {
   const tpl = templates.value[idx]
   editing.value = true
   editingIdx.value = idx
-  Object.assign(tplForm, { id: tpl.id, name: tpl.name, text: tpl.text, modifiers: tpl.modifiers, key: tpl.key, enabled: tpl.enabled })
+  Object.assign(tplForm, { id: tpl.id, group: tpl.group || '', name: tpl.name, text: tpl.text, modifiers: tpl.modifiers, key: tpl.key, enabled: tpl.enabled })
 }
 
 function cancelEdit() {
@@ -166,6 +216,12 @@ function saveTemplate() {
       templates.value = list || []
       editing.value = false
       stopCapture()
+      // 保存后自动切换到模板所在分组，确保刚保存的模板立即可见。
+      if ((tplForm.group || '') !== (activeGroup.value || '')) {
+        setActiveGroup(tplForm.group || '')
+      } else {
+        loadGroups()
+      }
       emit('status', t('runtimeTools.autoChat.messages.templateSaved'), 'success')
     })
     .catch((err) => emit('status', String(err), 'error'))
@@ -184,8 +240,9 @@ function removeTemplate(idx) {
     .finally(() => { loading.value = false })
 }
 
-function sendTemplate(idx) {
-  const tpl = templates.value[idx]
+function sendTemplateByIdx(idx) {
+  const tpl = visibleTemplates.value[idx]
+  if (!tpl) return
   sending.value = true
   AutoChatSendTemplate(tpl.id)
     .then((s) => {
@@ -194,6 +251,29 @@ function sendTemplate(idx) {
     })
     .catch((err) => emit('status', String(err), 'error'))
     .finally(() => { sending.value = false })
+}
+
+function editTemplateByIdx(idx) {
+  const tpl = visibleTemplates.value[idx]
+  if (!tpl) return
+  editing.value = true
+  editingIdx.value = idx
+  Object.assign(tplForm, { id: tpl.id, group: tpl.group || '', name: tpl.name, text: tpl.text, modifiers: tpl.modifiers, key: tpl.key, enabled: tpl.enabled })
+}
+
+function removeTemplateByIdx(idx) {
+  const tpl = visibleTemplates.value[idx]
+  if (!tpl) return
+  const id = tpl.id
+  loading.value = true
+  AutoChatDeleteTemplate(id)
+    .then((list) => {
+      templates.value = list || []
+      loadGroups()
+      emit('status', t('runtimeTools.autoChat.messages.templateDeleted'), 'success')
+    })
+    .catch((err) => emit('status', String(err), 'error'))
+    .finally(() => { loading.value = false })
 }
 
 function formatTimestamp(unixMs) {
@@ -222,6 +302,10 @@ function saveConfig() {
   const interval = parseInt(intervalInput.value, 10)
   if (isNaN(interval) || interval < 0) {
     emit('status', t('runtimeTools.autoChat.messages.intervalInvalid'), 'error')
+    return
+  }
+  if (interval > 0 && interval < 3) {
+    emit('status', t('runtimeTools.autoChat.messages.intervalMin'), 'error')
     return
   }
   loading.value = true
@@ -266,6 +350,7 @@ function sendNow() {
 onMounted(() => {
   loadStatus()
   loadTemplates()
+  loadGroups()
   loadExternalStatus()
   refreshTimer = setInterval(loadStatus, 2000)
 })
@@ -299,7 +384,7 @@ onBeforeUnmount(() => {
       <div class="auto-chat-field">
         <label class="auto-chat-label">{{ t('runtimeTools.autoChat.interval') }}</label>
         <div class="auto-chat-interval-row">
-          <input v-model="intervalInput" type="number" min="0" class="edit-input"
+          <input v-model="intervalInput" type="number" min="3" class="edit-input"
             :placeholder="t('runtimeTools.autoChat.intervalPlaceholder')" :disabled="status.enabled" />
           <span class="auto-chat-unit">{{ t('runtimeTools.autoChat.ms') }}</span>
         </div>
@@ -319,12 +404,34 @@ onBeforeUnmount(() => {
       <div class="auto-chat-field">
         <div class="auto-chat-tpl-header">
           <label class="auto-chat-label">{{ t('runtimeTools.autoChat.templates') }}</label>
-          <button class="btn-batch auto-chat-tpl-add" @click="addTemplate" :disabled="editing">{{ t('runtimeTools.autoChat.addTemplate') }}</button>
+          <!-- 分组下拉 + 添加热键 合并一行 -->
+          <div class="auto-chat-tpl-header-right">
+            <div class="auto-chat-group-select">
+              <button class="auto-chat-group-trigger" @click="toggleGroupDropdown" :disabled="editing">
+                <span class="auto-chat-group-trigger-label">{{ t('runtimeTools.autoChat.groupLabel') }}:</span>
+                <span class="auto-chat-group-trigger-value">{{ groupLabel(activeGroup) }}</span>
+                <span class="auto-chat-group-caret" :class="{ open: groupDropdownOpen }">▾</span>
+              </button>
+              <div v-if="groupDropdownOpen" class="auto-chat-group-menu">
+                <button
+                  v-for="g in groups"
+                  :key="g.name || '__default__'"
+                  class="auto-chat-group-menu-item"
+                  :class="{ active: (g.name || '') === activeGroup }"
+                  @click="pickGroup(g.name || '')"
+                >
+                  {{ groupLabel(g.name) }}
+                  <span class="auto-chat-group-count">{{ g.templateCount }}</span>
+                </button>
+              </div>
+            </div>
+            <button class="btn-batch auto-chat-tpl-add" @click="addTemplate" :disabled="editing">{{ t('runtimeTools.autoChat.addHotkey') }}</button>
+          </div>
         </div>
 
-        <!-- 模板列表 -->
-        <div v-if="templates.length" class="auto-chat-tpl-list">
-          <div v-for="(tpl, idx) in templates" :key="tpl.id" class="auto-chat-tpl-item">
+        <!-- 模板列表（只显示激活分组） -->
+        <div v-if="visibleTemplates.length" class="auto-chat-tpl-list">
+          <div v-for="(tpl, idx) in visibleTemplates" :key="tpl.id" class="auto-chat-tpl-item">
             <div class="auto-chat-tpl-info">
               <span class="auto-chat-tpl-name">{{ tpl.name }}</span>
               <span class="auto-chat-tpl-text">{{ tpl.text }}</span>
@@ -333,9 +440,9 @@ onBeforeUnmount(() => {
               </span>
             </div>
             <div class="auto-chat-tpl-actions">
-              <button class="btn-batch" @click="sendTemplate(idx)" :disabled="sending">{{ t('runtimeTools.autoChat.send') }}</button>
-              <button class="btn-batch" @click="editTemplate(idx)" :disabled="editing">{{ t('runtimeTools.autoChat.edit') }}</button>
-              <button class="btn-refresh" @click="removeTemplate(idx)" :disabled="editing">{{ t('runtimeTools.autoChat.delete') }}</button>
+              <button class="btn-batch" @click="sendTemplateByIdx(idx)" :disabled="sending">{{ t('runtimeTools.autoChat.send') }}</button>
+              <button class="btn-batch" @click="editTemplateByIdx(idx)" :disabled="editing">{{ t('runtimeTools.autoChat.edit') }}</button>
+              <button class="btn-refresh" @click="removeTemplateByIdx(idx)" :disabled="editing">{{ t('runtimeTools.autoChat.delete') }}</button>
             </div>
           </div>
         </div>
@@ -343,7 +450,10 @@ onBeforeUnmount(() => {
 
         <!-- 编辑表单 -->
         <div v-if="editing" class="auto-chat-tpl-edit">
-          <input v-model="tplForm.name" class="edit-input auto-chat-tpl-name-input" :placeholder="t('runtimeTools.autoChat.tplName')" />
+          <div class="auto-chat-tpl-edit-row">
+            <input v-model="tplForm.name" class="edit-input auto-chat-tpl-name-input" :placeholder="t('runtimeTools.autoChat.tplName')" />
+            <input v-model="tplForm.group" class="edit-input auto-chat-tpl-group-input" :placeholder="t('runtimeTools.autoChat.tplGroup')" />
+          </div>
           <textarea v-model="tplForm.text" class="auto-chat-tpl-text-input" rows="3"
             :placeholder="t('runtimeTools.autoChat.tplText')"></textarea>
           <div class="auto-chat-hotkey-row">
@@ -484,6 +594,14 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.auto-chat-tpl-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .auto-chat-tpl-add {
@@ -638,5 +756,99 @@ onBeforeUnmount(() => {
   white-space: pre-wrap;
   word-break: break-all;
   margin: 0;
+}
+
+/* ── 热键分组下拉 ── */
+.auto-chat-group-select {
+  position: relative;
+  margin-top: 6px;
+  max-width: 320px;
+}
+.auto-chat-group-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.auto-chat-group-trigger:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(165, 180, 252, 0.4);
+}
+.auto-chat-group-trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.auto-chat-group-trigger-label {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+}
+.auto-chat-group-trigger-value {
+  color: #67e8f9;
+  font-weight: 600;
+}
+.auto-chat-group-caret {
+  margin-left: auto;
+  color: rgba(255, 255, 255, 0.5);
+  transition: transform 0.15s;
+}
+.auto-chat-group-caret.open {
+  transform: rotate(180deg);
+}
+.auto-chat-group-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: rgba(20, 28, 40, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  max-height: 240px;
+  overflow-y: auto;
+}
+.auto-chat-group-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-align: left;
+}
+.auto-chat-group-menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+}
+.auto-chat-group-menu-item.active {
+  color: #67e8f9;
+  background: rgba(103, 232, 249, 0.12);
+}
+.auto-chat-group-count {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+.auto-chat-tpl-edit-row {
+  display: flex;
+  gap: 8px;
+}
+.auto-chat-tpl-group-input {
+  flex: none;
+  width: 140px;
 }
 </style>

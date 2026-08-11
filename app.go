@@ -105,6 +105,7 @@ type AppConfig struct {
 	WindowWidth        int                 `json:"windowWidth"`
 	WindowHeight       int                 `json:"windowHeight"`
 	AutoChatTemplates  []AutoChatTemplate  `json:"autoChatTemplates,omitempty"`
+	ActiveAutoChatGroup string             `json:"activeAutoChatGroup,omitempty"`
 	ExternalApiEnabled bool                `json:"externalApiEnabled,omitempty"`
 	ExternalApiPort    int                 `json:"externalApiPort,omitempty"`
 }
