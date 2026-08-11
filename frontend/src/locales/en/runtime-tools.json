@@ -33,7 +33,9 @@
         "hotkeyRequired": "Set a hotkey combination first",
         "templateSaved": "Template saved; hotkey active",
         "templateDeleted": "Template deleted",
-        "templateSent": "Template message sent"
+        "templateSent": "Template message sent",
+        "externalStarted": "External API server started",
+        "externalStopped": "External API server stopped"
       },
       "templates": "Hotkey Message Templates",
       "addTemplate": "+ Add Template",
@@ -47,7 +49,11 @@
       "edit": "Edit",
       "delete": "Delete",
       "cancel": "Cancel",
-      "rateLimitHint": "Send rate cap: 1 message per second (manual/timer/hotkey shared)"
+      "rateLimitHint": "Send rate cap: 1 message per second (manual/timer/hotkey shared)",
+      "externalTitle": "External API (HTTP)",
+      "externalStart": "Start server",
+      "externalPortPlaceholder": "Port (default 17395)",
+      "externalHelp": "Send messages to the in-game chat from any HTTP client:\n\n  POST http://127.0.0.1:{port}/api/chat/send\n  body: {\"text\":\"message\"}\n\nPowerShell (use curl.exe, not the curl alias):\n  curl.exe -X POST http://127.0.0.1:{port}/api/chat/send -H \"Content-Type: application/json\" -d '{\"text\":\"hi\"}'\n\nOr native PowerShell:\n  Invoke-RestMethod -Uri http://127.0.0.1:{port}/api/chat/send -Method Post -ContentType \"application/json\" -Body '{\"text\":\"hi\"}'\n\nLocalhost only; shares the 1/sec send rate limit with manual/timer/hotkey."
     },
     "common": {
       "connectGame": "Connect to game",

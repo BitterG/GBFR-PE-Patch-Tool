@@ -105,6 +105,8 @@ type AppConfig struct {
 	WindowWidth        int                 `json:"windowWidth"`
 	WindowHeight       int                 `json:"windowHeight"`
 	AutoChatTemplates  []AutoChatTemplate  `json:"autoChatTemplates,omitempty"`
+	ExternalApiEnabled bool                `json:"externalApiEnabled,omitempty"`
+	ExternalApiPort    int                 `json:"externalApiPort,omitempty"`
 }
 
 // ── App ──
@@ -175,6 +177,9 @@ func (a *App) startup(ctx context.Context) {
 		return
 	}
 	registerAutoChatHotkeys(a)
+	if a.config.ExternalApiEnabled {
+		_ = a.startExternalAPI(a.config.ExternalApiPort)
+	}
 	width, height := a.config.windowSize()
 	if width > 0 && height > 0 {
 		runtime.WindowSetSize(ctx, width, height)
@@ -193,6 +198,7 @@ func (a *App) shutdown(ctx context.Context) {
 	}
 	stopAutoChatLoop()
 	stopAutoChatHotkeys()
+	stopExternalAPI()
 	a.closeDamageMeter()
 	a.closePlayerDamageState()
 	a.CharaDetach()

@@ -33,7 +33,9 @@
         "hotkeyRequired": "请先设置热键组合",
         "templateSaved": "模板已保存，热键已生效",
         "templateDeleted": "模板已删除",
-        "templateSent": "模板消息已发送"
+        "templateSent": "模板消息已发送",
+        "externalStarted": "外部接入服务已启动",
+        "externalStopped": "外部接入服务已停止"
       },
       "templates": "热键文字模板",
       "addTemplate": "+ 添加模板",
@@ -47,7 +49,11 @@
       "edit": "编辑",
       "delete": "删除",
       "cancel": "取消",
-      "rateLimitHint": "发送频率上限：1 秒 1 条（手动/定时/热键共用）"
+      "rateLimitHint": "发送频率上限：1 秒 1 条（手动/定时/热键共用）",
+      "externalTitle": "外部接入（HTTP 服务）",
+      "externalStart": "启动服务",
+      "externalPortPlaceholder": "端口（默认 17395）",
+      "externalHelp": "启动后可用任意 HTTP 客户端发送消息到游戏聊天：\n\n  POST http://127.0.0.1:{port}/api/chat/send\n  body: {\"text\":\"要发送的消息\"}\n\nPowerShell 示例（用 curl.exe，不要用 curl 别名）：\n  curl.exe -X POST http://127.0.0.1:{port}/api/chat/send -H \"Content-Type: application/json\" -d '{\"text\":\"hi\"}'\n\n或 PowerShell 原生：\n  Invoke-RestMethod -Uri http://127.0.0.1:{port}/api/chat/send -Method Post -ContentType \"application/json\" -Body '{\"text\":\"hi\"}'\n\n仅本机可访问；与手动/定时/热键共用 1 秒发送频率限制。"
     },
     "common": {
       "connectGame": "连接游戏进程",

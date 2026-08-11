@@ -1,7 +1,7 @@
 <script setup>
 import { translate as t } from '../i18n'
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import { AutoChatGetStatus, AutoChatSetConfig, AutoChatSetEnabled, AutoChatSendNow, AutoChatListTemplates, AutoChatSaveTemplate, AutoChatDeleteTemplate, AutoChatSendTemplate } from '../../wailsjs/go/main/App'
+import { AutoChatGetStatus, AutoChatSetConfig, AutoChatSetEnabled, AutoChatSendNow, AutoChatListTemplates, AutoChatSaveTemplate, AutoChatDeleteTemplate, AutoChatSendTemplate, AutoChatExternalStatus, AutoChatExternalSetEnabled } from '../../wailsjs/go/main/App'
 
 const emit = defineEmits(['status'])
 
@@ -25,6 +25,33 @@ const editing = ref(false)
 const editingIdx = ref(-1)
 const tplForm = reactive({ id: '', name: '', text: '', modifiers: 0, key: 0, enabled: true })
 const capturing = ref(false)
+
+// ── 外部接入 HTTP 服务 ──
+const external = reactive({ running: false, enabled: false, port: 17395 })
+const externalLoading = ref(false)
+
+function loadExternalStatus() {
+  AutoChatExternalStatus()
+    .then((s) => { Object.assign(external, s || { running: false, enabled: false, port: 17395 }) })
+    .catch(() => {})
+}
+
+function externalHelpText() {
+  return (t('runtimeTools.autoChat.externalHelp') || '').replaceAll('{port}', String(external.port || 17395))
+}
+
+function toggleExternal() {
+  externalLoading.value = true
+  AutoChatExternalSetEnabled(!external.enabled, external.port)
+    .then((s) => {
+      Object.assign(external, s)
+      emit('status', s.running
+        ? t('runtimeTools.autoChat.messages.externalStarted')
+        : t('runtimeTools.autoChat.messages.externalStopped'), 'success')
+    })
+    .catch((err) => emit('status', String(err), 'error'))
+    .finally(() => { externalLoading.value = false })
+}
 const modNames = [
   { mask: 0x8, name: 'Win' },
   { mask: 0x4, name: 'Shift' },
@@ -239,6 +266,7 @@ function sendNow() {
 onMounted(() => {
   loadStatus()
   loadTemplates()
+  loadExternalStatus()
   refreshTimer = setInterval(loadStatus, 2000)
 })
 
@@ -332,6 +360,24 @@ onBeforeUnmount(() => {
             <button class="btn-refresh" @click="cancelEdit">{{ t('runtimeTools.autoChat.cancel') }}</button>
           </div>
         </div>
+      </div>
+
+      <!-- 外部接入 HTTP 服务 -->
+      <div class="auto-chat-field">
+        <div class="auto-chat-tpl-header">
+          <label class="auto-chat-label">{{ t('runtimeTools.autoChat.externalTitle') }}</label>
+          <span class="auto-chat-external-status" :class="{ on: external.running }">
+            {{ external.running ? t('runtimeTools.autoChat.running') : t('runtimeTools.autoChat.disabled') }}
+          </span>
+        </div>
+        <div class="auto-chat-external-row">
+          <input v-model.number="external.port" type="number" min="1" max="65535" class="edit-input auto-chat-external-port"
+            :disabled="external.enabled" :placeholder="t('runtimeTools.autoChat.externalPortPlaceholder')" />
+          <button class="btn-batch" @click="toggleExternal" :disabled="externalLoading">
+            {{ external.enabled ? t('runtimeTools.autoChat.stop') : t('runtimeTools.autoChat.externalStart') }}
+          </button>
+        </div>
+        <pre class="auto-chat-external-help">{{ externalHelpText() }}</pre>
       </div>
     </div>
   </div>
@@ -562,5 +608,35 @@ onBeforeUnmount(() => {
 }
 .auto-chat-tpl-text-input:focus {
   border-color: rgba(165, 180, 252, 0.5);
+}
+
+/* ── 外部接入 ── */
+.auto-chat-external-status {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+.auto-chat-external-status.on {
+  color: #86efac;
+}
+.auto-chat-external-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.auto-chat-external-port {
+  flex: none;
+  width: 120px;
+}
+.auto-chat-external-help {
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 8px 10px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
 }
 </style>
