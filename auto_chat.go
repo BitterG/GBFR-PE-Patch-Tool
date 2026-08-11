@@ -248,38 +248,11 @@ var (
 	procGetModuleBaseNameW   = psapidll.NewProc("GetModuleBaseNameW")
 )
 
-var (
-	modUser32AutoChat = windows.NewLazySystemDLL("user32.dll")
-	procRegisterHotKey   = modUser32AutoChat.NewProc("RegisterHotKey")
-	procUnregisterHotKey = modUser32AutoChat.NewProc("UnregisterHotKey")
-	procPeekMessageW     = modUser32AutoChat.NewProc("PeekMessageW")
-)
-
-func registerHotKey(hwnd uintptr, id int, mods, vk uint32) error {
-	r, _, e := procRegisterHotKey.Call(hwnd, uintptr(id), uintptr(mods), uintptr(vk))
-	if r == 0 {
-		return fmt.Errorf("RegisterHotKey 失败: %v", e)
-	}
-	return nil
-}
-
-func unregisterHotKey(hwnd uintptr, id int) {
-	_, _, _ = procUnregisterHotKey.Call(hwnd, uintptr(id))
-}
-
-type msgPeek struct {
-	hwnd    uintptr
-	message uint32
-	wparam  uintptr
-	lparam  uintptr
-	time    uint32
-	pt      struct{ x, y int32 }
-}
-
-func peekMessage(msg *msgPeek, hwnd uintptr, filterMin, filterMax uint32, remove uint32) uintptr {
-	r, _, _ := procPeekMessageW.Call(
-		uintptr(unsafe.Pointer(msg)), hwnd, uintptr(filterMin), uintptr(filterMax), uintptr(remove))
-	return r
+// getAsyncKeyState 返回指定虚拟键当前是否按下（高位 0x8000 = 按下）。
+// 复用 flight.go 的 procGetAsyncKeyState（modUser32.GetAsyncKeyState）。
+func getAsyncKeyState(vk int) bool {
+	r, _, _ := procGetAsyncKeyState.Call(uintptr(vk))
+	return r&0x8000 != 0
 }
 
 // sendChatMessageLocked 将请求写入共享内存，由 patch_core.dll 投递到游戏窗口线程。
@@ -483,13 +456,6 @@ type AutoChatTemplate struct {
 	Enabled   bool   `json:"enabled"`   // 是否注册热键
 }
 
-const (
-	hotkeyMsgBase    = 0x4000 // WM_APP 起始
-	autoChatHotkeyID = 0x7E11 // RegisterHotKey id 基址
-)
-
-var autoChatHotkeyMu sync.Mutex
-
 // AutoChatListTemplates 返回全部模板（含注册状态）。
 func (a *App) AutoChatListTemplates() []AutoChatTemplate {
 	autoChat.mu.Lock()
@@ -579,123 +545,100 @@ func (st *autoChatState) snapshot() AutoChatStatus {
 	return st.snapshotLocked()
 }
 
-// ── RegisterHotKey 全局热键 ──
-// 每个启用的模板注册一个全局热键；后台 goroutine 跑 GetMessageW 循环接收
-// WM_HOTKEY，命中后调 sendChatViaBridge 发送对应模板文本（游戏前台也生效）。
+// ── 全局热键（GetAsyncKeyState 轮询）──
+// 每个启用的模板对应一个"修饰键+主键"组合；后台 goroutine 轮询 GetAsyncKeyState
+// 检测组合是否按下。相比 RegisterHotKey：
+//   - 游戏里按住其他键（WASD 等）不影响触发（只检测热键自身的键）
+//   - 单键热键不被系统"吃掉"（其他程序/游戏按键正常）
+//   - 不依赖 WM_HOTKEY 消息、无线程队列问题
+// 防抖：触发后等主键释放才重新武装，避免按住连发。
 
 var (
-	// hotkeyCmdCh 把 RegisterHotKey/UnregisterHotKey 命令投递到热键线程执行。
-	// RegisterHotKey(hwnd=0) 的 WM_HOTKEY 会投递到*调用 RegisterHotKey 的线程*
-	// 的消息队列；hotkeyLoop 用 runtime.LockOSThread 固定在同一 OS 线程上跑
-	// PeekMessageW，才能收到这些消息（之前跨线程注册 → 永远收不到 → 热键无效）。
-	hotkeyCmdCh    = make(chan func(), 8)
 	hotkeyStopCh   chan struct{}
 	hotkeyStopOnce sync.Once
+	hotkeyArmed    = map[string]bool{} // tplID -> 可触发（上次未按下）
 )
 
-// templateHotkeyID 由模板 ID 派生稳定的热键 id（删除/插入模板不影响其他模板的 id）。
-func templateHotkeyID(tplID string) int {
-	var h uint32 = 2166136261
-	for i := 0; i < len(tplID); i++ {
-		h ^= uint32(tplID[i])
-		h *= 16777619
+// vkForModifier 返回修饰键位的虚拟键码。
+func vkForModifier(mod int) int {
+	switch mod {
+	case 0x1:
+		return 0x12 // VK_MENU (Alt)
+	case 0x2:
+		return 0x11 // VK_CONTROL
+	case 0x4:
+		return 0x10 // VK_SHIFT
+	case 0x8:
+		return 0x5B // VK_LWIN
 	}
-	return autoChatHotkeyID + int(h%32)
+	return 0
+}
+
+// hotkeyDown 检查修饰键+主键是否同时按下。
+func hotkeyDown(mods, key int) bool {
+	for _, m := range []int{0x1, 0x2, 0x4, 0x8} {
+		if mods&m != 0 {
+			if !getAsyncKeyState(vkForModifier(m)) {
+				return false
+			}
+		}
+	}
+	return key != 0 && getAsyncKeyState(key)
 }
 
 func registerAutoChatHotkeys(a *App) {
-	autoChatHotkeyMu.Lock()
-	defer autoChatHotkeyMu.Unlock()
-
-	autoChat.mu.Lock()
-	tmpls := append([]AutoChatTemplate(nil), a.config.AutoChatTemplates...)
-	autoChat.mu.Unlock()
-
-	// 启动接收循环（幂等），并把注册命令投递到热键线程执行。
+	// 启动接收循环（幂等）。轮询模式无需注册/注销系统热键。
 	hotkeyStopOnce.Do(func() {
 		hotkeyStopCh = make(chan struct{})
 		go hotkeyLoop(a)
 	})
-	// 非阻塞投递：热键线程卡住时不能阻塞调用方（否则 SaveTemplate 持锁 → 手动发送也卡）。
-	select {
-	case hotkeyCmdCh <- func() {
-		// 注销旧的（全部 id 范围），避免残留。
-		for id := autoChatHotkeyID; id < autoChatHotkeyID+64; id++ {
-			unregisterHotKey(0, id)
-		}
-		hotkeyDiagLog("register: %d templates", len(tmpls))
-		for _, t := range tmpls {
-			if !t.Enabled || t.ID == "" {
-				hotkeyDiagLog("  skip %q (enabled=%v)", t.Name, t.Enabled)
-				continue
-			}
-			mods := t.Modifiers & (0x1 | 0x2 | 0x4 | 0x8)
-			// 支持单键热键（mods==0），例如单独的 F1。RegisterHotKey 允许无修饰键；
-			// 是否误触由用户决定（UI 已限制主键为 F1-F12/字母/数字）。
-			err := registerHotKey(0, templateHotkeyID(t.ID), uint32(mods), uint32(t.Key))
-			hotkeyDiagLog("  hotkey id=%d mods=%d key=%d name=%q err=%v", templateHotkeyID(t.ID), mods, t.Key, t.Name, err)
-		}
-	}:
-	default:
-		hotkeyDiagLog("register: hotkeyCmdCh full — hotkey thread may be stuck")
-	}
+	hotkeyDiagLog("hotkey loop (poll) started")
 }
 
 func hotkeyLoop(a *App) {
-	// 固定本 goroutine 到一个 OS 线程：RegisterHotKey(hwnd=0) 的 WM_HOTKEY 只投递
-	// 到注册线程的消息队列，PeekMessageW 必须与注册在同一线程才能收到。
 	goruntime.LockOSThread()
 	for {
 		select {
-		case fn := <-hotkeyCmdCh:
-			fn()
-			continue
 		case <-hotkeyStopCh:
 			return
 		default:
 		}
-		// 非阻塞取消息：轮询队列（10ms 间隔），避免阻塞式 GetMessageW 无法响应停止。
-		var msg msgPeek
-		// PeekMessageW 拉取线程消息队列。
-		if peekMessage(&msg, 0, 0, 0, 1) != 0 {
-			if msg.message == 0x0312 { // WM_HOTKEY
-				hotkeyDiagLog("WM_HOTKEY wparam=%d (id=%d)", msg.wparam, int(msg.wparam)-autoChatHotkeyID)
-				autoChat.mu.Lock()
-				var tmplText string
-				for i := range a.config.AutoChatTemplates {
-					if templateHotkeyID(a.config.AutoChatTemplates[i].ID) == int(msg.wparam) {
-						tmplText = a.config.AutoChatTemplates[i].Text
-						break
-					}
-				}
-				autoChat.mu.Unlock()
-				hotkeyDiagLog("  matched text=%q", tmplText)
-				if tmplText != "" {
-					go func(text string) {
-						_, err := a.AutoChatSendNow(text)
-						if err != nil {
-							runtime.EventsEmit(a.ctx, "autoChat:hotkeyError", err.Error())
-						}
-					}(tmplText)
-				}
+
+		autoChat.mu.Lock()
+		tmpls := append([]AutoChatTemplate(nil), a.config.AutoChatTemplates...)
+		autoChat.mu.Unlock()
+
+		for i := range tmpls {
+			t := &tmpls[i]
+			if !t.Enabled || t.ID == "" || t.Key == 0 {
+				continue
 			}
-		} else {
-			time.Sleep(10 * time.Millisecond)
+			down := hotkeyDown(t.Modifiers, t.Key)
+			if !down {
+				hotkeyArmed[t.ID] = true // 释放 → 武装
+				continue
+			}
+			if hotkeyArmed[t.ID] {
+				// 首次按下 → 触发
+				hotkeyArmed[t.ID] = false // 等待释放
+				text := t.Text
+				hotkeyDiagLog("hotkey triggered name=%q key=%d mods=%d", t.Name, t.Key, t.Modifiers)
+				go func(txt string) {
+					_, err := a.AutoChatSendNow(txt)
+					if err != nil {
+						runtime.EventsEmit(a.ctx, "autoChat:hotkeyError", err.Error())
+					}
+				}(text)
+			}
 		}
+
+		time.Sleep(30 * time.Millisecond)
 	}
 }
 
 func stopAutoChatHotkeys() {
-	autoChatHotkeyMu.Lock()
-	defer autoChatHotkeyMu.Unlock()
-	select {
-	case hotkeyCmdCh <- func() {
-		for id := autoChatHotkeyID; id < autoChatHotkeyID+64; id++ {
-			unregisterHotKey(0, id)
-		}
-	}:
-	default:
-	}
+	// 轮询模式无需注销系统热键；仅停循环。
+	hotkeyArmed = map[string]bool{}
 }
 
 // hotkeyDiagLog 追加热键诊断到临时日志，定位注册/接收问题。
