@@ -614,6 +614,9 @@ func hotkeyLoop(a *App) {
 		tmpls := append([]AutoChatTemplate(nil), a.config.AutoChatTemplates...)
 		autoChat.mu.Unlock()
 
+		// 热键只在游戏前台时触发；游戏不在前台（切到其他程序）时忽略按键。
+		gameForeground := a.charaPID != 0 && foregroundWindowPID() == a.charaPID
+
 		for i := range tmpls {
 			t := &tmpls[i]
 			if !t.Enabled || t.ID == "" || t.Key == 0 {
@@ -624,8 +627,8 @@ func hotkeyLoop(a *App) {
 				hotkeyArmed[t.ID] = true // 释放 → 武装
 				continue
 			}
-			if hotkeyArmed[t.ID] {
-				// 首次按下 → 触发
+			if hotkeyArmed[t.ID] && gameForeground {
+				// 首次按下且游戏前台 → 触发
 				hotkeyArmed[t.ID] = false // 等待释放
 				text := t.Text
 				hotkeyDiagLog("hotkey triggered name=%q key=%d mods=%d", t.Name, t.Key, t.Modifiers)

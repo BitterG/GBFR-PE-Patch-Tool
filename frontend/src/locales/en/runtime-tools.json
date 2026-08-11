@@ -37,7 +37,7 @@
       },
       "templates": "Hotkey Message Templates",
       "addTemplate": "+ Add Template",
-      "noTemplates": "No templates yet. Hotkeys are polled globally (work while the game is focused; holding other keys does not interfere)",
+      "noTemplates": "No templates yet. Hotkeys trigger only while the game is in the foreground",
       "tplName": "Template name (e.g. Callout)",
       "tplText": "Text to send",
       "captureHotkey": "Click to set hotkey",

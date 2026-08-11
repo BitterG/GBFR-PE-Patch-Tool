@@ -337,6 +337,31 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* ── 通用样式（与其他页面保持一致）── */
+.memory-card { position:relative; overflow:hidden; z-index:0; border-radius:12px; padding:12px; background:rgba(255,255,255,0.045); border:1px solid rgba(165,180,252,0.16); box-shadow:0 10px 26px rgba(0,0,0,0.18); display:flex; flex-direction:column; gap:8px; transition:border-color 0.3s, box-shadow 0.3s; }
+.memory-card::after { content:""; position:absolute; inset:0; z-index:-1; border-radius:12px; background:#abd373; transform:translateY(calc(-100% - 2px)); transition:transform 0.5s ease; }
+.memory-card.active { border-color:rgba(171,211,115,0.55); box-shadow:0 14px 34px rgba(171,211,115,0.18); }
+.memory-card.active::after { transform:translateY(0); }
+.memory-card.active .memory-title { color:#1f2937; }
+.memory-card.active .memory-hint, .memory-card.active .memory-info, .memory-card.active .memory-bytes { color:rgba(31,41,55,0.72); }
+.memory-card.active .btn-batch { border-color:rgba(31,41,55,0.22); background:rgba(31,41,55,0.12); color:#1f2937; }
+.memory-card.active .btn-refresh, .memory-card.active .btn-sort { border-color:rgba(31,41,55,0.16); background:rgba(255,255,255,0.18); color:rgba(31,41,55,0.72); }
+.memory-header, .memory-info, .memory-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.memory-header .memory-hint { margin-left:auto; }
+.memory-title { font-size:0.8rem; font-weight:600; color:rgba(255,255,255,0.62); }
+.memory-hint, .memory-info { font-size:0.68rem; color:rgba(255,255,255,0.32); }
+.memory-bytes { font-size:0.68rem; color:rgba(255,255,255,0.36); word-break:break-all; }
+.info-dot { display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:rgba(165,180,252,0.25); color:#a5b4fc; font-size:0.6rem; font-weight:700; cursor:help; }
+.btn-batch { padding:6px 14px; border-radius:6px; border:1px solid rgba(165,180,252,0.3); background:rgba(165,180,252,0.1); color:#a5b4fc; font-size:0.78rem; font-weight:600; cursor:pointer; transition:background 0.2s; white-space:nowrap; }
+.btn-batch:not(:disabled):hover { background:rgba(165,180,252,0.2); }
+.btn-batch:disabled { opacity:0.4; cursor:not-allowed; }
+.btn-refresh, .btn-sort { padding:6px 14px; border-radius:6px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.5); font-size:0.78rem; font-weight:600; cursor:pointer; transition:background 0.2s; }
+.btn-refresh:hover, .btn-sort:hover { background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.7); }
+.btn-refresh:disabled, .btn-sort:disabled { opacity:0.4; cursor:not-allowed; }
+.edit-input { flex:1; padding:8px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.07); color:#fff; font-size:0.95rem; font-family:inherit; outline:none; transition:border-color 0.2s; }
+.edit-input:focus { border-color:rgba(165,180,252,0.5); }
+.edit-input:disabled { opacity:0.5; }
+
 .auto-chat {
   display: flex;
   flex-direction: column;
@@ -362,10 +387,16 @@ onBeforeUnmount(() => {
   border-radius: 8px;
   padding: 8px 10px;
   font-size: 13px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
-  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
   font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.auto-chat-textarea:focus {
+  border-color: rgba(165, 180, 252, 0.5);
 }
 
 .auto-chat-textarea:disabled {
