@@ -248,7 +248,10 @@ func supportsGeneratedPlusSigil(sigil *SigilDef) bool {
 	if sigil.SupportsSecondaryTrait != nil && *sigil.SupportsSecondaryTrait {
 		return true
 	}
-	return strings.HasSuffix(sigil.DisplayName, " V") || strings.EqualFold(sigil.DisplayName, "Stout Heart")
+	// " V" 或 " V+" 结尾的因子都有副词条（V+ 的 "+" 即副特性槽）。
+	return strings.HasSuffix(sigil.DisplayName, " V") ||
+		strings.HasSuffix(sigil.DisplayName, " V+") ||
+		strings.EqualFold(sigil.DisplayName, "Stout Heart")
 }
 
 func generatedPlusDisplayName(name string) string {
