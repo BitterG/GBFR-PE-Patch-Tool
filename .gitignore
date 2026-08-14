@@ -25,6 +25,7 @@
 /.claude/
 /.codegraph/
 /因子生成功能查漏补缺进度.md
+/自动聊天功能逆向总结.md
 
 # Visual Studio / C++ build artifacts
 /src_dll/.vs/
@@ -45,10 +46,6 @@
 # Local notes
 /src_dll/todo.txt
 
-# Reference material (decompiled third-party mod source — not project code)
-/chatoverlay_src/
-/自动聊天功能逆向总结.md
-
 #Git Bash/MSYS
 *.stackdump
 
@@ -58,3 +55,6 @@ reasonix.toml
 
 #py
 *.py
+
+#自动聊天测试js脚本
+gbfr_event_chat.js

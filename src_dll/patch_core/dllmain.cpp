@@ -63,6 +63,10 @@ static AutoChatBridgeState* g_autoChatBridge = nullptr;
 static HWND g_autoChatWindow = nullptr;
 static WNDPROC g_autoChatOriginalWndProc = nullptr;
 static HMODULE g_gameModule = nullptr;
+static size_t g_gameModuleSize = 0;
+// AOB-resolved targets (version-proof; set by ResolveAutoChatTargets).
+static lm_address_t g_autoChatSendMessageAddr = LM_ADDRESS_BAD;
+static lm_address_t g_autoChatManagerSlotAddr = LM_ADDRESS_BAD;
 
 // Diagnostic logger shared by the auto-chat path. Writes to a temp file so the
 // Go side / user can inspect what happened without attaching a debugger.
@@ -108,10 +112,8 @@ static LONG ExecuteAutoChatCommand()
     // Validate that we can resolve the Manager + sendMessage entry from the
     // game module. Actual sending happens inside the sendMessage hook on the
     // game thread (window-thread calls to sendMessage crash with 0xC0000005).
-    constexpr uintptr_t kManagerSlotRVA = 0x7C23460;
-    const auto base = reinterpret_cast<uintptr_t>(g_gameModule);
-    const auto managerSlot = reinterpret_cast<uintptr_t*>(base + kManagerSlotRVA);
-    const auto manager = *managerSlot;
+    if (g_autoChatManagerSlotAddr == LM_ADDRESS_BAD) return -5;
+    const auto manager = *reinterpret_cast<uintptr_t*>(g_autoChatManagerSlotAddr);
     if (!manager) return -2; // Manager not ready (not in online lobby)
     return 1;
 }
@@ -123,6 +125,110 @@ static LONG ExecuteAutoChatCommand()
 // then continues the game's own call.
 static bool g_autoChatSendHookInstalled = false;
 static lm_address_t g_autoChatSendTrampoline = LM_ADDRESS_BAD;
+
+// sendMessage prologue AOB (from RelinkBuildLocator.cs of the ChatOverlay mod):
+//   push r15; push r14; push r13; push r12; push rsi; push rdi; push rbp;
+//   push rbx; sub rsp,0x2F8; vmovups [rsp+0x2E0],xmm6; mov r14,r9; ...
+// Manager slot AOB (the `mov rdi,[rip+disp]` that loads the chat Manager
+// global; slot address = match + 7 + disp32).
+static const char* kChatSendMessageSignature =
+    "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC F8 02 00 00 "
+    "C5 F8 29 B4 24 E0 02 00 00 4D 89 CE 44 89 C5 48 89 D7 48 89 CE";
+static const char* kChatManagerSlotSignature =
+    "48 8B 3D ?? ?? ?? ?? 48 8D 05 ?? ?? ?? ?? 48 89 44 24 38 "
+    "48 C7 44 24 40 00 00 00 00 48 89 74 24 28 48 89 F1 E8 ?? ?? ?? ??";
+
+// Resolves sendMessage + ManagerSlot by AOB first, falling back to the
+// hard-coded 2.0.4 RVAs. Returns false only if both paths fail.
+static bool ResolveAutoChatTargets(wchar_t* message, size_t messageSize)
+{
+    if (!g_gameModule || !g_gameModuleSize) return false;
+    const lm_address_t base = reinterpret_cast<lm_address_t>(g_gameModule);
+
+    // 1) sendMessage entry.
+    constexpr uintptr_t kSendMessageRVA = 0x9049F0;
+    lm_address_t sendAddr = LM_ADDRESS_BAD;
+    lm_byte_t prologue[6]{};
+    if (base + kSendMessageRVA < base + g_gameModuleSize &&
+        LM_ReadMemory(base + kSendMessageRVA, prologue, sizeof(prologue)) == sizeof(prologue) &&
+        prologue[0] == 0x41 && prologue[1] == 0x57) // push r15
+    {
+        sendAddr = base + kSendMessageRVA;
+        char buf[128];
+        sprintf_s(buf, "AOB resolve: sendMessage by RVA +%llX", static_cast<unsigned long long>(kSendMessageRVA));
+        LogAutoChatDiag(buf);
+    }
+    else
+    {
+        lm_address_t match = 0;
+        __try
+        {
+            match = LM_SigScan(kChatSendMessageSignature, base, g_gameModuleSize);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            match = 0;
+        }
+        if (match != 0)
+        {
+            sendAddr = match;
+            char buf[128];
+            sprintf_s(buf, "AOB resolve: sendMessage by signature +%llX", static_cast<unsigned long long>(match - base));
+            LogAutoChatDiag(buf);
+        }
+    }
+    if (sendAddr == LM_ADDRESS_BAD)
+    {
+        swprintf_s(message, messageSize, L"auto chat sendMessage target not resolved");
+        return false;
+    }
+    g_autoChatSendMessageAddr = sendAddr;
+
+    // 2) Manager slot global.
+    constexpr uintptr_t kManagerSlotRVA = 0x7C23460;
+    lm_address_t slotAddr = LM_ADDRESS_BAD;
+    if (base + kManagerSlotRVA < base + g_gameModuleSize)
+    {
+        slotAddr = base + kManagerSlotRVA;
+        char buf[128];
+        sprintf_s(buf, "AOB resolve: manager slot by RVA +%llX", static_cast<unsigned long long>(kManagerSlotRVA));
+        LogAutoChatDiag(buf);
+    }
+    else
+    {
+        lm_address_t match = 0;
+        __try
+        {
+            match = LM_SigScan(kChatManagerSlotSignature, base, g_gameModuleSize);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            match = 0;
+        }
+        if (match != 0)
+        {
+            // match: 48 8B 3D disp32  -> slot = match + 7 + disp32
+            int32_t disp = 0;
+            lm_byte_t dispBytes[4]{};
+            if (LM_ReadMemory(match + 3, dispBytes, sizeof(dispBytes)) == sizeof(dispBytes))
+            {
+                memcpy(&disp, dispBytes, sizeof(disp));
+                slotAddr = match + 7 + static_cast<lm_address_t>(disp);
+                char buf[128];
+                sprintf_s(buf, "AOB resolve: manager slot by signature -> +%llX", static_cast<unsigned long long>(slotAddr - base));
+                LogAutoChatDiag(buf);
+            }
+        }
+    }
+    if (slotAddr == LM_ADDRESS_BAD)
+    {
+        swprintf_s(message, messageSize, L"auto chat manager slot not resolved");
+        return false;
+    }
+    g_autoChatManagerSlotAddr = slotAddr;
+    return true;
+}
+
 // ABI-safe call stub (equivalent to Reloaded.Hooks' X64.Wrapper): preserves all
 // callee-saved registers, aligns RSP to 16, moves the 5th (stack) argument into
 // shadow space, calls the sendMessage trampoline, restores and returns.
@@ -192,7 +298,6 @@ struct AutoChatStringView
 static int TryConsumeAutoChatQueue(uintptr_t manager);
 static LONG LogChatException(PEXCEPTION_POINTERS ep);
 static volatile LONG g_autoChatChatActive = 0;
-static size_t g_gameModuleSize = 0;
 
 static void __fastcall SendMessageHook(uintptr_t manager, const AutoChatStringView* text,
     uint32_t hash, const AutoChatStringView* sender, int category)
@@ -218,10 +323,9 @@ static void __fastcall SendMessageHook(uintptr_t manager, const AutoChatStringVi
 static bool InstallAutoChatSendHook(wchar_t* message, size_t messageSize)
 {
     if (g_autoChatSendHookInstalled) return true;
-    if (!g_gameModule) return false;
+    if (!g_gameModule || g_autoChatSendMessageAddr == LM_ADDRESS_BAD) return false;
 
-    constexpr uintptr_t kSendMessageRVA = 0x9049F0;
-    lm_address_t target = reinterpret_cast<lm_address_t>(g_gameModule) + kSendMessageRVA;
+    lm_address_t target = g_autoChatSendMessageAddr;
     lm_address_t trampoline = LM_ADDRESS_BAD;
 
     lm_size_t hooked = LM_HookCode(target, reinterpret_cast<lm_address_t>(&SendMessageHook), &trampoline);
@@ -355,12 +459,10 @@ static HRESULT __fastcall PresentHook(void* self, unsigned int syncInterval, uns
         LONG completed = InterlockedCompareExchange(&g_autoChatBridge->completedSeq, 0, 0);
         if (command != completed)
         {
-            // Manager = *(moduleBase + ManagerSlot). Guard against not-ready.
-            constexpr uintptr_t kManagerSlotRVA = 0x7C23460;
-            const auto base = reinterpret_cast<uintptr_t>(g_gameModule);
+            // Manager = *(ManagerSlot) — AOB-resolved global. Guard against not-ready.
             uintptr_t manager = 0;
-            if (base)
-                manager = *reinterpret_cast<uintptr_t*>(base + kManagerSlotRVA);
+            if (g_autoChatManagerSlotAddr != LM_ADDRESS_BAD)
+                manager = *reinterpret_cast<uintptr_t*>(g_autoChatManagerSlotAddr);
             TryConsumeAutoChatQueue(manager);
         }
     }
@@ -690,6 +792,10 @@ static bool InitAutoChatBridge(wchar_t* message, size_t messageSize)
         // Fallback: ~90 MB (game is large; the range check just needs to be
         // generous enough to catch a real vtable pointer inside the module).
         g_gameModuleSize = 0x5800000;
+    }
+    if (!ResolveAutoChatTargets(message, messageSize))
+    {
+        return false;
     }
     EnumWindows(FindGameWindowCallback, reinterpret_cast<LPARAM>(&g_autoChatWindow));
     if (!g_autoChatWindow)

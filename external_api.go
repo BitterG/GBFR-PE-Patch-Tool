@@ -40,6 +40,12 @@ type externalAPIResponse struct {
 
 // externalAPISendHandler 处理发送请求。
 func (a *App) externalAPISendHandler(w http.ResponseWriter, r *http.Request) {
+	setExternalAPICORS(w)
+	// 预检请求：浏览器跨域 POST 前会先发 OPTIONS。
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	if r.Method != http.MethodPost {
 		writeExternalAPIError(w, "仅支持 POST")
@@ -79,9 +85,18 @@ func (a *App) externalAPISendHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func writeExternalAPIError(w http.ResponseWriter, msg string) {
+	setExternalAPICORS(w)
 	resp, _ := json.Marshal(externalAPIResponse{OK: false, Error: msg})
 	w.WriteHeader(http.StatusBadRequest)
 	_, _ = w.Write(resp)
+}
+
+// setExternalAPICORS 允许浏览器跨域调用（relink-logs 前端 origin 是
+// https://tauri.localhost，需 CORS 才能 fetch）。
+func setExternalAPICORS(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }
 
 // startExternalAPI 启动 HTTP 服务（幂等）。port<=0 时使用默认端口。
