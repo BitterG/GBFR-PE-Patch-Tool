@@ -383,18 +383,9 @@ func (sg *SigilGen) AddToQueue(item QueueItem) error {
 			}
 			item.SecondaryTraitName = cnTrait(secondaryTrait.DisplayName)
 
-			// 验证 secondary trait is allowed
-			allowed, _ := sg.catalog.GetAllowedSecondaryTraits(sigil)
-			found := false
-			for _, a := range allowed {
-				if a.InternalID == item.SecondaryTraitID {
-					found = true
-					break
-				}
-			}
-			if !found {
-				return fmt.Errorf("%s 不是 %s 的已验证副特性", secondaryTrait.DisplayName, sigil.DisplayName)
-			}
+			// 副特性不再用白名单阻止：普通 V+ 因子的副特性游戏内可自由 roll，
+			// gem.tbl 的白名单会产生大量误报（见 relink-logs）。合法性（锁定组合、
+			// 单特性、任务限定词条）由前端依据 sigil-legality.json 仅做警告提示。
 
 			secondaryLevels, err := sg.catalog.RequireSecondaryTraitLevels(sigil, secondaryTrait)
 			if err != nil {

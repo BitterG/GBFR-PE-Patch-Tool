@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted } from 'vue'
-import { GetLastSavePath, SetLastSavePath } from '../../wailsjs/go/main/App'
+import { GetLastSavePath, SetLastSavePath, GetSigilLegalityData } from '../../wailsjs/go/main/App'
 import { GetSigilList, GetCompatibleSecondaryTraits, GetAllowedLevels,
          GetPrimaryTraitLevels, GetSecondaryTraitLevels, GetPrimaryTrait,
          GetDefaultSecondaryTrait, LoadSaveFile, GetLoadedSaveInfo,
@@ -10,6 +10,7 @@ import { GetSigilList, GetCompatibleSecondaryTraits, GetAllowedLevels,
          SelectSigilInputSave, SelectSigilOutputSave } from '../../wailsjs/go/main/SigilGen'
 import { translate as t } from '../i18n'
 import { matchText } from '../utils/matchText.js'
+import { checkSigilLegality } from '../utils/sigilLegality.js'
 
 const emit = defineEmits(['status'])
 
@@ -39,8 +40,10 @@ const primaryTraitLevels = ref([])
 const secondaryTraits = ref([])
 const secondaryTraitLevels = ref([])
 const primaryTraitName = ref('')
+const primaryTraitHash = ref('')
 const supportsSecondary = ref(false)
 const optionalSecondary = ref(false)
+const legality = ref(null)
 
 // 队列
 const queue = ref([])
@@ -78,6 +81,7 @@ onMounted(async () => {
     if (!sigils.value || !sigils.value.length) {
       dataError.value = t('sigil.generator.dataEmpty')
     }
+    legality.value = await GetSigilLegalityData()
     const lastPath = await GetLastSavePath()
     if (lastPath) {
       inputPath.value = lastPath
@@ -205,7 +209,8 @@ watch(selectedSigilID, async (id) => {
   try {
     const pt = await GetPrimaryTrait(id)
     primaryTraitName.value = pt ? pt.displayName : ''
-  } catch (e) { primaryTraitName.value = '' }
+    primaryTraitHash.value = pt ? pt.hash : ''
+  } catch (e) { primaryTraitName.value = ''; primaryTraitHash.value = '' }
 
   // 副特性
   if (sigil.supportsSecondaryTrait) {
@@ -247,6 +252,47 @@ watch(selectedSecondaryTraitID, async (id) => {
   } catch (e) { secondaryTraitLevels.value = [] }
 })
 
+// ── 合法性检测（relink-logs 规则，仅警告不阻止）──
+const selectedSigilHash = computed(() => {
+  const sigil = sigils.value.find(s => s.internalId === selectedSigilID.value)
+  return sigil ? sigil.hash : ''
+})
+const selectedSecondaryTraitHash = computed(() => {
+  const trait = secondaryTraits.value.find(t => t.internalId === selectedSecondaryTraitID.value)
+  return trait ? trait.hash : ''
+})
+const legalityWarnings = computed(() => {
+  if (!legality.value || !selectedSigilID.value) return []
+  const issues = checkSigilLegality({
+    sigilHash: selectedSigilHash.value,
+    primaryTraitHash: primaryTraitHash.value,
+    secondaryTraitHash: selectedSecondaryTraitHash.value,
+    legality: legality.value,
+  })
+  const name = (hash) => {
+    if (hash && hash === primaryTraitHash.value && primaryTraitName.value) return primaryTraitName.value
+    const tr = secondaryTraits.value.find(x => x.hash === hash)
+    if (tr) return tr.displayName
+    return hash
+  }
+  return issues.map(issue => {
+    switch (issue.rule) {
+      case 'lockedPairPrimary':
+        return t('sigil.memory.lockedPairPrimary', { observed: name(issue.observedHash), expected: name(issue.allowedHashes[0]) })
+      case 'primaryTraitMismatch':
+        return t('sigil.memory.primaryTraitMismatch', { observed: name(issue.observedHash), expected: name(issue.allowedHashes[0]) })
+      case 'lockedPairSecondary':
+        return t('sigil.memory.lockedPairSecondary', { observed: name(issue.observedHash), expected: name(issue.allowedHashes[0]) })
+      case 'singleTrait':
+        return t('sigil.memory.singleTraitOnly')
+      case 'questLockedTrait':
+        return t('sigil.memory.questLockedTrait', { trait: name(issue.observedHash) })
+      default:
+        return issue.rule
+    }
+  })
+})
+
 // ── 队列操作 ──
 async function addToQueue() {
   if (!selectedSigilID.value) { showStatus(t('sigil.generator.selectSigil'), 'error'); return }
@@ -264,7 +310,11 @@ async function addToQueue() {
       quantity: quantity.value,
     })
     queue.value = await GetQueue()
-    showStatus(t('sigil.generator.added'), 'success')
+    if (legalityWarnings.value.length) {
+      showStatus(legalityWarnings.value.join('；'), 'warning')
+    } else {
+      showStatus(t('sigil.generator.added'), 'success')
+    }
   } catch (e) { showStatus(String(e), 'error') }
 }
 
@@ -450,6 +500,11 @@ function onSecondaryTraitSelect() {
           </select>
         </div>
       </template>
+
+      <!-- 合法性警告 -->
+      <div v-if="legalityWarnings.length" class="warning-hint">
+        <div v-for="(w, i) in legalityWarnings" :key="i">{{ w }}</div>
+      </div>
 
       <!-- 数量 + 添加 -->
       <div class="input-row">

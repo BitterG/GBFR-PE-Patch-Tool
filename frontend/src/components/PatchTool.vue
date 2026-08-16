@@ -179,7 +179,7 @@ function showStatus(msg, type) {
         <span class="titlebar-title">{{ t('patchTool.title') }}</span>
         <transition name="fade">
           <span v-if="saveStatus" class="titlebar-status" :class="statusType">
-            {{ statusType === 'success' ? '●' : '✕' }} {{ saveStatus }}
+            {{ statusType === 'success' ? '●' : statusType === 'warning' ? '⚠' : '✕' }} {{ saveStatus }}
           </span>
         </transition>
       </div>
@@ -446,6 +446,7 @@ function showStatus(msg, type) {
 .titlebar-status { font-size:0.68rem; font-weight:600; padding:2px 8px; border-radius:20px; white-space:nowrap; }
 .titlebar-status.success { color:#4ade80; background:rgba(34,197,94,0.15); }
 .titlebar-status.error { color:#f87171; background:rgba(239,68,68,0.15); }
+.titlebar-status.warning { color:#fbbf24; background:rgba(251,191,36,0.15); }
 
 .container { flex:1; overflow-y:auto; max-width:720px; width:100%; margin:0 auto; padding:20px 20px 40px; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; gap:14px; scrollbar-width:none; }
 .container-wide { max-width: 1120px; }

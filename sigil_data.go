@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-//go:embed data/sigils.json data/traits.json data/secondary-trait-rules.json
+//go:embed data/sigils.json data/traits.json data/secondary-trait-rules.json data/sigil-legality.json
 var dataFiles embed.FS
 
 type SigilDef struct {

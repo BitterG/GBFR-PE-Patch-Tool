@@ -2,8 +2,8 @@
   "$schema": "https://wails.io/schemas/config.v2.json",
   "name": "GBFR PE Patch Tool",
   "outputfilename": "GBFR PE Patch Tool",
-  "frontend:install": "npm install",
-  "frontend:build": "npm run build",
+  "frontend:install": "bun install",
+  "frontend:build": "bun run build",
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
   "author": {

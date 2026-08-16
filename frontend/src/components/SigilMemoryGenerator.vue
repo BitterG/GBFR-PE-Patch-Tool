@@ -1,8 +1,9 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
-import { SigilMemoryGetOptions, SigilMemoryGetStatus, SigilMemoryEnable, SigilMemoryUpdate } from '../../wailsjs/go/main/App'
+import { SigilMemoryGetOptions, SigilMemoryGetStatus, SigilMemoryEnable, SigilMemoryUpdate, GetSigilLegalityData } from '../../wailsjs/go/main/App'
 import { translate as t } from '../i18n'
 import { matchText } from '../utils/matchText.js'
+import { checkSigilLegality } from '../utils/sigilLegality.js'
 import { clearHistory, deleteTemplate, history, pushHistory, renameTemplate, saveTemplate, templates } from '../utils/sigilMemoryStore.js'
 import SigilMemoryPicker from './SigilMemoryPicker.vue'
 
@@ -23,6 +24,7 @@ const form = reactive({
 
 const backendOptions = reactive({ sigils: [], traits: [] })
 const runtimeOptions = reactive({ sigils: new Map(), traits: new Map() })
+const legality = ref(null)
 
 const allSigilOptions = computed(() => [...backendOptions.sigils, ...runtimeOptions.sigils.values()])
 const allTraitOptions = computed(() => [...backendOptions.traits, ...runtimeOptions.traits.values()])
@@ -80,6 +82,7 @@ async function loadOptions() {
     const res = await SigilMemoryGetOptions()
     backendOptions.sigils = res.sigils || []
     backendOptions.traits = res.traits || []
+    legality.value = await GetSigilLegalityData()
   } catch (e) { show(t('sigil.memory.optionsFailed', { error: String(e) }), 'error') }
 }
 
@@ -156,20 +159,40 @@ function maxSecondary() { if (secondaryMax.value != null) form.secondaryTraitLev
 
 const canOneClickMax = computed(() => !!status.selectedAddr && (sigilMax.value != null || primaryMax.value != null || (secondaryMax.value != null && !!form.secondaryTraitHash)))
 
+function formatLegalityIssue(issue) {
+  const traitName = (hash) => {
+    const opt = traitByHash.value.get(parseInt(hash, 16) >>> 0)
+    if (opt && !isRawHexName(opt.displayName)) return opt.displayName
+    return hash
+  }
+  switch (issue.rule) {
+    case 'lockedPairPrimary':
+      return t('sigil.memory.lockedPairPrimary', { observed: traitName(issue.observedHash), expected: traitName(issue.allowedHashes[0]) })
+    case 'primaryTraitMismatch':
+      return t('sigil.memory.primaryTraitMismatch', { observed: traitName(issue.observedHash), expected: traitName(issue.allowedHashes[0]) })
+    case 'lockedPairSecondary':
+      return t('sigil.memory.lockedPairSecondary', { observed: traitName(issue.observedHash), expected: traitName(issue.allowedHashes[0]) })
+    case 'singleTrait':
+      return t('sigil.memory.singleTraitOnly')
+    case 'questLockedTrait':
+      return t('sigil.memory.questLockedTrait', { trait: traitName(issue.observedHash) })
+    default:
+      return issue.rule
+  }
+}
+
 const warnings = computed(() => {
   const out = []
-  const sigil = sigilByHash.value.get(form.sigilHash)
   if (sigilMax.value != null && form.sigilLevel > sigilMax.value) out.push(t('sigil.memory.overSigil', { max: sigilMax.value }))
   if (primaryMax.value != null && form.primaryTraitLevel > primaryMax.value) out.push(t('sigil.memory.overPrimary', { max: primaryMax.value }))
   if (secondaryMax.value != null && form.secondaryTraitLevel > secondaryMax.value) out.push(t('sigil.memory.overSecondary', { max: secondaryMax.value }))
-  if (form.secondaryTraitHash && sigil && sigil.supportsSecondaryTrait === false) {
-    out.push(t('sigil.memory.noSecondary'))
-  } else if (
-    form.secondaryTraitHash && sigil &&
-    Array.isArray(sigil.allowedSecondaryTraitHashes) && sigil.allowedSecondaryTraitHashes.length > 0 &&
-    !sigil.allowedSecondaryTraitHashes.map(h => h >>> 0).includes(form.secondaryTraitHash >>> 0)
-  ) {
-    out.push(t('sigil.memory.secondaryNotAllowed'))
+  for (const issue of checkSigilLegality({
+    sigilHash: form.sigilHash,
+    primaryTraitHash: form.primaryTraitHash,
+    secondaryTraitHash: form.secondaryTraitHash,
+    legality: legality.value,
+  })) {
+    out.push(formatLegalityIssue(issue))
   }
   return out
 })
