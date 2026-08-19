@@ -1,6 +1,6 @@
 <script setup>
 import { computed, reactive, ref, watch } from 'vue'
-import { CharaAttach, SummonGetAll, SummonGetOptions, SummonUpdate } from '../../wailsjs/go/main/App'
+import { CharaAttachLight, SummonGetAll, SummonGetOptions, SummonUpdate } from '../../wailsjs/go/main/App'
 import { matchText } from '../utils/matchText.js'
 import { language, translate as t } from '../i18n'
 
@@ -86,7 +86,7 @@ function load() {
   loading.value = true
   const connect = connected.value
     ? Promise.resolve({ pid: pid.value })
-    : CharaAttach().then((info) => { connected.value = true; pid.value = info.pid; return info })
+    : CharaAttachLight().then((info) => { connected.value = true; pid.value = info.pid; return info })
   return connect
     .then(() => Promise.all([SummonGetOptions(), SummonGetAll()]))
     .then(([catalog, items]) => {

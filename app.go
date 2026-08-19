@@ -1064,6 +1064,45 @@ func (a *App) CharaAttach() (CharaProcessInfo, error) {
 	}, nil
 }
 
+// CharaAttachLight connects to the game process without scanning the runtime
+// character-use list. Pages like the summon editor only need a process handle
+// plus their own AOB hooks (summonSelectedAddress etc.), so they must not fail
+// on players whose save does not satisfy the charaManager heuristic
+// (new saves / few used characters make active<20 or positive<3).
+func (a *App) CharaAttachLight() (CharaProcessInfo, error) {
+	autoChatLifecycleMu.Lock()
+	defer autoChatLifecycleMu.Unlock()
+	if a.hProcess != 0 || a.moduleBase != 0 || a.charaPID != 0 {
+		a.charaDetachLocked()
+	}
+
+	pid, err := findProcessByName(charaProcessName)
+	if err != nil {
+		return CharaProcessInfo{}, fmt.Errorf("未找到游戏进程，请先启动游戏")
+	}
+
+	h, err := windows.OpenProcess(windows.PROCESS_ALL_ACCESS, false, pid)
+	if err != nil {
+		return CharaProcessInfo{}, fmt.Errorf("无法打开进程 (错误 %v)，请以管理员身份运行", err)
+	}
+
+	modBase, err := getModuleBase(h)
+	if err != nil {
+		windows.CloseHandle(h)
+		return CharaProcessInfo{}, fmt.Errorf("无法获取模块基址 (ptrSize=%d): %v", unsafe.Sizeof(uintptr(0)), err)
+	}
+
+	a.hProcess = h
+	a.moduleBase = modBase
+	a.charaPID = pid
+
+	return CharaProcessInfo{
+		PID:        pid,
+		ModuleBase: uint64(modBase),
+		Connected:  true,
+	}, nil
+}
+
 // charaManager locates current 40-entry runtime character-use list.
 // Game 1.7.5 stores records 0x5B70 bytes apart; use count is at +0x68.
 func (a *App) charaManager() (uintptr, error) {
