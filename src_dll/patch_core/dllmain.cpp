@@ -984,13 +984,15 @@ static const lm_byte_t kStunExpected[] = { 0xC5, 0xFA, 0x58, 0x86, 0x60, 0x08, 0
 static const char* kStunSignature = "C5 FA 58 86 60 ?? ?? ?? C5 FA 5D 86 64 ?? ?? ?? C5 FA 11 86 60 ?? ?? ??";
 // v1.3.2+: damage value is finalized in [rsi+0xD4] before this cap check.
 static const lm_byte_t kMonsterDamageExpected[] = { 0x81, 0xBE, 0xD4, 0x00, 0x00, 0x00, 0x00, 0xE1, 0xF5, 0x05 };
-// v2.0.2+: the final damage-settle point moved to RVA 0x1FB77EE
-//   mov eax,[rsi+D4]      ; 0x1FB77E8
-//   cmp eax,05F5E100      ; 0x1FB77EE  <-- hook here (eax already holds final damage)
-//   jb  0x1FB7804         ; 0x1FB77F3
+// v2.0.5: the final damage-settle point moved to RVA 0x1FB890E
+//   mov eax,[rsi+D4]      ; 0x1FB8908
+//   cmp eax,05F5E100      ; 0x1FB890E  <-- hook here (eax already holds final damage)
+//   jb  0x1FB8913         ; 0x1FB8913
 // Party-wide "defense multiplier": divide eax by the multiplier when r14 is a player.
 static const lm_byte_t kDefenseMultiplierExpected[] = { 0x3D, 0x00, 0xE1, 0xF5, 0x05 };
-static const char* kDefenseMultiplierSignature = "3D 00 E1 F5 05";
+// Signature starts at the preceding `mov eax,[rsi+D4]` (unique in module);
+// +6 lands on the cmp instruction that is hooked.
+static const char* kDefenseMultiplierSignature = "8B 86 D4 00 00 00 3D 00 E1 F5 05";
 static const lm_byte_t kInventorySet45Expected[] = { 0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1 };
 // 2.0.5: RVA moved 0x34F8F1 -> 0x34F8C1; signature keeps it version-proof.
 static const char* kInventorySet45Signature = "41 01 76 04 4C 89 E1";
@@ -1025,11 +1027,12 @@ static const PatchPoint kMonsterPatches[] = {
     { "link_time_no_drain", L"link time no drain", 0x187228, nullptr, 0, kLinkTimeExpected, sizeof(kLinkTimeExpected), kNop10, false },
     { "link_time_disable", L"disable link time", 0x187228, nullptr, 0, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
     // 2.0.4 re-baselined: monster_hp 0x1F7472E->0x1F756CE, damage_new 0x1F74700->0x1F756A0,
-    // defense 0x1FB77EE->0x1FB878E, stun 0xB228A8->0xB23848, overdrive 0x22C5986->0x23C6926,
-    // od_rate 0x22C5E50->0x23C6DF0. Signature fallback keeps them version-proof.
+    // defense 0x1FB77EE->0x1FB878E (2.0.4)->0x1FB890E (2.0.5), stun 0xB228A8->0xB23848,
+    // overdrive 0x22C5986->0x23C6926, od_rate 0x22C5E50->0x23C6DF0. Signature fallback
+    // keeps them version-proof.
     { "monster_hp", L"monster hp", 0x1F756CE, kMonsterHpSignature, 0x1E, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
     { "monster_damage_new", L"monster damage new", 0x1F756A0, kMonsterDamageNewSignature, 0x20, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
-    { "defense_multiplier", L"defense multiplier", 0x1FB878E, kDefenseMultiplierSignature, 0, kDefenseMultiplierExpected, sizeof(kDefenseMultiplierExpected), nullptr, true },
+    { "defense_multiplier", L"defense multiplier", 0x1FB890E, kDefenseMultiplierSignature, 6, kDefenseMultiplierExpected, sizeof(kDefenseMultiplierExpected), nullptr, true },
     { "monster_damage", L"monster damage", 0x1FBDEB4, nullptr, 0, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
     { "monster_stun", L"monster stun", 0xB23848, kStunSignature, 0, kStunExpected, sizeof(kStunExpected), nullptr, true },
     { "overdrive_state", L"overdrive state", 0x23C6926, kOverdriveSignature, 0, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
@@ -1610,7 +1613,7 @@ static bool PatchMonsterDamageHook(lm_address_t target, wchar_t* message, size_t
 }
 
 // Party-wide "defense multiplier" (same idea as FLiNG's, but applies to the
-// whole party): hook the final damage-settle point RVA 0x1FB77EE
+// whole party): hook the final damage-settle point RVA 0x1FB890E
 // (`cmp eax,05F5E100`).
 // On entry eax already holds [rsi+D4] (the fully computed damage for the
 // target object in r14). When r14 is one of the captured player objects (host
@@ -1629,13 +1632,14 @@ static bool PatchDefenseHook(lm_address_t target, wchar_t* message, size_t messa
     lm_byte_t code[256]{};
     size_t i = 0;
     // Player detection via a shared player-only vtable slot instead of an
-    // exhaustive vtable list. Verified with CE breakpoints at RVA 0x1FB878E
-    // (2.0.4): players vtable slot 2 = RVA 0x9CB970 (was 0x9CA9D0), monsters
-    // = 0x2938850. (If a different playable character turns out to have
-    // another slot-2 value, add it to a comparison list.)
+    // exhaustive vtable list. Verified via the CE player-pointer chain at
+    // RVA 0x1FB890E (2.0.5): players vtable slot 2 = RVA 0x9CB360 (was
+    // 0x9CB970 in 2.0.4, 0x9CA9D0 earlier), monsters = 0x2938850. (If a
+    // different playable character turns out to have another slot-2 value,
+    // add it to a comparison list.)
     HMODULE gameModule = GetModuleHandleW(L"granblue_fantasy_relink.exe");
     uintptr_t gameBase = reinterpret_cast<uintptr_t>(gameModule);
-    const uintptr_t playerVtableSlot2 = gameBase + 0x9CB970;
+    const uintptr_t playerVtableSlot2 = gameBase + 0x9CB360;
     uintptr_t stateAddr = reinterpret_cast<uintptr_t>(g_playerPointerState);
     code[i++] = 0x52;                                                                               // push rdx
     code[i++] = 0x41; code[i++] = 0x50;                                                             // push r8

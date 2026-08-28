@@ -159,6 +159,7 @@ type App struct {
 	monsterStunAddr            uintptr
 	overdriveStateAddr         uintptr
 	odRateAddr                 uintptr
+	defenseMultiplierAddr      uintptr // AOB-resolved 受伤倍率(自己) hook 点
 	materialConsumeAddr        uintptr // AOB-resolved shared inventory/material instruction
 	materialConsumeCaveAddr    uintptr
 	inventorySet45Addr         uintptr // AOB-resolved 小钳蟹(背包物品数量)共享指令
@@ -2550,10 +2551,10 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:            "defense_multiplier",
 		Name:          "防御倍率(单人)",
-		RVA:           0x1FB878E, // 2.0.4; was 0x1FB77EE
-		Pattern:       []byte{0x3D, 0x00, 0xE1, 0xF5, 0x05},
-		PatternMask:   []bool{true, true, true, true, true},
-		PatternOffset: 0,
+		RVA:           0x1FB890E, // 2.0.5; was 0x1FB878E (2.0.4), 0x1FB77EE (2.0.2)
+		Pattern:       []byte{0x8B, 0x86, 0xD4, 0x00, 0x00, 0x00, 0x3D, 0x00, 0xE1, 0xF5, 0x05},
+		PatternMask:   []bool{true, true, true, true, true, true, true, true, true, true, true},
+		PatternOffset: 6,
 		Original:      []byte{0x3D, 0x00, 0xE1, 0xF5, 0x05},
 		Hook:          true,
 	},
@@ -3049,6 +3050,9 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	if point.ID == "inventory_set_45" && a.inventorySet45Addr != 0 {
 		return a.inventorySet45Addr, nil
 	}
+	if point.ID == "defense_multiplier" && a.defenseMultiplierAddr != 0 {
+		return a.defenseMultiplierAddr, nil
+	}
 	// Unified RVA fast-path: validate the fixed RVA bytes and tolerate the
 	// already-hooked (E9) / already-patched state. This keeps status reads
 	// working after a hook is installed (AOB patterns of hook points get
@@ -3074,6 +3078,8 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 					a.odRateAddr = target
 				case "inventory_set_45":
 					a.inventorySet45Addr = target
+				case "defense_multiplier":
+					a.defenseMultiplierAddr = target
 				}
 				return target, nil
 			}
@@ -3154,6 +3160,9 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	}
 	if point.ID == "inventory_set_45" {
 		a.inventorySet45Addr = target
+	}
+	if point.ID == "defense_multiplier" {
+		a.defenseMultiplierAddr = target
 	}
 	if point.ID == "monster_damage_new" {
 		a.monsterDamageNewAddr = target
