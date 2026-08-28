@@ -992,6 +992,8 @@ static const lm_byte_t kMonsterDamageExpected[] = { 0x81, 0xBE, 0xD4, 0x00, 0x00
 static const lm_byte_t kDefenseMultiplierExpected[] = { 0x3D, 0x00, 0xE1, 0xF5, 0x05 };
 static const char* kDefenseMultiplierSignature = "3D 00 E1 F5 05";
 static const lm_byte_t kInventorySet45Expected[] = { 0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1 };
+// 2.0.5: RVA moved 0x34F8F1 -> 0x34F8C1; signature keeps it version-proof.
+static const char* kInventorySet45Signature = "41 01 76 04 4C 89 E1";
 
 static const lm_byte_t kPurpleExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x10, 0x0A, 0x00, 0x00 };
 static const lm_byte_t kBlueGrowExpected[] = { 0xC4, 0xC1, 0x7A, 0x11, 0x85, 0x20, 0x07, 0x00, 0x00 };
@@ -1032,7 +1034,7 @@ static const PatchPoint kMonsterPatches[] = {
     { "monster_stun", L"monster stun", 0xB23848, kStunSignature, 0, kStunExpected, sizeof(kStunExpected), nullptr, true },
     { "overdrive_state", L"overdrive state", 0x23C6926, kOverdriveSignature, 0, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
     { "od_rate", L"od gauge rate", 0x23C6DF0, kOdRateSignature, 0, kOdRateExpected, sizeof(kOdRateExpected), nullptr, true },
-    { "inventory_set_45", L"inventory set 45", 0x34F8F1, nullptr, 0, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
+    { "inventory_set_45", L"inventory set 45", 0x34F8C1, kInventorySet45Signature, 0, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
     { "purple_drain", L"purple bar drain", 0xA0379A, nullptr, 0, kPurpleExpected, sizeof(kPurpleExpected), kNop9, false },
     { "blue_grow", L"blue bar grow", 0xA09AF1, nullptr, 0, kBlueGrowExpected, sizeof(kBlueGrowExpected), kNop9, false },
     { "blue_drain", L"blue bar drain", 0xA03F38, nullptr, 0, kBlueDrainExpected, sizeof(kBlueDrainExpected), kNop9, false },

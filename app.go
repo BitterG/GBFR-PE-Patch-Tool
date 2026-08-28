@@ -159,7 +159,9 @@ type App struct {
 	monsterStunAddr            uintptr
 	overdriveStateAddr         uintptr
 	odRateAddr                 uintptr
+	materialConsumeAddr        uintptr // AOB-resolved shared inventory/material instruction
 	materialConsumeCaveAddr    uintptr
+	inventorySet45Addr         uintptr // AOB-resolved 小钳蟹(背包物品数量)共享指令
 	// runtimePatchMu serializes material consumption and inventory-set hooks,
 	// which both replace the same item-quantity instruction.
 	runtimePatchMu sync.Mutex
@@ -1844,12 +1846,43 @@ type MaterialConsumeStatus struct {
 }
 
 // materialConsumeRVA is the item-quantity update instruction for the current game build.
-const materialConsumeRVA = uintptr(0x34F8F1)
+// 2.0.5 更新：0x34F8F1 -> 0x34F8C1（游戏更新导致偏移前移 0x30），指令本身不变：
+//   add [r14+04],esi   ; 41 01 76 04
+//   mov rcx,r12        ; 4C 89 E1
+const materialConsumeRVA = uintptr(0x34F8C1)
 
 var (
 	materialConsumeOrig        = []byte{0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1}
 	materialConsumeLegacyPatch = []byte{0x90, 0x90, 0x90, 0x90, 0x4C, 0x89, 0xE1}
+	// materialConsumePattern 是同一指令的 AOB 特征，固定 RVA 失效（游戏再更新）时兜底扫描。
+	materialConsumePattern = []byte{0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1}
+	materialConsumeMask    = []bool{true, true, true, true, true, true, true}
 )
+
+// locateMaterialConsume 解析素材消耗/小钳蟹数量共用的物品数量增减指令地址：
+// 先校验固定 RVA 的字节（容忍已 hook/已 legacy patch 状态，避免已装钩子时重复扫描），
+// 失效则全模块 AOB 特征扫描兜底。
+func (a *App) locateMaterialConsume() (uintptr, error) {
+	if a.materialConsumeAddr != 0 {
+		return a.materialConsumeAddr, nil
+	}
+	fixed := a.moduleBase + materialConsumeRVA
+	current := make([]byte, len(materialConsumeOrig))
+	if err := readProcessMemory(a.hProcess, fixed, unsafe.Pointer(&current[0]), uintptr(len(current))); err == nil {
+		if bytesEqual(current, materialConsumeOrig) ||
+			bytesEqual(current, materialConsumeLegacyPatch) ||
+			isMaterialConsumeHook(current) {
+			a.materialConsumeAddr = fixed
+			return fixed, nil
+		}
+	}
+	addr, err := a.scanPatternUnique(materialConsumePattern, materialConsumeMask, "升级/强化材料增减指令")
+	if err != nil {
+		return 0, fmt.Errorf("固定 RVA 已变化且特征扫描失败: %w", err)
+	}
+	a.materialConsumeAddr = addr
+	return addr, nil
+}
 
 func (a *App) MaterialConsumeGetStatus() (MaterialConsumeStatus, error) {
 	if err := a.ensureGameProcess(); err != nil {
@@ -1875,7 +1908,10 @@ func (a *App) MaterialConsumeSetEnabled(enabled bool) (MaterialConsumeStatus, er
 }
 
 func (a *App) ensureInventoryPatchAvailable() error {
-	addr := a.moduleBase + materialConsumeRVA
+	addr, err := a.locateMaterialConsume()
+	if err != nil {
+		return err
+	}
 	current := make([]byte, len(materialConsumeOrig))
 	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
 		return fmt.Errorf("读取小钳蟹数量共享指令失败: %w", err)
@@ -1894,7 +1930,10 @@ func (a *App) ensureInventoryPatchAvailable() error {
 }
 
 func (a *App) installMaterialConsumeHook() error {
-	addr := a.moduleBase + materialConsumeRVA
+	addr, err := a.locateMaterialConsume()
+	if err != nil {
+		return err
+	}
 	current := make([]byte, len(materialConsumeOrig))
 	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
 		return fmt.Errorf("读取升级/强化材料消耗指令失败: %w", err)
@@ -1951,7 +1990,10 @@ func (a *App) releaseMaterialConsumeHook() error {
 	if a.hProcess == 0 || a.moduleBase == 0 {
 		return nil
 	}
-	addr := a.moduleBase + materialConsumeRVA
+	addr, err := a.locateMaterialConsume()
+	if err != nil {
+		return err
+	}
 	current := make([]byte, len(materialConsumeOrig))
 	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&current[0]), uintptr(len(current))); err != nil {
 		return fmt.Errorf("读取升级/强化材料消耗指令失败: %w", err)
@@ -1982,7 +2024,10 @@ func isMaterialConsumeHook(buf []byte) bool {
 }
 
 func (a *App) readMaterialConsumeStatus() (MaterialConsumeStatus, error) {
-	addr := a.moduleBase + materialConsumeRVA
+	addr, err := a.locateMaterialConsume()
+	if err != nil {
+		return MaterialConsumeStatus{}, err
+	}
 	buf := make([]byte, len(materialConsumeOrig))
 	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&buf[0]), uintptr(len(buf))); err != nil {
 		return MaterialConsumeStatus{}, fmt.Errorf("读取升级/强化材料消耗指令失败: %w", err)
@@ -2550,11 +2595,14 @@ var monsterPatchPoints = []monsterPatchPoint{
 		Hook:          true,
 	},
 	{
-		ID:       "inventory_set_45",
-		Name:     "设置背包物品数量为 45",
-		RVA:      0x34F8F1,
-		Original: []byte{0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1},
-		Hook:     true,
+		ID:            "inventory_set_45",
+		Name:          "设置背包物品数量为 45",
+		RVA:           0x34F8C1, // 2.0.5; was 0x34F8F1
+		Pattern:       []byte{0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1},
+		PatternMask:   []bool{true, true, true, true, true, true, true},
+		PatternOffset: 0,
+		Original:      []byte{0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1},
+		Hook:          true,
 	},
 	{
 		ID:       "sba_chain_timer",
@@ -2998,6 +3046,9 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	if point.ID == "od_rate" && a.odRateAddr != 0 {
 		return a.odRateAddr, nil
 	}
+	if point.ID == "inventory_set_45" && a.inventorySet45Addr != 0 {
+		return a.inventorySet45Addr, nil
+	}
 	// Unified RVA fast-path: validate the fixed RVA bytes and tolerate the
 	// already-hooked (E9) / already-patched state. This keeps status reads
 	// working after a hook is installed (AOB patterns of hook points get
@@ -3021,6 +3072,8 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 					a.monsterHPAddr = target
 				case "od_rate":
 					a.odRateAddr = target
+				case "inventory_set_45":
+					a.inventorySet45Addr = target
 				}
 				return target, nil
 			}
@@ -3098,6 +3151,9 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	}
 	if point.ID == "od_rate" {
 		a.odRateAddr = target
+	}
+	if point.ID == "inventory_set_45" {
+		a.inventorySet45Addr = target
 	}
 	if point.ID == "monster_damage_new" {
 		a.monsterDamageNewAddr = target
