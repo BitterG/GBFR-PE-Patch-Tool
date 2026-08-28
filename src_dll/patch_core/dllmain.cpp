@@ -119,10 +119,10 @@ static LONG ExecuteAutoChatCommand()
 }
 
 // ── sendMessage hook (game-thread sender, via LM_HookCode) ──
-// ui::hud::Manager::sendMessage entry RVA 0x9049F0. Each time the game calls
-// sendMessage (manual send / quick phrase), this hook checks the pending queue
-// on the game thread, sends our message through the trampoline if queued,
-// then continues the game's own call.
+// ui::hud::Manager::sendMessage entry RVA 0x904D30 (2.0.5; was 0x9049F0).
+// Each time the game calls sendMessage (manual send / quick phrase), this hook
+// checks the pending queue on the game thread, sends our message through the
+// trampoline if queued, then continues the game's own call.
 static bool g_autoChatSendHookInstalled = false;
 static lm_address_t g_autoChatSendTrampoline = LM_ADDRESS_BAD;
 
@@ -138,15 +138,16 @@ static const char* kChatManagerSlotSignature =
     "48 8B 3D ?? ?? ?? ?? 48 8D 05 ?? ?? ?? ?? 48 89 44 24 38 "
     "48 C7 44 24 40 00 00 00 00 48 89 74 24 28 48 89 F1 E8 ?? ?? ?? ??";
 
-// Resolves sendMessage + ManagerSlot by AOB first, falling back to the
-// hard-coded 2.0.4 RVAs. Returns false only if both paths fail.
+// Resolves sendMessage + ManagerSlot by fixed RVA first (fast path),
+// falling back to AOB signatures when the RVA is stale (game updated).
+// Returns false only if both paths fail.
 static bool ResolveAutoChatTargets(wchar_t* message, size_t messageSize)
 {
     if (!g_gameModule || !g_gameModuleSize) return false;
     const lm_address_t base = reinterpret_cast<lm_address_t>(g_gameModule);
 
-    // 1) sendMessage entry.
-    constexpr uintptr_t kSendMessageRVA = 0x9049F0;
+    // 1) sendMessage entry. 2.0.5: 0x9049F0 -> 0x904D30.
+    constexpr uintptr_t kSendMessageRVA = 0x904D30;
     lm_address_t sendAddr = LM_ADDRESS_BAD;
     lm_byte_t prologue[6]{};
     if (base + kSendMessageRVA < base + g_gameModuleSize &&
@@ -184,8 +185,8 @@ static bool ResolveAutoChatTargets(wchar_t* message, size_t messageSize)
     }
     g_autoChatSendMessageAddr = sendAddr;
 
-    // 2) Manager slot global.
-    constexpr uintptr_t kManagerSlotRVA = 0x7C23460;
+    // 2) Manager slot global. 2.0.5: 0x7C23460 -> 0x7C236E0.
+    constexpr uintptr_t kManagerSlotRVA = 0x7C236E0;
     lm_address_t slotAddr = LM_ADDRESS_BAD;
     if (base + kManagerSlotRVA < base + g_gameModuleSize)
     {
