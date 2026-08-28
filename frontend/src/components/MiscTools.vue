@@ -3,7 +3,6 @@ import { translate as t } from '../i18n'
 import { onBeforeUnmount, reactive, ref } from 'vue'
 import { CharaAttach, CharaDetach,
          CurrencyGetAll, CurrencySetOne,
-         PotionGetAll, PotionSetOne,
          CountdownGetStatus, CountdownScan, CountdownSet,
          FaceAccessoryGetStatus, FaceAccessoryScan, FaceAccessorySetHidden,
          InfiniteChallengeGetStatus, InfiniteChallengeSetEnabled,
@@ -59,9 +58,6 @@ const flightLoading = ref(false)
 const currencies = ref([])
 const currencyInputs = reactive({})
 const currencyLoading = ref(false)
-const potions = ref([])
-const potionInputs = reactive({})
-const potionLoading = ref(false)
 const damageOverlayEnabled = ref(false)
 const damageOverlayFontSize = ref(Number(localStorage.getItem('gbfrDamageOverlayFontSize') || 48))
 const showOutdatedFeatures = false
@@ -94,7 +90,6 @@ function connect() {
         loadOtherSkinPurpleRuneStatus()
       }
       loadCurrencyValues()
-      loadPotionValues()
       if (showOutdatedFeatures) startDamageMeterTimer()
     })
     .catch((err) => emit('status', String(err), 'error'))
@@ -120,8 +115,6 @@ function disconnect() {
       Object.assign(flightStatus, { enabled: false, speed: 8 })
       currencies.value = []
       Object.keys(currencyInputs).forEach((key) => delete currencyInputs[key])
-      potions.value = []
-      Object.keys(potionInputs).forEach((key) => delete potionInputs[key])
     })
     .catch((err) => emit('status', String(err), 'error'))
 }
@@ -398,10 +391,6 @@ function currencyName(item) {
   return t(`runtimeTools.misc.currency.items.${item.id}`)
 }
 
-function potionName(item) {
-  return t(`runtimeTools.misc.potion.items.${item.id}`)
-}
-
 function applyCurrencyValues(items) {
   currencies.value = Array.isArray(items) ? items : []
   currencies.value.forEach((item) => {
@@ -436,38 +425,6 @@ function setCurrency(item) {
 
 function formatOffsets(offsets) {
   return (offsets || []).map(formatHex).join(' + ')
-}
-
-function applyPotionValues(items) {
-  potions.value = Array.isArray(items) ? items : []
-  potions.value.forEach((item) => {
-    potionInputs[item.id] = String(item.value)
-  })
-}
-
-function loadPotionValues() {
-  if (!connected.value) return
-  potionLoading.value = true
-  PotionGetAll()
-    .then(applyPotionValues)
-    .catch((err) => emit('status', String(err), 'error'))
-    .finally(() => { potionLoading.value = false })
-}
-
-function setPotion(item) {
-  if (!connected.value) { emit('status', t('runtimeTools.messages.connectFirst'), 'error'); return }
-  const value = Number(potionInputs[item.id])
-  if (!Number.isInteger(value) || value < 0 || value > 2147483647) { emit('status', t('runtimeTools.messages.integerRange', { min: 0, max: 2147483647 }), 'error'); return }
-  potionLoading.value = true
-  PotionSetOne(item.id, value)
-    .then((updated) => {
-      const index = potions.value.findIndex((entry) => entry.id === updated.id)
-      if (index >= 0) potions.value.splice(index, 1, updated)
-      potionInputs[updated.id] = String(updated.value)
-      emit('status', t('runtimeTools.messages.writeSuccess', { name: potionName(updated) }), 'success')
-    })
-    .catch((err) => emit('status', String(err), 'error'))
-    .finally(() => { potionLoading.value = false })
 }
 
 function loadPlayerPosition() {
@@ -686,21 +643,10 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <div class="memory-card" :class="{ active: potions.length }">
+        <div class="memory-card">
           <div class="memory-header">
             <span class="memory-title">{{ t('runtimeTools.misc.potion.title') }}</span>
             <span class="memory-hint">{{ t('runtimeTools.misc.potion.hint') }}</span>
-          </div>
-          <div class="currency-grid">
-            <div v-for="item in potions" :key="item.id" class="currency-row">
-              <div class="currency-name">{{ potionName(item) }}</div>
-              <div class="currency-meta">{{ formatInt(item.value) }} · {{ formatHex(item.rva) }} + {{ formatOffsets(item.offsets) }}</div>
-              <input v-model="potionInputs[item.id]" type="number" min="0" max="2147483647" step="1" class="batch-input currency-input" />
-              <button class="btn-batch" @click="setPotion(item)" :disabled="potionLoading">{{ t('runtimeTools.common.write') }}</button>
-            </div>
-          </div>
-          <div class="memory-row">
-            <button class="btn-refresh" @click="loadPotionValues" :disabled="potionLoading">{{ t('runtimeTools.misc.potion.refresh') }}</button>
           </div>
         </div>
 

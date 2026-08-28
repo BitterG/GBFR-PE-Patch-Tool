@@ -26,7 +26,7 @@ const (
 	steamAppID  = "881020"
 	gameExeName = "granblue_fantasy_relink.exe"
 	gameFolder  = "Granblue Fantasy Relink"
-	appVersion  = "v1.10.2"
+	appVersion  = "v1.10.3"
 	repoOwner   = "BitterG"
 	repoName    = "GBFR-PE-Patch-Tool"
 )
@@ -961,15 +961,6 @@ type CurrencyInfo struct {
 	Value   int32  `json:"value"`
 }
 
-type PotionInfo struct {
-	ID      string   `json:"id"`
-	Name    string   `json:"name"`
-	RVA     uint64   `json:"rva"`
-	Offsets []uint64 `json:"offsets"`
-	Address uint64   `json:"address"`
-	Value   int32    `json:"value"`
-}
-
 type currencyDef struct {
 	ID      string
 	Name    string
@@ -1012,18 +1003,6 @@ var currencyDefs = []currencyDef{
 	{ID: "rupies", Name: "金币", Offset: 0x30},
 	{ID: "purple_msp", Name: "紫MSP", Offset: 0x9C},
 	{ID: "cp_extreme_void", Name: "CP(极沌空域)", Offset: 0x24, AOB: true},
-}
-
-type potionDef struct {
-	ID      string
-	Name    string
-	RVA     uintptr
-	Offsets []uintptr
-}
-
-var potionDefs = []potionDef{
-	{ID: "revive", Name: "复活药水", RVA: 0x07369E08, Offsets: []uintptr{0x9B0, 0x38, 0xD84}},
-	{ID: "group_chat", Name: "群疗药水", RVA: 0x07369E08, Offsets: []uintptr{0x9B0, 0x38, 0xD64}},
 }
 
 // CharaAttach finds the game process, opens a handle, reads module base and manager pointer.
@@ -1608,69 +1587,6 @@ func (a *App) CurrencySetOne(id string, value int) (CurrencyInfo, error) {
 	return CurrencyInfo{}, fmt.Errorf("未知货币: %s", id)
 }
 
-func (a *App) potionAddress(def potionDef) (uintptr, error) {
-	if a.hProcess == 0 || a.moduleBase == 0 {
-		return 0, fmt.Errorf("未连接游戏进程")
-	}
-	return a.resolvePointerChain(def.RVA, def.Offsets, def.Name)
-}
-
-func potionOffsetsJSON(offsets []uintptr) []uint64 {
-	result := make([]uint64, 0, len(offsets))
-	for _, offset := range offsets {
-		result = append(result, uint64(offset))
-	}
-	return result
-}
-
-func (a *App) readPotion(def potionDef) (PotionInfo, error) {
-	addr, err := a.potionAddress(def)
-	if err != nil {
-		return PotionInfo{}, err
-	}
-	var value int32
-	if err := readProcessMemory(a.hProcess, addr, unsafe.Pointer(&value), unsafe.Sizeof(value)); err != nil {
-		return PotionInfo{}, fmt.Errorf("读取%s失败: %w", def.Name, err)
-	}
-	return PotionInfo{ID: def.ID, Name: def.Name, RVA: uint64(def.RVA), Offsets: potionOffsetsJSON(def.Offsets), Address: uint64(addr), Value: value}, nil
-}
-
-// PotionGetAll reads all supported potion values from stable pointer chains.
-func (a *App) PotionGetAll() ([]PotionInfo, error) {
-	result := make([]PotionInfo, 0, len(potionDefs))
-	for _, def := range potionDefs {
-		info, err := a.readPotion(def)
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, info)
-	}
-	return result, nil
-}
-
-// PotionSetOne writes one supported potion value by id.
-func (a *App) PotionSetOne(id string, value int) (PotionInfo, error) {
-	id = strings.TrimSpace(id)
-	if value < 0 || value > math.MaxInt32 {
-		return PotionInfo{}, fmt.Errorf("请输入 0 到 %d 之间的整数", math.MaxInt32)
-	}
-	for _, def := range potionDefs {
-		if def.ID != id {
-			continue
-		}
-		addr, err := a.potionAddress(def)
-		if err != nil {
-			return PotionInfo{}, err
-		}
-		newVal := int32(value)
-		if err := writeProcessMemory(a.hProcess, addr, unsafe.Pointer(&newVal), unsafe.Sizeof(newVal)); err != nil {
-			return PotionInfo{}, fmt.Errorf("写入%s失败: %w", def.Name, err)
-		}
-		return a.readPotion(def)
-	}
-	return PotionInfo{}, fmt.Errorf("未知药水: %s", id)
-}
-
 // ── 角色脸部符文显示 (运行时 JE/JNE 切换) ──
 
 var faceAccessoryPattern = []byte{
@@ -1848,8 +1764,9 @@ type MaterialConsumeStatus struct {
 
 // materialConsumeRVA is the item-quantity update instruction for the current game build.
 // 2.0.5 更新：0x34F8F1 -> 0x34F8C1（游戏更新导致偏移前移 0x30），指令本身不变：
-//   add [r14+04],esi   ; 41 01 76 04
-//   mov rcx,r12        ; 4C 89 E1
+//
+//	add [r14+04],esi   ; 41 01 76 04
+//	mov rcx,r12        ; 4C 89 E1
 const materialConsumeRVA = uintptr(0x34F8C1)
 
 var (

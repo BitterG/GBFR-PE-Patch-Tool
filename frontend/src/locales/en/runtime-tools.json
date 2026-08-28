@@ -121,13 +121,8 @@
         }
       },
       "potion": {
-        "title": "Potion editor",
-        "hint": "Stable pointer-chain read/write int32",
-        "refresh": "Refresh potions",
-        "items": {
-          "revive": "Revive potion",
-          "group_chat": "Group heal potion"
-        }
+        "title": "Potion",
+        "hint": "Use the \"No material consumption\" option for unlimited potions."
       },
       "position": {
         "title": "Player position",
