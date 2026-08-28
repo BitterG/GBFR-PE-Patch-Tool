@@ -1011,10 +1011,12 @@ static const char* kOverdriveSignature = "8B 46 10 83 F8 03 0F 84 ?? ?? ?? ?? 83
 //   mov [rcx+18h], rax
 //   ret
 static const lm_byte_t kOdRateExpected[] = { 0x80, 0x79, 0x50, 0x00, 0x74, 0x13, 0x48, 0x03, 0x51, 0x18 };
+// 2.0.5: vtable+72 method moved 0x23C6DF0 -> 0x2C6FD0; signature unique.
 static const char* kOdRateSignature = "80 79 50 00 74 13 48 03 51 18";
 // Second OD-gauge accumulation path used by some bosses (e.g. Beelzebub):
 // inlined into their update function instead of going through the vtable+72
 // method. rsi = OD component, rdi = damage-scaled delta.
+// 2.0.5: RVA 0x2B3F77E -> 0x2B3F92E (code reordering; block unchanged).
 //   add rdi, [rsi+18]
 //   mov rax, -1
 //   cmovae rax, rdi
@@ -1028,15 +1030,15 @@ static const PatchPoint kMonsterPatches[] = {
     { "link_time_disable", L"disable link time", 0x187228, nullptr, 0, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
     // 2.0.4 re-baselined: monster_hp 0x1F7472E->0x1F756CE, damage_new 0x1F74700->0x1F756A0,
     // defense 0x1FB77EE->0x1FB878E (2.0.4)->0x1FB890E (2.0.5), stun 0xB228A8->0xB23848,
-    // overdrive 0x22C5986->0x23C6926, od_rate 0x22C5E50->0x23C6DF0. Signature fallback
-    // keeps them version-proof.
+    // overdrive 0x22C5986->0x23C6926, od_rate 0x22C5E50->0x23C6DF0 (2.0.4)->0x2C6FD0 (2.0.5).
+    // Signature fallback keeps them version-proof.
     { "monster_hp", L"monster hp", 0x1F756CE, kMonsterHpSignature, 0x1E, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
     { "monster_damage_new", L"monster damage new", 0x1F756A0, kMonsterDamageNewSignature, 0x20, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
     { "defense_multiplier", L"defense multiplier", 0x1FB890E, kDefenseMultiplierSignature, 6, kDefenseMultiplierExpected, sizeof(kDefenseMultiplierExpected), nullptr, true },
     { "monster_damage", L"monster damage", 0x1FBDEB4, nullptr, 0, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
     { "monster_stun", L"monster stun", 0xB23848, kStunSignature, 0, kStunExpected, sizeof(kStunExpected), nullptr, true },
     { "overdrive_state", L"overdrive state", 0x23C6926, kOverdriveSignature, 0, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
-    { "od_rate", L"od gauge rate", 0x23C6DF0, kOdRateSignature, 0, kOdRateExpected, sizeof(kOdRateExpected), nullptr, true },
+    { "od_rate", L"od gauge rate", 0x2C6FD0, kOdRateSignature, 0, kOdRateExpected, sizeof(kOdRateExpected), nullptr, true },
     { "inventory_set_45", L"inventory set 45", 0x34F8C1, kInventorySet45Signature, 0, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
     { "purple_drain", L"purple bar drain", 0xA0379A, nullptr, 0, kPurpleExpected, sizeof(kPurpleExpected), kNop9, false },
     { "blue_grow", L"blue bar grow", 0xA09AF1, nullptr, 0, kBlueGrowExpected, sizeof(kBlueGrowExpected), kNop9, false },
@@ -2180,12 +2182,28 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
                 if (!PatchOdRateHook(target, message, messageSize)) return false;
                 // Additional inlined accumulation path used by
                 // Beelzebub-style bosses (their update loop does not call
-                // the vtable+72 method). 2.0.4: 0x2B3E7DE -> 0x2B3F77E.
-                lm_address_t inlineTarget = module.base + 0x2B3F77E;
-                lm_byte_t inlineCur[1]{};
-                if (LM_ReadMemory(inlineTarget, inlineCur, 1) == 1 && inlineCur[0] != 0xE9)
+                // the vtable+72 method). 2.0.5: 0x2B3F77E -> 0x2B3F92E.
+                // Validate the full 19-byte block before hooking so a stale
+                // RVA can never overwrite unrelated code.
+                lm_address_t inlineTarget = module.base + 0x2B3F92E;
+                lm_byte_t inlineCur[sizeof(kOdRateInlineExpected)]{};
+                if (LM_ReadMemory(inlineTarget, inlineCur, sizeof(inlineCur)) != sizeof(inlineCur))
+                {
+                    swprintf_s(message, messageSize, L"read failed: od gauge rate (inline)");
+                    return false;
+                }
+                if (inlineCur[0] == 0xE9)
+                {
+                    // already hooked by a previous injection this session
+                }
+                else if (BytesEqual(inlineCur, kOdRateInlineExpected, sizeof(kOdRateInlineExpected)))
                 {
                     if (!PatchOdRateHookInline(inlineTarget, message, messageSize)) return false;
+                }
+                else
+                {
+                    swprintf_s(message, messageSize, L"unexpected bytes: od gauge rate (inline) at +%llX", static_cast<unsigned long long>(inlineTarget - module.base));
+                    return false;
                 }
             }
             else if (strcmp(point.id, "inventory_set_45") == 0)
