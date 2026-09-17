@@ -1064,6 +1064,17 @@ static const lm_byte_t kDefenseMultiplierExpected[] = { 0x3D, 0x00, 0xE1, 0xF5, 
 // Signature starts at the preceding `mov eax,[rsi+D4]` (unique in module);
 // +6 lands on the cmp instruction that is hooked.
 static const char* kDefenseMultiplierSignature = "8B 86 D4 00 00 00 3D 00 E1 F5 05";
+// Player-only vtable slot 2 (the value compared against [[r14]+0x10] in the
+// defense cave). The RVA moves every game update (2.0.6: 0x9CB740), so the
+// primary source is the AOB chain below; the constant is only the last-resort
+// fallback for when the chain can't run yet (main menu / encrypted page).
+static constexpr uintptr_t kPlayerVtableSlot2FallbackRVA = 0x9CB740;
+// Player-coordinate loader AOB (CE-verified in 2.0.6: 2 matches, both load the
+// same player slot table). slotTable = match + 7 + disp32; [slotTable] = player;
+// [player] = vtable; [vtable+0x10] = the player-only slot2 pointer.
+// The two `74 ??` jump displacements are wildcarded so minor recompiles still match.
+static const char* kPlayerSlotTableSignature =
+    "48 8B 0D ?? ?? ?? ?? 48 85 C9 74 ?? 48 8B 01 FF 90 C0 04 00 00 48 85 C0 74 ??";
 static const lm_byte_t kInventorySet45Expected[] = { 0x41, 0x01, 0x76, 0x04, 0x4C, 0x89, 0xE1 };
 // 2.0.5: RVA moved 0x34F8F1 -> 0x34F8C1; signature keeps it version-proof.
 static const char* kInventorySet45Signature = "41 01 76 04 4C 89 E1";
@@ -1696,6 +1707,124 @@ static bool PatchMonsterDamageHook(lm_address_t target, wchar_t* message, size_t
     return true;
 }
 
+static lm_address_t ScanAobReadable(const char* signature, lm_address_t base, lm_size_t size);
+
+// Resolved player-only vtable slot2 (module-absolute pointer) used by the
+// defense cave. Fallback value is 2.0.6; the AOB chain + background refresh
+// keep it correct across updates once a player object exists.
+static volatile uintptr_t g_defensePlayerSlot2 = 0;
+// Address of the installed defense cave and the offset of the embedded
+// `mov rdx, imm64` slot2 immediate inside it (see PatchDefenseHook layout).
+static lm_address_t g_defenseCave = LM_ADDRESS_BAD;
+static constexpr lm_size_t kDefenseSlot2ImmOffset = 28;
+
+static void LogDefenseDiag(const char* line)
+{
+    wchar_t tempPath[MAX_PATH]{};
+    if (!GetTempPathW(_countof(tempPath), tempPath)) return;
+    wchar_t path[MAX_PATH]{};
+    swprintf_s(path, L"%sgbfr-player-info-edit\\patch_core_defense.log", tempPath);
+    FILE* f = nullptr;
+    _wfopen_s(&f, path, L"a");
+    if (f)
+    {
+        fprintf(f, "%s\n", line);
+        fclose(f);
+    }
+}
+
+// Resolves the player-only vtable slot2 via the CE player-pointer chain:
+//   match = AOB("48 8B 0D disp32 ...")
+//   slotTable = match + 7 + disp32
+//   player    = [slotTable]
+//   vtable    = [player]
+//   slot2     = [vtable + 0x10]   -> RVA = slot2 - moduleBase
+// Returns false when any link is unavailable (main menu / encrypted page).
+static bool ResolvePlayerVtableSlot2(lm_address_t moduleBase, lm_size_t moduleSize, uintptr_t& slot2Rva)
+{
+    lm_address_t match = ScanAobReadable(kPlayerSlotTableSignature, moduleBase, moduleSize);
+    if (match == 0) return false;
+
+    __try
+    {
+        int32_t disp = 0;
+        lm_byte_t dispBytes[4]{};
+        if (LM_ReadMemory(match + 3, dispBytes, sizeof(dispBytes)) != sizeof(dispBytes)) return false;
+        memcpy(&disp, dispBytes, sizeof(disp));
+        const uintptr_t slotTable = static_cast<uintptr_t>(match + 7 + static_cast<lm_address_t>(disp));
+        if (slotTable < moduleBase || slotTable >= moduleBase + moduleSize) return false;
+
+        uintptr_t player = 0;
+        if (LM_ReadMemory(slotTable, reinterpret_cast<lm_byte_t*>(&player), sizeof(player)) != sizeof(player)) return false;
+        if (player < 0x10000) return false;
+
+        uintptr_t vtable = 0;
+        if (LM_ReadMemory(player, reinterpret_cast<lm_byte_t*>(&vtable), sizeof(vtable)) != sizeof(vtable)) return false;
+        if (vtable < moduleBase || vtable >= moduleBase + moduleSize) return false;
+
+        uintptr_t slot2 = 0;
+        if (LM_ReadMemory(vtable + 0x10, reinterpret_cast<lm_byte_t*>(&slot2), sizeof(slot2)) != sizeof(slot2)) return false;
+        if (slot2 < moduleBase || slot2 >= moduleBase + moduleSize) return false;
+
+        slot2Rva = slot2 - moduleBase;
+        return true;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        return false;
+    }
+}
+
+// Keeps g_defensePlayerSlot2 fresh after the hook is installed: the chain can
+// only resolve once a player object exists (in a quest), which may be later
+// than the moment the defense patch was applied at the main menu.
+static DWORD WINAPI DefenseSlot2RefreshThread(LPVOID)
+{
+    for (int attempt = 0; attempt < 2400; ++attempt)
+    {
+        HMODULE gameModule = GetModuleHandleW(L"granblue_fantasy_relink.exe");
+        if (gameModule)
+        {
+            lm_address_t base = reinterpret_cast<lm_address_t>(gameModule);
+            MODULEINFO mi{};
+            lm_size_t size = 0;
+            if (GetModuleInformation(GetCurrentProcess(), gameModule, &mi, sizeof(mi)))
+            {
+                size = static_cast<lm_size_t>(mi.SizeOfImage);
+            }
+            uintptr_t slot2Rva = 0;
+            if (ResolvePlayerVtableSlot2(base, size, slot2Rva))
+            {
+                uintptr_t resolved = static_cast<uintptr_t>(base) + slot2Rva;
+                InterlockedExchangePointer(
+                    reinterpret_cast<volatile PVOID*>(&g_defensePlayerSlot2),
+                    reinterpret_cast<PVOID>(resolved));
+                // Update the imm64 embedded in the cave so the hook uses the
+                // fresh value even if it was first patched with the fallback.
+                if (g_defenseCave != LM_ADDRESS_BAD)
+                {
+                    __try
+                    {
+                        LM_WriteMemory(g_defenseCave + kDefenseSlot2ImmOffset,
+                                       reinterpret_cast<lm_byte_t*>(&resolved), sizeof(resolved));
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER)
+                    {
+                    }
+                }
+                char buf[160]{};
+                sprintf_s(buf, "defense slot2 resolved via AOB chain: +%llX (attempt %d)",
+                          static_cast<unsigned long long>(slot2Rva), attempt);
+                LogDefenseDiag(buf);
+                return 0;
+            }
+        }
+        Sleep(250);
+    }
+    LogDefenseDiag("defense slot2: AOB chain not resolved within timeout (fallback stays active)");
+    return 1;
+}
+
 // Party-wide "defense multiplier" (same idea as FLiNG's, but applies to the
 // whole party): hook the final damage-settle point RVA 0x1FB8F2E
 // (`cmp eax,05F5E100`).
@@ -1716,14 +1845,31 @@ static bool PatchDefenseHook(lm_address_t target, wchar_t* message, size_t messa
     lm_byte_t code[256]{};
     size_t i = 0;
     // Player detection via a shared player-only vtable slot instead of an
-    // exhaustive vtable list. Verified via the CE player-pointer chain at
-    // RVA 0x1FB8F2E (2.0.6): players vtable slot 2 = RVA 0x9CB740 (was
-    // 0x9CB360 in 2.0.5, 0x9CB970 in 2.0.4), monsters = 0x2938850. (If a
-    // different playable character turns out to have another slot-2 value,
-    // add it to a comparison list.)
+    // exhaustive vtable list. The slot value is resolved through the
+    // player-pointer AOB chain (update-proof); the 2.0.6 RVA 0x9CB740 is only
+    // the fallback while the chain can't run yet (main menu / encrypted page).
     HMODULE gameModule = GetModuleHandleW(L"granblue_fantasy_relink.exe");
     uintptr_t gameBase = reinterpret_cast<uintptr_t>(gameModule);
-    const uintptr_t playerVtableSlot2 = gameBase + 0x9CB740;
+    lm_size_t moduleSize = 0;
+    MODULEINFO mi{};
+    if (GetModuleInformation(GetCurrentProcess(), gameModule, &mi, sizeof(mi)))
+    {
+        moduleSize = static_cast<lm_size_t>(mi.SizeOfImage);
+    }
+    uintptr_t slot2Rva = 0;
+    if (ResolvePlayerVtableSlot2(static_cast<lm_address_t>(gameBase), moduleSize, slot2Rva))
+    {
+        char buf[160]{};
+        sprintf_s(buf, "defense slot2 resolved via AOB chain: +%llX", static_cast<unsigned long long>(slot2Rva));
+        LogDefenseDiag(buf);
+    }
+    else
+    {
+        slot2Rva = kPlayerVtableSlot2FallbackRVA;
+        LogDefenseDiag("defense slot2: AOB chain not ready, using fallback RVA");
+    }
+    const uintptr_t playerVtableSlot2 = gameBase + slot2Rva;
+    g_defensePlayerSlot2 = playerVtableSlot2;
     uintptr_t stateAddr = reinterpret_cast<uintptr_t>(g_playerPointerState);
     code[i++] = 0x52;                                                                               // push rdx
     code[i++] = 0x41; code[i++] = 0x50;                                                             // push r8
@@ -1788,6 +1934,13 @@ static bool PatchDefenseHook(lm_address_t target, wchar_t* message, size_t messa
     {
         swprintf_s(message, messageSize, L"hook write failed: defense multiplier");
         return false;
+    }
+    g_defenseCave = cave;
+    // The AOB chain can only resolve once a player object exists (in a quest);
+    // refresh the embedded slot2 in the background when it becomes available.
+    if (HANDLE thread = CreateThread(nullptr, 0, DefenseSlot2RefreshThread, nullptr, 0, nullptr))
+    {
+        CloseHandle(thread);
     }
     return true;
 }
