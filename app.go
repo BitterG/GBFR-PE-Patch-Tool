@@ -26,7 +26,7 @@ const (
 	steamAppID  = "881020"
 	gameExeName = "granblue_fantasy_relink.exe"
 	gameFolder  = "Granblue Fantasy Relink"
-	appVersion  = "v1.10.3"
+	appVersion  = "v1.10.4"
 	repoOwner   = "BitterG"
 	repoName    = "GBFR-PE-Patch-Tool"
 )
@@ -2468,7 +2468,7 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:            "defense_multiplier",
 		Name:          "防御倍率(单人)",
-		RVA:           0x1FB890E, // 2.0.5; was 0x1FB878E (2.0.4), 0x1FB77EE (2.0.2)
+		RVA:           0x1FB8F2E, // 2.0.6; was 0x1FB890E (2.0.5), 0x1FB878E (2.0.4)
 		Pattern:       []byte{0x8B, 0x86, 0xD4, 0x00, 0x00, 0x00, 0x3D, 0x00, 0xE1, 0xF5, 0x05},
 		PatternMask:   []bool{true, true, true, true, true, true, true, true, true, true, true},
 		PatternOffset: 6,
@@ -2505,7 +2505,7 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:            "od_rate",
 		Name:          "OD条变化率",
-		RVA:           0x2C6FD0, // 2.0.5; was 0x23C6DF0 (2.0.4), 0x22C5E50
+		RVA:           0x22C75F0, // 2.0.6; was 0x2C6FD0 (2.0.5), 0x23C6DF0 (2.0.4)
 		Pattern:       []byte{0x80, 0x79, 0x50, 0x00, 0x74, 0x13, 0x48, 0x03, 0x51, 0x18},
 		PatternMask:   []bool{true, true, true, true, true, true, true, true, true, true},
 		PatternOffset: 0,
@@ -2845,7 +2845,7 @@ var odRateSuffixPattern = []byte{0x48, 0xC7, 0xC0, 0xFF, 0xFF, 0xFF, 0xFF, 0x48,
 
 // Second OD-gauge accumulation path (Beelzebub-style bosses): inlined into
 // their update function. Hooked together with the vtable+72 point by the DLL.
-const odRateInlineRVA = 0x2B3F92E // 2.0.5; was 0x2B3F77E (2.0.4), 0x2B3E7DE
+const odRateInlineRVA = 0x2B3FFFE // 2.0.6; was 0x2B3F92E (2.0.5)
 
 var odRateInlineOriginal = []byte{0x48, 0x03, 0x7E, 0x18, 0x48, 0xC7, 0xC0, 0xFF, 0xFF, 0xFF, 0xFF, 0x48, 0x0F, 0x43, 0xC7, 0x48, 0x89, 0x46, 0x18}
 

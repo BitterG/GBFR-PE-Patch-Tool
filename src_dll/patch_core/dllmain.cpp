@@ -985,10 +985,10 @@ static const lm_byte_t kStunExpected[] = { 0xC5, 0xFA, 0x58, 0x86, 0x60, 0x08, 0
 static const char* kStunSignature = "C5 FA 58 86 60 ?? ?? ?? C5 FA 5D 86 64 ?? ?? ?? C5 FA 11 86 60 ?? ?? ??";
 // v1.3.2+: damage value is finalized in [rsi+0xD4] before this cap check.
 static const lm_byte_t kMonsterDamageExpected[] = { 0x81, 0xBE, 0xD4, 0x00, 0x00, 0x00, 0x00, 0xE1, 0xF5, 0x05 };
-// v2.0.5: the final damage-settle point moved to RVA 0x1FB890E
-//   mov eax,[rsi+D4]      ; 0x1FB8908
-//   cmp eax,05F5E100      ; 0x1FB890E  <-- hook here (eax already holds final damage)
-//   jb  0x1FB8913         ; 0x1FB8913
+// v2.0.6: the final damage-settle point moved to RVA 0x1FB8F2E
+//   mov eax,[rsi+D4]      ; 0x1FB8F28
+//   cmp eax,05F5E100      ; 0x1FB8F2E  <-- hook here (eax already holds final damage)
+//   jb  0x1FB8F33         ; 0x1FB8F33
 // Party-wide "defense multiplier": divide eax by the multiplier when r14 is a player.
 static const lm_byte_t kDefenseMultiplierExpected[] = { 0x3D, 0x00, 0xE1, 0xF5, 0x05 };
 // Signature starts at the preceding `mov eax,[rsi+D4]` (unique in module);
@@ -1012,34 +1012,38 @@ static const char* kOverdriveSignature = "8B 46 10 83 F8 03 0F 84 ?? ?? ?? ?? 83
 //   mov [rcx+18h], rax
 //   ret
 static const lm_byte_t kOdRateExpected[] = { 0x80, 0x79, 0x50, 0x00, 0x74, 0x13, 0x48, 0x03, 0x51, 0x18 };
-// 2.0.5: vtable+72 method moved 0x23C6DF0 -> 0x2C6FD0; signature unique.
+// 2.0.6: vtable+72 method moved 0x2C6FD0 -> 0x22C75F0; signature unique.
 static const char* kOdRateSignature = "80 79 50 00 74 13 48 03 51 18";
 // Second OD-gauge accumulation path used by some bosses (e.g. Beelzebub):
 // inlined into their update function instead of going through the vtable+72
 // method. rsi = OD component, rdi = damage-scaled delta.
-// 2.0.5: RVA 0x2B3F77E -> 0x2B3F92E (code reordering; block unchanged).
+// 2.0.6: RVA 0x2B3F92E -> 0x2B3FFFE (code reordering; block unchanged).
 //   add rdi, [rsi+18]
 //   mov rax, -1
 //   cmovae rax, rdi
 //   mov [rsi+18], rax
 //   (followed by: add rsp,20 / pop rbx / pop rdi / pop rsi / ret)
 static const lm_byte_t kOdRateInlineExpected[] = { 0x48, 0x03, 0x7E, 0x18, 0x48, 0xC7, 0xC0, 0xFF, 0xFF, 0xFF, 0xFF, 0x48, 0x0F, 0x43, 0xC7, 0x48, 0x89, 0x46, 0x18 };
+// 2.0.6: Beelzebub-style inline OD accumulation point (validated before use).
+static constexpr lm_address_t kOdRateInlineRVA = 0x2B3FFFE;
+// 2.0.6: second inline OD path (generic, epilogue add rsp,28/pop rdi/pop rsi).
+static constexpr lm_address_t kOdRateInlineRVAAlt = 0x2AAC2F2;
 static const lm_byte_t kNop9[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 
 static const PatchPoint kMonsterPatches[] = {
     { "link_time_no_drain", L"link time no drain", 0x187228, nullptr, 0, kLinkTimeExpected, sizeof(kLinkTimeExpected), kNop10, false },
     { "link_time_disable", L"disable link time", 0x187228, nullptr, 0, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
     // 2.0.4 re-baselined: monster_hp 0x1F7472E->0x1F756CE, damage_new 0x1F74700->0x1F756A0,
-    // defense 0x1FB77EE->0x1FB878E (2.0.4)->0x1FB890E (2.0.5), stun 0xB228A8->0xB23848,
-    // overdrive 0x22C5986->0x23C6926, od_rate 0x22C5E50->0x23C6DF0 (2.0.4)->0x2C6FD0 (2.0.5).
+    // defense 0x1FB77EE->0x1FB878E (2.0.4)->0x1FB890E (2.0.5)->0x1FB8F2E (2.0.6), stun 0xB228A8->0xB23848,
+    // overdrive 0x22C5986->0x23C6926, od_rate 0x22C5E50->0x23C6DF0 (2.0.4)->0x2C6FD0 (2.0.5)->0x22C75F0 (2.0.6).
     // Signature fallback keeps them version-proof.
     { "monster_hp", L"monster hp", 0x1F756CE, kMonsterHpSignature, 0x1E, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
     { "monster_damage_new", L"monster damage new", 0x1F756A0, kMonsterDamageNewSignature, 0x20, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
-    { "defense_multiplier", L"defense multiplier", 0x1FB890E, kDefenseMultiplierSignature, 6, kDefenseMultiplierExpected, sizeof(kDefenseMultiplierExpected), nullptr, true },
+    { "defense_multiplier", L"defense multiplier", 0x1FB8F2E, kDefenseMultiplierSignature, 6, kDefenseMultiplierExpected, sizeof(kDefenseMultiplierExpected), nullptr, true },
     { "monster_damage", L"monster damage", 0x1FBDEB4, nullptr, 0, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
     { "monster_stun", L"monster stun", 0xB23848, kStunSignature, 0, kStunExpected, sizeof(kStunExpected), nullptr, true },
     { "overdrive_state", L"overdrive state", 0x23C6926, kOverdriveSignature, 0, kOverdriveExpected, sizeof(kOverdriveExpected), nullptr, true },
-    { "od_rate", L"od gauge rate", 0x2C6FD0, kOdRateSignature, 0, kOdRateExpected, sizeof(kOdRateExpected), nullptr, true },
+    { "od_rate", L"od gauge rate", 0x22C75F0, kOdRateSignature, 0, kOdRateExpected, sizeof(kOdRateExpected), nullptr, true },
     { "inventory_set_45", L"inventory set 45", 0x34F8C1, kInventorySet45Signature, 0, kInventorySet45Expected, sizeof(kInventorySet45Expected), nullptr, true },
     { "purple_drain", L"purple bar drain", 0xA0379A, nullptr, 0, kPurpleExpected, sizeof(kPurpleExpected), kNop9, false },
     { "blue_grow", L"blue bar grow", 0xA09AF1, nullptr, 0, kBlueGrowExpected, sizeof(kBlueGrowExpected), kNop9, false },
@@ -1616,7 +1620,7 @@ static bool PatchMonsterDamageHook(lm_address_t target, wchar_t* message, size_t
 }
 
 // Party-wide "defense multiplier" (same idea as FLiNG's, but applies to the
-// whole party): hook the final damage-settle point RVA 0x1FB890E
+// whole party): hook the final damage-settle point RVA 0x1FB8F2E
 // (`cmp eax,05F5E100`).
 // On entry eax already holds [rsi+D4] (the fully computed damage for the
 // target object in r14). When r14 is one of the captured player objects (host
@@ -1636,13 +1640,13 @@ static bool PatchDefenseHook(lm_address_t target, wchar_t* message, size_t messa
     size_t i = 0;
     // Player detection via a shared player-only vtable slot instead of an
     // exhaustive vtable list. Verified via the CE player-pointer chain at
-    // RVA 0x1FB890E (2.0.5): players vtable slot 2 = RVA 0x9CB360 (was
-    // 0x9CB970 in 2.0.4, 0x9CA9D0 earlier), monsters = 0x2938850. (If a
+    // RVA 0x1FB8F2E (2.0.6): players vtable slot 2 = RVA 0x9CB740 (was
+    // 0x9CB360 in 2.0.5, 0x9CB970 in 2.0.4), monsters = 0x2938850. (If a
     // different playable character turns out to have another slot-2 value,
     // add it to a comparison list.)
     HMODULE gameModule = GetModuleHandleW(L"granblue_fantasy_relink.exe");
     uintptr_t gameBase = reinterpret_cast<uintptr_t>(gameModule);
-    const uintptr_t playerVtableSlot2 = gameBase + 0x9CB360;
+    const uintptr_t playerVtableSlot2 = gameBase + 0x9CB740;
     uintptr_t stateAddr = reinterpret_cast<uintptr_t>(g_playerPointerState);
     code[i++] = 0x52;                                                                               // push rdx
     code[i++] = 0x41; code[i++] = 0x50;                                                             // push r8
@@ -1920,12 +1924,15 @@ static bool ShouldApply(const char* requestedId, const PatchPoint& point)
     return strcmp(requestedId, "all") == 0 || PatchIdEquals(requestedId, point.id);
 }
 
-static bool PatchOdRateHookInline(lm_address_t target, wchar_t* message, size_t messageSize)
+static bool PatchOdRateHookInline(lm_address_t target, bool altEpilogue, wchar_t* message, size_t messageSize)
 {
     // Inlined OD-gauge accumulation (Beelzebub-style bosses). Rewrites the
     // 19-byte block INCLUDING the epilogue and returns directly from the
     // cave (no jump back) — same shape as the vtable+72 hook, which is the
     // only pattern proven stable on this hot per-frame path.
+    // altEpilogue selects the 0x2AAC2F2 generic-path epilogue
+    // (add rsp,28 / pop rdi / pop rsi) instead of the Beelzebub-point
+    // epilogue (add rsp,20 / pop rbx / pop rdi / pop rsi).
     float scale = ReadScale(); // scale = user N (10 = 10x faster, 0.1 = 1/10)
     lm_address_t cave = AllocNear(target, 128);
     if (cave == LM_ADDRESS_BAD)
@@ -1947,11 +1954,21 @@ static bool PatchOdRateHookInline(lm_address_t target, wchar_t* message, size_t 
     code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x43; code[i++] = 0xC7; // cmovae rax,rdi
     code[i++] = 0x48; code[i++] = 0x89; code[i++] = 0x46; code[i++] = 0x18; // mov [rsi+18h],rax
     size_t epiOffset = i;
-    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xC4; code[i++] = 0x20; // add rsp,20h
-    code[i++] = 0x5B;                                                       // pop rbx
-    code[i++] = 0x5F;                                                       // pop rdi
-    code[i++] = 0x5E;                                                       // pop rsi
-    code[i++] = 0xC3;                                                       // ret
+    if (altEpilogue)
+    {
+        code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xC4; code[i++] = 0x28; // add rsp,28h
+        code[i++] = 0x5F;                                                       // pop rdi
+        code[i++] = 0x5E;                                                       // pop rsi
+        code[i++] = 0xC3;                                                       // ret
+    }
+    else
+    {
+        code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xC4; code[i++] = 0x20; // add rsp,20h
+        code[i++] = 0x5B;                                                       // pop rbx
+        code[i++] = 0x5F;                                                       // pop rdi
+        code[i++] = 0x5E;                                                       // pop rsi
+        code[i++] = 0xC3;                                                       // ret
+    }
     size_t scaleOffset = i;
     memcpy(code + i, &scale, sizeof(scale)); i += sizeof(scale);
 
@@ -2053,6 +2070,94 @@ static bool PatchOdRateHook(lm_address_t target, wchar_t* message, size_t messag
     return true;
 }
 
+// Beelzebub-style inline OD path. The main od_rate point and this inline
+// point are patched independently: when the main point is already hooked by a
+// previous injection this session, ApplyMonsterPatches skips the main patch,
+// but the inline point must still be checked/hooked here.
+static bool PatchOdRateInlineAt(lm_address_t inlineTarget, bool altEpilogue, wchar_t* message, size_t messageSize)
+{
+    lm_byte_t inlineCur[sizeof(kOdRateInlineExpected)]{};
+    if (LM_ReadMemory(inlineTarget, inlineCur, sizeof(inlineCur)) != sizeof(inlineCur))
+    {
+        swprintf_s(message, messageSize, L"read failed: od gauge rate (inline) at +%llX", static_cast<unsigned long long>(inlineTarget));
+        return false;
+    }
+    if (inlineCur[0] == 0xE9)
+    {
+        // already hooked by a previous injection this session
+        return true;
+    }
+    if (!BytesEqual(inlineCur, kOdRateInlineExpected, sizeof(kOdRateInlineExpected)))
+    {
+        wchar_t hex[128]{};
+        int off = 0;
+        for (size_t k = 0; k < sizeof(kOdRateInlineExpected) && off < static_cast<int>(_countof(hex)) - 4; ++k)
+        {
+            off += swprintf_s(hex + off, _countof(hex) - off, L"%02X ", inlineCur[k]);
+        }
+        swprintf_s(message, messageSize, L"unexpected bytes: od gauge rate (inline) at +%llX [%s]", static_cast<unsigned long long>(inlineTarget), hex);
+        return false;
+    }
+    return PatchOdRateHookInline(inlineTarget, altEpilogue, message, messageSize);
+}
+
+static bool PatchOdRateInline(lm_module_t& module, wchar_t* message, size_t messageSize)
+{
+    // 2.0.6 has two inlined OD accumulation paths: the Beelzebub-specific
+    // point (0x2B3FFFE) and a generic inline path (0x2AAC2F2). Patch both so
+    // whichever path a boss executes gets scaled. Each uses its own epilogue
+    // shape.
+    bool okB = PatchOdRateInlineAt(module.base + kOdRateInlineRVA, false, message, messageSize);
+    bool okA = PatchOdRateInlineAt(module.base + kOdRateInlineRVAAlt, true, message, messageSize);
+    return okB && okA;
+}
+
+// The inline OD page can stay Denuvo-encrypted until the OD logic first runs
+// (typically the game is still at the main menu when the patch is applied), so
+// a synchronous inline patch can fail with "unexpected bytes" even though the
+// RVA is correct. Retry in the background until the page decrypts.
+static DWORD WINAPI OdRateInlineRetryThread(LPVOID)
+{
+    wchar_t message[256]{};
+    for (int attempt = 0; attempt < 2400; ++attempt)
+    {
+        HMODULE gameModule = GetModuleHandleW(L"granblue_fantasy_relink.exe");
+        if (gameModule == nullptr)
+        {
+            Sleep(250);
+            continue;
+        }
+        lm_module_t module{};
+        module.base = reinterpret_cast<lm_address_t>(gameModule);
+        if (PatchOdRateInline(module, message, _countof(message)))
+        {
+            swprintf_s(message, L"od gauge rate (inline) ok (attempt %d)", attempt);
+            WritePatchDebugLog(message);
+            return 0; // patched or already hooked
+        }
+        if (attempt == 0 || attempt % 120 == 0)
+        {
+            WritePatchDebugLog(message);
+        }
+        Sleep(250);
+    }
+    WritePatchDebugLog(message);
+    return 1;
+}
+
+static void EnsureOdRateInline(lm_module_t& module)
+{
+    wchar_t message[256]{};
+    if (PatchOdRateInline(module, message, _countof(message)))
+    {
+        return; // already hooked, or patched right now
+    }
+    if (HANDLE thread = CreateThread(nullptr, 0, OdRateInlineRetryThread, nullptr, 0, nullptr))
+    {
+        CloseHandle(thread);
+    }
+}
+
 static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
 {
     char patchId[64]{};
@@ -2111,6 +2216,12 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
         {
             if (point.hook && current[0] == 0xE9)
             {
+                // od_rate has a second (Beelzebub-style inline) hook that must
+                // be installed even when the main point is already hooked.
+                if (strcmp(point.id, "od_rate") == 0)
+                {
+                    EnsureOdRateInline(module);
+                }
                 ++already;
                 continue;
             }
@@ -2181,31 +2292,7 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
             else if (strcmp(point.id, "od_rate") == 0)
             {
                 if (!PatchOdRateHook(target, message, messageSize)) return false;
-                // Additional inlined accumulation path used by
-                // Beelzebub-style bosses (their update loop does not call
-                // the vtable+72 method). 2.0.5: 0x2B3F77E -> 0x2B3F92E.
-                // Validate the full 19-byte block before hooking so a stale
-                // RVA can never overwrite unrelated code.
-                lm_address_t inlineTarget = module.base + 0x2B3F92E;
-                lm_byte_t inlineCur[sizeof(kOdRateInlineExpected)]{};
-                if (LM_ReadMemory(inlineTarget, inlineCur, sizeof(inlineCur)) != sizeof(inlineCur))
-                {
-                    swprintf_s(message, messageSize, L"read failed: od gauge rate (inline)");
-                    return false;
-                }
-                if (inlineCur[0] == 0xE9)
-                {
-                    // already hooked by a previous injection this session
-                }
-                else if (BytesEqual(inlineCur, kOdRateInlineExpected, sizeof(kOdRateInlineExpected)))
-                {
-                    if (!PatchOdRateHookInline(inlineTarget, message, messageSize)) return false;
-                }
-                else
-                {
-                    swprintf_s(message, messageSize, L"unexpected bytes: od gauge rate (inline) at +%llX", static_cast<unsigned long long>(inlineTarget - module.base));
-                    return false;
-                }
+                EnsureOdRateInline(module);
             }
             else if (strcmp(point.id, "inventory_set_45") == 0)
             {
