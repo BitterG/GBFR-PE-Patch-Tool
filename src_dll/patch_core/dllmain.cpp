@@ -166,6 +166,7 @@ static lm_address_t ScanAobSafe(const char* signature, lm_address_t start, lm_si
     {
         match = 0;
     }
+    if (match == LM_ADDRESS_BAD) match = 0; // libmem signals "no match/error" with -1
     return match;
 }
 
@@ -1093,7 +1094,14 @@ static const char* kOdRateSignature = "80 79 50 00 74 13 48 03 51 18";
 //   mov [rsi+18], rax
 //   (followed by: add rsp,20 / pop rbx / pop rdi / pop rsi / ret)
 static const lm_byte_t kOdRateInlineExpected[] = { 0x48, 0x03, 0x7E, 0x18, 0x48, 0xC7, 0xC0, 0xFF, 0xFF, 0xFF, 0xFF, 0x48, 0x0F, 0x43, 0xC7, 0x48, 0x89, 0x46, 0x18 };
-// 2.0.6: Beelzebub-style inline OD accumulation point (validated before use).
+// Inline-point AOBs = the shared 19-byte accumulation block + each point's own
+// epilogue, so the match address IS the hook point (offset 0). Verified unique
+// in 2.0.6 via CE: Beelzebub-style point +0x2B3FFFE, generic point +0x2AAC2F2.
+static const char* kOdRateInlineSignature =
+    "48 03 7E 18 48 C7 C0 FF FF FF FF 48 0F 43 C7 48 89 46 18 48 83 C4 20 5B 5F 5E C3";
+static const char* kOdRateInlineSignatureAlt =
+    "48 03 7E 18 48 C7 C0 FF FF FF FF 48 0F 43 C7 48 89 46 18 48 83 C4 28 5F 5E C3";
+// Fixed RVAs are fallback only (still validated against kOdRateInlineExpected).
 static constexpr lm_address_t kOdRateInlineRVA = 0x2B3FFFE;
 // 2.0.6: second inline OD path (generic, epilogue add rsp,28/pop rdi/pop rsi).
 static constexpr lm_address_t kOdRateInlineRVAAlt = 0x2AAC2F2;
@@ -2139,21 +2147,101 @@ static bool PatchOdRateHook(lm_address_t target, wchar_t* message, size_t messag
     return true;
 }
 
+// Scans the module in readable chunks (VirtualQuery) so Denuvo-encrypted
+// pages are skipped instead of faulting the scan — LM_SigScan does not skip
+// unreadable pages on its own and would otherwise abort before reaching
+// decrypted pages further into the image.
+static lm_address_t ScanAobReadable(const char* signature, lm_address_t base, lm_size_t size)
+{
+    const lm_address_t end = base + size;
+    lm_address_t cursor = base;
+    while (cursor < end)
+    {
+        MEMORY_BASIC_INFORMATION mbi{};
+        if (VirtualQuery(reinterpret_cast<LPCVOID>(cursor), &mbi, sizeof(mbi)) == 0) break;
+        lm_address_t regionBase = reinterpret_cast<lm_address_t>(mbi.BaseAddress);
+        lm_address_t regionEnd = regionBase + mbi.RegionSize;
+        if (regionEnd < regionBase) break;
+        if (regionEnd > end) regionEnd = end;
+
+        const bool readable = mbi.State == MEM_COMMIT &&
+            (mbi.Protect & (PAGE_READONLY | PAGE_READWRITE | PAGE_WRITECOPY |
+                            PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY)) != 0;
+        if (readable && regionEnd > cursor)
+        {
+            lm_address_t match = 0;
+            __try
+            {
+                match = LM_SigScan(signature, cursor, static_cast<lm_size_t>(regionEnd - cursor));
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER)
+            {
+                match = 0;
+            }
+            if (match != 0 && match != LM_ADDRESS_BAD) return match;
+        }
+        cursor = regionEnd;
+    }
+    return 0;
+}
+
+// Appends od_rate inline resolution diagnostics to its own log (the main
+// patch_core_debug.txt is overwritten on every apply, so it can't show history).
+static void LogOdRateInlineDiag(const char* line)
+{
+    wchar_t tempPath[MAX_PATH]{};
+    if (!GetTempPathW(_countof(tempPath), tempPath)) return;
+    wchar_t path[MAX_PATH]{};
+    swprintf_s(path, L"%sgbfr-player-info-edit\\patch_core_odrate.log", tempPath);
+    FILE* f = nullptr;
+    _wfopen_s(&f, path, L"a");
+    if (f)
+    {
+        fprintf(f, "%s\n", line);
+        fclose(f);
+    }
+}
+
 // Beelzebub-style inline OD path. The main od_rate point and this inline
 // point are patched independently: when the main point is already hooked by a
 // previous injection this session, ApplyMonsterPatches skips the main patch,
 // but the inline point must still be checked/hooked here.
-static bool PatchOdRateInlineAt(lm_address_t inlineTarget, bool altEpilogue, wchar_t* message, size_t messageSize)
+//
+// Resolution is AOB-first (update-proof): each inline point's 19-byte
+// accumulation block is followed by its own unique epilogue, so
+// "block + epilogue" forms a unique signature whose match is the hook point.
+// The fixed RVA is only a fallback (still validated against the expected
+// bytes below), e.g. when the page is Denuvo-encrypted at injection time.
+static bool PatchOdRateInlineAt(lm_module_t& module, const char* signature, lm_address_t inlineRVA, bool altEpilogue, wchar_t* message, size_t messageSize)
 {
+    lm_address_t inlineTarget = 0;
+    bool viaAob = false;
+    if (module.size != 0)
+    {
+        inlineTarget = ScanAobReadable(signature, module.base, module.size);
+        viaAob = inlineTarget != 0;
+    }
+    if (inlineTarget == 0)
+    {
+        inlineTarget = module.base + inlineRVA; // fixed-RVA fallback
+    }
+    char pathBuf[160]{};
+    sprintf_s(pathBuf, "od_rate inline (rva +%llX): %s -> +%llX",
+              static_cast<unsigned long long>(inlineRVA),
+              viaAob ? "AOB" : "RVA fallback",
+              static_cast<unsigned long long>(inlineTarget - module.base));
+    LogOdRateInlineDiag(pathBuf);
+
     lm_byte_t inlineCur[sizeof(kOdRateInlineExpected)]{};
     if (LM_ReadMemory(inlineTarget, inlineCur, sizeof(inlineCur)) != sizeof(inlineCur))
     {
-        swprintf_s(message, messageSize, L"read failed: od gauge rate (inline) at +%llX", static_cast<unsigned long long>(inlineTarget));
+        swprintf_s(message, messageSize, L"read failed: od gauge rate (inline) at +%llX", static_cast<unsigned long long>(inlineTarget - module.base));
         return false;
     }
     if (inlineCur[0] == 0xE9)
     {
         // already hooked by a previous injection this session
+        LogOdRateInlineDiag("od_rate inline: already hooked (E9)");
         return true;
     }
     if (!BytesEqual(inlineCur, kOdRateInlineExpected, sizeof(kOdRateInlineExpected)))
@@ -2164,7 +2252,7 @@ static bool PatchOdRateInlineAt(lm_address_t inlineTarget, bool altEpilogue, wch
         {
             off += swprintf_s(hex + off, _countof(hex) - off, L"%02X ", inlineCur[k]);
         }
-        swprintf_s(message, messageSize, L"unexpected bytes: od gauge rate (inline) at +%llX [%s]", static_cast<unsigned long long>(inlineTarget), hex);
+        swprintf_s(message, messageSize, L"unexpected bytes: od gauge rate (inline) at +%llX [%s]", static_cast<unsigned long long>(inlineTarget - module.base), hex);
         return false;
     }
     return PatchOdRateHookInline(inlineTarget, altEpilogue, message, messageSize);
@@ -2176,8 +2264,8 @@ static bool PatchOdRateInline(lm_module_t& module, wchar_t* message, size_t mess
     // point (0x2B3FFFE) and a generic inline path (0x2AAC2F2). Patch both so
     // whichever path a boss executes gets scaled. Each uses its own epilogue
     // shape.
-    bool okB = PatchOdRateInlineAt(module.base + kOdRateInlineRVA, false, message, messageSize);
-    bool okA = PatchOdRateInlineAt(module.base + kOdRateInlineRVAAlt, true, message, messageSize);
+    bool okB = PatchOdRateInlineAt(module, kOdRateInlineSignature, kOdRateInlineRVA, false, message, messageSize);
+    bool okA = PatchOdRateInlineAt(module, kOdRateInlineSignatureAlt, kOdRateInlineRVAAlt, true, message, messageSize);
     return okB && okA;
 }
 
@@ -2198,6 +2286,11 @@ static DWORD WINAPI OdRateInlineRetryThread(LPVOID)
         }
         lm_module_t module{};
         module.base = reinterpret_cast<lm_address_t>(gameModule);
+        MODULEINFO mi{};
+        if (GetModuleInformation(GetCurrentProcess(), gameModule, &mi, sizeof(mi)))
+        {
+            module.size = static_cast<lm_size_t>(mi.SizeOfImage);
+        }
         if (PatchOdRateInline(module, message, _countof(message)))
         {
             swprintf_s(message, L"od gauge rate (inline) ok (attempt %d)", attempt);
@@ -2316,7 +2409,7 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
             {
                 sigMatch = 0;
             }
-            if (sigMatch == 0)
+            if (sigMatch == 0 || sigMatch == LM_ADDRESS_BAD)
             {
                 swprintf_s(message, messageSize, L"AOB not found: %s (rva +%llX)", point.name, static_cast<unsigned long long>(point.rva));
                 return false;
