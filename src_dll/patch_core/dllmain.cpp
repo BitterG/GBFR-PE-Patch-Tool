@@ -119,7 +119,7 @@ static LONG ExecuteAutoChatCommand()
 }
 
 // ── sendMessage hook (game-thread sender, via LM_HookCode) ──
-// ui::hud::Manager::sendMessage entry RVA 0x904D30 (2.0.5; was 0x9049F0).
+// ui::hud::Manager::sendMessage entry RVA 0x905110 (2.0.6; was 0x904D30 in 2.0.5).
 // Each time the game calls sendMessage (manual send / quick phrase), this hook
 // checks the pending queue on the game thread, sends our message through the
 // trampoline if queued, then continues the game's own call.
@@ -146,8 +146,8 @@ static bool ResolveAutoChatTargets(wchar_t* message, size_t messageSize)
     if (!g_gameModule || !g_gameModuleSize) return false;
     const lm_address_t base = reinterpret_cast<lm_address_t>(g_gameModule);
 
-    // 1) sendMessage entry. 2.0.5: 0x9049F0 -> 0x904D30.
-    constexpr uintptr_t kSendMessageRVA = 0x904D30;
+    // 1) sendMessage entry. 2.0.6: 0x904D30 -> 0x905110.
+    constexpr uintptr_t kSendMessageRVA = 0x905110;
     lm_address_t sendAddr = LM_ADDRESS_BAD;
     lm_byte_t prologue[6]{};
     if (base + kSendMessageRVA < base + g_gameModuleSize &&
@@ -185,8 +185,8 @@ static bool ResolveAutoChatTargets(wchar_t* message, size_t messageSize)
     }
     g_autoChatSendMessageAddr = sendAddr;
 
-    // 2) Manager slot global. 2.0.5: 0x7C23460 -> 0x7C236E0.
-    constexpr uintptr_t kManagerSlotRVA = 0x7C236E0;
+    // 2) Manager slot global. 2.0.6: 0x7C236E0 -> 0x7C24720.
+    constexpr uintptr_t kManagerSlotRVA = 0x7C24720;
     lm_address_t slotAddr = LM_ADDRESS_BAD;
     if (base + kManagerSlotRVA < base + g_gameModuleSize)
     {
