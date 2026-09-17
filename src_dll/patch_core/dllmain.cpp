@@ -129,99 +129,168 @@ static lm_address_t g_autoChatSendTrampoline = LM_ADDRESS_BAD;
 // sendMessage prologue AOB (from RelinkBuildLocator.cs of the ChatOverlay mod):
 //   push r15; push r14; push r13; push r12; push rsi; push rdi; push rbp;
 //   push rbx; sub rsp,0x2F8; vmovups [rsp+0x2E0],xmm6; mov r14,r9; ...
+// The strict signature matches the exact prologue. The relaxed variant
+// wildcards the two stack-layout immediates (sub rsp,imm / vmovups [rsp+imm])
+// so a minor prologue recompile still resolves.
 // Manager slot AOB (the `mov rdi,[rip+disp]` that loads the chat Manager
 // global; slot address = match + 7 + disp32).
 static const char* kChatSendMessageSignature =
     "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC F8 02 00 00 "
     "C5 F8 29 B4 24 E0 02 00 00 4D 89 CE 44 89 C5 48 89 D7 48 89 CE";
+static const char* kChatSendMessageSignatureRelaxed =
+    "41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ?? ?? ?? ?? "
+    "C5 F8 29 B4 24 ?? ?? ?? ?? 4D 89 CE 44 89 C5 48 89 D7 48 89 CE";
 static const char* kChatManagerSlotSignature =
     "48 8B 3D ?? ?? ?? ?? 48 8D 05 ?? ?? ?? ?? 48 89 44 24 38 "
     "48 C7 44 24 40 00 00 00 00 48 89 74 24 28 48 89 F1 E8 ?? ?? ?? ??";
 
-// Resolves sendMessage + ManagerSlot by fixed RVA first (fast path),
-// falling back to AOB signatures when the RVA is stale (game updated).
-// Returns false only if both paths fail.
+// Expected sendMessage prologue bytes — used to validate the fixed-RVA
+// fallback so a stale RVA can never be trusted blindly.
+static const lm_byte_t kSendMessagePrologue[] = {
+    0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x56, 0x57, 0x55, 0x53,
+    0x48, 0x81, 0xEC, 0xF8, 0x02, 0x00, 0x00,
+    0xC5, 0xF8, 0x29, 0xB4, 0x24, 0xE0, 0x02, 0x00, 0x00,
+    0x4D, 0x89, 0xCE, 0x44, 0x89, 0xC5, 0x48, 0x89, 0xD7, 0x48, 0x89, 0xCE,
+};
+
+// LM_SigScan wrapped in SEH: module pages can still be Denuvo-encrypted at
+// injection time and fault under a raw scan.
+static lm_address_t ScanAobSafe(const char* signature, lm_address_t start, lm_size_t size)
+{
+    lm_address_t match = 0;
+    __try
+    {
+        match = LM_SigScan(signature, start, size);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        match = 0;
+    }
+    return match;
+}
+
+// Scans only executable sections (usually just .text) instead of the whole
+// 136 MB image. Faster and avoids non-code pages; falls back to a whole-module
+// scan when the PE headers can't be read (custom packers).
+static lm_address_t ScanAobInCodeSections(const char* signature, lm_address_t base, lm_size_t moduleSize)
+{
+    bool scannedSection = false;
+    __try
+    {
+        const auto* dos = reinterpret_cast<const IMAGE_DOS_HEADER*>(base);
+        if (dos->e_magic == IMAGE_DOS_SIGNATURE)
+        {
+            const auto* nt = reinterpret_cast<const IMAGE_NT_HEADERS*>(base + dos->e_lfanew);
+            if (nt->Signature == IMAGE_NT_SIGNATURE)
+            {
+                const IMAGE_SECTION_HEADER* section = IMAGE_FIRST_SECTION(nt);
+                for (WORD i = 0; i < nt->FileHeader.NumberOfSections; ++i, ++section)
+                {
+                    if ((section->Characteristics & IMAGE_SCN_CNT_CODE) == 0) continue;
+                    lm_address_t start = base + section->VirtualAddress;
+                    lm_size_t size = section->Misc.VirtualSize ? section->Misc.VirtualSize : section->SizeOfRawData;
+                    if (size == 0 || static_cast<lm_size_t>(start - base) >= moduleSize ||
+                        size > moduleSize - static_cast<lm_size_t>(start - base)) continue;
+                    scannedSection = true;
+                    lm_address_t match = ScanAobSafe(signature, start, size);
+                    if (match != 0) return match;
+                }
+            }
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+    }
+    return scannedSection ? 0 : ScanAobSafe(signature, base, moduleSize);
+}
+
+// Resolves sendMessage + ManagerSlot with AOB signatures first (update-proof:
+// a game patch that shifts code still resolves), and only falls back to the
+// fixed RVAs when the AOB path fails (e.g. the code page is still encrypted at
+// injection time). Returns false only if every path fails.
 static bool ResolveAutoChatTargets(wchar_t* message, size_t messageSize)
 {
     if (!g_gameModule || !g_gameModuleSize) return false;
     const lm_address_t base = reinterpret_cast<lm_address_t>(g_gameModule);
+    const lm_size_t moduleSize = static_cast<lm_size_t>(g_gameModuleSize);
 
-    // 1) sendMessage entry. 2.0.6: 0x904D30 -> 0x905110.
-    constexpr uintptr_t kSendMessageRVA = 0x905110;
-    lm_address_t sendAddr = LM_ADDRESS_BAD;
-    lm_byte_t prologue[6]{};
-    if (base + kSendMessageRVA < base + g_gameModuleSize &&
-        LM_ReadMemory(base + kSendMessageRVA, prologue, sizeof(prologue)) == sizeof(prologue) &&
-        prologue[0] == 0x41 && prologue[1] == 0x57) // push r15
+    // 1) sendMessage entry. Strict AOB -> relaxed AOB -> verified fixed RVA.
+    lm_address_t sendAddr = ScanAobInCodeSections(kChatSendMessageSignature, base, moduleSize);
+    if (sendAddr != 0)
     {
-        sendAddr = base + kSendMessageRVA;
         char buf[128];
-        sprintf_s(buf, "AOB resolve: sendMessage by RVA +%llX", static_cast<unsigned long long>(kSendMessageRVA));
+        sprintf_s(buf, "auto chat resolve: sendMessage by AOB -> +%llX", static_cast<unsigned long long>(sendAddr - base));
         LogAutoChatDiag(buf);
     }
     else
     {
-        lm_address_t match = 0;
-        __try
+        sendAddr = ScanAobInCodeSections(kChatSendMessageSignatureRelaxed, base, moduleSize);
+        if (sendAddr != 0)
         {
-            match = LM_SigScan(kChatSendMessageSignature, base, g_gameModuleSize);
-        }
-        __except (EXCEPTION_EXECUTE_HANDLER)
-        {
-            match = 0;
-        }
-        if (match != 0)
-        {
-            sendAddr = match;
             char buf[128];
-            sprintf_s(buf, "AOB resolve: sendMessage by signature +%llX", static_cast<unsigned long long>(match - base));
+            sprintf_s(buf, "auto chat resolve: sendMessage by relaxed AOB -> +%llX", static_cast<unsigned long long>(sendAddr - base));
             LogAutoChatDiag(buf);
         }
     }
-    if (sendAddr == LM_ADDRESS_BAD)
+    if (sendAddr == 0)
+    {
+        // 2.0.6 RVA; only trusted when the full expected prologue matches.
+        constexpr uintptr_t kSendMessageRVA = 0x905110;
+        lm_byte_t prologue[sizeof(kSendMessagePrologue)]{};
+        if (base + kSendMessageRVA < base + moduleSize &&
+            LM_ReadMemory(base + kSendMessageRVA, prologue, sizeof(prologue)) == sizeof(prologue) &&
+            memcmp(prologue, kSendMessagePrologue, sizeof(prologue)) == 0)
+        {
+            sendAddr = base + kSendMessageRVA;
+            char buf[128];
+            sprintf_s(buf, "auto chat resolve: sendMessage by verified RVA +%llX", static_cast<unsigned long long>(kSendMessageRVA));
+            LogAutoChatDiag(buf);
+        }
+    }
+    if (sendAddr == 0)
     {
         swprintf_s(message, messageSize, L"auto chat sendMessage target not resolved");
         return false;
     }
     g_autoChatSendMessageAddr = sendAddr;
 
-    // 2) Manager slot global. 2.0.6: 0x7C236E0 -> 0x7C24720.
-    constexpr uintptr_t kManagerSlotRVA = 0x7C24720;
-    lm_address_t slotAddr = LM_ADDRESS_BAD;
-    if (base + kManagerSlotRVA < base + g_gameModuleSize)
+    // 2) Manager slot global. AOB-first: the old fixed-RVA fast path had no way
+    // to detect a stale slot and silently pointed at garbage after an update.
+    lm_address_t slotAddr = 0;
+    lm_address_t match = ScanAobInCodeSections(kChatManagerSlotSignature, base, moduleSize);
+    if (match != 0)
     {
-        slotAddr = base + kManagerSlotRVA;
-        char buf[128];
-        sprintf_s(buf, "AOB resolve: manager slot by RVA +%llX", static_cast<unsigned long long>(kManagerSlotRVA));
-        LogAutoChatDiag(buf);
-    }
-    else
-    {
-        lm_address_t match = 0;
-        __try
+        // match: 48 8B 3D disp32  -> slot = match + 7 + disp32
+        int32_t disp = 0;
+        lm_byte_t dispBytes[4]{};
+        if (LM_ReadMemory(match + 3, dispBytes, sizeof(dispBytes)) == sizeof(dispBytes))
         {
-            match = LM_SigScan(kChatManagerSlotSignature, base, g_gameModuleSize);
-        }
-        __except (EXCEPTION_EXECUTE_HANDLER)
-        {
-            match = 0;
-        }
-        if (match != 0)
-        {
-            // match: 48 8B 3D disp32  -> slot = match + 7 + disp32
-            int32_t disp = 0;
-            lm_byte_t dispBytes[4]{};
-            if (LM_ReadMemory(match + 3, dispBytes, sizeof(dispBytes)) == sizeof(dispBytes))
+            memcpy(&disp, dispBytes, sizeof(disp));
+            lm_address_t slot = match + 7 + static_cast<lm_address_t>(disp);
+            if (slot >= base && slot < base + moduleSize)
             {
-                memcpy(&disp, dispBytes, sizeof(disp));
-                slotAddr = match + 7 + static_cast<lm_address_t>(disp);
+                slotAddr = slot;
                 char buf[128];
-                sprintf_s(buf, "AOB resolve: manager slot by signature -> +%llX", static_cast<unsigned long long>(slotAddr - base));
+                sprintf_s(buf, "auto chat resolve: manager slot by AOB -> +%llX", static_cast<unsigned long long>(slotAddr - base));
                 LogAutoChatDiag(buf);
             }
         }
     }
-    if (slotAddr == LM_ADDRESS_BAD)
+    if (slotAddr == 0)
+    {
+        // Last-resort fallback (encrypted-code injection race). The data slot
+        // has no surrounding bytes to validate, so this is logged as
+        // unverified and is never the primary resolution path.
+        constexpr uintptr_t kManagerSlotRVA = 0x7C24720;
+        if (base + kManagerSlotRVA < base + moduleSize)
+        {
+            slotAddr = base + kManagerSlotRVA;
+            char buf[128];
+            sprintf_s(buf, "auto chat resolve: manager slot fallback (unverified) by RVA +%llX", static_cast<unsigned long long>(kManagerSlotRVA));
+            LogAutoChatDiag(buf);
+        }
+    }
+    if (slotAddr == 0)
     {
         swprintf_s(message, messageSize, L"auto chat manager slot not resolved");
         return false;
