@@ -1129,6 +1129,30 @@ static constexpr lm_address_t kOdRateInlineRVA = 0x2B3FFFE;
 static constexpr lm_address_t kOdRateInlineRVAAlt = 0x2AAC2F2;
 static const lm_byte_t kNop9[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 
+// Third inline OD accumulation path (used by dual bosses like Seofon & Tweyen):
+// RVA 0x3AB645A:
+//   cmp byte ptr [rax+50h], 0
+//   je  epilogue
+//   add rsi, [rax+18h]        ; rsi = OD delta (signed), [rax+18h] = current OD
+//   mov rcx, -1
+//   cmovae rcx, rsi
+//   mov [rax+18h], rcx
+//   add rsp, 20h
+//   pop rbx
+//   pop rdi
+//   pop rsi
+//   ret
+static const lm_byte_t kOdRateSharedExpected[] = {
+    0x80, 0x78, 0x50, 0x00,
+    0x74, 0x13,
+    0x48, 0x03, 0x70, 0x18,
+    0x48, 0xC7, 0xC1, 0xFF, 0xFF, 0xFF, 0xFF,
+    0x48, 0x0F, 0x43, 0xCE,
+    0x48, 0x89, 0x48, 0x18,
+};
+static const char* kOdRateSharedSignature = "80 78 50 00 74 13 48 03 70 18 48 C7 C1 FF FF FF FF 48 0F 43 CE 48 89 48 18";
+static constexpr lm_address_t kOdRateSharedRVA = 0x3AB645A;
+
 static const PatchPoint kMonsterPatches[] = {
     { "link_time_no_drain", L"link time no drain", 0x187228, nullptr, 0, kLinkTimeExpected, sizeof(kLinkTimeExpected), kNop10, false },
     { "link_time_disable", L"disable link time", 0x187228, nullptr, 0, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
@@ -2345,6 +2369,77 @@ static bool PatchOdRateHookInline(lm_address_t target, bool altEpilogue, wchar_t
     return true;
 }
 
+static bool PatchOdRateHookShared(lm_address_t target, wchar_t* message, size_t messageSize)
+{
+    // Dual-boss shared OD accumulation (Seofon & Tweyen):
+    // cmp byte ptr [rax+50h],0
+    // je  epilogue
+    // rsi = incoming OD delta, [rax+18h] = current OD
+    float scale = ReadScale();
+    lm_address_t cave = AllocNear(target, 128);
+    if (cave == LM_ADDRESS_BAD)
+    {
+        swprintf_s(message, messageSize, L"alloc near failed: od gauge rate (shared)");
+        return false;
+    }
+
+    lm_byte_t code[64]{};
+    size_t i = 0;
+    code[i++] = 0x80; code[i++] = 0x78; code[i++] = 0x50; code[i++] = 0x00; // cmp byte ptr [rax+50h],0
+    size_t jzDisp = i; code[i++] = 0x74; code[i++] = 0x00;                  // jz epilogue
+    code[i++] = 0xF3; code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xF6; // cvtsi2ss xmm6,rsi
+    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x35; // mulss xmm6,[rip+disp32]
+    size_t scaleDisp = i; i += 4;
+    code[i++] = 0xF3; code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xF6; // cvttss2si rsi,xmm6
+    code[i++] = 0x48; code[i++] = 0x03; code[i++] = 0x70; code[i++] = 0x18; // add rsi,[rax+18h]
+    code[i++] = 0x48; code[i++] = 0xC7; code[i++] = 0xC1; code[i++] = 0xFF; code[i++] = 0xFF; code[i++] = 0xFF; code[i++] = 0xFF; // mov rcx,-1
+    code[i++] = 0x48; code[i++] = 0x0F; code[i++] = 0x43; code[i++] = 0xCE; // cmovae rcx,rsi
+    code[i++] = 0x48; code[i++] = 0x89; code[i++] = 0x48; code[i++] = 0x18; // mov [rax+18h],rcx
+    size_t epiOffset = i;
+    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xC4; code[i++] = 0x20; // add rsp,20h
+    code[i++] = 0x5B;                                                       // pop rbx
+    code[i++] = 0x5F;                                                       // pop rdi
+    code[i++] = 0x5E;                                                       // pop rsi
+    code[i++] = 0xC3;                                                       // ret
+
+    size_t scaleOffset = i;
+    memcpy(code + i, &scale, sizeof(scale)); i += sizeof(scale);
+
+    code[jzDisp + 1] = static_cast<lm_byte_t>(epiOffset - (jzDisp + 2));
+
+    int64_t scaleDelta = static_cast<int64_t>(cave + scaleOffset) - static_cast<int64_t>(cave + scaleDisp + 4);
+    if (scaleDelta < INT32_MIN || scaleDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"scale jump out of range: od gauge rate (shared)");
+        return false;
+    }
+    int32_t relScale = static_cast<int32_t>(scaleDelta);
+    memcpy(code + scaleDisp, &relScale, sizeof(relScale));
+
+    if (LM_WriteMemory(cave, code, i) != i)
+    {
+        swprintf_s(message, messageSize, L"cave write failed: od gauge rate (shared)");
+        return false;
+    }
+
+    lm_byte_t jmp[sizeof(kOdRateSharedExpected)]{ 0xE9 };
+    memset(jmp + 5, 0x90, sizeof(jmp) - 5);
+    int64_t hookDelta = static_cast<int64_t>(cave) - static_cast<int64_t>(target + 5);
+    if (hookDelta < INT32_MIN || hookDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"hook jump out of range: od gauge rate (shared)");
+        return false;
+    }
+    int32_t rel = static_cast<int32_t>(hookDelta);
+    memcpy(jmp + 1, &rel, sizeof(rel));
+    if (!PatchBytes(target, jmp, sizeof(jmp)))
+    {
+        swprintf_s(message, messageSize, L"hook write failed: od gauge rate (shared)");
+        return false;
+    }
+    return true;
+}
+
 static bool PatchOdRateHook(lm_address_t target, wchar_t* message, size_t messageSize)
 {
     float scale = ReadScale(); // scale = 1 / user N; N < 1 speeds the gauge up.
@@ -2519,15 +2614,45 @@ static bool PatchOdRateInlineAt(lm_module_t& module, const char* signature, lm_a
     return PatchOdRateHookInline(inlineTarget, altEpilogue, message, messageSize);
 }
 
+static bool PatchOdRateShared(lm_module_t& module, wchar_t* message, size_t messageSize)
+{
+    lm_address_t target = module.base + kOdRateSharedRVA;
+    lm_byte_t current[sizeof(kOdRateSharedExpected)]{};
+    if (LM_ReadMemory(target, current, sizeof(current)) != sizeof(current))
+    {
+        return false;
+    }
+    if (current[0] == 0xE9)
+    {
+        return true;
+    }
+    if (!BytesEqual(current, kOdRateSharedExpected, sizeof(kOdRateSharedExpected)))
+    {
+        lm_address_t sigMatch = 0;
+        __try
+        {
+            sigMatch = LM_SigScan(kOdRateSharedSignature, module.base, module.size);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            sigMatch = 0;
+        }
+        if (sigMatch == 0) return false;
+        target = sigMatch;
+    }
+    return PatchOdRateHookShared(target, message, messageSize);
+}
+
 static bool PatchOdRateInline(lm_module_t& module, wchar_t* message, size_t messageSize)
 {
-    // 2.0.6 has two inlined OD accumulation paths: the Beelzebub-specific
-    // point (0x2B3FFFE) and a generic inline path (0x2AAC2F2). Patch both so
-    // whichever path a boss executes gets scaled. Each uses its own epilogue
-    // shape.
+    // 2.0.6 has three inlined OD accumulation paths:
+    // 1) Beelzebub-specific point (0x2B3FFFE)
+    // 2) generic inline path (0x2AAC2F2)
+    // 3) dual-boss shared OD path (0x3AB645A, Seofon & Tweyen)
     bool okB = PatchOdRateInlineAt(module, kOdRateInlineSignature, kOdRateInlineRVA, false, message, messageSize);
     bool okA = PatchOdRateInlineAt(module, kOdRateInlineSignatureAlt, kOdRateInlineRVAAlt, true, message, messageSize);
-    return okB && okA;
+    bool okS = PatchOdRateShared(module, message, messageSize);
+    return okB && okA && okS;
 }
 
 // The inline OD page can stay Denuvo-encrypted until the OD logic first runs
