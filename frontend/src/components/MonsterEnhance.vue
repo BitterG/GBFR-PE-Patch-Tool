@@ -18,6 +18,7 @@ const hiddenUnfixedItems = new Set([
   'link_time_disable',
   'monster_damage',
   'monster_damage_new',
+  'monster_hp_alt',
   'sba_chain_timer',
   'purple_drain',
   'blue_grow',

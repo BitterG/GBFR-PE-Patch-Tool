@@ -156,6 +156,7 @@ type App struct {
 	monsterDamageEnabled       bool
 	monsterDamageNewAddr       uintptr
 	monsterHPAddr              uintptr
+	monsterHPAltAddr           uintptr
 	monsterStunAddr            uintptr
 	overdriveStateAddr         uintptr
 	odRateAddr                 uintptr
@@ -1325,6 +1326,7 @@ func (a *App) charaDetachLocked() {
 	a.collectibleTaskBase = 0
 	a.monsterDamageHookInstalled = false
 	a.monsterHPAddr = 0
+	a.monsterHPAltAddr = 0
 	a.monsterDamageHookID = ""
 	a.monsterDamageEnabled = false
 	a.monsterDamageNewAddr = 0
@@ -2448,11 +2450,21 @@ var monsterPatchPoints = []monsterPatchPoint{
 	{
 		ID:            "monster_hp",
 		Name:          "怪物多倍血",
-		RVA:           0x1F756CE, // 2.0.4; was 0x1F7472E
+		RVA:           0x1F75EDE, // 2.0.6; was 0x1F756CE (2.0.4)
 		Pattern:       []byte{0x48, 0x8B, 0x41, 0x10, 0x45, 0x31, 0xC9, 0x48, 0x29, 0xD0, 0x4C, 0x0F, 0x43, 0xC8, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x49, 0x0F, 0x47, 0xC1, 0x45, 0x85, 0xC0, 0x49, 0x0F, 0x44, 0xC1, 0x48, 0x89, 0x41, 0x10, 0xC3},
 		PatternMask:   []bool{true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
 		PatternOffset: 0x1E,
 		Original:      []byte{0x48, 0x89, 0x41, 0x10, 0xC3},
+		Hook:          true,
+	},
+	{
+		ID:            "monster_hp_alt",
+		Name:          "怪物多倍血(备用分支)",
+		RVA:           0x3AB7920,
+		Pattern:       []byte{0x89, 0xD9, 0x48, 0x8B, 0x50, 0x10, 0x45, 0x31, 0xC0, 0x48, 0x29, 0xCA, 0x4C, 0x0F, 0x43, 0xC2, 0xB9, 0x01, 0x00, 0x00, 0x00, 0x49, 0x0F, 0x47, 0xC8, 0x85, 0xFF, 0x49, 0x0F, 0x44, 0xC8, 0x48, 0x89, 0x48, 0x10},
+		PatternMask:   []bool{true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+		PatternOffset: 0,
+		Original:      []byte{0x89, 0xD9, 0x48, 0x8B, 0x50, 0x10},
 		Hook:          true,
 	},
 	{
@@ -2748,7 +2760,7 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 			commandValue := hpMultiplier
 			// monster_hp / monster_stun: UI 输入 N = 等效 N 倍（传给 DLL 的是 1/N 的缩放系数）。
 			// od_rate: UI 输入 N 直接作为缩放系数（10 = 放大10倍，0.1 = 缩小10倍）。
-			if point.ID == "monster_hp" || point.ID == "monster_stun" {
+			if point.ID == "monster_hp" || point.ID == "monster_hp_alt" || point.ID == "monster_stun" {
 				commandValue = 1 / hpMultiplier
 			}
 			command = fmt.Sprintf("%s %.8g", command, commandValue)
@@ -2805,6 +2817,9 @@ func (a *App) MonsterEnhanceSetPatchValueEnabled(id string, enabled bool, hpMult
 		return a.readMonsterEnhanceStatus("")
 	}
 
+	if id == "monster_hp" {
+		_ = a.restoreMonsterEnhance("monster_hp_alt")
+	}
 	if err := a.restoreMonsterEnhance(id); err != nil {
 		return MonsterEnhanceResult{}, err
 	}
@@ -2961,6 +2976,9 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	if point.ID == "monster_hp" && a.monsterHPAddr != 0 {
 		return a.monsterHPAddr, nil
 	}
+	if point.ID == "monster_hp_alt" && a.monsterHPAltAddr != 0 {
+		return a.monsterHPAltAddr, nil
+	}
 	if point.ID == "od_rate" && a.odRateAddr != 0 {
 		return a.odRateAddr, nil
 	}
@@ -2991,6 +3009,8 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 					a.monsterDamageNewAddr = target
 				case "monster_hp":
 					a.monsterHPAddr = target
+				case "monster_hp_alt":
+					a.monsterHPAltAddr = target
 				case "od_rate":
 					a.odRateAddr = target
 				case "inventory_set_45":
@@ -3086,6 +3106,9 @@ func (a *App) resolveMonsterPatchTarget(point *monsterPatchPoint) (uintptr, erro
 	}
 	if point.ID == "monster_hp" {
 		a.monsterHPAddr = target
+	}
+	if point.ID == "monster_hp_alt" {
+		a.monsterHPAltAddr = target
 	}
 	return target, nil
 }
@@ -3291,7 +3314,7 @@ func isMonsterPatchBytesAtRVA(rva uintptr, data []byte) bool {
 }
 
 func needsMonsterValue(id string) bool {
-	return id == "monster_hp" || id == "monster_stun" || id == "monster_damage" || id == "monster_damage_new" || id == "defense_multiplier" || id == "overdrive_state" || id == "od_rate"
+	return id == "monster_hp" || id == "monster_hp_alt" || id == "monster_stun" || id == "monster_damage" || id == "monster_damage_new" || id == "defense_multiplier" || id == "overdrive_state" || id == "od_rate"
 }
 
 func findMonsterPatchPoint(id string) *monsterPatchPoint {

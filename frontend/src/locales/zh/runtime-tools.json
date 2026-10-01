@@ -265,6 +265,7 @@
       "empty": "请启动游戏后刷新状态",
       "items": {
         "monster_hp": "怪物多倍血",
+        "monster_hp_alt": "怪物多倍血(备用分支)",
         "monster_damage": "怪物伤害",
         "monster_damage_new": "怪物伤害-新",
         "defense_multiplier": "受伤倍率(自己)",

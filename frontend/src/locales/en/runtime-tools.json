@@ -265,6 +265,7 @@
       "empty": "Start the game, then refresh status",
       "items": {
         "monster_hp": "Monster HP multiplier",
+        "monster_hp_alt": "Monster HP multiplier (branch)",
         "monster_damage": "Monster damage",
         "monster_damage_new": "Monster damage - new",
         "defense_multiplier": "Damage taken multiplier (party)",

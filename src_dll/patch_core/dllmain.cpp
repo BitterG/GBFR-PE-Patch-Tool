@@ -1040,6 +1040,17 @@ static const lm_byte_t kNop10[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x
 static const lm_byte_t kMonsterHpExpected[] = { 0x48, 0x89, 0x41, 0x10, 0xC3 };
 static const char* kMonsterHpSignature = "48 8B 41 10 45 31 C9 48 29 D0 4C 0F 43 C8 B8 01 00 00 00 49 0F 47 C1 45 85 C0 49 0F 44 C1 48 89 41 10 C3";
 static constexpr lm_address_t kMonsterHpSignatureOffset = 0x1E;
+
+// Alternative monster HP setter (e.g. at 3AB7920 / 3AB793F)
+// 7FF6FEBA7920 - 89 D9                - mov ecx,ebx
+// 7FF6FEBA7922 - 48 8B 50 10          - mov rdx,[rax+10]
+// 7FF6FEBA7926 - 45 31 C0             - xor r8d,r8d
+// 7FF6FEBA7929 - 48 29 CA             - sub rdx,rcx
+// ...
+// 7FF6FEBA793F - 48 89 48 10          - mov [rax+10],rcx
+static const lm_byte_t kMonsterHpAltExpected[] = { 0x89, 0xD9, 0x48, 0x8B, 0x50, 0x10 };
+static const char* kMonsterHpAltSignature = "89 D9 48 8B 50 10 45 31 C0 48 29 CA 4C 0F 43 C2 B9 01 00 00 00 49 0F 47 C8 85 FF 49 0F 44 C8 48 89 48 10";
+static constexpr lm_address_t kMonsterHpAltSignatureOffset = 0;
 // The shared health-component setter (vtable slot 0, RVA 0x1F74700) receives
 // the health component in rcx and the already-computed FINAL hp in rdx — NOT the
 // damage amount. The caller keeps the true incoming damage in r13 (callee-saved),
@@ -1121,11 +1132,12 @@ static const lm_byte_t kNop9[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x9
 static const PatchPoint kMonsterPatches[] = {
     { "link_time_no_drain", L"link time no drain", 0x187228, nullptr, 0, kLinkTimeExpected, sizeof(kLinkTimeExpected), kNop10, false },
     { "link_time_disable", L"disable link time", 0x187228, nullptr, 0, kLinkTimeExpected, sizeof(kLinkTimeExpected), kLinkTimeDisablePatch, false },
-    // 2.0.4 re-baselined: monster_hp 0x1F7472E->0x1F756CE, damage_new 0x1F74700->0x1F756A0,
+    // 2.0.4 re-baselined: monster_hp 0x1F7472E->0x1F756CE (2.0.6: 0x1F75EDE), damage_new 0x1F74700->0x1F756A0,
     // defense 0x1FB77EE->0x1FB878E (2.0.4)->0x1FB890E (2.0.5)->0x1FB8F2E (2.0.6), stun 0xB228A8->0xB23848,
     // overdrive 0x22C5986->0x23C6926, od_rate 0x22C5E50->0x23C6DF0 (2.0.4)->0x2C6FD0 (2.0.5)->0x22C75F0 (2.0.6).
     // Signature fallback keeps them version-proof.
-    { "monster_hp", L"monster hp", 0x1F756CE, kMonsterHpSignature, 0x1E, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
+    { "monster_hp", L"monster hp", 0x1F75EDE, kMonsterHpSignature, 0x1E, kMonsterHpExpected, sizeof(kMonsterHpExpected), nullptr, true },
+    { "monster_hp_alt", L"monster hp alt", 0x3AB7920, kMonsterHpAltSignature, 0, kMonsterHpAltExpected, sizeof(kMonsterHpAltExpected), nullptr, true },
     { "monster_damage_new", L"monster damage new", 0x1F756A0, kMonsterDamageNewSignature, 0x20, kMonsterDamageNewExpected, sizeof(kMonsterDamageNewExpected), nullptr, true },
     { "defense_multiplier", L"defense multiplier", 0x1FB8F2E, kDefenseMultiplierSignature, 6, kDefenseMultiplierExpected, sizeof(kDefenseMultiplierExpected), nullptr, true },
     { "monster_damage", L"monster damage", 0x1FBDEB4, nullptr, 0, kMonsterDamageExpected, sizeof(kMonsterDamageExpected), nullptr, true },
@@ -1401,6 +1413,100 @@ static bool PatchDamageHook(lm_address_t target, wchar_t* message, size_t messag
     if (!PatchBytes(target, jmp, sizeof(jmp)))
     {
         swprintf_s(message, messageSize, L"hook write failed: monster hp");
+        return false;
+    }
+    return true;
+}
+
+// Alternative monster HP hook (for monsters using path at 3AB7920 / 3AB793F)
+// In original code at 3AB7920:
+//   mov ecx, ebx              ; ebx = incoming damage
+//   mov rdx, [rax+10]         ; current hp
+//   xor r8d, r8d
+//   sub rdx, rcx
+//   cmovae r8, rdx
+//   mov ecx, 1
+//   cmova rcx, r8
+//   test edi, edi
+//   cmove rcx, r8
+//   mov [rax+10], rcx
+// In cave:
+//   Save rbx, rdx, xmm0, scale rbx by scale factor (r11 = scaled damage >= 1, ebx = r11d),
+//   restore, execute original 6 bytes: mov ecx, ebx; mov rdx, [rax+10],
+//   jmp back to target + 6 (3AB7926).
+static bool PatchDamageHookAlt(lm_address_t target, wchar_t* message, size_t messageSize)
+{
+    float scale = ReadScale();
+    lm_address_t cave = AllocNear(target, 256);
+    if (cave == LM_ADDRESS_BAD)
+    {
+        swprintf_s(message, messageSize, L"alloc near failed: monster hp alt");
+        return false;
+    }
+
+    lm_byte_t code[256]{};
+    size_t i = 0;
+    code[i++] = 0x41; code[i++] = 0x53;                                                             // push r11
+    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xEC; code[i++] = 0x10;                         // sub rsp,10
+    code[i++] = 0x0F; code[i++] = 0x11; code[i++] = 0x04; code[i++] = 0x24;                         // movups [rsp],xmm0
+    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x2A; code[i++] = 0xC3;                         // cvtsi2ss xmm0,ebx
+    code[i++] = 0xF3; code[i++] = 0x0F; code[i++] = 0x59; code[i++] = 0x05;                         // mulss xmm0,[rip+disp32]
+    size_t scaleDisp = i; i += 4;
+    code[i++] = 0xF3; code[i++] = 0x4C; code[i++] = 0x0F; code[i++] = 0x2C; code[i++] = 0xD8;       // cvttss2si r11,xmm0
+    code[i++] = 0x0F; code[i++] = 0x10; code[i++] = 0x04; code[i++] = 0x24;                         // movups xmm0,[rsp]
+    code[i++] = 0x48; code[i++] = 0x83; code[i++] = 0xC4; code[i++] = 0x10;                         // add rsp,10
+    code[i++] = 0x4D; code[i++] = 0x85; code[i++] = 0xDB;                                           // test r11,r11
+    code[i++] = 0x7F; size_t jgScaled = i++;                                                        // jg scaled
+    code[i++] = 0x41; code[i++] = 0xBB; code[i++] = 0x01; code[i++] = 0x00; code[i++] = 0x00; code[i++] = 0x00; // mov r11d,1
+    size_t scaledOffset = i;
+    code[i++] = 0x44; code[i++] = 0x89; code[i++] = 0xDB;                                           // mov ebx,r11d
+    code[i++] = 0x41; code[i++] = 0x5B;                                                             // pop r11
+
+    // Original instructions replaced by hook (6 bytes):
+    code[i++] = 0x89; code[i++] = 0xD9;                                                             // mov ecx,ebx
+    code[i++] = 0x48; code[i++] = 0x8B; code[i++] = 0x50; code[i++] = 0x10;                         // mov rdx,[rax+10]
+
+    // Jump back to target + 6
+    code[i++] = 0xE9;
+    size_t jmpBackDisp = i; i += 4;
+
+    size_t scaleOffset = i;
+    memcpy(code + i, &scale, sizeof(scale)); i += sizeof(scale);
+
+    code[jgScaled] = static_cast<lm_byte_t>(scaledOffset - (jgScaled + 1));
+
+    int64_t scaleDelta = static_cast<int64_t>(cave + scaleOffset) - static_cast<int64_t>(cave + scaleDisp + 4);
+    if (scaleDelta < INT32_MIN || scaleDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"scale jump out of range: monster hp alt");
+        return false;
+    }
+    int32_t relScale = static_cast<int32_t>(scaleDelta);
+    memcpy(code + scaleDisp, &relScale, sizeof(relScale));
+
+    int64_t backDelta = static_cast<int64_t>(target + 6) - static_cast<int64_t>(cave + jmpBackDisp + 4);
+    if (backDelta < INT32_MIN || backDelta > INT32_MAX)
+    {
+        swprintf_s(message, messageSize, L"jmp back out of range: monster hp alt");
+        return false;
+    }
+    int32_t relBack = static_cast<int32_t>(backDelta);
+    memcpy(code + jmpBackDisp, &relBack, sizeof(relBack));
+
+    memcpy(code + sizeof(code) - sizeof(kMonsterEnhanceCaveMarker), kMonsterEnhanceCaveMarker, sizeof(kMonsterEnhanceCaveMarker));
+    if (LM_WriteMemory(cave, code, sizeof(code)) != sizeof(code))
+    {
+        swprintf_s(message, messageSize, L"cave write failed: monster hp alt");
+        return false;
+    }
+
+    lm_byte_t jmp[sizeof(kMonsterHpAltExpected)]{ 0xE9 };
+    memset(jmp + 5, 0x90, sizeof(jmp) - 5);
+    int32_t rel = static_cast<int32_t>(cave - (target + 5));
+    memcpy(jmp + 1, &rel, sizeof(rel));
+    if (!PatchBytes(target, jmp, sizeof(jmp)))
+    {
+        swprintf_s(message, messageSize, L"hook write failed: monster hp alt");
         return false;
     }
     return true;
@@ -2151,7 +2257,9 @@ static bool PatchStunHook(lm_address_t target, wchar_t* message, size_t messageS
 
 static bool ShouldApply(const char* requestedId, const PatchPoint& point)
 {
-    return strcmp(requestedId, "all") == 0 || PatchIdEquals(requestedId, point.id);
+    if (strcmp(requestedId, "all") == 0) return true;
+    if (PatchIdEquals(requestedId, "monster_hp") && strcmp(point.id, "monster_hp_alt") == 0) return true;
+    return PatchIdEquals(requestedId, point.id);
 }
 
 static bool PatchOdRateHookInline(lm_address_t target, bool altEpilogue, wchar_t* message, size_t messageSize)
@@ -2612,6 +2720,10 @@ static bool ApplyMonsterPatches(wchar_t* message, size_t messageSize)
             else if (strcmp(point.id, "inventory_set_45") == 0)
             {
                 if (!PatchInventorySetQuantityHook(target, message, messageSize)) return false;
+            }
+            else if (strcmp(point.id, "monster_hp_alt") == 0)
+            {
+                if (!PatchDamageHookAlt(target, message, messageSize)) return false;
             }
             else if (!PatchDamageHook(target, message, messageSize)) return false;
         }
